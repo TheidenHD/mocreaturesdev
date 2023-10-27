@@ -10,12 +10,12 @@ import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAISwimming;
-import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -25,6 +25,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.Tags;
 
 import javax.annotation.Nullable;
 
@@ -32,23 +33,20 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
 
     private static final DataParameter<Integer> MOLE_STATE = EntityDataManager.createKey(MoCEntityMole.class, DataSerializers.VARINT);
 
-    public MoCEntityMole(World world) {
-        super(world);
-        setSize(1F, 0.5F);
+    public MoCEntityMole(EntityType<? extends MoCEntityMole> type, World world) {
+        super(type, world);
+        //setSize(1F, 0.5F);
     }
 
     @Override
-    protected void initEntityAI() {
-        this.tasks.addTask(1, new EntityAISwimming(this));
-        this.tasks.addTask(2, new EntityAIWanderMoC2(this, 1.0D));
-        this.tasks.addTask(4, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new SwimGoal(this));
+        this.goalSelector.addGoal(2, new EntityAIWanderMoC2(this, 1.0D));
+        this.goalSelector.addGoal(4, new LookAtGoal(this, PlayerEntity.class, 8.0F));
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(6.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.2D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 6.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2D);
     }
 
     @Override
@@ -57,8 +55,8 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(MOLE_STATE, 0); // state - 0 outside / 1 digging / 2 underground / 3 pick-a-boo
 
     }
@@ -66,13 +64,13 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
     public boolean isOnDirt() {
         Block block =
                 this.world.getBlockState(
-                        new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.getEntityBoundingBox().minY - 0.5D), MathHelper
-                                .floor(this.posZ))).getBlock();
-        return isDiggableBlock(Block.getIdFromBlock(block));//(j == 2 | j == 3 | j == 12);
+                        new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(this.getBoundingBox().minY - 0.5D), MathHelper
+                                .floor(this.getPosZ()))).getBlock();
+        return isDiggableBlock(block);//(j == 2 | j == 3 | j == 12);
     }
 
-    private boolean isDiggableBlock(int i) {
-        return i == 2 | i == 3 | i == 12;
+    private boolean isDiggableBlock(Block i) {
+        return Tags.Blocks.DIRT.contains(i) || Tags.Blocks.SAND.contains(i) || Tags.Blocks.GRAVEL.contains(i);
     }
 
     /**
@@ -80,9 +78,9 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
      */
     @SuppressWarnings("unused")
     private void digForward() {
-        double coordY = this.posY;
-        double coordZ = this.posZ;
-        double coordX = this.posX;
+        double coordY = this.getPosY();
+        double coordZ = this.getPosZ();
+        double coordX = this.getPosX();
         int x = 1;
         double newPosY = coordY - Math.cos((this.rotationPitch - 90F) / 57.29578F) * x;
         double newPosX =
@@ -93,7 +91,7 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
                 this.world.getBlockState(
                                 new BlockPos(MathHelper.floor(newPosX), MathHelper.floor(newPosY), MathHelper.floor(newPosZ)))
                         .getBlock();
-        if (isDiggableBlock(Block.getIdFromBlock(block))) {
+        if (isDiggableBlock(block)) {
             this.setPosition(newPosX, newPosY, newPosZ);
         }
     }
@@ -145,8 +143,8 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
 
         if (!this.world.isRemote) {
             if (this.rand.nextInt(10) == 0 && getState() == 1) {
@@ -154,7 +152,7 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
             }
 
             if (getState() != 2 && getState() != 1 && isOnDirt()) {
-                EntityLivingBase entityliving = getBoogey(4D);
+                LivingEntity entityliving = getBoogey(4D);
                 if ((entityliving != null) && canEntityBeSeen(entityliving)) {
                     setState(1);
                     this.getNavigator().clearPath();
@@ -230,11 +228,11 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean isEntityInvulnerable(DamageSource source) {
+    public boolean isInvulnerableTo(DamageSource source) {
         if (getState() == 2) {
             return true;
         }
-        return super.isEntityInvulnerable(source);
+        return super.isInvulnerableTo(source);
     }
 
     @Override
@@ -253,11 +251,10 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.MOLE;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.MOLE;
     }
 
-    public float getEyeHeight() {
-        return this.height * 0.525F;
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return this.getHeight() * 0.525F;
     }
 }

@@ -12,19 +12,19 @@ import drzhark.mocreatures.entity.MoCEntityData;
 import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MoCProxy implements IGuiHandler {
+public class MoCProxy {
 
     protected static final String CATEGORY_MOC_GENERAL_SETTINGS = "global-settings";
     protected static final String CATEGORY_MOC_CREATURE_GENERAL_SETTINGS = "creature-general-settings";
@@ -102,22 +102,20 @@ public class MoCProxy implements IGuiHandler {
     public MoCConfiguration mocSettingsConfig;
     public MoCConfiguration mocEntityConfig;
 
-    protected File configFile;
 
     public void resetAllData() {
         this.readGlobalConfigValues();
     }
 
     //----------------CONFIG INITIALIZATION
-    public void configInit(FMLPreInitializationEvent event) {
-        this.mocSettingsConfig = new MoCConfiguration(new File(event.getSuggestedConfigurationFile().getParent(), "MoCreatures" + File.separator + "MoCSettings.cfg"));
-        this.mocEntityConfig = new MoCConfiguration(new File(event.getSuggestedConfigurationFile().getParent(), "MoCreatures" + File.separator + "MoCreatures.cfg"));
-        this.configFile = event.getSuggestedConfigurationFile();
+    public void configInit() {
+        this.mocSettingsConfig = new MoCConfiguration(new File(FMLPaths.CONFIGDIR.get().toString(), "MoCreatures" + File.separator + "MoCSettings.cfg"));
+        this.mocEntityConfig = new MoCConfiguration(new File(FMLPaths.CONFIGDIR.get().toString(), "MoCreatures" + File.separator + "MoCreatures.cfg"));
         this.mocSettingsConfig.load();
         this.mocEntityConfig.load();
         this.readGlobalConfigValues();
         if (this.debug) {
-            MoCreatures.LOGGER.info("Initializing MoCreatures Config File at " + event.getSuggestedConfigurationFile().getParent() + "MoCSettings.cfg");
+            MoCreatures.LOGGER.info("Initializing MoCreatures Config File at " + FMLPaths.CONFIGDIR.get().toString() + "MoCSettings.cfg");
         }
     }
 
@@ -141,10 +139,10 @@ public class MoCProxy implements IGuiHandler {
     public void VacuumFX(MoCEntityGolem entity) {
     }
 
-    public void hammerFX(EntityPlayer entityplayer) {
+    public void hammerFX(PlayerEntity entityplayer) {
     }
 
-    public void teleportFX(EntityPlayer entity) {
+    public void teleportFX(PlayerEntity entity) {
     }
 
     public boolean getAnimateTextures() {
@@ -191,7 +189,7 @@ public class MoCProxy implements IGuiHandler {
         return null;
     }
 
-    public EntityPlayer getPlayer() {
+    public PlayerEntity getPlayer() {
         return null;
     }
 
@@ -226,11 +224,6 @@ public class MoCProxy implements IGuiHandler {
                     cat.put("canSpawn", new MoCProperty("canSpawn", Boolean.toString(entityData.getCanSpawn()), MoCProperty.Type.BOOLEAN));
                 } else {
                     entityData.setCanSpawn(Boolean.parseBoolean(cat.get("canSpawn").value));
-                }
-                if (!cat.containsKey("dimensions")) {
-                    cat.put("dimensions", new MoCProperty("dimensions", Arrays.toString(entityData.getDimensions()), MoCProperty.Type.STRING));
-                } else {
-                    entityData.setDimensions(Arrays.stream(cat.get("dimensions").value.replaceAll(" ", "").replaceAll("\\[", "").replaceAll("]", "").split(",")).mapToInt(Integer::parseInt).toArray());
                 }
                 if (!cat.containsKey("frequency")) {
                     cat.put("frequency", new MoCProperty("frequency", Integer.toString(entityData.getFrequency()), MoCProperty.Type.INTEGER));
@@ -332,16 +325,6 @@ public class MoCProxy implements IGuiHandler {
     public void registerRenderInformation() {
     }
 
-    @Override
-    public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        return null;
-    }
-
-    @Override
-    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        return null;
-    }
-
     /***
      * Dummy to know if is dedicated server or not
      */
@@ -352,6 +335,6 @@ public class MoCProxy implements IGuiHandler {
     /**
      * Sets the name on client side. Name is synchronized with data watchers
      */
-    public void setName(EntityPlayer player, IMoCEntity mocanimal) {
+    public void setName(PlayerEntity player, IMoCEntity mocanimal) {
     }
 }

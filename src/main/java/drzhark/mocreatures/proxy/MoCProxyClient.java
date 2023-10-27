@@ -19,30 +19,21 @@ import drzhark.mocreatures.client.renderer.fx.MoCEntityFXVacuum;
 import drzhark.mocreatures.client.renderer.fx.MoCEntityFXVanish;
 import drzhark.mocreatures.client.renderer.texture.MoCTextures;
 import drzhark.mocreatures.entity.IMoCEntity;
-import drzhark.mocreatures.entity.ambient.*;
-import drzhark.mocreatures.entity.aquatic.*;
 import drzhark.mocreatures.entity.hostile.*;
-import drzhark.mocreatures.entity.hunter.MoCEntitySnake;
-import drzhark.mocreatures.entity.hunter.*;
-import drzhark.mocreatures.entity.item.MoCEntityEgg;
-import drzhark.mocreatures.entity.item.MoCEntityKittyBed;
-import drzhark.mocreatures.entity.item.MoCEntityLitterBox;
-import drzhark.mocreatures.entity.item.MoCEntityThrowableRock;
-import drzhark.mocreatures.entity.neutral.MoCEntityBoar;
-import drzhark.mocreatures.entity.neutral.*;
 import drzhark.mocreatures.entity.passive.*;
+import drzhark.mocreatures.init.MoCEntities;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class MoCProxyClient extends MoCProxy {
 
-    public static Minecraft mc = Minecraft.getMinecraft();
+    public static Minecraft mc = Minecraft.getInstance();
     public static MoCProxyClient instance;
     public static MoCTextures mocTextures = new MoCTextures();
 
@@ -173,27 +164,27 @@ public class MoCProxyClient extends MoCProxy {
         RenderingRegistry.registerEntityRenderingHandler(MoCEntityManticorePet.class, new MoCRenderMoC(new MoCModelManticorePet(), 0.7F));
 
         if (MoCreatures.proxy.legacyBigCatModels) {
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityLeoger.class, new MoCLegacyRenderBigCat(new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityLeopard.class, new MoCLegacyRenderBigCat(new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityLiard.class, new MoCLegacyRenderBigCat(new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityLiger.class, new MoCLegacyRenderBigCat(new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityLion.class, new MoCLegacyRenderBigCat(new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityLither.class, new MoCLegacyRenderBigCat(new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityPanthard.class, new MoCLegacyRenderBigCat(new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityPanther.class, new MoCLegacyRenderBigCat(new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityPanthger.class, new MoCLegacyRenderBigCat(new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityTiger.class, new MoCLegacyRenderBigCat(new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.LEOGER, manager -> new MoCLegacyRenderBigCat(manager, new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.LEOPARD, manager -> new MoCLegacyRenderBigCat(manager, new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.LIARD, manager -> new MoCLegacyRenderBigCat(manager, new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.LIGER, manager -> new MoCLegacyRenderBigCat(manager, new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.LION, manager -> new MoCLegacyRenderBigCat(manager, new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.LITHER, manager -> new MoCLegacyRenderBigCat(manager, new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.PANTHARD, manager -> new MoCLegacyRenderBigCat(manager, new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.PANTHER, manager -> new MoCLegacyRenderBigCat(manager, new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.PANTHGER, manager -> new MoCLegacyRenderBigCat(manager, new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.TIGER, manager -> new MoCLegacyRenderBigCat(manager, new MoCLegacyModelBigCat2(), new MoCLegacyModelBigCat1(), 0.5F));
         } else {
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityLeoger.class, new MoCRenderMoC(new MoCModelBigCat(), 0.5F));
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityLeopard.class, new MoCRenderMoC(new MoCModelBigCat(), 0.5F));
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityLiard.class, new MoCRenderMoC(new MoCModelBigCat(), 0.5F));
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityLiger.class, new MoCRenderMoC(new MoCModelBigCat(), 0.5F));
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityLion.class, new MoCRenderMoC(new MoCModelBigCat(), 0.5F));
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityLither.class, new MoCRenderMoC(new MoCModelBigCat(), 0.5F));
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityPanthard.class, new MoCRenderMoC(new MoCModelBigCat(), 0.5F));
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityPanther.class, new MoCRenderMoC(new MoCModelBigCat(), 0.5F));
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityPanthger.class, new MoCRenderMoC(new MoCModelBigCat(), 0.5F));
-            RenderingRegistry.registerEntityRenderingHandler(MoCEntityTiger.class, new MoCRenderMoC(new MoCModelBigCat(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.LEOGER, manager -> new MoCRenderMoC(manager, new MoCModelBigCat(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.LEOPARD, manager -> new MoCRenderMoC(manager, new MoCModelBigCat(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.LIARD, manager -> new MoCRenderMoC(manager, new MoCModelBigCat(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.LIGER, manager -> new MoCRenderMoC(manager, new MoCModelBigCat(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.LION, manager -> new MoCRenderMoC(manager, new MoCModelBigCat(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.LITHER, manager -> new MoCRenderMoC(manager, new MoCModelBigCat(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.PANTHARD, manager -> new MoCRenderMoC(manager, new MoCModelBigCat(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.PANTHER, manager -> new MoCRenderMoC(manager, new MoCModelBigCat(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.PANTHGER, manager -> new MoCRenderMoC(manager, new MoCModelBigCat(), 0.5F));
+            RenderingRegistry.registerEntityRenderingHandler(MoCEntities.TIGER, manager -> new MoCRenderMoC(manager, new MoCModelBigCat(), 0.5F));
         }
         if (MoCreatures.proxy.legacySharkModel) {
             RenderingRegistry.registerEntityRenderingHandler(MoCEntityShark.class, new MoCLegacyRenderShark(new MoCLegacyModelShark(), 0.6F));
@@ -203,7 +194,7 @@ public class MoCProxyClient extends MoCProxy {
     }
 
     @Override
-    public EntityPlayer getPlayer() {
+    public PlayerEntity getPlayer() {
         return MoCProxyClient.mc.player;
     }
 
@@ -211,7 +202,7 @@ public class MoCProxyClient extends MoCProxy {
      * Sets the name client side. Name is synchronized with data watchers
      */
     @Override
-    public void setName(EntityPlayer player, IMoCEntity mocanimal) {
+    public void setName(PlayerEntity player, IMoCEntity mocanimal) {
         mc.displayGuiScreen(new MoCGUIEntityNamer(mocanimal, mocanimal.getPetName()));
     }
 
@@ -231,8 +222,8 @@ public class MoCProxyClient extends MoCProxy {
             i = 10;
         }
         for (int x = 0; x < i; x++) {
-            MoCEntityFXUndead FXUndead = new MoCEntityFXUndead(entity.world, entity.posX, entity.posY + entity.world.rand.nextFloat() * entity.height, entity.posZ);
-            mc.effectRenderer.addEffect(FXUndead);
+            MoCEntityFXUndead FXUndead = new MoCEntityFXUndead((ClientWorld)entity.getEntityWorld(), entity.getPosX(), entity.getPosY() + entity.world.rand.nextFloat() * entity.getHeight(), entity.getPosZ());
+            mc.particles.addEffect(FXUndead);
 
         }
     }
@@ -244,16 +235,16 @@ public class MoCProxyClient extends MoCProxy {
             return;
         }
 
-        if ((entity.getType() >= 50 && entity.getType() < 60) || entity.getType() == 36) {
+        if ((entity.getTypeMoC() >= 50 && entity.getTypeMoC() < 60) || entity.getTypeMoC() == 36) {
 
-            float fRed = entity.colorFX(1, entity.getType());
-            float fGreen = entity.colorFX(2, entity.getType());
-            float fBlue = entity.colorFX(3, entity.getType());
+            float fRed = entity.colorFX(1, entity.getTypeMoC());
+            float fGreen = entity.colorFX(2, entity.getTypeMoC());
+            float fBlue = entity.colorFX(3, entity.getTypeMoC());
 
             int i = densityInt * entity.world.rand.nextInt(2);// + 2;
             for (int x = 0; x < i; x++) {
-                MoCEntityFXStar FXStar = new MoCEntityFXStar(mc.world, entity.posX, entity.posY + entity.world.rand.nextFloat() * entity.height, entity.posZ, fRed, fGreen, fBlue);
-                mc.effectRenderer.addEffect(FXStar);
+                MoCEntityFXStar FXStar = new MoCEntityFXStar(mc.world, entity.getPosX(), entity.getPosY() + entity.world.rand.nextFloat() * entity.getHeight(), entity.getPosZ(), fRed, fGreen, fBlue);
+                mc.particles.addEffect(FXStar);
 
             }
 
@@ -269,7 +260,7 @@ public class MoCProxyClient extends MoCProxy {
         double var2 = entity.world.rand.nextGaussian() * 0.02D;
         double var4 = entity.world.rand.nextGaussian() * 0.02D;
         double var6 = entity.world.rand.nextGaussian() * 0.02D;
-        mc.world.spawnParticle(EnumParticleTypes.LAVA, entity.posX + entity.world.rand.nextFloat() * entity.width - entity.width, entity.posY + 0.5D + entity.world.rand.nextFloat() * entity.height, entity.posZ + entity.world.rand.nextFloat() * entity.width - entity.width, var2, var4, var6);
+        mc.world.addParticle(ParticleTypes.LAVA, entity.getPosX() + entity.world.rand.nextFloat() * entity.getWidth() - entity.getWidth(), entity.getPosY() + 0.5D + entity.world.rand.nextFloat() * entity.getHeight(), entity.getPosZ() + entity.world.rand.nextFloat() * entity.getWidth() - entity.getWidth(), var2, var4, var6);
 
     }
 
@@ -281,16 +272,16 @@ public class MoCProxyClient extends MoCProxy {
         }
 
         for (int var6 = 0; var6 < densityInt * 8; ++var6) {
-            double newPosX = ((float) entity.posX + entity.world.rand.nextFloat());
-            double newPosY = 0.7D + ((float) entity.posY + entity.world.rand.nextFloat());
-            double newPosZ = ((float) entity.posZ + entity.world.rand.nextFloat());
+            double newPosX = ((float) entity.getPosX() + entity.world.rand.nextFloat());
+            double newPosY = 0.7D + ((float) entity.getPosY() + entity.world.rand.nextFloat());
+            double newPosZ = ((float) entity.getPosZ() + entity.world.rand.nextFloat());
             int var19 = entity.world.rand.nextInt(2) * 2 - 1;
             double speedY = (entity.world.rand.nextFloat() - 0.5D) * 0.5D;
             double speedX = entity.world.rand.nextFloat() * 2.0F * var19;
             double speedZ = entity.world.rand.nextFloat() * 2.0F * var19;
 
-            MoCEntityFXVanish FXVanish = new MoCEntityFXVanish(entity.world, newPosX, newPosY, newPosZ, speedX, speedY, speedZ, entity.colorFX(1, entity.getType()), entity.colorFX(2, entity.getType()), entity.colorFX(3, entity.getType()), false);
-            mc.effectRenderer.addEffect(FXVanish);
+            MoCEntityFXVanish FXVanish = new MoCEntityFXVanish((ClientWorld) entity.world, newPosX, newPosY, newPosZ, speedX, speedY, speedZ, entity.colorFX(1, entity.getTypeMoC()), entity.colorFX(2, entity.getTypeMoC()), entity.colorFX(3, entity.getTypeMoC()), false);
+            mc.particles.addEffect(FXVanish);
         }
     }
 
@@ -302,16 +293,16 @@ public class MoCProxyClient extends MoCProxy {
         }
 
         for (int var6 = 0; var6 < (densityInt * 50); ++var6) {
-            double newPosX = ((float) entity.posX + entity.world.rand.nextFloat());
-            double newPosY = 0.7D + ((float) entity.posY + entity.world.rand.nextFloat());
-            double newPosZ = ((float) entity.posZ + entity.world.rand.nextFloat());
+            double newPosX = ((float) entity.getPosX() + entity.world.rand.nextFloat());
+            double newPosY = 0.7D + ((float) entity.getPosY() + entity.world.rand.nextFloat());
+            double newPosZ = ((float) entity.getPosZ() + entity.world.rand.nextFloat());
             int var19 = entity.world.rand.nextInt(2) * 2 - 1;
             double speedY = (entity.world.rand.nextFloat() - 0.5D) * 0.5D;
             double speedX = entity.world.rand.nextFloat() * 2.0F * var19;
             double speedZ = entity.world.rand.nextFloat() * 2.0F * var19;
 
-            MoCEntityFXVanish FXVanish = new MoCEntityFXVanish(mc.world, newPosX, newPosY, newPosZ, speedX, speedY, speedZ, entity.colorFX(1, entity.getType()), entity.colorFX(2, entity.getType()), entity.colorFX(3, entity.getType()), true);
-            mc.effectRenderer.addEffect(FXVanish);
+            MoCEntityFXVanish FXVanish = new MoCEntityFXVanish(mc.world, newPosX, newPosY, newPosZ, speedX, speedY, speedZ, entity.colorFX(1, entity.getTypeMoC()), entity.colorFX(2, entity.getTypeMoC()), entity.colorFX(3, entity.getTypeMoC()), true);
+            mc.particles.addEffect(FXVanish);
         }
 
     }
@@ -324,9 +315,9 @@ public class MoCProxyClient extends MoCProxy {
         }
 
         for (int var1 = 0; var1 < 2; ++var1) {
-            double newPosX = entity.posX - (1.5 * Math.cos((MoCTools.realAngle(entity.rotationYaw - 90F)) / 57.29578F));
-            double newPosZ = entity.posZ - (1.5 * Math.sin((MoCTools.realAngle(entity.rotationYaw - 90F)) / 57.29578F));
-            double newPosY = entity.posY + (entity.height - 0.8D - entity.getAdjustedYOffset() * 1.8);// + (entity.world.rand.nextDouble() * ((double) entity.height - (double) entity.getAdjustedYOffset() * 2));
+            double newPosX = entity.getPosX() - (1.5 * Math.cos((MoCTools.realAngle(entity.rotationYaw - 90F)) / 57.29578F));
+            double newPosZ = entity.getPosZ() - (1.5 * Math.sin((MoCTools.realAngle(entity.rotationYaw - 90F)) / 57.29578F));
+            double newPosY = entity.getPosY() + (entity.getHeight() - 0.8D - entity.getAdjustedYOffset() * 1.8);// + (entity.world.rand.nextDouble() * ((double) entity.getHeight() - (double) entity.getAdjustedYOffset() * 2));
             //adjustedYOffset from 0 (tallest) to 1.45 (on the ground)
             //height = 4F
 
@@ -334,22 +325,22 @@ public class MoCProxyClient extends MoCProxy {
             double speedY = -entity.world.rand.nextDouble();
             double speedZ = (entity.world.rand.nextDouble() - 0.5D) * 4.0D;
             MoCEntityFXVacuum FXVacuum = new MoCEntityFXVacuum(mc.world, newPosX, newPosY, newPosZ, speedX, speedY, speedZ, entity.colorFX(1), entity.colorFX(2), entity.colorFX(3), 146);
-            mc.effectRenderer.addEffect(FXVacuum);
+            mc.particles.addEffect(FXVacuum);
         }
     }
 
     @SuppressWarnings("unused")
     @Override
-    public void hammerFX(EntityPlayer entity) {
+    public void hammerFX(PlayerEntity entity) {
         int densityInt = (MoCreatures.proxy.getParticleFX());
         if (densityInt == 0) {
             return;
         }
 
         for (int var6 = 0; var6 < (densityInt * 10); ++var6) {
-            double newPosX = ((float) entity.posX + entity.world.rand.nextFloat());
-            double newPosY = 0.3D + ((float) entity.posY + entity.world.rand.nextFloat());
-            double newPosZ = ((float) entity.posZ + entity.world.rand.nextFloat());
+            double newPosX = ((float) entity.getPosX() + entity.world.rand.nextFloat());
+            double newPosY = 0.3D + ((float) entity.getPosY() + entity.world.rand.nextFloat());
+            double newPosZ = ((float) entity.getPosZ() + entity.world.rand.nextFloat());
             int var19 = entity.world.rand.nextInt(2) * 2 - 1;
             double speedY = (entity.world.rand.nextFloat() - 0.5D) * 0.5D;
             double speedX = entity.world.rand.nextFloat() * 2.0F * var19;
@@ -365,23 +356,23 @@ public class MoCProxyClient extends MoCProxy {
     }
 
     @Override
-    public void teleportFX(EntityPlayer entity) {
+    public void teleportFX(PlayerEntity entity) {
         int densityInt = (MoCreatures.proxy.getParticleFX());
         if (densityInt == 0) {
             return;
         }
 
         for (int var6 = 0; var6 < (densityInt * 50); ++var6) {
-            double newPosX = ((float) entity.posX + entity.world.rand.nextFloat());
-            double newPosY = 0.7D + ((float) entity.posY + entity.world.rand.nextFloat());
-            double newPosZ = ((float) entity.posZ + entity.world.rand.nextFloat());
+            double newPosX = ((float) entity.getPosX() + entity.world.rand.nextFloat());
+            double newPosY = 0.7D + ((float) entity.getPosY() + entity.world.rand.nextFloat());
+            double newPosZ = ((float) entity.getPosZ() + entity.world.rand.nextFloat());
             int var19 = entity.world.rand.nextInt(2) * 2 - 1;
             double speedY = (entity.world.rand.nextFloat() - 0.5D) * 0.5D;
             double speedX = entity.world.rand.nextFloat() * 2.0F * var19;
             double speedZ = entity.world.rand.nextFloat() * 2.0F * var19;
 
             MoCEntityFXVanish hammerFX = new MoCEntityFXVanish(mc.world, newPosX, newPosY, newPosZ, speedX, speedY, speedZ, 189F / 256F, 110F / 256F, 229F / 256F, true);
-            mc.effectRenderer.addEffect(hammerFX);
+            mc.particles.addEffect(hammerFX);
         }
 
     }
@@ -391,10 +382,10 @@ public class MoCProxyClient extends MoCProxy {
         return 2;
     }
 
-    @Override
-    public void configInit(FMLPreInitializationEvent event) {
-        super.configInit(event);
-    }
+//    @Override //TODO TheidenHD
+//    public void configInit(FMLPreInitializationEvent event) {
+//        super.configInit(event);
+//    }
 
     @Override
     public void resetAllData() {
@@ -428,6 +419,11 @@ public class MoCProxyClient extends MoCProxy {
 
     @Override
     public void printMessageToPlayer(String msg) {
-        Minecraft.getMinecraft().player.sendMessage(new TextComponentTranslation(msg));
+        try {
+            Minecraft.getInstance().player.sendMessage(new TranslationTextComponent(msg), Minecraft.getInstance().player.getUniqueID());
+        } catch (Exception e) {
+
+        }
+
     }
 }

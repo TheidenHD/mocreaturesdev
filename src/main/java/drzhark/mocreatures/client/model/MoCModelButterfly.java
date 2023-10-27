@@ -3,17 +3,18 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.ambient.MoCEntityButterfly;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelButterfly extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelButterfly<T extends MoCEntityButterfly> extends EntityModel<T> {
 
     ModelRenderer Abdomen;
     ModelRenderer FrontLegs;
@@ -114,36 +115,32 @@ public class MoCModelButterfly extends ModelBase {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        MoCEntityButterfly butterfly = (MoCEntityButterfly) entity;
-        boolean flying = (butterfly.getIsFlying() || butterfly.motionY < -0.1D);
-        setRotationAngles(f, f1, f2, f3, f4, f5, !flying);
-        this.Abdomen.render(f5);
-        this.FrontLegs.render(f5);
-        this.RightAntenna.render(f5);
-        this.LeftAntenna.render(f5);
-        this.RearLegs.render(f5);
-        this.MidLegs.render(f5);
-        this.Head.render(f5);
-        this.Thorax.render(f5);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.Abdomen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.FrontLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightAntenna.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftAntenna.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RearLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.MidLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Thorax.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        this.Mouth.render(f5);
+        this.Mouth.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.enableBlend();
+        matrixStackIn.push();
+        RenderSystem.enableBlend();
         float transparency = 0.8F;
-        GlStateManager.blendFunc(770, 771);
-        GlStateManager.color(0.8F, 0.8F, 0.8F, transparency);
-        //GlStateManager.scale(1.3F, 1.0F, 1.3F);
-        this.WingRight.render(f5);
-        this.WingLeft.render(f5);
-        this.WingRightFront.render(f5);
-        this.WingLeftFront.render(f5);
-        this.WingRightBack.render(f5);
-        this.WingLeftBack.render(f5);
-        GlStateManager.disableBlend();
-        GlStateManager.popMatrix();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.color4f(0.8F, 0.8F, 0.8F, transparency);
+        //matrixStackIn.scale(1.3F, 1.0F, 1.3F);
+        this.WingRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.WingLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.WingRightFront.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.WingLeftFront.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.WingRightBack.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.WingLeftBack.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        RenderSystem.disableBlend();
+        matrixStackIn.pop();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {
@@ -152,40 +149,40 @@ public class MoCModelButterfly extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, boolean onGround) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 
         /*
          * butterfly to have two / 3 moves: 1 slow movement when idle on ground
          * has to be random from closing up to horizontal 2 fast wing flapping
          * flying movement, short range close to 0 degree RLegXRot =
-         * MathHelper.cos((f * 0.6662F) + 3.141593F) * 0.8F * f1;
+         * MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
          */
 
         /*
-         * f = distance walked f1 = speed 0 - 1 f2 = timer
+         * limbSwing = distance walked limbSwingAmount = speed 0 - 1 ageInTicks = timer
          */
 
-        float f2a = f2 % 100F;
+        float f2a = ageInTicks % 100F;
         float WingRot = 0F;
         float legMov;
         float legMovB;
 
-        if (!onGround) //flying
+        if (entityIn.getIsFlying() || entityIn.getMotion().getY() < -0.1D) //flying
         {
-            WingRot = MathHelper.cos((f2 * 0.9F)) * 0.9F;
+            WingRot = MathHelper.cos((ageInTicks * 0.9F)) * 0.9F;
 
             /*
-             * WingRot = MathHelper.cos((f2 * 0.6662F)) * 0.5F; if (f2a > 40 &
-             * f2a < 60) { WingRot = MathHelper.cos((f2 * 0.9F)) * 0.9F; }
+             * WingRot = MathHelper.cos((ageInTicks * 0.6662F)) * 0.5F; if (f2a > 40 &
+             * f2a < 60) { WingRot = MathHelper.cos((ageInTicks * 0.9F)) * 0.9F; }
              */
-            legMov = (f1 * 1.5F);
+            legMov = (limbSwingAmount * 1.5F);
             legMovB = legMov;
         } else {
-            legMov = MathHelper.cos((f * 1.5F) + 3.141593F) * 2.0F * f1;
-            legMovB = MathHelper.cos(f * 1.5F) * 2.0F * f1;
+            legMov = MathHelper.cos((limbSwing * 1.5F) + 3.141593F) * 2.0F * limbSwingAmount;
+            legMovB = MathHelper.cos(limbSwing * 1.5F) * 2.0F * limbSwingAmount;
             if (f2a > 40 & f2a < 60) //random movement
             {
-                WingRot = MathHelper.cos((f2 * 0.15F)) * 0.9F;
+                WingRot = MathHelper.cos((ageInTicks * 0.15F)) * 0.9F;
             }
 
         }

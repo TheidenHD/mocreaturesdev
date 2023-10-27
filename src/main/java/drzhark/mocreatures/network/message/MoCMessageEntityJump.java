@@ -5,29 +5,27 @@ package drzhark.mocreatures.network.message;
 
 import drzhark.mocreatures.entity.IMoCEntity;
 import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MoCMessageEntityJump implements IMessage, IMessageHandler<MoCMessageEntityJump, IMessage> {
+import java.util.function.Supplier;
+
+public class MoCMessageEntityJump {
 
     public MoCMessageEntityJump() {
     }
 
-    @Override
-    public void toBytes(ByteBuf buffer) {
+    public void encode(ByteBuf buffer) {
     }
 
-    @Override
-    public void fromBytes(ByteBuf buffer) {
+    public MoCMessageEntityJump(ByteBuf buffer) {
     }
 
-    @Override
-    public IMessage onMessage(MoCMessageEntityJump message, MessageContext ctx) {
-        if (ctx.getServerHandler().player.getRidingEntity() instanceof IMoCEntity) {
-            ((IMoCEntity) ctx.getServerHandler().player.getRidingEntity()).makeEntityJump();
+    public static boolean onMessage(MoCMessageEntityJump message, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().setPacketHandled(true);
+        if (ctx.get().getSender().getRidingEntity() instanceof IMoCEntity) {
+            ((IMoCEntity) ctx.get().getSender().getRidingEntity()).makeEntityJump();
         }
-        return null;
+        return true;
     }
 
     @Override

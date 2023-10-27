@@ -3,67 +3,69 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
-import drzhark.mocreatures.proxy.MoCProxyClient;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import drzhark.mocreatures.client.model.MoCModelFilchLizard;
 import drzhark.mocreatures.entity.passive.MoCEntityFilchLizard;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3f;
 
 // Courtesy of Daveyx0, permission given
-public class MoCRenderFilchLizard extends RenderLiving<MoCEntityFilchLizard> {
+public class MoCRenderFilchLizard extends MobRenderer<MoCEntityFilchLizard, MoCModelFilchLizard<MoCEntityFilchLizard>> {
 
-    public MoCRenderFilchLizard(ModelBase modelBase, float f) {
-        super(MoCProxyClient.mc.getRenderManager(), modelBase, f);
+    public MoCRenderFilchLizard(EntityRendererManager renderManagerIn, MoCModelFilchLizard modelBase, float f) {
+        super(renderManagerIn, modelBase, f);
         this.addLayer(new LayerHeldItemCustom(this));
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityFilchLizard entity) {
+    public ResourceLocation getEntityTexture(MoCEntityFilchLizard entity) {
         return entity.getTexture();
     }
 
-    private class LayerHeldItemCustom implements LayerRenderer<MoCEntityFilchLizard> {
-        protected final RenderLivingBase<?> livingEntityRenderer;
+    private class LayerHeldItemCustom extends LayerRenderer<MoCEntityFilchLizard, MoCModelFilchLizard<MoCEntityFilchLizard>> {
+        protected final MoCRenderFilchLizard livingEntityRenderer;
 
-        public LayerHeldItemCustom(RenderLivingBase<?> livingEntityRendererIn) {
+        public LayerHeldItemCustom(MoCRenderFilchLizard livingEntityRendererIn) {
+            super(livingEntityRendererIn);
             this.livingEntityRenderer = livingEntityRendererIn;
         }
 
-        public void doRenderLayer(MoCEntityFilchLizard entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, MoCEntityFilchLizard entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             ItemStack itemStack = entity.getHeldItemMainhand();
             if (!itemStack.isEmpty()) {
-                GlStateManager.pushMatrix();
-                if (this.livingEntityRenderer.getMainModel().isChild) {
-                    GlStateManager.translate(0.0F, 0.625F, 0.0F);
-                    GlStateManager.rotate(-20.0F, -1.0F, 0.0F, 0.0F);
-                    GlStateManager.scale(0.5F, 0.5F, 0.5F);
+                matrixStackIn.push();
+                if (this.livingEntityRenderer.getEntityModel().isChild) {
+                    matrixStackIn.translate(0.0F, 0.625F, 0.0F);
+                    matrixStackIn.rotate(Vector3f.XN.rotationDegrees(-20.0F));
+                    matrixStackIn.scale(0.5F, 0.5F, 0.5F);
                 }
                 if (!entity.getHeldItemMainhand().isEmpty()) {
-                    this.renderHeldItemLizard(entity, itemStack, ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND);
+                    this.renderHeldItemLizard(matrixStackIn, entity, itemStack, ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, bufferIn, packedLightIn);
                 }
-                GlStateManager.popMatrix();
+                matrixStackIn.pop();
             }
         }
 
-        public void renderHeldItemLizard(EntityLivingBase entity, ItemStack itemStack, ItemCameraTransforms.TransformType transformType) {
+        public void renderHeldItemLizard(MatrixStack matrixStackIn, LivingEntity entity, ItemStack itemStack, ItemCameraTransforms.TransformType transformType, IRenderTypeBuffer bufferIn, int packedLightIn) {
             if (!itemStack.isEmpty()) {
-                GlStateManager.pushMatrix();
+                matrixStackIn.push();
                 if (entity.isSneaking()) {
-                    GlStateManager.translate(0.0F, 0.2F, 0.0F);
+                    matrixStackIn.translate(0.0F, 0.2F, 0.0F);
                 }
-                GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
-                GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
-                GlStateManager.rotate(20.0F, 0.0F, 0.0F, 1.0F);
-                GlStateManager.translate(-0.55F, -1.0F, -0.05F);
-                Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, itemStack, transformType, true);
-                GlStateManager.popMatrix();
+                matrixStackIn.rotate(Vector3f.YP.rotationDegrees(90.0F));
+                matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(180.0F));
+                matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(20.0F));
+                matrixStackIn.translate(-0.55F, -1.0F, -0.05F);
+                Minecraft.getInstance().getFirstPersonRenderer().renderItemSide(entity, itemStack, transformType, true, matrixStackIn, bufferIn, packedLightIn);
+                matrixStackIn.pop();
             }
         }
 

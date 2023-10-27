@@ -3,70 +3,53 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.client.model.MoCModelGolem;
 import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCRenderGolem extends MoCRenderMoC<MoCEntityGolem> {
+@OnlyIn(Dist.CLIENT)
+public class MoCRenderGolem extends MoCRenderMoC<MoCEntityGolem, MoCModelGolem<MoCEntityGolem>> {
 
-    public MoCRenderGolem(ModelBase modelbase, float f) {
-        super(modelbase, f);
+    public MoCRenderGolem(EntityRendererManager renderManagerIn, MoCModelGolem modelbase, float f) {
+        super(renderManagerIn, modelbase, f);
         this.addLayer(new LayerMoCGolem(this));
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityGolem par1Entity) {
+    public ResourceLocation getEntityTexture(MoCEntityGolem par1Entity) {
         return par1Entity.getTexture();
     }
 
-    private class LayerMoCGolem implements LayerRenderer<MoCEntityGolem> {
+    private class LayerMoCGolem extends LayerRenderer<MoCEntityGolem, MoCModelGolem<MoCEntityGolem>> {
 
         private final MoCRenderGolem mocRenderer;
         private final MoCModelGolem mocModel = new MoCModelGolem();
 
         public LayerMoCGolem(MoCRenderGolem render) {
+            super(render);
             this.mocRenderer = render;
         }
 
-        public void doRenderLayer(MoCEntityGolem entity, float f, float f1, float f2, float f3, float f4, float f5, float f6) {
-
+        @Override
+        public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, MoCEntityGolem entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             ResourceLocation effectTexture = entity.getEffectTexture();
             if (effectTexture != null) {
-                GlStateManager.depthMask(false);
-                float var4 = entity.ticksExisted + f1;
-                bindTexture(effectTexture);
-                GlStateManager.matrixMode(5890);
-                GlStateManager.loadIdentity();
-                float var5 = var4 * 0.01F;
-                float var6 = var4 * 0.01F;
-                GlStateManager.translate(var5, var6, 0.0F);
-                GlStateManager.matrixMode(5888);
-                GlStateManager.enableBlend();
-                float var7 = 0.5F;
-                GlStateManager.color(var7, var7, var7, 1.0F);
-                GlStateManager.disableLighting();
-                GlStateManager.blendFunc(1, 1);
-                this.mocModel.setModelAttributes(this.mocRenderer.getMainModel());
-                this.mocModel.setLivingAnimations(entity, f, f1, f2);
-                this.mocModel.render(entity, f, f1, f3, f4, f5, f6);
-                GlStateManager.matrixMode(5890);
-                GlStateManager.loadIdentity();
-                GlStateManager.matrixMode(5888);
-                GlStateManager.enableLighting();
-                GlStateManager.disableBlend();
-                GlStateManager.depthMask(true);
+                float f = (float) entity.ticksExisted + partialTicks;
+                this.mocModel.setLivingAnimations(entity, limbSwing, limbSwingAmount, partialTicks);
+                this.getEntityModel().copyModelAttributesTo(this.mocModel);
+                IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEnergySwirl(effectTexture, f * 0.01F, f * 0.01F));
+                this.mocModel.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+                this.mocModel.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 0.5F, 0.5F, 0.5F, 1.0F);
             }
-        }
-
-        @Override
-        public boolean shouldCombineTextures() {
-            return true;
         }
     }
 }

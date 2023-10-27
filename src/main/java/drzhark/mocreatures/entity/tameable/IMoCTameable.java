@@ -21,11 +21,11 @@ public interface IMoCTameable extends IMoCEntity {
 
     void setTamed(boolean par1);
 
-    void setDead();
+    void remove();
 
-    void writeEntityToNBT(NBTTagCompound nbttagcompound);
+    void writeAdditional(CompoundNBT nbttagcompound);
 
-    void readEntityFromNBT(NBTTagCompound nbttagcompound);
+    void readAdditional(CompoundNBT nbttagcompound);
 
     void setOwnerId(@Nullable UUID uuid);
 

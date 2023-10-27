@@ -3,16 +3,17 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.hunter.MoCEntityBear;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelBear extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelBear<T extends MoCEntityBear> extends EntityModel<T> {
 
     public ModelRenderer Saddle;
     public ModelRenderer SaddleBack;
@@ -94,6 +95,8 @@ public class MoCModelBear extends ModelBase {
 
     private int bearstate;
     private float attackSwing;
+
+    private MoCEntityBear entitybear;
 
     public MoCModelBear() {
         this.textureWidth = 128;
@@ -463,57 +466,59 @@ public class MoCModelBear extends ModelBase {
         SaddleFrontSitted.rotateAngleX = -1.151917F;
     }
 
-    @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        MoCEntityBear entitybear = (MoCEntityBear) entity;
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.entitybear = entityIn;
         this.bearstate = entitybear.getBearState();
-        boolean openMouth = (entitybear.mouthCounter != 0);
         this.attackSwing = entitybear.getAttackSwing();
-        setRotationAngles(f, f1, f2, f3, f4, f5);
+    }
+
+    @Override
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        boolean openMouth = (entitybear.mouthCounter != 0);
         boolean chested = entitybear.getIsChested();
         boolean saddled = entitybear.getIsRideable();
 
         if (bearstate == 0) { //in fours
             if (openMouth) {
-                this.MouthOpen.render(f5);
+                this.MouthOpen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             } else {
-                this.Mouth.render(f5);
+                this.Mouth.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
             if (saddled) {
-                Saddle.render(f5);
-                SaddleBack.render(f5);
-                SaddleFront.render(f5);
+                Saddle.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                SaddleBack.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                SaddleFront.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
             if (chested) {
-                Bag.render(f5);
+                Bag.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
-            this.LegFR1.render(f5);
-            this.Neck.render(f5);
-            this.LEar.render(f5);
-            this.Snout.render(f5);
-            this.Head.render(f5);
-            this.REar.render(f5);
-            this.Abdomen.render(f5);
-            this.Torso.render(f5);
-            this.LegRR3.render(f5);
-            this.LegRR1.render(f5);
-            this.LegRR2.render(f5);
-            this.LegFR2.render(f5);
-            this.LegFR3.render(f5);
-            this.LegFL1.render(f5);
-            this.LegFL3.render(f5);
-            this.LegFL2.render(f5);
-            this.LegRL1.render(f5);
-            this.LegRL2.render(f5);
-            this.LegRL3.render(f5);
-            this.Tail.render(f5);
+            this.LegFR1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Neck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LEar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Snout.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.REar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Abdomen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Torso.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LegRR3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LegRR1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LegRR2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LegFR2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LegFR3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LegFL1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LegFL3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LegFL2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LegRL1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LegRL2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LegRL3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else if (bearstate == 1) {
-            this.BHead.render(f5);
-            this.BSnout.render(f5);
+            this.BHead.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.BSnout.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             if (openMouth) {
-                this.BMouthOpen.render(f5);
+                this.BMouthOpen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             } else {
-                this.BMouth.render(f5);
+                this.BMouth.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
 
             this.BNeck.render(f5);
@@ -536,38 +541,38 @@ public class MoCModelBear extends ModelBase {
             this.BLegRR3.render(f5);
         } else if (bearstate == 2 || bearstate == 3) { //sited
             if (openMouth) {
-                this.CMouthOpen.render(f5);
+                this.CMouthOpen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             } else {
-                this.CMouth.render(f5);
+                this.CMouth.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
             if (saddled) {
-                SaddleSitted.render(f5);
-                SaddleBackSitted.render(f5);
-                SaddleFrontSitted.render(f5);
+                SaddleSitted.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                SaddleBackSitted.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                SaddleFrontSitted.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
             if (chested) {
-                BagSitted.render(f5);
+                BagSitted.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
-            this.CHead.render(f5);
-            this.CSnout.render(f5);
-            this.CLEar.render(f5);
-            this.CREar.render(f5);
-            this.CNeck.render(f5);
-            this.CTorso.render(f5);
-            this.CAbdomen.render(f5);
-            this.CTail.render(f5);
-            this.CLegFL1.render(f5);
-            this.CLegFL2.render(f5);
-            this.CLegFL3.render(f5);
-            this.CLegFR1.render(f5);
-            this.CLegFR2.render(f5);
-            this.CLegFR3.render(f5);
-            this.CLegRL1.render(f5);
-            this.CLegRL2.render(f5);
-            this.CLegRL3.render(f5);
-            this.CLegRR1.render(f5);
-            this.CLegRR2.render(f5);
-            this.CLegRR3.render(f5);
+            this.CHead.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.CSnout.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.CLEar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.CREar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.CNeck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.CTorso.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.CAbdomen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.CTail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.CLegFL1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.CLegFL2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.CLegFL3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.CLegFR1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.CLegFR2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.CLegFR3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.CLegRL1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.CLegRL2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.CLegRL3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.CLegRR1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.CLegRR2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.CLegRR3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
 
     }
@@ -578,11 +583,11 @@ public class MoCModelBear extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        float LLegRotX = MathHelper.cos(f * 0.6662F) * 0.8F * f1;
-        float RLegRotX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 0.8F * f1;
-        float XAngle = (f4 / 57.29578F);
-        float YAngle = f3 / 57.29578F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        float LLegRotX = MathHelper.cos(limbSwing * 0.6662F) * 0.8F * limbSwingAmount;
+        float RLegRotX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
+        float XAngle = (headPitch / 57.29578F);
+        float YAngle = netHeadYaw / 57.29578F;
 
         if (this.bearstate == 0) {
             this.Head.rotateAngleX = 0.1502636F + XAngle;
@@ -641,7 +646,7 @@ public class MoCModelBear extends ModelBase {
             /*
              * Arm breathing movement
              */
-            float breathing = MathHelper.cos(f2 * 0.09F) * 0.05F + 0.05F;
+            float breathing = MathHelper.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
             this.BLegFR1.rotateAngleZ = 0.2617994F + breathing;
             this.BLegFR2.rotateAngleZ = breathing;
             this.BLegFR3.rotateAngleZ = breathing;

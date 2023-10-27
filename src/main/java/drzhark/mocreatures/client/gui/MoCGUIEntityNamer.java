@@ -3,27 +3,26 @@
  */
 package drzhark.mocreatures.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import drzhark.mocreatures.MoCreatures;
-import drzhark.mocreatures.proxy.MoCProxyClient;
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageUpdatePetName;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
+import drzhark.mocreatures.proxy.MoCProxyClient;
+import net.minecraft.client.gui.fonts.TextInputUtil;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.io.IOException;
-
-@SideOnly(Side.CLIENT)
-public class MoCGUIEntityNamer extends GuiScreen {
+@OnlyIn(Dist.CLIENT)
+public class MoCGUIEntityNamer extends Screen {
 
     private static final TextureManager textureManager = MoCProxyClient.mc.getTextureManager();
     private static final ResourceLocation TEXTURE_MOCNAME = MoCreatures.proxy.getGuiTexture("pet_naming.png");
@@ -33,58 +32,56 @@ public class MoCGUIEntityNamer extends GuiScreen {
     protected int ySize;
     @SuppressWarnings("unused")
     private int updateCounter;
-    private String nameToSet;
+    private TextInputUtil textInputUtil;
+    private String  nameToSet;
 
     public MoCGUIEntityNamer(IMoCEntity mocanimal, String s) {
+        super(new StringTextComponent(("Choose your Pet's name:")));
         this.xSize = 256;
         this.ySize = 181;
         this.screenTitle = "Choose your Pet's name:";
         this.namedEntity = mocanimal;
         this.nameToSet = s;
+        this.textInputUtil = new TextInputUtil(() -> nameToSet, (p_238850_1_) -> nameToSet = p_238850_1_,
+                TextInputUtil.getClipboardTextSupplier(this.minecraft), TextInputUtil.getClipboardTextSetter(this.minecraft), (p_238848_1_) -> true);
     }
 
     @Override
-    public void initGui() {
-        this.buttonList.clear();
-        Keyboard.enableRepeatEvents(true);
-        this.buttonList.add(new GuiButton(0, this.width / 2 - 100, (this.height - (this.ySize + 16)) / 2 + 150, "Done"));
+    public void init() {
+        this.buttons.clear();
+        this.minecraft.keyboardListener.enableRepeatEvents(true);
+        this.addButton(new Button(this.width / 2 - 100, (this.height - (this.ySize + 16)) / 2 + 150, 150, 20, new StringTextComponent("Done"), (guibutton) -> {
+            if (!guibutton.active) {
+                return;
+            }
+            if (this.nameToSet != null) {
+                updateName();
+            }
+        }));
     }
 
     public void updateName() {
-        this.namedEntity.setPetName(this.nameToSet);
-        MoCMessageHandler.INSTANCE.sendToServer(new MoCMessageUpdatePetName(((EntityLiving) this.namedEntity).getEntityId(), this.nameToSet));
-        this.mc.displayGuiScreen(null);
+        this.namedEntity.setPetName(nameToSet);
+        MoCMessageHandler.INSTANCE.sendToServer(new MoCMessageUpdatePetName(((MobEntity) this.namedEntity).getEntityId(), this.nameToSet));
+        this.minecraft.displayGuiScreen(null);
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) {
-        if (!guibutton.enabled) {
-            return;
-        }
-        if (guibutton.id == 0 && this.nameToSet != null) {
-            updateName();
-        }
-    }
-
-    @Override
-    public void drawScreen(int i, int j, float f) {
-        drawDefaultBackground();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+    public void render(MatrixStack matrixStack, int i, int j, float f) {
+        renderBackground(matrixStack);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         textureManager.bindTexture(TEXTURE_MOCNAME);
         int l = (this.width - this.xSize) / 2;
         int i1 = (this.height - (this.ySize + 16)) / 2;
-        drawTexturedModalRect(l, i1, 0, 0, this.xSize, this.ySize);
-        drawCenteredString(this.fontRenderer, this.screenTitle, this.width / 2, (this.height - (this.ySize + 16)) / 2 + 29, 0xffffff);
-        drawCenteredString(this.fontRenderer, this.nameToSet + "_", this.width / 2, (this.height - (this.ySize + 16)) / 2 + 74, 0xffffff);
-        super.drawScreen(i, j, f);
+        blit(matrixStack, l, i1, 0, 0, this.xSize, this.ySize);
+        drawCenteredString(matrixStack, this.font, this.screenTitle, this.width / 2, (this.height - (this.ySize + 16)) / 2 + 29, 0xffffff);
+        drawCenteredString(matrixStack, this.font, this.nameToSet + "_", this.width / 2, (this.height - (this.ySize + 16)) / 2 + 74, 0xffffff);
+        super.render(matrixStack, i, j, f);
     }
 
-    @Override
-    public void handleKeyboardInput() throws IOException {
-        if (Keyboard.getEventKeyState() && Keyboard.getEventKey() == 28) { // Handle Enter Key
-            updateName();
-        }
-        super.handleKeyboardInput();
+    public boolean charTyped(char codePoint, int modifiers) {
+        this.textInputUtil.putChar(codePoint);
+        return true;
     }
 
     @Override
@@ -94,11 +91,12 @@ public class MoCGUIEntityNamer extends GuiScreen {
         } else if (ChatAllowedCharacters.isAllowedCharacter(c)) {
             this.nameToSet = this.nameToSet + c;
         }
+        return this.textInputUtil.specialKeyPressed(keyCode) ? true : super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
-    public void onGuiClosed() {
-        Keyboard.enableRepeatEvents(false);
+    public void onClose() {
+        this.minecraft.keyboardListener.enableRepeatEvents(false);
         if (this.namedEntity instanceof IMoCTameable) {
             IMoCTameable tamedEntity = (IMoCTameable) this.namedEntity;
             tamedEntity.playTameEffect(true);
@@ -106,7 +104,7 @@ public class MoCGUIEntityNamer extends GuiScreen {
     }
 
     @Override
-    public void updateScreen() {
+    public void tick() {
         this.updateCounter++;
     }
 }

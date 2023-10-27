@@ -7,11 +7,13 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.init.MoCLootTables;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumHand;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -24,23 +26,19 @@ import javax.annotation.Nullable;
 
 public class MoCEntityLeopard extends MoCEntityBigCat {
 
-    public MoCEntityLeopard(World world) {
-        super(world);
-        setSize(1.165F, 1.01F);
+    public MoCEntityLeopard(EntityType<? extends MoCEntityLeopard> type, World world) {
+        super(type, world);
+        //setSize(1.165F, 1.01F);
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(25.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(6.0D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntityBigCat.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 25.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0D);
     }
 
     @Override
     public void selectType() {
 
-        if (getType() == 0) {
+        if (getTypeMoC() == 0) {
             checkSpawningBiome();
         }
         super.selectType();
@@ -48,40 +46,40 @@ public class MoCEntityLeopard extends MoCEntityBigCat {
 
     @Override
     public boolean checkSpawningBiome() {
-        int i = MathHelper.floor(this.posX);
-        int j = MathHelper.floor(getEntityBoundingBox().minY);
-        int k = MathHelper.floor(this.posZ);
+        int i = MathHelper.floor(this.getPosX());
+        int j = MathHelper.floor(getBoundingBox().minY);
+        int k = MathHelper.floor(this.getPosZ());
         BlockPos pos = new BlockPos(i, j, k);
 
-        Biome currentbiome = MoCTools.biomeKind(this.world, pos);
+        RegistryKey<Biome> currentbiome = MoCTools.biomeKind(this.world, pos);
         try {
             if (BiomeDictionary.hasType(currentbiome, Type.SNOWY)) {
-                setType(2); //snow leopard
+                setTypeMoC(2); //snow leopard
                 return true;
             }
         } catch (Exception ignored) {
         }
-        setType(1);
+        setTypeMoC(1);
         return true;
     }
 
     @Override
     public ResourceLocation getTexture() {
         if (MoCreatures.proxy.legacyBigCatModels) {
-            if (getType() == 2) {
+            if (getTypeMoC() == 2) {
                 return MoCreatures.proxy.getModelTexture("big_cat_snow_leopard_legacy.png");
             }
             return MoCreatures.proxy.getModelTexture("big_cat_leopard_legacy.png");
         }
-        if (getType() == 2) {
+        if (getTypeMoC() == 2) {
             return MoCreatures.proxy.getModelTexture("big_cat_snow_leopard.png");
         }
         return MoCreatures.proxy.getModelTexture("big_cat_leopard.png");
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -93,30 +91,26 @@ public class MoCEntityLeopard extends MoCEntityBigCat {
                 setSitting(false);
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.LEOPARD;
     }
 
     @Override
     public String getOffspringClazz(IMoCTameable mate) {
-        if (mate instanceof MoCEntityPanther && mate.getType() == 1) {
+        if (mate instanceof MoCEntityPanther && mate.getTypeMoC() == 1) {
             return "Panthard";//"Panther";
         }
-        if (mate instanceof MoCEntityTiger && mate.getType() == 1) {
+        if (mate instanceof MoCEntityTiger && mate.getTypeMoC() == 1) {
             return "Leoger";//"Tiger";
         }
-        if (mate instanceof MoCEntityLion && mate.getType() == 2) {
+        if (mate instanceof MoCEntityLion && mate.getTypeMoC() == 2) {
             return "Liard";//"Lion";
         }
         return "Leopard";
@@ -124,24 +118,24 @@ public class MoCEntityLeopard extends MoCEntityBigCat {
 
     @Override
     public int getOffspringTypeInt(IMoCTameable mate) {
-        if (mate instanceof MoCEntityPanther && mate.getType() == 1) {
+        if (mate instanceof MoCEntityPanther && mate.getTypeMoC() == 1) {
             return 1;//3; //panthard
         }
-        if (mate instanceof MoCEntityTiger && mate.getType() == 1) {
+        if (mate instanceof MoCEntityTiger && mate.getTypeMoC() == 1) {
             return 1;//4; //leoger
         }
-        if (mate instanceof MoCEntityLion && mate.getType() == 2) {
+        if (mate instanceof MoCEntityLion && mate.getTypeMoC() == 2) {
             return 1;//4; //liard
         }
-        return this.getType();
+        return this.getTypeMoC();
     }
 
     @Override
     public boolean compatibleMate(Entity mate) {
-        return (mate instanceof MoCEntityLeopard && ((MoCEntityLeopard) mate).getType() == this.getType())
-                || (mate instanceof MoCEntityPanther && ((MoCEntityPanther) mate).getType() == 1)
-                || (mate instanceof MoCEntityTiger && ((MoCEntityTiger) mate).getType() == 1)
-                || (mate instanceof MoCEntityLion && ((MoCEntityLion) mate).getType() == 2);
+        return (mate instanceof MoCEntityLeopard && ((MoCEntityLeopard) mate).getTypeMoC() == this.getTypeMoC())
+                || (mate instanceof MoCEntityPanther && ((MoCEntityPanther) mate).getTypeMoC() == 1)
+                || (mate instanceof MoCEntityTiger && ((MoCEntityTiger) mate).getTypeMoC() == 1)
+                || (mate instanceof MoCEntityLion && ((MoCEntityLion) mate).getTypeMoC() == 2);
     }
 
     @Override
@@ -150,17 +144,17 @@ public class MoCEntityLeopard extends MoCEntityBigCat {
     }
 
     @Override
-    public boolean canAttackTarget(EntityLivingBase entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         if (!this.getIsAdult() && (this.getAge() < this.getMaxAge() * 0.8)) {
             return false;
         }
         if (entity instanceof MoCEntityLeopard) {
             return false;
         }
-        return entity.height < 1.3F && entity.width < 1.3F;
+        return entity.getHeight() < 1.3F && entity.getWidth() < 1.3F;
     }
 
-    public float getEyeHeight() {
-        return this.height * 0.92F;
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return this.getHeight() * 0.92F;
     }
 }

@@ -7,9 +7,10 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -21,8 +22,8 @@ public class MoCEntityFly extends MoCEntityInsect {
 
     private int soundCount;// = 50;
 
-    public MoCEntityFly(World world) {
-        super(world);
+    public MoCEntityFly(EntityType<? extends MoCEntityFly> type, World world) {
+        super(type, world);
         this.texture = "fly.png";
     }
 
@@ -37,9 +38,9 @@ public class MoCEntityFly extends MoCEntityInsect {
 
         if (!this.world.isRemote) {
             if (getIsFlying() && --this.soundCount == -1) {
-                EntityPlayer ep = this.world.getClosestPlayerToEntity(this, 5D);
+                PlayerEntity ep = this.world.getClosestPlayer(this, 5D);
                 if (ep != null) {
-                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_FLY_AMBIENT);
+                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_FLY_AMBIENT.get());
                     this.soundCount = 55;
                 }
             }
@@ -48,17 +49,16 @@ public class MoCEntityFly extends MoCEntityInsect {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_FLY_HURT;
+        return MoCSoundEvents.ENTITY_FLY_HURT.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_FLY_HURT;
+        return MoCSoundEvents.ENTITY_FLY_HURT.get();
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.FLY;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.FLY;
     }
 
     @Override

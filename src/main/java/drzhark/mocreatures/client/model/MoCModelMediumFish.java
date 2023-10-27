@@ -3,17 +3,18 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.aquatic.MoCEntityMediumFish;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelMediumFish extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelMediumFish<T extends MoCEntityMediumFish> extends EntityModel<T> {
 
     //fields
     ModelRenderer Head;
@@ -32,6 +33,7 @@ public class MoCModelMediumFish extends ModelBase {
     ModelRenderer LowerFin;
     ModelRenderer RightLowerFin;
     ModelRenderer LeftLowerFin;
+    private MoCEntityMediumFish mediumFish;
 
     public MoCModelMediumFish() {
         this.textureWidth = 64;
@@ -115,36 +117,35 @@ public class MoCModelMediumFish extends ModelBase {
         setRotation(this.LeftLowerFin, -0.5235988F, 0F, 0F);
     }
 
-    @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        float scale = 0.0715F;
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.mediumFish = entityIn;
+    }
 
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5);
-        MoCEntityMediumFish mediumFish = (MoCEntityMediumFish) entity;
+    @Override
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         float yOffset = mediumFish.getAdjustedYOffset();
         float xOffset = mediumFish.getAdjustedXOffset();
         float zOffset = mediumFish.getAdjustedZOffset();
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(xOffset, yOffset, zOffset);
-        GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
-        this.Head.render(scale);
-        this.LowerHead.render(scale);
-        this.Nose.render(scale);
-        this.MouthBottom.render(scale);
-        this.MouthBottomB.render(scale);
-        this.Body.render(scale);
-        this.BackUp.render(scale);
-        this.BackDown.render(scale);
-        this.Tail.render(scale);
-        this.TailFin.render(scale);
-        this.RightPectoralFin.render(scale);
-        this.LeftPectoralFin.render(scale);
-        this.UpperFin.render(scale);
-        this.LowerFin.render(scale);
-        this.RightLowerFin.render(scale);
-        this.LeftLowerFin.render(scale);
-        GlStateManager.popMatrix();
+        matrixStackIn.push();
+        matrixStackIn.translate(xOffset, yOffset, zOffset);
+        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(90.0F));
+        this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LowerHead.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Nose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.MouthBottom.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.MouthBottomB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.BackUp.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.BackDown.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TailFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightPectoralFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftPectoralFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.UpperFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LowerFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightLowerFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftLowerFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        matrixStackIn.pop();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {
@@ -153,14 +154,14 @@ public class MoCModelMediumFish extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         /*
-         * f = distance walked f1 = speed 0 - 1 f2 = timer
+         * limbSwing = distance walked limbSwingAmount = speed 0 - 1 ageInTicks = timer
          */
-        //TailA.rotateAngleY = MathHelper.cos(f2 * 0.7F);
-        float tailMov = MathHelper.cos(f * 0.6662F) * f1 * 0.6F;
-        float finMov = MathHelper.cos(f2 * 0.2F) * 0.4F;
-        float mouthMov = MathHelper.cos(f2 * 0.3F) * 0.2F;
+        //TailA.rotateAngleY = MathHelper.cos(ageInTicks * 0.7F);
+        float tailMov = MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount * 0.6F;
+        float finMov = MathHelper.cos(ageInTicks * 0.2F) * 0.4F;
+        float mouthMov = MathHelper.cos(ageInTicks * 0.3F) * 0.2F;
 
         this.Tail.rotateAngleY = tailMov;
         this.TailFin.rotateAngleY = tailMov;
@@ -170,6 +171,6 @@ public class MoCModelMediumFish extends ModelBase {
 
         this.MouthBottom.rotateAngleZ = 0.3346075F + mouthMov;
         this.MouthBottomB.rotateAngleZ = -0.7132579F + mouthMov;
-        //super.setRotationAngles(f, f1, f2, f3, f4, f5);
+        //super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
     }
 }

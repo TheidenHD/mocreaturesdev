@@ -10,10 +10,15 @@ import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -21,23 +26,19 @@ import javax.annotation.Nullable;
 
 public class MoCEntityBlackBear extends MoCEntityBear {
 
-    public MoCEntityBlackBear(World world) {
-        super(world);
-        setSize(0.85F, 1.175F);
+    public MoCEntityBlackBear(EntityType<? extends MoCEntityBlackBear> type, World world) {
+        super(type, world);
+        //setSize(0.85F, 1.175F);
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(5.5D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntityBear.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 30.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.5D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(1);
         }
         super.selectType();
     }
@@ -76,15 +77,15 @@ public class MoCEntityBlackBear extends MoCEntityBear {
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
 
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && this.getAge() < 80 && MoCTools.isItemEdibleforCarnivores(stack.getItem())) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
 
             if (!this.world.isRemote && !getIsTamed()) {
                 MoCTools.tameWithName(player, this);
@@ -96,7 +97,7 @@ public class MoCEntityBlackBear extends MoCEntityBear {
                 setAge(getAge() + 1);
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
         if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.whip)) {
             this.processBearWhipped();
@@ -109,18 +110,14 @@ public class MoCEntityBlackBear extends MoCEntityBear {
                 setBearState(0);
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.BLACK_BEAR;
     }
 
@@ -139,7 +136,7 @@ public class MoCEntityBlackBear extends MoCEntityBear {
         return mate instanceof MoCEntityPandaBear;
     }
 
-    public float getEyeHeight() {
-        return this.height * 0.76F;
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return this.getHeight() * 0.76F;
     }
 }

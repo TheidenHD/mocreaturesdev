@@ -3,16 +3,17 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.neutral.MoCEntityElephant;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelElephant extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelElephant<T extends MoCEntityElephant> extends EntityModel<T> {
 
     ModelRenderer Head;
     ModelRenderer Neck;
@@ -109,6 +110,7 @@ public class MoCModelElephant extends ModelBase {
     ModelRenderer FortBackRightWall;
     ModelRenderer StorageUpLeft;
     ModelRenderer StorageUpRight;
+    private MoCEntityElephant elephant;
 
     float radianF = 57.29578F;
     int tusks;
@@ -575,167 +577,167 @@ public class MoCModelElephant extends ModelBase {
         setRotation(this.StorageUpRight, 0F, 0F, 0.3839724F);
     }
 
-    @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        //super.render(entity, f, f1, f2, f3, f4, f5);
-        MoCEntityElephant elephant = (MoCEntityElephant) entity;
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.elephant = entityIn;
         this.tusks = elephant.getTusks();
-        int type = elephant.getType();
         this.tailCounter = elephant.tailCounter;
         this.earCounter = elephant.earCounter;
         this.trunkCounter = elephant.trunkCounter;
+        this.isSitting = (elephant.sitCounter != 0);
+    }
+    @Override
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        int type = elephant.getTypeMoC();
         int harness = elephant.getArmorType();
         int storage = elephant.getStorage();
-        this.isSitting = (elephant.sitCounter != 0);
         //boolean moveTail = (elephant.tailCounter != 0);
 
-        setRotationAngles(f, f1, f2, f3, f4, f5);
 
         if (tusks == 0) {
-            this.LeftTuskB.render(f5);
-            this.RightTuskB.render(f5);
+            this.LeftTuskB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.RightTuskB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             if (elephant.getIsAdult() || elephant.getAge() > 70) {
-                this.LeftTuskC.render(f5);
-                this.RightTuskC.render(f5);
+                this.LeftTuskC.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.RightTuskC.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
             if (elephant.getIsAdult() || elephant.getAge() > 90) {
-                this.LeftTuskD.render(f5);
-                this.RightTuskD.render(f5);
+                this.LeftTuskD.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.RightTuskD.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
         } else if (tusks == 1) {
-            this.TuskLW1.render(f5);
-            this.TuskLW2.render(f5);
-            this.TuskLW3.render(f5);
-            this.TuskLW4.render(f5);
-            this.TuskLW5.render(f5);
-            this.TuskRW1.render(f5);
-            this.TuskRW2.render(f5);
-            this.TuskRW3.render(f5);
-            this.TuskRW4.render(f5);
-            this.TuskRW5.render(f5);
+            this.TuskLW1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskLW2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskLW3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskLW4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskLW5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskRW1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskRW2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskRW3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskRW4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskRW5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else if (tusks == 2) {
-            this.TuskLI1.render(f5);
-            this.TuskLI2.render(f5);
-            this.TuskLI3.render(f5);
-            this.TuskLI4.render(f5);
-            this.TuskLI5.render(f5);
-            this.TuskRI1.render(f5);
-            this.TuskRI2.render(f5);
-            this.TuskRI3.render(f5);
-            this.TuskRI4.render(f5);
-            this.TuskRI5.render(f5);
+            this.TuskLI1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskLI2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskLI3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskLI4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskLI5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskRI1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskRI2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskRI3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskRI4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskRI5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else if (tusks == 3) {
-            this.TuskLD1.render(f5);
-            this.TuskLD2.render(f5);
-            this.TuskLD3.render(f5);
-            this.TuskLD4.render(f5);
-            this.TuskLD5.render(f5);
-            this.TuskRD1.render(f5);
-            this.TuskRD2.render(f5);
-            this.TuskRD3.render(f5);
-            this.TuskRD4.render(f5);
-            this.TuskRD5.render(f5);
+            this.TuskLD1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskLD2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskLD3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskLD4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskLD5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskRD1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskRD2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskRD3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskRD4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.TuskRD5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
 
         if (type == 1) //african
         {
-            this.LeftBigEar.render(f5);
-            this.RightBigEar.render(f5);
+            this.LeftBigEar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.RightBigEar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else {
-            this.LeftSmallEar.render(f5);
-            this.RightSmallEar.render(f5);
+            this.LeftSmallEar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.RightSmallEar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
 
         if (type == 3 || type == 4) //mammoths
         {
-            this.HeadBump.render(f5);
-            this.Skirt.render(f5);
+            this.HeadBump.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Skirt.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
 
         if (harness >= 1) {
-            this.HarnessBlanket.render(f5);
-            this.HarnessUpperBelt.render(f5);
-            this.HarnessLowerBelt.render(f5);
+            this.HarnessBlanket.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.HarnessUpperBelt.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.HarnessLowerBelt.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             if (type == 5) {
-                this.Skirt.render(f5);
+                this.Skirt.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
         }
 
         if (harness == 3) {
             if (type == 5) {
-                this.CabinPillow.render(f5);
-                this.CabinLeftRail.render(f5);
-                this.Cabin.render(f5);
-                this.CabinRightRail.render(f5);
-                this.CabinBackRail.render(f5);
-                this.CabinRoof.render(f5);
+                this.CabinPillow.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.CabinLeftRail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.Cabin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.CabinRightRail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.CabinBackRail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.CabinRoof.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
 
             if (type == 4) {
 
-                this.FortBackRightWall.render(f5);
-                this.FortBackLeftWall.render(f5);
-                this.FortBackWall.render(f5);
-                this.FortFloor1.render(f5);
-                this.FortFloor2.render(f5);
-                this.FortFloor3.render(f5);
-                this.FortNeckBeam.render(f5);
-                this.FortBackBeam.render(f5);
+                this.FortBackRightWall.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.FortBackLeftWall.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.FortBackWall.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.FortFloor1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.FortFloor2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.FortFloor3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.FortNeckBeam.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.FortBackBeam.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
             }
 
         }
 
         if (storage >= 1) {
-            this.StorageRightBedroll.render(f5);
-            this.StorageFrontRightChest.render(f5);
-            this.StorageBackRightChest.render(f5);
-            this.StorageRightBlankets.render(f5);
+            this.StorageRightBedroll.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.StorageFrontRightChest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.StorageBackRightChest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.StorageRightBlankets.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         }
         if (storage >= 2) {
-            this.StorageLeftBlankets.render(f5);
-            this.StorageLeftBedroll.render(f5);
-            this.StorageFrontLeftChest.render(f5);
-            this.StorageBackLeftChest.render(f5);
+            this.StorageLeftBlankets.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.StorageLeftBedroll.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.StorageFrontLeftChest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.StorageBackLeftChest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         }
         if (storage >= 3) {
-            this.StorageUpLeft.render(f5);
+            this.StorageUpLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
 
         if (storage >= 4) {
-            this.StorageUpRight.render(f5);
+            this.StorageUpRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
 
-        this.Head.render(f5);
-        this.Neck.render(f5);
-        this.Chin.render(f5);
-        this.LowerLip.render(f5);
-        this.Back.render(f5);
+        this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Neck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Chin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LowerLip.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Back.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        this.Hump.render(f5);
-        this.Body.render(f5);
+        this.Hump.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        this.RightTuskA.render(f5);
-        this.LeftTuskA.render(f5);
+        this.RightTuskA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftTuskA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        this.TrunkA.render(f5);
-        this.TrunkB.render(f5);
-        this.TrunkC.render(f5);
-        this.TrunkD.render(f5);
-        this.TrunkE.render(f5);
-        this.FrontRightUpperLeg.render(f5);
-        this.FrontRightLowerLeg.render(f5);
-        this.FrontLeftUpperLeg.render(f5);
-        this.FrontLeftLowerLeg.render(f5);
-        this.BackRightUpperLeg.render(f5);
-        this.BackRightLowerLeg.render(f5);
-        this.BackLeftUpperLeg.render(f5);
-        this.BackLeftLowerLeg.render(f5);
-        this.TailRoot.render(f5);
-        this.Tail.render(f5);
-        this.TailPlush.render(f5);
+        this.TrunkA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TrunkB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TrunkC.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TrunkD.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TrunkE.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.FrontRightUpperLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.FrontRightLowerLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.FrontLeftUpperLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.FrontLeftLowerLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.BackRightUpperLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.BackRightLowerLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.BackLeftUpperLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.BackLeftLowerLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TailRoot.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TailPlush.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
     }
 
@@ -748,123 +750,123 @@ public class MoCModelElephant extends ModelBase {
     /**
      * Used to adjust the Y offset of the model cubes
      */
-    private void AdjustY(float f) {
-        this.Head.rotationPointY = f - 10F;
-        this.Neck.rotationPointY = f - 8F;
-        this.HeadBump.rotationPointY = f - 10F;
-        this.Chin.rotationPointY = f - 10F;
-        this.LowerLip.rotationPointY = f - 10F;
-        this.Back.rotationPointY = f - 4F;
-        this.LeftSmallEar.rotationPointY = f - 10F;
-        this.LeftBigEar.rotationPointY = f - 10F;
-        this.RightSmallEar.rotationPointY = f - 10F;
-        this.RightBigEar.rotationPointY = f - 10F;
-        this.Hump.rotationPointY = f - 13F;
-        this.Body.rotationPointY = f - 2F;
-        this.Skirt.rotationPointY = f + 8F;
-        this.RightTuskA.rotationPointY = f - 10F;
-        this.RightTuskB.rotationPointY = f - 10F;
-        this.RightTuskC.rotationPointY = f - 10F;
-        this.RightTuskD.rotationPointY = f - 10F;
-        this.LeftTuskA.rotationPointY = f - 10F;
-        this.LeftTuskB.rotationPointY = f - 10F;
-        this.LeftTuskC.rotationPointY = f - 10F;
-        this.LeftTuskD.rotationPointY = f - 10F;
-        this.TrunkA.rotationPointY = f - 3F;
-        this.TrunkB.rotationPointY = f + 5.5F;
-        this.TrunkC.rotationPointY = f + 13F;
-        this.TrunkD.rotationPointY = f + 16F;
-        this.TrunkE.rotationPointY = f + 19.5F;
-        this.FrontRightUpperLeg.rotationPointY = f + 4F;
-        this.FrontRightLowerLeg.rotationPointY = f + 14F;
-        this.FrontLeftUpperLeg.rotationPointY = f + 4F;
-        this.FrontLeftLowerLeg.rotationPointY = f + 14F;
-        this.BackRightUpperLeg.rotationPointY = f + 4F;
-        this.BackRightLowerLeg.rotationPointY = f + 14F;
-        this.BackLeftUpperLeg.rotationPointY = f + 4F;
-        this.BackLeftLowerLeg.rotationPointY = f + 14F;
-        this.TailRoot.rotationPointY = f - 8F;
-        this.Tail.rotationPointY = f - 8F;
-        this.TailPlush.rotationPointY = f - 8F;
-        this.StorageRightBedroll.rotationPointY = f - 10.2F;
-        this.StorageLeftBedroll.rotationPointY = f - 10.2F;
-        this.StorageFrontRightChest.rotationPointY = f - 1.2F;
-        this.StorageBackRightChest.rotationPointY = f - 1.2F;
-        this.StorageFrontLeftChest.rotationPointY = f - 1.2F;
-        this.StorageBackLeftChest.rotationPointY = f - 1.2F;
-        this.StorageRightBlankets.rotationPointY = f - 10.2F;
-        this.StorageLeftBlankets.rotationPointY = f - 10.2F;
-        this.HarnessBlanket.rotationPointY = f - 13.2F;
-        this.HarnessUpperBelt.rotationPointY = f - 2F;
-        this.HarnessLowerBelt.rotationPointY = f - 2F;
-        this.CabinPillow.rotationPointY = f - 16F;
-        this.CabinLeftRail.rotationPointY = f - 23F;
-        this.Cabin.rotationPointY = f - 35F;
-        this.CabinRightRail.rotationPointY = f - 23F;
-        this.CabinBackRail.rotationPointY = f - 23F;
-        this.CabinRoof.rotationPointY = f - 34F;
-        this.FortBackRightWall.rotationPointY = f - 16F;
-        this.FortBackLeftWall.rotationPointY = f - 16F;
-        this.FortBackWall.rotationPointY = f - 16F;
-        this.FortNeckBeam.rotationPointY = f - 16F;
-        this.FortBackBeam.rotationPointY = f - 16F;
-        this.FortFloor1.rotationPointY = f - 16F;
-        this.FortFloor2.rotationPointY = f - 16F;
-        this.FortFloor3.rotationPointY = f - 16F;
+    private void AdjustY(float limbSwing) {
+        this.Head.rotationPointY = limbSwing - 10F;
+        this.Neck.rotationPointY = limbSwing - 8F;
+        this.HeadBump.rotationPointY = limbSwing - 10F;
+        this.Chin.rotationPointY = limbSwing - 10F;
+        this.LowerLip.rotationPointY = limbSwing - 10F;
+        this.Back.rotationPointY = limbSwing - 4F;
+        this.LeftSmallEar.rotationPointY = limbSwing - 10F;
+        this.LeftBigEar.rotationPointY = limbSwing - 10F;
+        this.RightSmallEar.rotationPointY = limbSwing - 10F;
+        this.RightBigEar.rotationPointY = limbSwing - 10F;
+        this.Hump.rotationPointY = limbSwing - 13F;
+        this.Body.rotationPointY = limbSwing - 2F;
+        this.Skirt.rotationPointY = limbSwing + 8F;
+        this.RightTuskA.rotationPointY = limbSwing - 10F;
+        this.RightTuskB.rotationPointY = limbSwing - 10F;
+        this.RightTuskC.rotationPointY = limbSwing - 10F;
+        this.RightTuskD.rotationPointY = limbSwing - 10F;
+        this.LeftTuskA.rotationPointY = limbSwing - 10F;
+        this.LeftTuskB.rotationPointY = limbSwing - 10F;
+        this.LeftTuskC.rotationPointY = limbSwing - 10F;
+        this.LeftTuskD.rotationPointY = limbSwing - 10F;
+        this.TrunkA.rotationPointY = limbSwing - 3F;
+        this.TrunkB.rotationPointY = limbSwing + 5.5F;
+        this.TrunkC.rotationPointY = limbSwing + 13F;
+        this.TrunkD.rotationPointY = limbSwing + 16F;
+        this.TrunkE.rotationPointY = limbSwing + 19.5F;
+        this.FrontRightUpperLeg.rotationPointY = limbSwing + 4F;
+        this.FrontRightLowerLeg.rotationPointY = limbSwing + 14F;
+        this.FrontLeftUpperLeg.rotationPointY = limbSwing + 4F;
+        this.FrontLeftLowerLeg.rotationPointY = limbSwing + 14F;
+        this.BackRightUpperLeg.rotationPointY = limbSwing + 4F;
+        this.BackRightLowerLeg.rotationPointY = limbSwing + 14F;
+        this.BackLeftUpperLeg.rotationPointY = limbSwing + 4F;
+        this.BackLeftLowerLeg.rotationPointY = limbSwing + 14F;
+        this.TailRoot.rotationPointY = limbSwing - 8F;
+        this.Tail.rotationPointY = limbSwing - 8F;
+        this.TailPlush.rotationPointY = limbSwing - 8F;
+        this.StorageRightBedroll.rotationPointY = limbSwing - 10.2F;
+        this.StorageLeftBedroll.rotationPointY = limbSwing - 10.2F;
+        this.StorageFrontRightChest.rotationPointY = limbSwing - 1.2F;
+        this.StorageBackRightChest.rotationPointY = limbSwing - 1.2F;
+        this.StorageFrontLeftChest.rotationPointY = limbSwing - 1.2F;
+        this.StorageBackLeftChest.rotationPointY = limbSwing - 1.2F;
+        this.StorageRightBlankets.rotationPointY = limbSwing - 10.2F;
+        this.StorageLeftBlankets.rotationPointY = limbSwing - 10.2F;
+        this.HarnessBlanket.rotationPointY = limbSwing - 13.2F;
+        this.HarnessUpperBelt.rotationPointY = limbSwing - 2F;
+        this.HarnessLowerBelt.rotationPointY = limbSwing - 2F;
+        this.CabinPillow.rotationPointY = limbSwing - 16F;
+        this.CabinLeftRail.rotationPointY = limbSwing - 23F;
+        this.Cabin.rotationPointY = limbSwing - 35F;
+        this.CabinRightRail.rotationPointY = limbSwing - 23F;
+        this.CabinBackRail.rotationPointY = limbSwing - 23F;
+        this.CabinRoof.rotationPointY = limbSwing - 34F;
+        this.FortBackRightWall.rotationPointY = limbSwing - 16F;
+        this.FortBackLeftWall.rotationPointY = limbSwing - 16F;
+        this.FortBackWall.rotationPointY = limbSwing - 16F;
+        this.FortNeckBeam.rotationPointY = limbSwing - 16F;
+        this.FortBackBeam.rotationPointY = limbSwing - 16F;
+        this.FortFloor1.rotationPointY = limbSwing - 16F;
+        this.FortFloor2.rotationPointY = limbSwing - 16F;
+        this.FortFloor3.rotationPointY = limbSwing - 16F;
 
-        this.StorageUpLeft.rotationPointY = f - 16F;
-        this.StorageUpRight.rotationPointY = f - 16F;
+        this.StorageUpLeft.rotationPointY = limbSwing - 16F;
+        this.StorageUpRight.rotationPointY = limbSwing - 16F;
 
-        this.TuskLD1.rotationPointY = f - 10F;
-        this.TuskLD2.rotationPointY = f - 10F;
-        this.TuskLD3.rotationPointY = f - 10F;
-        this.TuskLD4.rotationPointY = f - 10F;
-        this.TuskLD5.rotationPointY = f - 10F;
-        this.TuskRD1.rotationPointY = f - 10F;
-        this.TuskRD2.rotationPointY = f - 10F;
-        this.TuskRD3.rotationPointY = f - 10F;
-        this.TuskRD4.rotationPointY = f - 10F;
-        this.TuskRD5.rotationPointY = f - 10F;
-        this.TuskLI1.rotationPointY = f - 10F;
-        this.TuskLI2.rotationPointY = f - 10F;
-        this.TuskLI3.rotationPointY = f - 10F;
-        this.TuskLI4.rotationPointY = f - 10F;
-        this.TuskLI5.rotationPointY = f - 10F;
-        this.TuskRI1.rotationPointY = f - 10F;
-        this.TuskRI2.rotationPointY = f - 10F;
-        this.TuskRI3.rotationPointY = f - 10F;
-        this.TuskRI4.rotationPointY = f - 10F;
-        this.TuskRI5.rotationPointY = f - 10F;
-        this.TuskLW1.rotationPointY = f - 10F;
-        this.TuskLW2.rotationPointY = f - 10F;
-        this.TuskLW3.rotationPointY = f - 10F;
-        this.TuskLW4.rotationPointY = f - 10F;
-        this.TuskLW5.rotationPointY = f - 10F;
-        this.TuskRW1.rotationPointY = f - 10F;
-        this.TuskRW2.rotationPointY = f - 10F;
-        this.TuskRW3.rotationPointY = f - 10F;
-        this.TuskRW4.rotationPointY = f - 10F;
-        this.TuskRW5.rotationPointY = f - 10F;
+        this.TuskLD1.rotationPointY = limbSwing - 10F;
+        this.TuskLD2.rotationPointY = limbSwing - 10F;
+        this.TuskLD3.rotationPointY = limbSwing - 10F;
+        this.TuskLD4.rotationPointY = limbSwing - 10F;
+        this.TuskLD5.rotationPointY = limbSwing - 10F;
+        this.TuskRD1.rotationPointY = limbSwing - 10F;
+        this.TuskRD2.rotationPointY = limbSwing - 10F;
+        this.TuskRD3.rotationPointY = limbSwing - 10F;
+        this.TuskRD4.rotationPointY = limbSwing - 10F;
+        this.TuskRD5.rotationPointY = limbSwing - 10F;
+        this.TuskLI1.rotationPointY = limbSwing - 10F;
+        this.TuskLI2.rotationPointY = limbSwing - 10F;
+        this.TuskLI3.rotationPointY = limbSwing - 10F;
+        this.TuskLI4.rotationPointY = limbSwing - 10F;
+        this.TuskLI5.rotationPointY = limbSwing - 10F;
+        this.TuskRI1.rotationPointY = limbSwing - 10F;
+        this.TuskRI2.rotationPointY = limbSwing - 10F;
+        this.TuskRI3.rotationPointY = limbSwing - 10F;
+        this.TuskRI4.rotationPointY = limbSwing - 10F;
+        this.TuskRI5.rotationPointY = limbSwing - 10F;
+        this.TuskLW1.rotationPointY = limbSwing - 10F;
+        this.TuskLW2.rotationPointY = limbSwing - 10F;
+        this.TuskLW3.rotationPointY = limbSwing - 10F;
+        this.TuskLW4.rotationPointY = limbSwing - 10F;
+        this.TuskLW5.rotationPointY = limbSwing - 10F;
+        this.TuskRW1.rotationPointY = limbSwing - 10F;
+        this.TuskRW2.rotationPointY = limbSwing - 10F;
+        this.TuskRW3.rotationPointY = limbSwing - 10F;
+        this.TuskRW4.rotationPointY = limbSwing - 10F;
+        this.TuskRW5.rotationPointY = limbSwing - 10F;
 
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {//, byte tusks, boolean sitting, boolean tail) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {//, byte tusks, boolean sitting, boolean tail) {
 
-        float RLegXRot = MathHelper.cos((f * 0.6662F) + 3.141593F) * 0.8F * f1;
-        float LLegXRot = MathHelper.cos(f * 0.6662F) * 0.8F * f1;
+        float RLegXRot = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
+        float LLegXRot = MathHelper.cos(limbSwing * 0.6662F) * 0.8F * limbSwingAmount;
 
-        if (f4 < 0) {
-            f4 = 0;
+        if (headPitch < 0) {
+            headPitch = 0;
         }
 
-        float HeadXRot = (f4 / 57.29578F);
-        if (f3 > 20F) {
-            f3 = 20F;
+        float HeadXRot = (headPitch / 57.29578F);
+        if (netHeadYaw > 20F) {
+            netHeadYaw = 20F;
         }
-        if (f3 < -20F) {
-            f3 = -20F;
+        if (netHeadYaw < -20F) {
+            netHeadYaw = -20F;
         }
-        float HeadYRot = (f3 / 57.29578F);
+        float HeadYRot = (netHeadYaw / 57.29578F);
 
         float f10 = 0F;
         if (isSitting) {
@@ -903,16 +905,16 @@ public class MoCModelElephant extends ModelBase {
 
         //ears
         /*
-         * f = distance walked f1 = speed 0 - 1 f2 = timer
+         * limbSwing = distance walked limbSwingAmount = speed 0 - 1 ageInTicks = timer
          */
         /*
          * Ear random animation
          */
         float EarF = 0F;
 
-        /*float f2a = f2 % 100F;
+        /*float f2a = ageInTicks % 100F;
         if (f2a > 60 & f2a < 90) {
-            EarF = MathHelper.cos(f2 * 0.5F) * 0.35F;
+            EarF = MathHelper.cos(ageInTicks * 0.5F) * 0.35F;
         }*/
 
         if (this.earCounter != 0) {
@@ -1108,16 +1110,16 @@ public class MoCModelElephant extends ModelBase {
         this.FortBackLeftWall.rotateAngleZ = (LLegXRot / 50F);
         this.FortBackWall.rotateAngleX = 0F - (LLegXRot / 50F);
 
-        //f1 = movement speed!
-        //f2 = timer!
+        //limbSwingAmount = movement speed!
+        //ageInTicks = timer!
         //tail
-        float tailMov = (f1 * 0.9F);
+        float tailMov = (limbSwingAmount * 0.9F);
         if (tailMov < 0) {
             tailMov = 0;
         }
 
         if (this.tailCounter != 0) {
-            this.TailRoot.rotateAngleY = MathHelper.cos(f2 * 0.4F) * 1.3F;
+            this.TailRoot.rotateAngleY = MathHelper.cos(ageInTicks * 0.4F) * 1.3F;
             tailMov = 30F / this.radianF;
         } else {
             this.TailRoot.rotateAngleY = 0F;

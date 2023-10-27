@@ -3,16 +3,14 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.passive.MoCEntityBird;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelBird extends ModelBase {
+public class MoCModelBird<T extends MoCEntityBird> extends EntityModel<T> {
 
     public ModelRenderer head;
     public ModelRenderer body;
@@ -22,7 +20,6 @@ public class MoCModelBird extends ModelBase {
     public ModelRenderer lwing;
     public ModelRenderer beak;
     public ModelRenderer tail;
-    private boolean isOnAir;
 
     public MoCModelBird() {
         byte byte0 = 16;
@@ -55,35 +52,32 @@ public class MoCModelBird extends ModelBase {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        MoCEntityBird bird = (MoCEntityBird) entity;
-        this.isOnAir = bird.isOnAir() && bird.getRidingEntity() == null;
-        setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-        this.head.render(f5);
-        this.beak.render(f5);
-        this.body.render(f5);
-        this.leftleg.render(f5);
-        this.rightleg.render(f5);
-        this.rwing.render(f5);
-        this.lwing.render(f5);
-        this.tail.render(f5);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.beak.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.leftleg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.rightleg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.rwing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.lwing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
     @Override
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
-        this.head.rotateAngleX = -(f4 / 2.0F / 57.29578F);
-        //head.rotateAngleY = f3 / 2.0F / 57.29578F; //fixed SMP bug
-        this.head.rotateAngleY = f3 / 57.29578F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.head.rotateAngleX = -(headPitch / 2.0F / 57.29578F);
+        //head.rotateAngleY = netHeadYaw / 2.0F / 57.29578F; //fixed SMP bug
+        this.head.rotateAngleY = netHeadYaw / 57.29578F;
         this.beak.rotateAngleY = this.head.rotateAngleY;
 
-        if (this.isOnAir) {
+        if (entityIn.isOnAir() && entityIn.getRidingEntity() == null) {
             this.leftleg.rotateAngleX = 1.4F;
             this.rightleg.rotateAngleX = 1.4F;
         } else {
-            this.leftleg.rotateAngleX = MathHelper.cos(f * 0.6662F) * f1;
-            this.rightleg.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * f1;
+            this.leftleg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
+            this.rightleg.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * limbSwingAmount;
         }
-        this.rwing.rotateAngleZ = f2;
-        this.lwing.rotateAngleZ = -f2;
+        this.rwing.rotateAngleZ = ageInTicks;
+        this.lwing.rotateAngleZ = -ageInTicks;
     }
 }

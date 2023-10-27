@@ -6,49 +6,45 @@ package drzhark.mocreatures.network.message;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MoCMessageInstaSpawn implements IMessage, IMessageHandler<MoCMessageInstaSpawn, IMessage> {
+import java.util.function.Supplier;
+
+public class MoCMessageInstaSpawn {
 
     public int entityId;
     public int numberToSpawn;
-
-    public MoCMessageInstaSpawn() {
-    }
 
     public MoCMessageInstaSpawn(int entityId, int numberToSpawn) {
         this.entityId = entityId;
         this.numberToSpawn = numberToSpawn;
     }
 
-    @Override
-    public void toBytes(ByteBuf buffer) {
+    public void encode(ByteBuf buffer) {
         buffer.writeInt(this.entityId);
         buffer.writeInt(this.numberToSpawn);
     }
 
-    @Override
-    public void fromBytes(ByteBuf buffer) {
+    public MoCMessageInstaSpawn(ByteBuf buffer) {
         this.entityId = buffer.readInt();
+        this.numberToSpawn = buffer.readInt();
     }
 
-    @Override
-    public IMessage onMessage(MoCMessageInstaSpawn message, MessageContext ctx) {
+    public static boolean onMessage(MoCMessageInstaSpawn message, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().setPacketHandled(true);
         if ((MoCreatures.proxy.getProxyMode() == 1 && MoCreatures.proxy.allowInstaSpawn) || MoCreatures.proxy.getProxyMode() == 2) { // make sure the client has admin rights on server!
-            MoCTools.spawnNearPlayer(ctx.getServerHandler().player, message.entityId, message.numberToSpawn);
+            MoCTools.spawnNearPlayer(ctx.get().getSender(), message.entityId, message.numberToSpawn);
             if (MoCreatures.proxy.debug) {
-                MoCreatures.LOGGER.info("Player " + ctx.getServerHandler().player.getName() + " used MoC instaspawner and got "
+                MoCreatures.LOGGER.info("Player " + ctx.get().getSender().getName() + " used MoC instaspawner and got "
                         + message.numberToSpawn + " creatures spawned");
             }
         } else {
             if (MoCreatures.proxy.debug) {
-                MoCreatures.LOGGER.info("Player " + ctx.getServerHandler().player.getName()
+                MoCreatures.LOGGER.info("Player " + ctx.get().getSender().getName()
                         + " tried to use MoC instaspawner, but the allowInstaSpawn setting is set to " + MoCreatures.proxy.allowInstaSpawn);
             }
         }
-        return null;
+        return true;
     }
 
     @Override

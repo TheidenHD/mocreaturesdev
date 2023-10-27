@@ -3,36 +3,36 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
-import drzhark.mocreatures.proxy.MoCProxyClient;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import drzhark.mocreatures.client.model.MoCModelEgg;
 import drzhark.mocreatures.entity.item.MoCEntityEgg;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCRenderEgg extends RenderLiving<MoCEntityEgg> {
+@OnlyIn(Dist.CLIENT)
+public class MoCRenderEgg extends MobRenderer<MoCEntityEgg, MoCModelEgg<MoCEntityEgg>> {
 
-    public MoCRenderEgg(ModelBase modelbase, float f) {
-        super(MoCProxyClient.mc.getRenderManager(), modelbase, f);
+    public MoCRenderEgg(EntityRendererManager renderManagerIn, MoCModelEgg modelbase, float f) {
+        super(renderManagerIn, modelbase, f);
     }
 
     @Override
-    protected void preRenderCallback(MoCEntityEgg entityegg, float f) {
-        stretch(entityegg);
-        super.preRenderCallback(entityegg, f);
+    protected void preRenderCallback(MoCEntityEgg entityegg, MatrixStack matrixStackIn, float f) {
+        stretch(entityegg, matrixStackIn);
+        super.preRenderCallback(entityegg, matrixStackIn, f);
 
     }
 
-    protected void stretch(MoCEntityEgg entityegg) {
+    protected void stretch(MoCEntityEgg entityegg, MatrixStack matrixStackIn) {
         float f = entityegg.getSize() * 0.01F;
-        GlStateManager.scale(f, f, f);
+        matrixStackIn.scale(f, f, f);
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityEgg entityegg) {
+    public ResourceLocation getEntityTexture(MoCEntityEgg entityegg) {
         return entityegg.getTexture();
     }
 }

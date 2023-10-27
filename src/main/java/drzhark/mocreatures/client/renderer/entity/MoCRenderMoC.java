@@ -3,37 +3,64 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.MoCreatures;
-import drzhark.mocreatures.proxy.MoCProxyClient;
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.MoCEntityAmbient;
 import drzhark.mocreatures.entity.ambient.MoCEntityCrab;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderState;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.LivingRenderer;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.ForgeRenderTypes;
 
-@SideOnly(Side.CLIENT)
-public class MoCRenderMoC<T extends EntityLiving> extends RenderLiving<T> {
+@OnlyIn(Dist.CLIENT)
+public class MoCRenderMoC<T extends MobEntity, M extends EntityModel<T>> extends MobRenderer<T, M> {
+
+    private static class Internal extends RenderType{
+        private Internal(String name, VertexFormat fmt, int glMode, int size, boolean doCrumbling, boolean depthSorting, Runnable onEnable, Runnable onDisable)
+        {
+            super(name, fmt, glMode, size, doCrumbling, depthSorting, onEnable, onDisable);
+            throw new IllegalStateException("This class must not be instantiated");
+        }
+
+        public static RenderType getHealth() {
+            RenderType.State rendertype$state = RenderType.State.getBuilder()
+                    .alpha(RenderState.DEFAULT_ALPHA)
+                    .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
+                    .build(false);
+            return makeType("health", DefaultVertexFormats.POSITION_COLOR, 7, 256, false, true, rendertype$state);
+        }
+    }
 
     private float prevPitch;
     private float prevRoll;
     private float prevYaw;
 
-    public MoCRenderMoC(ModelBase modelbase, float f) {
-        super(MoCProxyClient.mc.getRenderManager(), modelbase, f);
+    public MoCRenderMoC(EntityRendererManager renderManagerIn, M modelbase, float f) {
+        super(renderManagerIn, modelbase, f);
     }
 
     @Override
-    public void doRender(T entity, double d, double d1, double d2, float f, float f1) {
-        doRenderMoC(entity, d, d1, d2, f, f1);
+    public void render(T entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+        renderMoC(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
 
     @Override
@@ -53,81 +80,64 @@ public class MoCRenderMoC<T extends EntityLiving> extends RenderLiving<T> {
         if (entityMoC.shouldRenderNameAndHealth()) {
             float f2 = 1.6F;
             float f3 = 0.01666667F * f2;
-            float f5 = ((Entity) entityMoC).getDistance(this.renderManager.renderViewEntity);
-            if (f5 < 16F) {
+            float f5 = (float) this.renderManager.squareDistanceTo((Entity) entityMoC);
+            if (f5 < 256F) {
                 String s = "";
                 s = s + entityMoC.getPetName();
                 float f7 = 0.1F;
                 FontRenderer fontrenderer = getFontRendererFromRenderManager();
-                GlStateManager.pushMatrix();
-                GlStateManager.translate((float) d + 0.0F, (float) d1 + f7, (float) d2);
-                GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
-                GlStateManager.rotate(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-                GlStateManager.scale(-f3, -f3, f3);
-                GlStateManager.disableLighting();
-                Tessellator tessellator1 = Tessellator.getInstance();
+                matrixStackIn.push();
+                matrixStackIn.translate(0.0F, f7, 0.0F);
+                RenderSystem.normal3f(0.0F, 1.0F, 0.0F);
+                matrixStackIn.rotate(Vector3f.YP.rotationDegrees(-this.renderManager.info.getYaw()));
+                matrixStackIn.scale(-f3, -f3, f3);
                 int yOff = entityMoC.nameYOffset();
                 if (flag1) {
-                    GlStateManager.disableTexture2D();
+
                     if (!flag) {
                         yOff += 8;
                     }
-                    tessellator1.getBuffer().begin(7, DefaultVertexFormats.POSITION_COLOR);
+                    Matrix4f matrix = matrixStackIn.getLast().getMatrix();
+                    IVertexBuilder ivertexbuilder = bufferIn.getBuffer(Internal.getHealth());
                     // might break SSP
-                    float f8 = ((EntityLiving) entityMoC).getHealth();
-                    float f9 = ((EntityLiving) entityMoC).getMaxHealth();
+                    float f8 = ((MobEntity) entityMoC).getHealth();
+                    float f9 = ((MobEntity) entityMoC).getMaxHealth();
                     float f10 = f8 / f9;
                     float f11 = 40F * f10;
-                    tessellator1.getBuffer().pos(-20F + f11, -10 + yOff, 0.0D).color(0.7F, 0.0F, 0.0F, 1.0F).endVertex();
-                    tessellator1.getBuffer().pos(-20F + f11, -6 + yOff, 0.0D).color(0.7F, 0.0F, 0.0F, 1.0F).endVertex();
-                    tessellator1.getBuffer().pos(20D, -6 + yOff, 0.0D).color(0.7F, 0.0F, 0.0F, 1.0F).endVertex();
-                    tessellator1.getBuffer().pos(20D, -10 + yOff, 0.0D).color(0.7F, 0.0F, 0.0F, 1.0F).endVertex();
-                    tessellator1.getBuffer().pos(-20D, -10 + yOff, 0.0D).color(0.0F, 0.7F, 0.0F, 1.0F).endVertex();
-                    tessellator1.getBuffer().pos(-20D, -6 + yOff, 0.0D).color(0.0F, 0.7F, 0.0F, 1.0F).endVertex();
-                    tessellator1.getBuffer().pos(f11 - 20F, -6 + yOff, 0.0D).color(0.0F, 0.7F, 0.0F, 1.0F).endVertex();
-                    tessellator1.getBuffer().pos(f11 - 20F, -10 + yOff, 0.0D).color(0.0F, 0.7F, 0.0F, 1.0F).endVertex();
-                    tessellator1.draw();
-                    GlStateManager.enableTexture2D();
+                    ivertexbuilder.pos(matrix, -20F + f11, -10 + yOff, 0.0F).color(0.7F, 0.0F, 0.0F, 1.0F).endVertex();
+                    ivertexbuilder.pos(matrix, -20F + f11, -6 + yOff, 0.0F).color(0.7F, 0.0F, 0.0F, 1.0F).endVertex();
+                    ivertexbuilder.pos(matrix, 20F, -6 + yOff, 0.0F).color(0.7F, 0.0F, 0.0F, 1.0F).endVertex();
+                    ivertexbuilder.pos(matrix, 20F, -10 + yOff, 0.0F).color(0.7F, 0.0F, 0.0F, 1.0F).endVertex();
+                    ivertexbuilder.pos(matrix, -20F, -10 + yOff, 0.0F).color(0.0F, 0.7F, 0.0F, 1.0F).endVertex();
+                    ivertexbuilder.pos(matrix, -20F, -6 + yOff, 0.0F).color(0.0F, 0.7F, 0.0F, 1.0F).endVertex();
+                    ivertexbuilder.pos(matrix, f11 - 20F, -6 + yOff, 0.0F).color(0.0F, 0.7F, 0.0F, 1.0F).endVertex();
+                    ivertexbuilder.pos(matrix, f11 - 20F, -10 + yOff, 0.0F).color(0.0F, 0.7F, 0.0F, 1.0F).endVertex();
+
                 }
                 if (flag) {
-                    GlStateManager.depthMask(false);
-                    GlStateManager.disableDepth();
-                    GlStateManager.enableBlend();
-                    GlStateManager.blendFunc(770, 771);
-                    GlStateManager.disableTexture2D();
-                    tessellator1.getBuffer().begin(7, DefaultVertexFormats.POSITION_COLOR);
-                    int i = fontrenderer.getStringWidth(s) / 2;
-                    tessellator1.getBuffer().pos(-i - 1, -1 + yOff, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    tessellator1.getBuffer().pos(-i - 1, 8 + yOff, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    tessellator1.getBuffer().pos(i + 1, 8 + yOff, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    tessellator1.getBuffer().pos(i + 1, -1 + yOff, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    tessellator1.draw();
-                    GlStateManager.enableTexture2D();
-                    fontrenderer.drawString(s, -fontrenderer.getStringWidth(s) / 2, yOff, 0x20ffffff);
-                    GlStateManager.enableDepth();
-                    GlStateManager.depthMask(true);
-                    fontrenderer.drawString(s, -fontrenderer.getStringWidth(s) / 2, yOff, -1);
-                    GlStateManager.disableBlend();
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                    Matrix4f matrix4f = matrixStackIn.getLast().getMatrix();
+                    float f1 = Minecraft.getInstance().gameSettings.getTextBackgroundOpacity(0.25F);
+                    int j = (int)(f1 * 255.0F) << 24;
+                    float i = (float)(-fontrenderer.getStringPropertyWidth(new StringTextComponent(s)) / 2);
+                    fontrenderer.func_243247_a(new StringTextComponent(s), i, yOff, 553648127, false, matrix4f, bufferIn, true, j, packedLightIn);
+                    fontrenderer.func_243247_a(new StringTextComponent(s), i, yOff, -1, false, matrix4f, bufferIn, false, 0, packedLightIn);
                 }
-                GlStateManager.enableLighting();
-                GlStateManager.popMatrix();
+                matrixStackIn.pop();
             }
         }
-
     }
 
-    protected void stretch(IMoCEntity mocreature) {
+    protected void stretch(IMoCEntity mocreature, MatrixStack matrixStackIn) {
         float f = mocreature.getSizeFactor();
         if (f != 0) {
-            GlStateManager.scale(f, f, f);
+            matrixStackIn.scale(f, f, f);
         }
     }
 
     @Override
-    protected void preRenderCallback(T entityliving, float f) {
+    protected void preRenderCallback(T entityliving, MatrixStack matrixStackIn, float f) {
         IMoCEntity mocreature = (IMoCEntity) entityliving;
-        super.preRenderCallback(entityliving, f);
+        super.preRenderCallback(entityliving, matrixStackIn, f);
         // Interpolation factor for smoother animations
         float interpolationFactor = 0.05F;
         // Interpolate pitch, roll, and yaw
@@ -136,62 +146,62 @@ public class MoCRenderMoC<T extends EntityLiving> extends RenderLiving<T> {
         float interpolatedYaw = prevYaw + (mocreature.yawRotationOffset() - prevYaw) * interpolationFactor;
         // Apply the interpolated transformations
         if (interpolatedPitch != 0) {
-            GlStateManager.rotate(interpolatedPitch, -1.0F, 0.0F, 0.0F);
+            matrixStackIn.rotate(Vector3f.XN.rotationDegrees(interpolatedPitch));
         }
         if (interpolatedRoll != 0) {
-            GlStateManager.rotate(interpolatedRoll, 0F, 0F, -1.0F);
+            matrixStackIn.rotate(Vector3f.ZN.rotationDegrees(interpolatedRoll));
         }
         if (interpolatedYaw != 0) {
-            GlStateManager.rotate(interpolatedYaw, 0.0F, -1.0F, 0.0F);
+            matrixStackIn.rotate(Vector3f.YN.rotationDegrees(interpolatedYaw));
         }
         // Save the current values for the next frame's interpolation
         prevPitch = interpolatedPitch;
         prevRoll = interpolatedRoll;
         prevYaw = interpolatedYaw;
-        adjustPitch(mocreature);
-        adjustRoll(mocreature);
-        adjustYaw(mocreature);
-        stretch(mocreature);
+        adjustPitch(mocreature, matrixStackIn);
+        adjustRoll(mocreature, matrixStackIn);
+        adjustYaw(mocreature, matrixStackIn);
+        stretch(mocreature, matrixStackIn);
     }
 
     /**
      * Tilts the creature to the front / back
      */
-    protected void adjustPitch(IMoCEntity mocreature) {
+    protected void adjustPitch(IMoCEntity mocreature, MatrixStack matrixStackIn) {
         float f = mocreature.pitchRotationOffset();
 
         if (f != 0) {
-            GlStateManager.rotate(f, -1F, 0.0F, 0.0F);
+            matrixStackIn.rotate(Vector3f.XN.rotationDegrees(f));
         }
     }
 
     /**
      * Rolls creature
      */
-    protected void adjustRoll(IMoCEntity mocreature) {
+    protected void adjustRoll(IMoCEntity mocreature, MatrixStack matrixStackIn) {
         float f = mocreature.rollRotationOffset();
 
         if (f != 0) {
-            GlStateManager.rotate(f, 0F, 0F, -1F);
+            matrixStackIn.rotate(Vector3f.ZN.rotationDegrees(f));
         }
     }
 
-    protected void adjustYaw(IMoCEntity mocreature) {
+    protected void adjustYaw(IMoCEntity mocreature, MatrixStack matrixStackIn) {
         float f = mocreature.yawRotationOffset();
         if (f != 0) {
-            GlStateManager.rotate(f, 0.0F, -1.0F, 0.0F);
+            matrixStackIn.rotate(Vector3f.YN.rotationDegrees(f));
         }
     }
 
     /**
      * translates the model
      */
-    protected void adjustOffsets(float xOffset, float yOffset, float zOffset) {
-        GlStateManager.translate(xOffset, yOffset, zOffset);
+    protected void adjustOffsets(float xOffset, float yOffset, float zOffset, MatrixStack matrixStackIn) {
+        matrixStackIn.translate(xOffset, yOffset, zOffset);
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityLiving entity) {
+    public ResourceLocation getEntityTexture(MobEntity entity) {
         return ((IMoCEntity) entity).getTexture();
     }
 }

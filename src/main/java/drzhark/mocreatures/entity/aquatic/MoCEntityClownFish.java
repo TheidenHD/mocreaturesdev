@@ -5,6 +5,7 @@ package drzhark.mocreatures.entity.aquatic;
 
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCLootTables;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -12,9 +13,9 @@ import javax.annotation.Nullable;
 
 public class MoCEntityClownFish extends MoCEntitySmallFish {
 
-    public MoCEntityClownFish(World world) {
-        super(world);
-        this.setType(4);
+    public MoCEntityClownFish(EntityType<? extends MoCEntityClownFish> type, World world) {
+        super(type, world);
+        this.setTypeMoC(4);
     }
 
     @Override
@@ -23,7 +24,6 @@ public class MoCEntityClownFish extends MoCEntitySmallFish {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.CLOWNFISH;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.CLOWNFISH;
     }
 }

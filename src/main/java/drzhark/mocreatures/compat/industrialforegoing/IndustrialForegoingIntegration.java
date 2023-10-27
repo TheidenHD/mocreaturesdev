@@ -36,10 +36,4 @@ public class IndustrialForegoingIntegration {
                 new ItemStack(MoCItems.heartEternal)
         };
     }
-
-    public static ExtractorEntry[] getLatexEntries() {
-        return new ExtractorEntry[]{
-                new ExtractorEntry(new ItemStack(MoCBlocks.wyvwoodLog), new FluidStack(FluidsRegistry.LATEX, 1)),
-        };
-    }
 }

@@ -3,49 +3,43 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
-import drzhark.mocreatures.proxy.MoCProxyClient;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import drzhark.mocreatures.client.model.MoCModelFishy;
 import drzhark.mocreatures.entity.aquatic.MoCEntityFishy;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCRenderFishy extends RenderLiving<MoCEntityFishy> {
+@OnlyIn(Dist.CLIENT)
+public class MoCRenderFishy extends MobRenderer<MoCEntityFishy, MoCModelFishy<MoCEntityFishy>> {
 
-    public MoCRenderFishy(ModelBase modelbase, float f) {
-        super(MoCProxyClient.mc.getRenderManager(), modelbase, f);
+    public MoCRenderFishy(EntityRendererManager renderManagerIn, MoCModelFishy modelbase, float f) {
+        super(renderManagerIn, modelbase, f);
     }
 
     @Override
-    public void doRender(MoCEntityFishy entityfishy, double d, double d1, double d2, float f, float f1) {
-        if (entityfishy.getType() == 0) { // && !MoCreatures.mc.isMultiplayerWorld())
+    public void render(MoCEntityFishy entityfishy, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+        if (entityfishy.getTypeMoC() == 0) { // && !MoCreatures.mc.isMultiplayerWorld())
             entityfishy.selectType();
         }
-        super.doRender(entityfishy, d, d1, d2, f, f1);
+        super.render(entityfishy, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
 
     @Override
-    protected void preRenderCallback(MoCEntityFishy entityfishy, float f) {
-        GlStateManager.translate(0.0F, 0.3F, 0.0F);
+    protected void preRenderCallback(MoCEntityFishy entityfishy, MatrixStack matrixStackIn, float f) {
+        stretch(entityfishy, matrixStackIn);
+        matrixStackIn.translate(0.0F, 0.3F, 0.0F);
+    }
+
+    protected void stretch(MoCEntityFishy entityfishy, MatrixStack matrixStackIn) {
+        matrixStackIn.scale(entityfishy.getAge() * 0.01F, entityfishy.getAge() * 0.01F, entityfishy.getAge() * 0.01F);
     }
 
     @Override
-    protected float handleRotationFloat(MoCEntityFishy entityfishy, float f) {
-        if (!entityfishy.getIsAdult()) {
-            stretch(entityfishy);
-        }
-        return entityfishy.ticksExisted + f;
-    }
-
-    protected void stretch(MoCEntityFishy entityfishy) {
-        GlStateManager.scale(entityfishy.getAge() * 0.01F, entityfishy.getAge() * 0.01F, entityfishy.getAge() * 0.01F);
-    }
-
-    @Override
-    protected ResourceLocation getEntityTexture(MoCEntityFishy entityfishy) {
+    public ResourceLocation getEntityTexture(MoCEntityFishy entityfishy) {
         return entityfishy.getTexture();
     }
 }

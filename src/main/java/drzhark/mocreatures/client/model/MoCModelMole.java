@@ -3,17 +3,17 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.passive.MoCEntityMole;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelMole extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelMole<T extends MoCEntityMole> extends EntityModel<T> {
 
     ModelRenderer Nose;
     ModelRenderer Head;
@@ -26,6 +26,7 @@ public class MoCModelMole extends ModelBase {
     ModelRenderer RFingers;
     ModelRenderer LRearLeg;
     ModelRenderer RRearLeg;
+    private float yOffset;
 
     public MoCModelMole() {
         this.textureWidth = 64;
@@ -84,25 +85,26 @@ public class MoCModelMole extends ModelBase {
         setRotation(this.RRearLeg, -0.2792527F, -0.5235988F, 0F);
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.yOffset = entityIn.getAdjustedYOffset();
+    }
+
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        setRotationAngles(f, f1, f2, f3, f4, f5);
-        MoCEntityMole mole = (MoCEntityMole) entity;
-        float yOffset = mole.getAdjustedYOffset();
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0F, yOffset, 0F);
-        this.Nose.render(f5);
-        this.Head.render(f5);
-        this.Body.render(f5);
-        this.Back.render(f5);
-        this.Tail.render(f5);
-        this.LLeg.render(f5);
-        this.LFingers.render(f5);
-        this.RLeg.render(f5);
-        this.RFingers.render(f5);
-        this.LRearLeg.render(f5);
-        this.RRearLeg.render(f5);
-        GlStateManager.popMatrix();
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        matrixStackIn.push();
+        matrixStackIn.translate(0F, yOffset, 0F);
+        this.Nose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Back.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LFingers.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RFingers.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LRearLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RRearLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        matrixStackIn.pop();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {
@@ -111,16 +113,16 @@ public class MoCModelMole extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        //super.setRotationAngles(f, f1, f2, f3, f4, f5);
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        //super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
 
-        this.Head.rotateAngleY = f3 / 57.29578F;
-        this.Head.rotateAngleX = f4 / 57.29578F;
+        this.Head.rotateAngleY = netHeadYaw / 57.29578F;
+        this.Head.rotateAngleX = headPitch / 57.29578F;
         this.Nose.rotateAngleX = 0.2617994F + this.Head.rotateAngleX;
         this.Nose.rotateAngleY = this.Head.rotateAngleY;
 
-        float RLegXRot = MathHelper.cos((f) + 3.141593F) * 0.8F * f1;
-        float LLegXRot = MathHelper.cos(f) * 0.8F * f1;
+        float RLegXRot = MathHelper.cos((limbSwing) + 3.141593F) * 0.8F * limbSwingAmount;
+        float LLegXRot = MathHelper.cos(limbSwing) * 0.8F * limbSwingAmount;
 
         this.RLeg.rotateAngleY = RLegXRot;
         this.RFingers.rotateAngleY = this.RLeg.rotateAngleY;

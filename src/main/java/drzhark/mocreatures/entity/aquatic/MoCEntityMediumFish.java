@@ -12,16 +12,16 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class MoCEntityMediumFish extends MoCEntityTameableAquatic {
 
     public static final String[] fishNames = {"Salmon", "Cod", "Bass"};
 
-    public MoCEntityMediumFish(World world) {
-        super(world);
-        setSize(0.7f, 0.45f);
+    public MoCEntityMediumFish(EntityType<? extends MoCEntityMediumFish> type, World world) {
+        super(type, world);
+        //setSize(0.7f, 0.45f);
         // TODO: Make hitboxes adjust depending on size
         //setAge(30 + this.rand.nextInt(70));
         setAge(100);
@@ -29,48 +29,44 @@ public class MoCEntityMediumFish extends MoCEntityTameableAquatic {
 
     public static MoCEntityMediumFish createEntity(World world, int type) {
         if (type == 1) {
-            return new MoCEntitySalmon(world);
+            return MoCEntities.SALMON.create(world);
         }
         if (type == 2) {
-            return new MoCEntityCod(world);
+            return MoCEntities.COD.create(world);
         }
         if (type == 3) {
-            return new MoCEntityBass(world);
+            return MoCEntities.BASS.create(world);
         }
-
-        return new MoCEntitySalmon(world);
+        return MoCEntities.SALMON.create(world);
     }
 
     @Override
-    protected void initEntityAI() {
-        this.tasks.addTask(3, new EntityAIFleeFromEntityMoC(this, entity -> (entity.height > 0.6F && entity.width > 0.3F), 2.0F, 0.6D, 1.5D));
-        this.tasks.addTask(5, new EntityAIWanderMoC2(this, 1.0D, 50));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(3, new EntityAIFleeFromEntityMoC(this, entity -> (entity.getHeight() > 0.6F && entity.getWidth() > 0.3F), 2.0F, 0.6D, 1.5D));
+        this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 1.0D, 50));
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(7.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.5D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntityTameableAquatic.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 7.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.5D);
     }
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(this.rand.nextInt(fishNames.length) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(fishNames.length) + 1);
         }
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
 
         if (!this.world.isRemote) {
             if (getIsTamed() && this.rand.nextInt(100) == 0 && getHealth() < getMaxHealth()) {
                 this.setHealth(getMaxHealth());
             }
         }
-        if (!this.isInsideOfMaterial(Material.WATER)) {
+        if (!this.areEyesInFluid(FluidTags.WATER)) {
             this.prevRenderYawOffset = this.renderYawOffset = this.rotationYaw = this.prevRotationYaw;
             this.rotationPitch = this.prevRotationPitch;
         }
@@ -83,7 +79,7 @@ public class MoCEntityMediumFish extends MoCEntityTameableAquatic {
 
     @Override
     public float getAdjustedYOffset() {
-        if (!this.isInsideOfMaterial(Material.WATER)) {
+        if (!this.areEyesInFluid(FluidTags.WATER)) {
             return 1F;
         }
         return 0.5F;
@@ -94,10 +90,10 @@ public class MoCEntityMediumFish extends MoCEntityTameableAquatic {
         return !getIsTamed();
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float yawRotationOffset() {
-        if (!this.isInsideOfMaterial(Material.WATER)) {
+        if (!this.areEyesInFluid(FluidTags.WATER)) {
             return 90F;
         }
         return 90F + super.yawRotationOffset();
@@ -164,8 +160,8 @@ public class MoCEntityMediumFish extends MoCEntityTameableAquatic {
         return getIsTamed();
     }
 
-    public float getEyeHeight() {
-        return this.height * 0.775F;
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return this.getHeight() * 0.775F;
     }
     
     @Override

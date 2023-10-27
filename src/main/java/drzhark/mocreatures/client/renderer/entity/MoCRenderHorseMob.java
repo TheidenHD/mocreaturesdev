@@ -3,29 +3,29 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
-import drzhark.mocreatures.proxy.MoCProxyClient;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import drzhark.mocreatures.client.model.MoCModelHorseMob;
 import drzhark.mocreatures.entity.hostile.MoCEntityHorseMob;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCRenderHorseMob extends RenderLiving<MoCEntityHorseMob> {
+@OnlyIn(Dist.CLIENT)
+public class MoCRenderHorseMob extends MobRenderer<MoCEntityHorseMob, MoCModelHorseMob<MoCEntityHorseMob>> {
 
-    public MoCRenderHorseMob(MoCModelHorseMob modelbase) {
-        super(MoCProxyClient.mc.getRenderManager(), modelbase, 0.5F);
+    public MoCRenderHorseMob(EntityRendererManager renderManagerIn, MoCModelHorseMob modelbase) {
+        super(renderManagerIn, modelbase, 0.5F);
 
     }
 
-    protected void adjustHeight(MoCEntityHorseMob entityhorsemob, float FHeight) {
-        GlStateManager.translate(0.0F, FHeight, 0.0F);
+    protected void adjustHeight(MoCEntityHorseMob entityhorsemob, float FHeight, MatrixStack matrixStackIn) {
+        matrixStackIn.translate(0.0F, FHeight, 0.0F);
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityHorseMob entityhorsemob) {
+    public ResourceLocation getEntityTexture(MoCEntityHorseMob entityhorsemob) {
         return entityhorsemob.getTexture();
     }
 }

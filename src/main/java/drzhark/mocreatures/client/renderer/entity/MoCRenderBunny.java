@@ -3,58 +3,51 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import drzhark.mocreatures.client.model.MoCModelBunny;
 import drzhark.mocreatures.entity.passive.MoCEntityBunny;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCRenderBunny extends MoCRenderMoC<MoCEntityBunny> {
+@OnlyIn(Dist.CLIENT)
+public class MoCRenderBunny extends MoCRenderMoC<MoCEntityBunny, MoCModelBunny<MoCEntityBunny>> {
 
-    public MoCRenderBunny(ModelBase modelbase, float f) {
-        super(modelbase, f);
+    public MoCRenderBunny(EntityRendererManager renderManagerIn, MoCModelBunny modelbase, float f) {
+        super(renderManagerIn, modelbase, f);
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityBunny entitybunny) {
+    public ResourceLocation getEntityTexture(MoCEntityBunny entitybunny) {
         return entitybunny.getTexture();
     }
 
     @Override
-    public void doRender(MoCEntityBunny entitybunny, double d, double d1, double d2, float f, float f1) {
-        super.doRender(entitybunny, d, d1, d2, f, f1);
-    }
-
-    @Override
-    protected float handleRotationFloat(MoCEntityBunny entitybunny, float f) {
+    protected void preRenderCallback(MoCEntityBunny entitybunny, MatrixStack matrixStackIn, float f) {
         if (!entitybunny.getIsAdult()) {
-            stretch(entitybunny);
+            stretch(entitybunny, matrixStackIn);
         }
-        return entitybunny.ticksExisted + f;
+        rotBunny(entitybunny, matrixStackIn);
+        adjustOffsets(entitybunny.getAdjustedXOffset(), entitybunny.getAdjustedYOffset(), entitybunny.getAdjustedZOffset(), matrixStackIn);
     }
 
-    @Override
-    protected void preRenderCallback(MoCEntityBunny entitybunny, float f) {
-        rotBunny(entitybunny);
-        adjustOffsets(entitybunny.getAdjustedXOffset(), entitybunny.getAdjustedYOffset(), entitybunny.getAdjustedZOffset());
-    }
-
-    protected void rotBunny(MoCEntityBunny entitybunny) {
-        if (!entitybunny.onGround && (entitybunny.getRidingEntity() == null)) {
-            if (entitybunny.motionY > 0.5D) {
-                GlStateManager.rotate(35F, -1F, 0.0F, 0.0F);
-            } else if (entitybunny.motionY < -0.5D) {
-                GlStateManager.rotate(-35F, -1F, 0.0F, 0.0F);
+    protected void rotBunny(MoCEntityBunny entitybunny, MatrixStack matrixStackIn) {
+        if (!entitybunny.isOnGround() && (entitybunny.getRidingEntity() == null)) {
+            if (entitybunny.getMotion().getY() > 0.5D) {
+                matrixStackIn.rotate(Vector3f.XN.rotationDegrees(35F));
+            } else if (entitybunny.getMotion().getY() < -0.5D) {
+                matrixStackIn.rotate(Vector3f.XN.rotationDegrees(-35F));
             } else {
-                GlStateManager.rotate((float) (entitybunny.motionY * 70D), -1F, 0.0F, 0.0F);
+                matrixStackIn.rotate(Vector3f.XN.rotationDegrees((float) (entitybunny.getMotion().getY() * 70D)));
             }
         }
     }
 
-    protected void stretch(MoCEntityBunny entitybunny) {
+    protected void stretch(MoCEntityBunny entitybunny, MatrixStack matrixStackIn) {
         float f = entitybunny.getAge() * 0.01F;
-        GlStateManager.scale(f, f, f);
+        matrixStackIn.scale(f, f, f);
     }
 }

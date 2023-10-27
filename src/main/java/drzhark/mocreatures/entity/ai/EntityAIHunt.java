@@ -11,22 +11,22 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.player.EntityPlayer;
 
-public class EntityAIHunt<T extends EntityLivingBase> extends EntityAINearestAttackableTarget<T> {
+public class EntityAIHunt<T extends LivingEntity> extends NearestAttackableTargetGoal<T> {
 
     private final EntityCreature hunter;
     private final Class<T> targetClass;
 
-    public EntityAIHunt(EntityCreature entity, Class<T> classTarget, int chance, boolean checkSight, boolean onlyNearby, Predicate<EntityLivingBase> predicate) {
+    public EntityAIHunt(CreatureEntity entity, Class<T> classTarget, int chance, boolean checkSight, boolean onlyNearby, Predicate<LivingEntity> predicate) {
         super(entity, classTarget, chance, checkSight, onlyNearby, predicate);
         this.hunter = entity;
         this.targetClass = classTarget;
     }
 
-    public EntityAIHunt(EntityCreature entityCreature, Class<T> classTarget, boolean checkSight) {
+    public EntityAIHunt(CreatureEntity entityCreature, Class<T> classTarget, boolean checkSight) {
         this(entityCreature, classTarget, checkSight, false);
     }
 
-    public EntityAIHunt(EntityCreature entity, Class<T> classTarget, boolean checkSight, boolean onlyNearby) {
+    public EntityAIHunt(CreatureEntity entity, Class<T> classTarget, boolean checkSight, boolean onlyNearby) {
         this(entity, classTarget, 10, checkSight, onlyNearby, null);
 
     }

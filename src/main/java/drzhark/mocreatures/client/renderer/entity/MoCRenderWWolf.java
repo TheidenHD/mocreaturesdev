@@ -3,24 +3,23 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
-import drzhark.mocreatures.proxy.MoCProxyClient;
+import drzhark.mocreatures.client.model.MoCModelWolf;
 import drzhark.mocreatures.entity.hostile.MoCEntityWWolf;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCRenderWWolf extends RenderLiving<EntityLiving> {
+@OnlyIn(Dist.CLIENT)
+public class MoCRenderWWolf extends MobRenderer<MoCEntityWWolf, MoCModelWolf<MoCEntityWWolf>> {
 
-    public MoCRenderWWolf(ModelBase modelbase, float f) {
-        super(MoCProxyClient.mc.getRenderManager(), modelbase, f);
+    public MoCRenderWWolf(EntityRendererManager renderManagerIn, MoCModelWolf modelbase, float f) {
+        super(renderManagerIn, modelbase, f);
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityLiving par1Entity) {
-        return ((MoCEntityWWolf) par1Entity).getTexture();
+    public ResourceLocation getEntityTexture(MoCEntityWWolf par1Entity) {
+        return par1Entity.getTexture();
     }
 }

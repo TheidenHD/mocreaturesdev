@@ -3,28 +3,29 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import drzhark.mocreatures.client.model.MoCModelRat;
 import drzhark.mocreatures.entity.hostile.MoCEntityHellRat;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCRenderHellRat extends MoCRenderRat<MoCEntityHellRat> {
+@OnlyIn(Dist.CLIENT)
+public class MoCRenderHellRat extends MoCRenderRat<MoCEntityHellRat, MoCModelRat<MoCEntityHellRat>> {
 
-    public MoCRenderHellRat(ModelBase modelbase, float f) {
-        super(modelbase, f);
+    public MoCRenderHellRat(EntityRendererManager renderManagerIn, MoCModelRat modelbase, float f) {
+        super(renderManagerIn, modelbase, f);
     }
 
     @Override
-    protected void stretch(MoCEntityHellRat entityhellrat) {
+    protected void stretch(MoCEntityHellRat entityhellrat, MatrixStack matrixStackIn) {
         float f = 1.3F;
-        GlStateManager.scale(f, f, f);
+        matrixStackIn.scale(f, f, f);
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityHellRat entityhellrat) {
+    public ResourceLocation getEntityTexture(MoCEntityHellRat entityhellrat) {
         return entityhellrat.getTexture();
     }
 }

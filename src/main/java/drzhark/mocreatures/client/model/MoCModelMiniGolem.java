@@ -3,16 +3,17 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.hostile.MoCEntityMiniGolem;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelMiniGolem extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelMiniGolem<T extends MoCEntityMiniGolem> extends EntityModel<T> {
 
     private final float radianF = 57.29578F;
     ModelRenderer Head;
@@ -31,6 +32,7 @@ public class MoCModelMiniGolem extends ModelBase {
     ModelRenderer RightFoot;
     ModelRenderer LeftLeg;
     ModelRenderer LeftFoot;
+    private boolean angry;
 
     public MoCModelMiniGolem() {
         this.textureWidth = 64;
@@ -104,36 +106,32 @@ public class MoCModelMiniGolem extends ModelBase {
 
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.angry = entityIn.isAggressive();
+    }
+
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-
-        MoCEntityMiniGolem minigolem = (MoCEntityMiniGolem) entity;
-        boolean angry = minigolem.getIsAngry();
-        boolean hasRock = minigolem.getHasRock();
-
-        setRotationAngles(f, f1, f2, f3, f4, f5, hasRock);
-
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         if (angry) {
-            this.HeadRed.render(f5);
-            this.BodyRed.render(f5);
+            this.HeadRed.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.BodyRed.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else {
-            this.Head.render(f5);
-            this.Body.render(f5);
+            this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
 
-        this.LeftShoulder.render(f5);
-        this.LeftArm.render(f5);
-        this.LeftArmRingA.render(f5);
-        this.LeftArmRingB.render(f5);
-        this.RightShoulder.render(f5);
-        this.RightArm.render(f5);
-        this.RightArmRingA.render(f5);
-        this.RightArmRingB.render(f5);
-        this.RightLeg.render(f5);
-        this.RightFoot.render(f5);
-        this.LeftLeg.render(f5);
-        this.LeftFoot.render(f5);
+        this.LeftShoulder.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftArm.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftArmRingA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftArmRingB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightShoulder.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightArm.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightArmRingA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightArmRingB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightFoot.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftFoot.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {
@@ -142,10 +140,10 @@ public class MoCModelMiniGolem extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, boolean hasRock) {
-        float hRotY = f3 / 57.29578F;
-        float RLegXRot = MathHelper.cos((f * 0.6662F) + 3.141593F) * 0.8F * f1;
-        float LLegXRot = MathHelper.cos(f * 0.6662F) * 0.8F * f1;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        float hRotY = netHeadYaw / 57.29578F;
+        float RLegXRot = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
+        float LLegXRot = MathHelper.cos(limbSwing * 0.6662F) * 0.8F * limbSwingAmount;
 
         this.RightLeg.rotateAngleX = RLegXRot;
         this.RightFoot.rotateAngleX = RLegXRot;
@@ -155,15 +153,15 @@ public class MoCModelMiniGolem extends ModelBase {
         this.Head.rotateAngleY = -0.7853982F + hRotY;
         this.HeadRed.rotateAngleY = -0.7853982F + hRotY;
 
-        if (hasRock) {
+        if (entityIn.getHasRock()) {
             this.LeftShoulder.rotateAngleZ = 0F;
             this.LeftShoulder.rotateAngleX = -180F / this.radianF;
             this.RightShoulder.rotateAngleZ = 0F;
             this.RightShoulder.rotateAngleX = -180F / this.radianF;
         } else {
-            this.LeftShoulder.rotateAngleZ = (MathHelper.cos(f2 * 0.09F) * 0.05F) - 0.05F;
+            this.LeftShoulder.rotateAngleZ = (MathHelper.cos(ageInTicks * 0.09F) * 0.05F) - 0.05F;
             this.LeftShoulder.rotateAngleX = RLegXRot;
-            this.RightShoulder.rotateAngleZ = -(MathHelper.cos(f2 * 0.09F) * 0.05F) + 0.05F;
+            this.RightShoulder.rotateAngleZ = -(MathHelper.cos(ageInTicks * 0.09F) * 0.05F) + 0.05F;
             this.RightShoulder.rotateAngleX = LLegXRot;
         }
 
@@ -173,6 +171,6 @@ public class MoCModelMiniGolem extends ModelBase {
         this.LeftArm.rotateAngleX = this.LeftArmRingA.rotateAngleX = this.LeftArmRingB.rotateAngleX = this.LeftShoulder.rotateAngleX;
         this.LeftArm.rotateAngleZ = this.LeftArmRingA.rotateAngleZ = this.LeftArmRingB.rotateAngleZ = this.LeftShoulder.rotateAngleZ;
 
-        //super.setRotationAngles(f, f1, f2, f3, f4, f5);
+        //super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
     }
 }

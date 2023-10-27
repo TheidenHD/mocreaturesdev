@@ -3,15 +3,17 @@
  */
 package drzhark.mocreatures.client.model.legacy;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.hunter.MoCEntityBigCat;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCLegacyModelBigCat2 extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCLegacyModelBigCat2<T extends MoCEntityBigCat> extends EntityModel<T> {
 
     public boolean sitting;
     public boolean tamed;
@@ -61,29 +63,28 @@ public class MoCLegacyModelBigCat2 extends ModelBase {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        setRotationAngles(f, f1, f2, f3, f4, f5);
-        this.snout.render(f5);
-        this.tail.render(f5);
-        this.ears.render(f5);
-        this.head.render(f5);
-        this.body.render(f5);
-        this.leg1.render(f5);
-        this.leg2.render(f5);
-        this.leg3.render(f5);
-        this.leg4.render(f5);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.snout.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.ears.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.leg1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.leg2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.leg3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.leg4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         if (this.tamed) {
-            this.collar.render(f5);
+            this.collar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        this.head.rotateAngleX = f4 / 57.29578F;
-        this.head.rotateAngleY = f3 / 57.29578F;
-        this.leg1.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
-        this.leg2.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.4F * f1;
-        this.leg3.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.4F * f1;
-        this.leg4.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.head.rotateAngleX = headPitch / 57.29578F;
+        this.head.rotateAngleY = netHeadYaw / 57.29578F;
+        this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        this.leg2.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.4F * limbSwingAmount;
+        this.leg3.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.4F * limbSwingAmount;
+        this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         this.snout.rotateAngleY = this.head.rotateAngleY;
         this.snout.rotateAngleX = this.head.rotateAngleX;
         this.ears.rotateAngleY = this.head.rotateAngleY;
@@ -107,7 +108,7 @@ public class MoCLegacyModelBigCat2 extends ModelBase {
             this.tail.rotationPointY = 9.3F;
             this.tail.rotationPointZ = 9F;
             this.tail.rotateAngleX = -0.5235988F;
-            this.tail.rotateAngleY = MathHelper.cos(f * 0.6662F) * 0.7F * f1;
+            this.tail.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F) * 0.7F * limbSwingAmount;
         } else {
             this.body.rotateAngleX = 0.8726646F;
             this.body.rotationPointX = 0.0F;

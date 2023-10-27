@@ -5,7 +5,9 @@ package drzhark.mocreatures.entity.hostile;
 
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCLootTables;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -14,17 +16,13 @@ import javax.annotation.Nullable;
 
 public class MoCEntityFireOgre extends MoCEntityOgre {
 
-    public MoCEntityFireOgre(World world) {
-        super(world);
-        this.isImmuneToFire = true;
+    public MoCEntityFireOgre(EntityType<? extends MoCEntityFireOgre> type, World world) {
+        super(type, world);
+        //this.isImmuneToFire = true;
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(65.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(9.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(7.5D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntityOgre.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 65.0D).createMutableAttribute(Attributes.ARMOR, 9.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.5D);
     }
 
     @Override
@@ -43,8 +41,8 @@ public class MoCEntityFireOgre extends MoCEntityOgre {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
 
         if (this.isWet()) {
             this.attackEntityFrom(DamageSource.DROWN, 1.0F);
@@ -52,7 +50,6 @@ public class MoCEntityFireOgre extends MoCEntityOgre {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.FIRE_OGRE;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.FIRE_OGRE;
     }
 }

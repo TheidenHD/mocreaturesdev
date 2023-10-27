@@ -3,17 +3,18 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.ambient.MoCEntityGrasshopper;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelGrasshopper extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelGrasshopper<T extends MoCEntityGrasshopper> extends EntityModel<T> {
 
     ModelRenderer Head;
     ModelRenderer Antenna;
@@ -35,6 +36,7 @@ public class MoCModelGrasshopper extends ModelBase {
     ModelRenderer LeftWing;
     ModelRenderer RightWing;
     ModelRenderer FoldedWings;
+    private boolean flying;
 
     public MoCModelGrasshopper() {
         this.textureWidth = 32;
@@ -139,42 +141,43 @@ public class MoCModelGrasshopper extends ModelBase {
         setRotation(this.FoldedWings, 0F, -1.570796F, 0F);
     }
 
-    @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        MoCEntityGrasshopper entitycricket = (MoCEntityGrasshopper) entity;
-        boolean isFlying = (entitycricket.getIsFlying() || entitycricket.motionY < -0.1D);
-        setRotationAngles(f, f1, f2, f3, f4, f5, isFlying);
-        this.Head.render(f5);
-        this.Antenna.render(f5);
-        this.AntennaB.render(f5);
-        this.Thorax.render(f5);
-        this.Abdomen.render(f5);
-        this.TailA.render(f5);
-        this.TailB.render(f5);
-        this.FrontLegs.render(f5);
-        this.MidLegs.render(f5);
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.flying = (entityIn.getIsFlying() || entityIn.getMotion().getY() < -0.1D);
+    }
 
-        if (!isFlying) {
-            this.ThighLeft.render(f5);
-            this.ThighRight.render(f5);
-            this.LegLeft.render(f5);
-            this.LegRight.render(f5);
-            this.FoldedWings.render(f5);
+    @Override
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Antenna.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.AntennaB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Thorax.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Abdomen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TailA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TailB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.FrontLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.MidLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
+        if (!this.flying) {
+            this.ThighLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.ThighRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LegLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LegRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.FoldedWings.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         } else {
-            this.ThighLeftB.render(f5);
-            this.ThighRightB.render(f5);
-            this.LegLeftB.render(f5);
-            this.LegRightB.render(f5);
-            GlStateManager.pushMatrix();
-            GlStateManager.enableBlend();
+            this.ThighLeftB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.ThighRightB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LegLeftB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LegRightB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            matrixStackIn.push();
+            RenderSystem.enableBlend();
             float transparency = 0.6F;
-            GlStateManager.blendFunc(770, 771);
-            GlStateManager.color(0.8F, 0.8F, 0.8F, transparency);
-            this.LeftWing.render(f5);
-            this.RightWing.render(f5);
-            GlStateManager.disableBlend();
-            GlStateManager.popMatrix();
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.color4f(0.8F, 0.8F, 0.8F, transparency);
+            this.LeftWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.RightWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            RenderSystem.disableBlend();
+            matrixStackIn.pop();
         }
     }
 
@@ -184,24 +187,24 @@ public class MoCModelGrasshopper extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, boolean isFlying) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 
         float legMov;
         float legMovB;
 
         float frontLegAdj = 0F;
 
-        if (isFlying) {
-            float WingRot = MathHelper.cos((f2 * 2.0F)) * 0.7F;
+        if (this.flying) {
+            float WingRot = MathHelper.cos((ageInTicks * 2.0F)) * 0.7F;
             this.RightWing.rotateAngleZ = WingRot;
             this.LeftWing.rotateAngleZ = -WingRot;
-            legMov = (f1 * 1.5F);
+            legMov = (limbSwingAmount * 1.5F);
             legMovB = legMov;
             frontLegAdj = 1.4F;
 
         } else {
-            legMov = MathHelper.cos((f * 1.5F) + 3.141593F) * 2.0F * f1;
-            legMovB = MathHelper.cos(f * 1.5F) * 2.0F * f1;
+            legMov = MathHelper.cos((limbSwing * 1.5F) + 3.141593F) * 2.0F * limbSwingAmount;
+            legMovB = MathHelper.cos(limbSwing * 1.5F) * 2.0F * limbSwingAmount;
         }
 
         this.AntennaB.rotateAngleX = 2.88506F - legMov;

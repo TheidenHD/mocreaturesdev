@@ -3,16 +3,19 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.aquatic.MoCEntityJellyFish;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelJellyFish extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelJellyFish<T extends MoCEntityJellyFish> extends EntityModel<T> {
 
     ModelRenderer Top;
     ModelRenderer Head;
@@ -37,6 +40,9 @@ public class MoCModelJellyFish extends ModelBase {
     ModelRenderer Leg7;
     ModelRenderer Leg8;
     ModelRenderer Leg9;
+    private boolean glowing;
+    private boolean outOfWater;
+    private float limbSwingAmount;
 
     public MoCModelJellyFish() {
         this.textureWidth = 64;
@@ -146,56 +152,57 @@ public class MoCModelJellyFish extends ModelBase {
         setRotation(this.Leg9, 0F, 0.7853982F, 0F);
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.glowing = entityIn.isGlowing();
+        this.outOfWater = !entityIn.isInWater();
+        this.limbSwingAmount = limbSwingAmount;
+    }
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        setRotationAngles(f, f1, f2, f3, f4, f5);
-        MoCEntityJellyFish jellyfish = (MoCEntityJellyFish) entity;
-        boolean glowing = jellyfish.isGlowing();
-        boolean outOfWater = !jellyfish.isInWater();
-        GlStateManager.pushMatrix();
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        matrixStackIn.push();
         if (outOfWater) {
-            GlStateManager.translate(0F, 0.6F, -0.3F);
+            matrixStackIn.translate(0F, 0.6F, -0.3F);
         } else {
-            GlStateManager.translate(0F, 0.2F, 0F);
-            GlStateManager.rotate((float) (f1 * -60D), -1F, 0.0F, 0.0F);
+            matrixStackIn.translate(0F, 0.2F, 0F);
+            matrixStackIn.rotate(Vector3f.XN.rotationDegrees(this.limbSwingAmount * -60F));
         }
-        GlStateManager.enableBlend();
+        RenderSystem.enableBlend();
         if (!glowing || outOfWater) {
             float transparency = 0.7F;
-            GlStateManager.blendFunc(770, 771);
-            GlStateManager.color(0.8F, 0.8F, 0.8F, transparency);
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.color4f(0.8F, 0.8F, 0.8F, transparency);
         } else {
-            GlStateManager.blendFunc(770, 1);
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
         }
-        this.Top.render(f5);
-        this.Head.render(f5);
-        this.HeadSmall.render(f5);
-        this.Body.render(f5);
-        this.BodyCenter.render(f5);
-        this.BodyBottom.render(f5);
-        this.Side1.render(f5);
-        this.Side2.render(f5);
-        this.Side3.render(f5);
-        this.Side4.render(f5);
-        this.LegSmall1.render(f5);
-        this.LegC1.render(f5);
-        this.LegC2.render(f5);
-        this.LegC3.render(f5);
-        this.Leg1.render(f5);
-        this.Leg2.render(f5);
-        this.Leg3.render(f5);
-        this.Leg4.render(f5);
-        this.Leg5.render(f5);
-        this.Leg6.render(f5);
-        this.Leg7.render(f5);
-        this.Leg8.render(f5);
-        this.Leg9.render(f5);
-        GlStateManager.disableBlend();
-        GlStateManager.popMatrix();
+        this.Top.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.HeadSmall.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.BodyCenter.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.BodyBottom.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Side1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Side2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Side3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Side4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LegSmall1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LegC1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LegC2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LegC3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg6.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg7.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg8.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg9.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        RenderSystem.disableBlend();
+        matrixStackIn.pop();
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        float f6 = f1 * 2.0F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        float f6 = limbSwingAmount * 2.0F;
         if (f6 > 1.0F) {
             f6 = 1.0F;
         }

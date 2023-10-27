@@ -10,18 +10,17 @@ import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIAttackMelee;
-import net.minecraft.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.HurtByTargetGoal;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -39,10 +38,10 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     public int spinInt;
     private boolean waterbound;
 
-    public MoCEntityCrocodile(World world) {
-        super(world);
+    public MoCEntityCrocodile(EntityType<? extends MoCEntityCrocodile> type, World world) {
+        super(type, world);
         this.texture = "crocodile.png";
-        setSize(0.9F, 0.5F);
+        //setSize(0.9F, 0.5F);
         setAdult(true);
         // TODO: Make hitboxes adjust depending on size
         //setAge(50 + this.rand.nextInt(50));
@@ -52,29 +51,23 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void initEntityAI() {
-        this.tasks.addTask(3, new EntityAIFleeFromPlayer(this, 0.8D, 4D));
-        this.tasks.addTask(4, new EntityAIAttackMelee(this, 1.0D, true));
-        this.tasks.addTask(7, new EntityAIWanderMoC2(this, 0.9D));
-        this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(3, new EntityAIFleeFromPlayer(this, 0.8D, 4D));
+        this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.0D, true));
+        this.goalSelector.addGoal(7, new EntityAIWanderMoC2(this, 0.9D));
+        this.goalSelector.addGoal(9, new LookAtGoal(this, PlayerEntity.class, 8.0F));
         this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
         //this.targetTasks.addTask(2, new EntityAIHunt<>(this, EntityAnimal.class, true));
         this.targetTasks.addTask(3, new EntityAIHunt<>(this, EntityPlayer.class, false));
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(25.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(6.0D);
-        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(5.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 25.0D).createMutableAttribute(Attributes.ARMOR, 6.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(IS_RESTING, Boolean.FALSE);
         this.dataManager.register(EATING_PREY, Boolean.FALSE);
         this.dataManager.register(IS_BITING, Boolean.FALSE);
@@ -105,7 +98,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected int getExperiencePoints(EntityPlayer player) {
+    protected int getExperiencePoints(PlayerEntity player) {
         return experienceValue;
     }
 
@@ -117,7 +110,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
                 return;
             }
 
-            this.motionY = 0.3D;
+            this.setMotion(this.getMotion().getX(), 0.3D, this.getMotion().getZ());
             this.isAirBorne = true;
 
         } else if (this.getAttackTarget() != null || getHasCaughtPrey()) {
@@ -131,7 +124,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void onLivingUpdate() {
+    public void livingTick() {
         if (getIsSitting()) {
             this.rotationPitch = -5F;
             if (!isSwimming() && this.biteProgress < 0.3F && this.rand.nextInt(5) == 0) {
@@ -140,7 +133,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
             if (this.getAttackTarget() != null) {
                 setIsSitting(false);
             }
-            if (!this.world.isRemote && this.getAttackTarget() != null || isSwimming() || getHasCaughtPrey() || this.rand.nextInt(500) == 0)// isInsideOfMaterial(Material.WATER)
+            if (!this.world.isRemote && this.getAttackTarget() != null || isSwimming() || getHasCaughtPrey() || this.rand.nextInt(500) == 0)// areEyesInFluid(FluidTags.WATER)
             {
                 setIsSitting(false);
                 this.biteProgress = 0;
@@ -164,7 +157,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
         }
 
         if (this.waterbound) {
-            if (!isInsideOfMaterial(Material.WATER)) {
+            if (!areEyesInFluid(FluidTags.WATER)) {
                 MoCTools.moveToWater(this);
             } else {
                 this.waterbound = false;
@@ -178,10 +171,10 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
                 this.biteProgress = 0.4F;
                 setIsSitting(false);
 
-                if (!isInsideOfMaterial(Material.WATER)) {
+                if (!areEyesInFluid(FluidTags.WATER)) {
                     this.waterbound = true;
-                    if (this.getRidingEntity() instanceof EntityLiving && ((EntityLivingBase) this.getRidingEntity()).getHealth() > 0) {
-                        ((EntityLivingBase) this.getRidingEntity()).deathTime = 0;
+                    if (this.getRidingEntity() instanceof MobEntity && ((LivingEntity) this.getRidingEntity()).getHealth() > 0) {
+                        ((LivingEntity) this.getRidingEntity()).deathTime = 0;
                     }
 
                     if (!this.world.isRemote && this.rand.nextInt(50) == 0) {
@@ -197,7 +190,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
             if (isSpinning()) {
                 this.spinInt += 3;
                 if ((this.spinInt % 20) == 0) {
-                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_CROCODILE_ROLL);
+                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_CROCODILE_ROLL.get());
                 }
                 if (this.spinInt > 80) {
                     this.spinInt = 0;
@@ -206,13 +199,13 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
 
                 //TODO 4FIX
                 //the following if to be removed from SMP
-                //if (!this.world.isRemote && this.isBeingRidden() && this.getRidingEntity() instanceof EntityPlayer) {
+                //if (!this.world.isRemote && this.isBeingRidden() && this.getRidingEntity() instanceof PlayerEntity) {
                 //MoCreatures.mc.gameSettings.thirdPersonView = 1;
                 //}
             }
         }
 
-        super.onLivingUpdate();
+        super.livingTick();
     }
 
     @Override
@@ -228,7 +221,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void onUpdate() {
+    public void tick() {
         if (getIsBiting() && !getHasCaughtPrey())// && biteProgress <0.3)
         {
             this.biteProgress += 0.1F;
@@ -242,7 +235,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
             }
         }
 
-        super.onUpdate();
+        super.tick();
     }
 
     @Override
@@ -281,8 +274,8 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
             Entity entity = damagesource.getTrueSource();
 
             if (this.isBeingRidden() && this.getRidingEntity() == entity) {
-                if ((entity != this) && entity instanceof EntityLivingBase && super.shouldAttackPlayers()) {
-                    setAttackTarget((EntityLivingBase) entity);
+                if ((entity != this) && entity instanceof LivingEntity && super.shouldAttackPlayers()) {
+                    setAttackTarget((LivingEntity) entity);
                 }
             }
             return true;
@@ -292,7 +285,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(EntityLivingBase entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return !(entity instanceof MoCEntityCrocodile);
     }
 
@@ -303,10 +296,10 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
         }
         int direction;
 
-        double dist = getAge() * 0.01F + passenger.width - 0.4D;
-        double newPosX = this.posX - (dist * Math.cos((MoCTools.realAngle(this.rotationYaw - 90F)) / 57.29578F));
-        double newPosZ = this.posZ - (dist * Math.sin((MoCTools.realAngle(this.rotationYaw - 90F)) / 57.29578F));
-        passenger.setPosition(newPosX, this.posY + getMountedYOffset() + passenger.getYOffset(), newPosZ);
+        double dist = getAge() * 0.01F + passenger.getWidth() - 0.4D;
+        double newPosX = this.getPosX() - (dist * Math.cos((MoCTools.realAngle(this.rotationYaw - 90F)) / 57.29578F));
+        double newPosZ = this.getPosZ() - (dist * Math.sin((MoCTools.realAngle(this.rotationYaw - 90F)) / 57.29578F));
+        passenger.setPosition(newPosX, this.getPosY() + getMountedYOffset() + passenger.getYOffset(), newPosZ);
 
         if (this.spinInt > 40) {
             direction = -1;
@@ -314,23 +307,23 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
             direction = 1;
         }
 
-        ((EntityLivingBase) passenger).renderYawOffset = this.rotationYaw * direction;
-        ((EntityLivingBase) passenger).prevRenderYawOffset = this.rotationYaw * direction;
+        ((LivingEntity) passenger).renderYawOffset = this.rotationYaw * direction;
+        ((LivingEntity) passenger).prevRenderYawOffset = this.rotationYaw * direction;
     }
 
     @Override
     public double getMountedYOffset() {
-        return this.height * 0.35D;
+        return this.getHeight() * 0.35D;
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_CROCODILE_DEATH;
+        return MoCSoundEvents.ENTITY_CROCODILE_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_CROCODILE_HURT;
+        return MoCSoundEvents.ENTITY_CROCODILE_HURT.get();
     }
 
     @Override
@@ -338,15 +331,11 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
         if (getIsSitting()) {
             return MoCSoundEvents.ENTITY_CROCODILE_REST;
         }
-        return MoCSoundEvents.ENTITY_CROCODILE_AMBIENT;
+        return MoCSoundEvents.ENTITY_CROCODILE_AMBIENT.get();
     }
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.CROCODILE;
     }
 
@@ -365,11 +354,11 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     public void unMount() {
 
         if (this.isBeingRidden()) {
-            if (this.getRidingEntity() instanceof EntityLiving && ((EntityLivingBase) this.getRidingEntity()).getHealth() > 0) {
-                ((EntityLivingBase) this.getRidingEntity()).deathTime = 0;
+            if (this.getRidingEntity() instanceof MobEntity && ((LivingEntity) this.getRidingEntity()).getHealth() > 0) {
+                ((LivingEntity) this.getRidingEntity()).deathTime = 0;
             }
 
-            this.dismountRidingEntity();
+            this.dismount();
             setHasCaughtPrey(false);
         }
     }
@@ -394,7 +383,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
         return this.isNotScared() && !this.isMovementCeased() && !this.isBeingRidden() && !this.getHasCaughtPrey();
     }
 
-    public float getEyeHeight() {
-        return !this.isMovementCeased() ? this.height * 0.7F : this.height * 0.39F;
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return !this.isMovementCeased() ? this.getHeight() * 0.7F : this.getHeight() * 0.39F;
     }
 }

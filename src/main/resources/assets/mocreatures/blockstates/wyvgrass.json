@@ -1,19 +1,7 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "cube_bottom_top",
-    "textures": {
-      "bottom": "mocreatures:blocks/dirt_wyvern",
-      "top": "mocreatures:blocks/grass_top_wyvern",
-      "side": "mocreatures:blocks/grass_side_wyvern"
-    }
-  },
   "variants": {
-    "normal": [
-      {}
-    ],
-    "inventory": [
-      {}
-    ]
+    "": {
+      "model": "mocreatures:block/wyvgrass"
+    }
   }
 }

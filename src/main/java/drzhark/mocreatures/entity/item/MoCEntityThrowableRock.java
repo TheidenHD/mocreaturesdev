@@ -6,18 +6,22 @@ package drzhark.mocreatures.entity.item;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
+import drzhark.mocreatures.init.MoCEntities;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
@@ -35,21 +39,21 @@ public class MoCEntityThrowableRock extends Entity {
     private double oPosY;
     private double oPosZ;
 
-    public MoCEntityThrowableRock(World par1World) {
-        super(par1World);
+    public MoCEntityThrowableRock(EntityType<? extends MoCEntityThrowableRock> type, World par1World) {
+        super(type, par1World);
         this.preventEntitySpawning = true;
-        this.setSize(1F, 1F);
-        //this.yOffset = this.height / 2.0F;
+        //this.yOffset = this.getHeight() / 2.0F; //TODO TheidenHD
     }
 
-    public MoCEntityThrowableRock(World par1World, Entity entitythrower, double par2, double par4, double par6) {
-        this(par1World);
-        this.setPosition(par2, par4, par6);
-        this.rockTimer = 250;
-        this.prevPosX = this.oPosX = par2;
-        this.prevPosY = this.oPosY = par4;
-        this.prevPosZ = this.oPosZ = par6;
-        this.setMasterID(entitythrower.getEntityId());
+    public static  MoCEntityThrowableRock build(World par1World, Entity entitythrower, double par2, double par4, double par6) {
+        MoCEntityThrowableRock rock = new MoCEntityThrowableRock(MoCEntities.TROCK, par1World);
+        rock.setPosition(par2, par4, par6);
+        rock.rockTimer = 250;
+        rock.prevPosX = rock.oPosX = par2;
+        rock.prevPosY = rock.oPosY = par4;
+        rock.prevPosZ = rock.oPosZ = par6;
+        rock.setMasterID(entitythrower.getEntityId());
+        return rock;
     }
 
     public IBlockState getState() {
@@ -77,7 +81,7 @@ public class MoCEntityThrowableRock extends Entity {
     }
 
     @Override
-    protected void entityInit() {
+    protected void registerData() {
         this.dataManager.register(BEHAVIOUR_TYPE, 0);
         this.dataManager.register(ROCK_STATE, 0);
         this.dataManager.register(MASTERS_ID, 0);
@@ -87,29 +91,33 @@ public class MoCEntityThrowableRock extends Entity {
     public void writeEntityToNBT(NBTTagCompound nbttagcompound) {
         IBlockState iblockstate = this.getState();
         nbttagcompound = MoCTools.getEntityData(this);
-        nbttagcompound.setInteger("Behavior", getBehavior());
-        nbttagcompound.setInteger("MasterID", getMasterID());
-        nbttagcompound.setShort("BlockID", (short) Block.getIdFromBlock(iblockstate.getBlock()));
-        nbttagcompound.setShort("BlockMetadata", (short) iblockstate.getBlock().getMetaFromState(iblockstate));
+        nbttagcompound.putInt("Behavior", getBehavior());
+        nbttagcompound.putInt("MasterID", getMasterID());
+        nbttagcompound.putShort("BlockID", (short) (Block.getStateId(iblockstate) & 65535));
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound) {
+    public IPacket<?> createSpawnPacket() {
+        return new SSpawnObjectPacket(this);
+    }
+
+    @Override
+    public void readAdditional(CompoundNBT nbttagcompound) {
         nbttagcompound = MoCTools.getEntityData(this);
-        setBehavior(nbttagcompound.getInteger("Behavior"));
-        setMasterID(nbttagcompound.getInteger("MasterID"));
-        IBlockState iblockstate;
-        iblockstate = Block.getBlockById(nbttagcompound.getShort("BlockID")).getStateFromMeta(nbttagcompound.getShort("BlockMetadata") & 65535);
+        setBehavior(nbttagcompound.getInt("Behavior"));
+        setMasterID(nbttagcompound.getInt("MasterID"));
+        BlockState iblockstate;
+        iblockstate = Block.getStateById(nbttagcompound.getShort("BlockID") & 65535);
         this.setState(iblockstate);
     }
 
     @Override
     public boolean canBeCollidedWith() {
-        return !this.isDead;
+        return !this.removed;
     }
 
     @Override
-    public void onEntityUpdate() {
+    public void baseTick() {
         Entity master = getMaster();
         if (this.rockTimer-- <= -50 && getBehavior() == 0 || master == null) transformToItem();
 
@@ -122,8 +130,8 @@ public class MoCEntityThrowableRock extends Entity {
             for (Entity entity : list) {
                 if (master != null && entity.getEntityId() == master.getEntityId()) continue;
                 if (entity instanceof MoCEntityGolem) continue;
-                if (entity != null && !(entity instanceof EntityLivingBase)) continue;
-                if (master != null) entity.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) master), 4);
+                if (entity != null && !(entity instanceof LivingEntity)) continue;
+                if (master != null) entity.attackEntityFrom(DamageSource.causeMobDamage((LivingEntity) master), 4);
                 else if (entity != null) entity.attackEntityFrom(DamageSource.GENERIC, 4);
             }
         }
@@ -152,14 +160,13 @@ public class MoCEntityThrowableRock extends Entity {
             if (distXZToMaster < 1.5F && master instanceof MoCEntityGolem) {
                 ((MoCEntityGolem) master).receiveRock(this.getState());
                 this.setBehavior(0);
-                this.setDead();
+                this.remove();
             }
 
             double summonedSpeed = this.acceleration;
-            this.motionX = ((master.posX - this.posX) / summonedSpeed);
-            this.motionY = ((master.posY - this.posY) / 20D + 0.15D);
-            this.motionZ = ((master.posZ - this.posZ) / summonedSpeed);
-            if (!this.world.isRemote) this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
+            this.setMotion((master.getPosX() - this.getPosX()) / summonedSpeed, (master.getPosY() - this.getPosY()) / 20D + 0.15D, (master.getPosZ() - this.getPosZ()) / summonedSpeed);
+            if (!this.world.isRemote)
+                this.move(MoverType.SELF, this.getMotion());
             return;
         }
 
@@ -179,18 +186,14 @@ public class MoCEntityThrowableRock extends Entity {
             float distXZToMaster = tX * tX + tZ * tZ;
 
             double summonedSpeed = this.acceleration;
-            this.motionX = ((master.posX - this.posX) / summonedSpeed);
-            this.motionY = ((master.posY - this.posY) / 20D + 0.15D);
-            this.motionZ = ((master.posZ - this.posZ) / summonedSpeed);
+            this.setMotion((master.getPosX() - this.getPosX()) / summonedSpeed, (master.getPosY() - this.getPosY()) / 20D + 0.15D, (master.getPosZ() - this.getPosZ()) / summonedSpeed);
 
             if (distXZToMaster < 2.5F && master instanceof MoCEntityGolem) {
-                this.motionX = 0D;
-                this.motionY = 0D;
-                this.motionZ = 0D;
+                this.setMotion(0.0D, 0.0D, 0.0D);
             }
 
             if (!this.world.isRemote) {
-                this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
+                this.move(MoverType.SELF, this.getMotion());
             }
 
             return;
@@ -200,24 +203,20 @@ public class MoCEntityThrowableRock extends Entity {
         if (getBehavior() == 5) {
             this.acceleration = 5;
             double summonedSpeed = this.acceleration;
-            this.motionX = ((this.oPosX - this.posX) / summonedSpeed);
-            this.motionY = ((this.oPosY - this.posY) / 20D + 0.15D);
-            this.motionZ = ((this.oPosZ - this.posZ) / summonedSpeed);
-            if (!this.world.isRemote) this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
+            this.setMotion((this.oPosX - this.getPosX()) / summonedSpeed, (this.oPosY - this.getPosY()) / 20D + 0.15D, (this.oPosZ - this.getPosZ()) / summonedSpeed);
+            if (!this.world.isRemote)
+                this.move(MoverType.SELF, this.getMotion());
             setBehavior(0);
             return;
         }
 
-        this.motionY -= 0.04D;
-        if (!this.world.isRemote) this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
-        this.motionX *= 0.98D;
-        this.motionY *= 0.98D;
-        this.motionZ *= 0.98D;
+        this.setMotion(this.getMotion().subtract(0.0D, 0.04D, 0.0D));
+        if (!this.world.isRemote)
+            this.move(MoverType.SELF, this.getMotion());
+        this.setMotion(this.getMotion().mul(0.98D, 0.98D, 0.98D));
 
         if (this.onGround) {
-            this.motionX *= 0.699D;
-            this.motionZ *= 0.699D;
-            this.motionY *= -0.5D;
+            this.setMotion(this.getMotion().mul(0.699D, 0.699D, -0.5D));
         }
     }
 
@@ -226,20 +225,16 @@ public class MoCEntityThrowableRock extends Entity {
         if (!this.world.isRemote && MoCTools.mobGriefing(this.world) && MoCreatures.proxy.golemDestroyBlocks) {
             EntityItem entityitem = new EntityItem(this.world, this.posX, this.posY, this.posZ, new ItemStack(Item.getItemFromBlock(this.getState().getBlock())));
             entityitem.setDefaultPickupDelay();
-            entityitem.setAgeToCreativeDespawnTime();
-            this.world.spawnEntity(entityitem);
+            entityitem.lifespan = 1200;
+            this.world.addEntity(entityitem);
         }
-        this.setDead();
+        this.remove();
     }
 
     private Entity getMaster() {
-        List<Entity> entityList = this.world.loadedEntityList;
-        Iterator<Entity> iterator = entityList.iterator();
-        while (iterator.hasNext()) {
-            Entity entity = iterator.next();
-            if (entity.getEntityId() == getMasterID()) {
-                return entity;
-            }
+        Entity entity = this.world.getEntityByID(getMasterID());
+        if (entity != null) {
+            return entity;
         }
         return null;
     }

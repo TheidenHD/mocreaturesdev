@@ -8,27 +8,24 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.ai.EntityAIPanicMoC;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
+import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageHeart;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
+import drzhark.mocreatures.util.MoCTags;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -49,36 +46,31 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     @Override
-    protected void initEntityAI() {
-        this.tasks.addTask(1, new EntityAIPanicMoC(this, 1.3D));
-        this.tasks.addTask(5, new EntityAIWanderMoC2(this, 1.0D, 30));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new EntityAIPanicMoC(this, 1.3D));
+        this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 1.0D, 30));
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(15.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.5D);
-        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.5D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntityTameableAquatic.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 15.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.5D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.5D);
     }
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
+        if (getTypeMoC() == 0) {
             int i = this.rand.nextInt(100);
             if (i <= 35) {
-                setType(1);
+                setTypeMoC(1);
             } else if (i <= 60) {
-                setType(2);
+                setTypeMoC(2);
             } else if (i <= 85) {
-                setType(3);
+                setTypeMoC(3);
             } else if (i <= 96) {
-                setType(4);
+                setTypeMoC(4);
             } else if (i <= 98) {
-                setType(5);
+                setTypeMoC(5);
             } else {
-                setType(6);
+                setTypeMoC(6);
             }
         }
     }
@@ -86,7 +78,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     @Override
     public ResourceLocation getTexture() {
 
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return MoCreatures.proxy.getModelTexture("dolphin_green.png");
             case 3:
@@ -105,7 +97,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     @Override
     public int getMaxTemper() {
 
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 1:
                 return 50;
             case 3:
@@ -122,7 +114,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     public int getInitialTemper() {
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return 100;
             case 3:
@@ -140,7 +132,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
 
     @Override
     public double getCustomSpeed() {
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return 2.0D;
             case 3:
@@ -157,8 +149,8 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(IS_HUNGRY, Boolean.FALSE);
         this.dataManager.register(HAS_EATEN, Boolean.FALSE);
     }
@@ -182,8 +174,8 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     //TODO
     /*@Override
     protected void attackEntity(Entity entity, float f) {
-        if (attackTime <= 0 && (f < 3.5D) && (entity.getEntityBoundingBox().maxY > getEntityBoundingBox().minY)
-                && (entity.getEntityBoundingBox().minY < getEntityBoundingBox().maxY) && (getAge() >= 100)) {
+        if (attackTime <= 0 && (f < 3.5D) && (entity.getBoundingBox().maxY > getBoundingBox().minY)
+                && (entity.getBoundingBox().minY < getBoundingBox().maxY) && (getAge() >= 100)) {
             attackTime = 20;
             entity.attackEntityFrom(DamageSource.causeMobDamage(this), 5);
         }
@@ -193,8 +185,8 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (super.attackEntityFrom(damagesource, i) && (this.world.getDifficulty().getId() > 0)) {
             Entity entity = damagesource.getTrueSource();
-            if (entity instanceof EntityLivingBase) {
-                EntityLivingBase entityliving = (EntityLivingBase) entity;
+            if (entity instanceof LivingEntity) {
+                LivingEntity entityliving = (LivingEntity) entity;
                 if (this.isRidingOrBeingRiddenBy(entity)) {
                     return true;
                 }
@@ -213,10 +205,10 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     private int Genetics(MoCEntityDolphin entitydolphin, MoCEntityDolphin entitydolphin1) {
-        if (entitydolphin.getType() == entitydolphin1.getType()) {
-            return entitydolphin.getType();
+        if (entitydolphin.getTypeMoC() == entitydolphin1.getTypeMoC()) {
+            return entitydolphin.getTypeMoC();
         }
-        int i = entitydolphin.getType() + entitydolphin1.getType();
+        int i = entitydolphin.getTypeMoC() + entitydolphin1.getTypeMoC();
         boolean flag = this.rand.nextInt(3) == 0;
         boolean flag1 = this.rand.nextInt(10) == 0;
         if ((i < 5) && flag) {
@@ -231,17 +223,17 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_DOLPHIN_DEATH;
+        return MoCSoundEvents.ENTITY_DOLPHIN_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_DOLPHIN_HURT;
+        return MoCSoundEvents.ENTITY_DOLPHIN_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MoCSoundEvents.ENTITY_DOLPHIN_AMBIENT;
+        return MoCSoundEvents.ENTITY_DOLPHIN_AMBIENT.get();
     }
 
     @Override
@@ -255,20 +247,19 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.DOLPHIN;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.DOLPHIN;
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
 
         final ItemStack stack = player.getHeldItem(hand);
-        if (!stack.isEmpty() && (stack.getItem() == Items.FISH)) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+        if (!stack.isEmpty() && MoCTags.Items.RAW_FISHES.contains(stack.getItem())) {
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (!this.world.isRemote) {
                 setTemper(getTemper() + 25);
                 if (getTemper() > getMaxTemper()) {
@@ -286,10 +277,10 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
 
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
-        if (!stack.isEmpty() && (stack.getItem() == Items.COOKED_FISH) && getIsTamed() && getIsAdult()) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+        if (!stack.isEmpty() && MoCTags.Items.COOKED_FISHES.contains(stack.getItem()) && getIsTamed() && getIsAdult()) {
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             if ((getHealth() + 25) > getMaxHealth()) {
                 this.setHealth(getMaxHealth());
             }
@@ -301,18 +292,18 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
             if (!this.world.isRemote && player.startRiding(this)) {
                 player.rotationYaw = this.rotationYaw;
                 player.rotationPitch = this.rotationPitch;
-                player.posY = this.posY;
+                player.setPosition(player.getPosX(), this.getPosY(), player.getPosZ());
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
 
         if (!this.world.isRemote) {
 
@@ -329,13 +320,13 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
             }
             //TODO
             if ((!this.isBeingRidden()) && (this.deathTime == 0) && (!getIsTamed() || getIsHungry())) {
-                EntityItem entityitem = getClosestFish(this, 12D);
+                ItemEntity entityitem = getClosestFish(this, 12D);
                 if (entityitem != null) {
                     moveToNextEntity(entityitem);
-                    EntityItem entityitem1 = getClosestFish(this, 2D);
+                    ItemEntity entityitem1 = getClosestFish(this, 2D);
                     if ((this.rand.nextInt(20) == 0) && (entityitem1 != null) && (this.deathTime == 0)) {
 
-                        entityitem1.setDead();
+                        entityitem1.remove();
                         setTemper(getTemper() + 25);
                         if (getTemper() > getMaxTemper()) {
                             setTemper(getMaxTemper() - 1);
@@ -348,7 +339,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
                 return;
             }
             int i = 0;
-            List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(8D, 2D, 8D));
+            List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(8D, 2D, 8D));
             for (Entity entity : list) {
                 if (entity instanceof MoCEntityDolphin) {
                     i++;
@@ -358,7 +349,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
             if (i > 1) {
                 return;
             }
-            List<Entity> list1 = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(4D, 2D, 4D));
+            List<Entity> list1 = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(4D, 2D, 4D));
             for (Entity entity1 : list1) {
                 if (!(entity1 instanceof MoCEntityDolphin) || (entity1 == this)) {
                     continue;
@@ -371,15 +362,14 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
                     this.gestationtime++;
                 }
                 if (this.gestationtime % 3 == 0) {
-                    MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageHeart(this.getEntityId()),
-                            new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                    MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageHeart(this.getEntityId()));
                 }
                 if (this.gestationtime <= 50) {
                     continue;
                 }
-                MoCEntityDolphin babydolphin = new MoCEntityDolphin(this.world);
-                babydolphin.setPosition(this.posX, this.posY, this.posZ);
-                if (this.world.spawnEntity(babydolphin)) {
+                MoCEntityDolphin babydolphin = MoCEntities.DOLPHIN.create(this.world);
+                babydolphin.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
+                if (this.world.addEntity(babydolphin)) {
                     MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
                     setHasEaten(false);
                     entitydolphin.setHasEaten(false);
@@ -391,9 +381,9 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
                     babydolphin.setOwnerId(this.getOwnerId());
                     babydolphin.setTamed(true);
                     UUID ownerId = this.getOwnerId();
-                    EntityPlayer entityplayer = null;
+                    PlayerEntity entityplayer = null;
                     if (ownerId != null) {
-                        entityplayer = this.world.getPlayerEntityByUUID(this.getOwnerId());
+                        entityplayer = this.world.getPlayerByUuid(this.getOwnerId());
                     }
                     if (entityplayer != null) {
                         MoCTools.tameWithName(entityplayer, babydolphin);
@@ -406,7 +396,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     public boolean ReadyforParenting(MoCEntityDolphin entitydolphin) {
-        EntityLivingBase passenger = (EntityLivingBase) this.getControllingPassenger();
+        LivingEntity passenger = (LivingEntity) this.getControllingPassenger();
         return (entitydolphin.getRidingEntity() == null) && (passenger == null) && entitydolphin.getIsTamed()
                 && entitydolphin.getHasEaten() && entitydolphin.getIsAdult();
     }
@@ -458,17 +448,17 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     @Override
     public void updatePassenger(Entity passenger) {
         double dist = (0.8D);
-        double newPosX = this.posX + (dist * Math.sin(this.renderYawOffset / 57.29578F));
-        double newPosZ = this.posZ - (dist * Math.cos(this.renderYawOffset / 57.29578F));
-        passenger.setPosition(newPosX, this.posY + getMountedYOffset() + passenger.getYOffset(), newPosZ);
+        double newPosX = this.getPosX() + (dist * Math.sin(this.renderYawOffset / 57.29578F));
+        double newPosZ = this.getPosZ() - (dist * Math.cos(this.renderYawOffset / 57.29578F));
+        passenger.setPosition(newPosX, this.getPosY() + getMountedYOffset() + passenger.getYOffset(), newPosZ);
     }
 
     @Override
     public double getMountedYOffset() {
-        return this.getAge() * 0.01F * (this.height * 0.3D);
+        return this.getAge() * 0.01F * (this.getHeight() * 0.3D);
     }
 
-    public float getEyeHeight() {
-        return this.height * 0.315F;
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return this.getHeight() * 0.315F;
     }
 }

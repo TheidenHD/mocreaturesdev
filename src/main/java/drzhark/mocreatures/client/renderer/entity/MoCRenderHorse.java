@@ -3,49 +3,50 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import drzhark.mocreatures.client.model.MoCModelHorse;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCRenderHorse extends MoCRenderMoC<MoCEntityHorse> {
+@OnlyIn(Dist.CLIENT)
+public class MoCRenderHorse extends MoCRenderMoC<MoCEntityHorse, MoCModelHorse<MoCEntityHorse>> {
 
-    public MoCRenderHorse(MoCModelHorse modelbase) {
-        super(modelbase, 0.5F);
+    public MoCRenderHorse(EntityRendererManager renderManagerIn, MoCModelHorse modelbase) {
+        super(renderManagerIn, modelbase, 0.5F);
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityHorse entityhorse) {
+    public ResourceLocation getEntityTexture(MoCEntityHorse entityhorse) {
         return entityhorse.getTexture();
     }
 
-    protected void adjustHeight(MoCEntityHorse entityhorse, float FHeight) {
-        GlStateManager.translate(0.0F, FHeight, 0.0F);
+    protected void adjustHeight(MoCEntityHorse entityhorse, float FHeight, MatrixStack matrixStackIn) {
+        matrixStackIn.translate(0.0F, FHeight, 0.0F);
     }
 
     @Override
-    protected void preRenderCallback(MoCEntityHorse entityhorse, float f) {
-        if (!entityhorse.getIsAdult() || entityhorse.getType() > 64) {
-            stretch(entityhorse);
+    protected void preRenderCallback(MoCEntityHorse entityhorse, MatrixStack matrixStackIn, float f) {
+        if (!entityhorse.getIsAdult() || entityhorse.getTypeMoC() > 64) {
+            stretch(entityhorse, matrixStackIn);
         }
         if (entityhorse.getIsGhost()) {
-            adjustHeight(entityhorse, -0.3F + (entityhorse.tFloat() / 5F));
+            adjustHeight(entityhorse, -0.3F + (entityhorse.tFloat() / 5F), matrixStackIn);
         }
-        super.preRenderCallback(entityhorse, f);
+        super.preRenderCallback(entityhorse, matrixStackIn, f);
     }
 
-    protected void stretch(MoCEntityHorse entityhorse) {
+    protected void stretch(MoCEntityHorse entityhorse, MatrixStack matrixStackIn) {
         float sizeFactor = entityhorse.getAge() * 0.01F;
         if (entityhorse.getIsAdult()) {
             sizeFactor = 1.0F;
         }
-        if (entityhorse.getType() > 64) //donkey
+        if (entityhorse.getTypeMoC() > 64) //donkey
         {
             sizeFactor *= 0.9F;
         }
-        GlStateManager.scale(sizeFactor, sizeFactor, sizeFactor);
+        matrixStackIn.scale(sizeFactor, sizeFactor, sizeFactor);
     }
 }

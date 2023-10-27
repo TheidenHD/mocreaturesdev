@@ -3,31 +3,11 @@
  */
 package drzhark.mocreatures.block;
 
-import drzhark.mocreatures.init.MoCBlocks;
-import drzhark.mocreatures.init.MoCItems;
-import net.minecraft.block.BlockLeaves;
-import net.minecraft.block.BlockPlanks.EnumType;
+
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.material.MapColor;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.stats.StatList;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
@@ -35,17 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class MoCBlockLeaf extends BlockLeaves {
-
-    private final MapColor mapColor;
-    public boolean flammable;
-    public int saplingDropChance;
-
-    public MoCBlockLeaf(MapColor mapColor, boolean flammable, int saplingDropChance) {
-        this.mapColor = mapColor;
-        this.flammable = flammable;
-        this.saplingDropChance = saplingDropChance;
-        setSoundType(SoundType.PLANT);
+    public MoCBlockLeaf(AbstractBlock.Properties properties) {
+        super(properties.sound(SoundType.PLANT).notSolid().setAllowsSpawn(Blocks::allowsSpawnOnLeaves).setSuffocates(Blocks::isntSolid).setBlocksVision(Blocks::isntSolid));
     }
 
     @Override

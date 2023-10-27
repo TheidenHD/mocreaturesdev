@@ -3,16 +3,17 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.ambient.MoCEntityCrab;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelCrab extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelCrab<T extends MoCEntityCrab> extends EntityModel<T> {
 
     private final float radianF = 57.29578F;
     ModelRenderer Shell;
@@ -49,7 +50,6 @@ public class MoCModelCrab extends ModelBase {
     ModelRenderer RightLeg4A;
     ModelRenderer RightLeg4B;
     ModelRenderer RightLeg4C;
-    private boolean fleeing;
 
     public MoCModelCrab() {
         this.textureWidth = 64;
@@ -240,30 +240,25 @@ public class MoCModelCrab extends ModelBase {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-
-        MoCEntityCrab crab = (MoCEntityCrab) entity;
-        this.fleeing = crab.isFleeing();
-        setRotationAngles(f, f1, f2, f3, f4, f5);
-
-        this.Shell.render(f5);
-        this.ShellRight.render(f5);
-        this.ShellLeft.render(f5);
-        this.ShellBack.render(f5);
-        this.LeftEye.render(f5);
-        this.LeftEyeBase.render(f5);
-        this.RightEyeBase.render(f5);
-        this.RightEye.render(f5);
-        this.RightArmA.render(f5);
-        this.LeftArmA.render(f5);
-        this.LeftLeg1A.render(f5);
-        this.LeftLeg2A.render(f5);
-        this.LeftLeg3A.render(f5);
-        this.LeftLeg4A.render(f5);
-        this.RightLeg1A.render(f5);
-        this.RightLeg2A.render(f5);
-        this.RightLeg3A.render(f5);
-        this.RightLeg4A.render(f5);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.Shell.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.ShellRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.ShellLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.ShellBack.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftEye.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftEyeBase.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightEyeBase.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightEye.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightArmA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftArmA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftLeg1A.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftLeg2A.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftLeg3A.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftLeg4A.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightLeg1A.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightLeg2A.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightLeg3A.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightLeg4A.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {
@@ -272,11 +267,11 @@ public class MoCModelCrab extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         /*
-         * f = distance walked f1 = speed 0 - 1 f2 = timer
+         * limbSwing = distance walked limbSwingAmount = speed 0 - 1 ageInTicks = timer
          */
-        if (fleeing) {
+        if (entityIn.isFleeing()) {
             //LeftArmA.rotateAngleY = 45F/radianF;
             this.LeftArmA.rotateAngleX = -90F / this.radianF;
             this.RightArmA.rotateAngleX = -90F / this.radianF;
@@ -286,7 +281,7 @@ public class MoCModelCrab extends ModelBase {
             this.RightArmA.rotateAngleX = 0F;
         }
 
-        if (f1 < 0.1F) {
+        if (limbSwingAmount < 0.1F) {
             this.RightArmA.rotateAngleY = -30F / this.radianF;
             this.RightArmB.rotateAngleY = -120F / this.radianF;
 
@@ -297,7 +292,7 @@ public class MoCModelCrab extends ModelBase {
              */
             float lHand = 0F;
 
-            float f2a = f2 % 100F;
+            float f2a = ageInTicks % 100F;
             if (f2a > 0 & f2a < 10) {
                 lHand = (f2a * 2F) / this.radianF;
             }
@@ -309,7 +304,7 @@ public class MoCModelCrab extends ModelBase {
              * RHand random animation
              */
             float RHand = 0F;
-            float f2b = f2 % 75F;
+            float f2b = ageInTicks % 75F;
             if (f2b > 30 & f2b < 40) {
                 RHand = (f2b - 29) * 2F / this.radianF;
             }
@@ -320,14 +315,14 @@ public class MoCModelCrab extends ModelBase {
         /*
          * floats used for the leg animations
          */
-        float f9 = -(MathHelper.cos(f * 5F)) * f1 * 2F;
-        float f10 = -(MathHelper.cos(f * 5F + 3.141593F)) * f1 * 2F;
-        float f11 = -(MathHelper.cos(f * 5.0F + 1.570796F)) * f1 * 2F;
-        float f12 = -(MathHelper.cos(f * 5.0F + 4.712389F)) * f1 * 2F;
-        float f13 = Math.abs(MathHelper.sin(f * 0.6662F + 0.0F) * 0.4F) * f1 * 5F;
-        float f14 = Math.abs(MathHelper.sin(f * 0.6662F + 3.141593F) * 0.4F) * f1;
-        float f15 = Math.abs(MathHelper.sin(f * 0.6662F + 1.570796F) * 0.4F) * f1;
-        float f16 = Math.abs(MathHelper.sin(f * 0.6662F + 4.712389F) * 0.4F) * f1;
+        float f9 = -(MathHelper.cos(limbSwing * 5F)) * limbSwingAmount * 2F;
+        float f10 = -(MathHelper.cos(limbSwing * 5F + 3.141593F)) * limbSwingAmount * 2F;
+        float f11 = -(MathHelper.cos(limbSwing * 5.0F + 1.570796F)) * limbSwingAmount * 2F;
+        float f12 = -(MathHelper.cos(limbSwing * 5.0F + 4.712389F)) * limbSwingAmount * 2F;
+        float f13 = Math.abs(MathHelper.sin(limbSwing * 0.6662F + 0.0F) * 0.4F) * limbSwingAmount * 5F;
+        float f14 = Math.abs(MathHelper.sin(limbSwing * 0.6662F + 3.141593F) * 0.4F) * limbSwingAmount;
+        float f15 = Math.abs(MathHelper.sin(limbSwing * 0.6662F + 1.570796F) * 0.4F) * limbSwingAmount;
+        float f16 = Math.abs(MathHelper.sin(limbSwing * 0.6662F + 4.712389F) * 0.4F) * limbSwingAmount;
 
         this.RightLeg1A.rotateAngleY = -0.1745329F;
         this.RightLeg1A.rotateAngleZ = -0.418879F;

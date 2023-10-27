@@ -14,16 +14,16 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class MoCEntitySmallFish extends MoCEntityTameableAquatic {
 
     public static final String[] fishNames = {"Anchovy", "Angelfish", "Anglerfish", "Clownfish", "Goldfish", "Hippo Tang", "Mandarinfish"};
 
-    public MoCEntitySmallFish(World world) {
-        super(world);
-        setSize(0.5f, 0.3f);
+    public MoCEntitySmallFish(EntityType<? extends MoCEntitySmallFish> type, World world) {
+        super(type, world);
+        //setSize(0.5f, 0.3f);
         // TODO: Make hitboxes adjust depending on size
         //setAge(70 + this.rand.nextInt(30));
         setAge(100);
@@ -31,48 +31,44 @@ public class MoCEntitySmallFish extends MoCEntityTameableAquatic {
 
     public static MoCEntitySmallFish createEntity(World world, int type) {
         if (type == 1) {
-            return new MoCEntityAnchovy(world);
+            return MoCEntities.ANCHOVY.create(world);
         }
         if (type == 2) {
-            return new MoCEntityAngelFish(world);
+            return MoCEntities.ANGELFISH.create(world);
         }
         if (type == 3) {
-            return new MoCEntityAngler(world);
+            return MoCEntities.ANGLER.create(world);
         }
         if (type == 4) {
-            return new MoCEntityClownFish(world);
+            return MoCEntities.CLOWNFISH.create(world);
         }
         if (type == 5) {
-            return new MoCEntityGoldFish(world);
+            return MoCEntities.GOLDFISH.create(world);
         }
         if (type == 6) {
-            return new MoCEntityHippoTang(world);
+            return MoCEntities.HIPPOTANG.create(world);
         }
         if (type == 7) {
-            return new MoCEntityManderin(world);
+            return MoCEntities.MANDERIN.create(world);
         }
-
-        return new MoCEntityClownFish(world);
+        return MoCEntities.CLOWNFISH.create(world);
     }
 
     @Override
-    protected void initEntityAI() {
-        this.tasks.addTask(1, new EntityAIPanicMoC(this, 1.3D));
-        this.tasks.addTask(2, new EntityAIFleeFromEntityMoC(this, entity -> (entity.height > 0.3F || entity.width > 0.3F), 2.0F, 0.6D, 1.5D));
-        this.tasks.addTask(5, new EntityAIWanderMoC2(this, 1.0D, 80));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new EntityAIPanicMoC(this, 1.3D));
+        this.goalSelector.addGoal(2, new EntityAIFleeFromEntityMoC(this, entity -> (entity.getHeight() > 0.3F || entity.getWidth() > 0.3F), 2.0F, 0.6D, 1.5D));
+        this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 1.0D, 80));
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.5D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntitySmallFish.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 4.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.5D);
     }
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(this.rand.nextInt(fishNames.length) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(fishNames.length) + 1);
         }
 
     }
@@ -80,7 +76,7 @@ public class MoCEntitySmallFish extends MoCEntityTameableAquatic {
     @Override
     public ResourceLocation getTexture() {
 
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 1:
                 return MoCreatures.proxy.getModelTexture("smallfish_anchovy.png");
             case 2:
@@ -104,8 +100,8 @@ public class MoCEntitySmallFish extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
 
         if (!this.world.isRemote) {
 
@@ -137,7 +133,7 @@ public class MoCEntitySmallFish extends MoCEntityTameableAquatic {
         return !getIsTamed();
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float yawRotationOffset() {
         if (!this.isInWater()) {
@@ -197,8 +193,8 @@ public class MoCEntitySmallFish extends MoCEntityTameableAquatic {
         return 0F;
     }
 
-    public float getEyeHeight() {
-        return this.height * 0.45F;
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return this.getHeight() * 0.45F;
     }
     
     @Override

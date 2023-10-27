@@ -24,9 +24,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 
@@ -35,18 +36,18 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
     public int attackCounterLeft;
     public int attackCounterRight;
 
-    public MoCEntitySilverSkeleton(World world) {
-        super(world);
+    public MoCEntitySilverSkeleton(EntityType<? extends MoCEntitySilverSkeleton> type, World world) {
+        super(type, world);
         this.texture = "silver_skeleton.png";
-        setSize(0.6F, 2.125F);
+        //setSize(0.6F, 2.125F);
         experienceValue = 5 + this.world.rand.nextInt(4);
     }
 
     @Override
-    protected void initEntityAI() {
-        this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(2, new MoCEntitySilverSkeleton.AISkeletonAttack(this, 1.0D, false));
-        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0D, true));
+        this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
         this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
         this.targetTasks.addTask(2, new MoCEntitySilverSkeleton.AISkeletonTarget<>(this, EntityPlayer.class, false));
         this.targetTasks.addTask(3, new MoCEntitySilverSkeleton.AISkeletonTarget<>(this, EntityIronGolem.class, true));
@@ -62,7 +63,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
     }
 
     @Override
-    public void onLivingUpdate() {
+    public void livingTick() {
         if (!this.world.isRemote) {
             setSprinting(this.getAttackTarget() != null);
         }
@@ -75,7 +76,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
             this.attackCounterRight = 0;
         }
 
-        super.onLivingUpdate();
+        super.livingTick();
     }
 
     @Override
@@ -100,10 +101,10 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
 
             if (leftArmW) {
                 this.attackCounterLeft = 1;
-                MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 1), new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 1));
             } else {
                 this.attackCounterRight = 1;
-                MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 2), new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 2));
             }
         }
     }
@@ -140,8 +141,8 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
     }
 
     @Override
-    public EnumCreatureAttribute getCreatureAttribute() {
-        return EnumCreatureAttribute.UNDEAD;
+    public CreatureAttribute getCreatureAttribute() {
+        return CreatureAttribute.UNDEAD;
     }
 
     @Override
@@ -150,12 +151,16 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.SILVER_SKELETON;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.SILVER_SKELETON;
     }
 
-    public float getEyeHeight() {
-        return this.height * 0.905F;
+    @Override
+    protected boolean isHarmedByDaylight() {
+        return true;
+    }
+
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return this.getHeight() * 0.905F;
     }
     
     static class AISkeletonAttack extends EntityAIAttackMelee {

@@ -6,9 +6,11 @@ package drzhark.mocreatures.entity.ambient;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.init.MoCLootTables;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.Pose;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -21,25 +23,25 @@ public class MoCEntityButterfly extends MoCEntityInsect {
 
     private int fCounter;
 
-    public MoCEntityButterfly(World world) {
-        super(world);
+    public MoCEntityButterfly(EntityType<? extends MoCEntityButterfly> type, World world) {
+        super(type, world);
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
     }
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(this.rand.nextInt(10) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(10) + 1);
         }
     }
 
     @Override
     public ResourceLocation getTexture() {
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 1:
                 return MoCreatures.proxy.getModelTexture("butterfly_agalais_urticae.png");
             case 2:
@@ -76,7 +78,7 @@ public class MoCEntityButterfly extends MoCEntityInsect {
 
     @Override
     public float getSizeFactor() {
-        if (getType() < 8) {
+        if (getTypeMoC() < 8) {
             return 0.7F;
         }
         return 1.0F;
@@ -84,12 +86,12 @@ public class MoCEntityButterfly extends MoCEntityInsect {
 
     @Override
     public boolean isMyFavoriteFood(ItemStack stack) {
-        return !stack.isEmpty() && (stack.getItem() == Item.getItemFromBlock(Blocks.RED_FLOWER) || stack.getItem() == Item.getItemFromBlock(Blocks.YELLOW_FLOWER));
+        return !stack.isEmpty() && stack.getItem().isIn(ItemTags.FLOWERS);
     }
 
     @Override
     public boolean isAttractedToLight() {
-        return getType() > 7;
+        return getTypeMoC() > 7;
     }
 
     @Override
@@ -116,12 +118,11 @@ public class MoCEntityButterfly extends MoCEntityInsect {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.BUTTERFLY;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.BUTTERFLY;
     }
 
     @Override
-    public float getEyeHeight() {
+    public float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return 0.1F;
     }
     

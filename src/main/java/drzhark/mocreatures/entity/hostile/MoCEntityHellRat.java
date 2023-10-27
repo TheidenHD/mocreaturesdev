@@ -6,11 +6,11 @@ package drzhark.mocreatures.entity.hostile;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
@@ -21,25 +21,20 @@ public class MoCEntityHellRat extends MoCEntityRat {
 
     private int textCounter;
 
-    public MoCEntityHellRat(World world) {
-        super(world);
-        setSize(0.88F, 0.755F);
-        this.isImmuneToFire = true;
+    public MoCEntityHellRat(EntityType<? extends MoCEntityHellRat> type, World world) {
+        super(type, world);
+        //setSize(0.88F, 0.755F);
+        //this.isImmuneToFire = true;
         experienceValue = 7;
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.325D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.5D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(7.0D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntityRat.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 40.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.325D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.5D).createMutableAttribute(Attributes.ARMOR, 7.0D);
     }
 
     @Override
     public void selectType() {
-        setType(4);
+        setTypeMoC(4);
     }
 
     @Override
@@ -60,30 +55,29 @@ public class MoCEntityHellRat extends MoCEntityRat {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_HELL_RAT_DEATH;
+        return MoCSoundEvents.ENTITY_HELL_RAT_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_HELL_RAT_HURT;
+        return MoCSoundEvents.ENTITY_HELL_RAT_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MoCSoundEvents.ENTITY_HELL_RAT_AMBIENT;
+        return MoCSoundEvents.ENTITY_HELL_RAT_AMBIENT.get();
     }
 
     @Nullable
     @Override
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.HELL_RAT;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.HELL_RAT;
     }
 
     @Override
     public boolean attackEntityAsMob(Entity entityIn) {
         boolean flag = super.attackEntityAsMob(entityIn);
 
-        if (flag && entityIn instanceof EntityLivingBase) {
+        if (flag && entityIn instanceof LivingEntity) {
             entityIn.setFire(5);
         }
 
@@ -91,16 +85,16 @@ public class MoCEntityHellRat extends MoCEntityRat {
     }
 
     @Override
-    public void onLivingUpdate() {
+    public void livingTick() {
         if (this.world.isRemote) {
             for (int i = 0; i < 2; ++i) {
-                this.world.spawnParticle(EnumParticleTypes.FLAME, this.posX + (this.rand.nextDouble() - 0.5D) * (double) this.width, this.posY + this.rand.nextDouble() * (double) this.height, this.posZ + (this.rand.nextDouble() - 0.5D) * (double) this.width, 0.0D, 0.0D, 0.0D);
+                this.world.addParticle(ParticleTypes.FLAME, this.getPosX() + (this.rand.nextDouble() - 0.5D) * (double) this.getWidth(), this.getPosY() + this.rand.nextDouble() * (double) this.getHeight(), this.getPosZ() + (this.rand.nextDouble() - 0.5D) * (double) this.getWidth(), 0.0D, 0.0D, 0.0D);
             }
         }
-        super.onLivingUpdate();
+        super.livingTick();
     }
 
-    public float getEyeHeight() {
-        return this.height * 0.485F;
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return this.getHeight() * 0.485F;
     }
 }

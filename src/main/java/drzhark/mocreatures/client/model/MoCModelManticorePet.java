@@ -4,24 +4,22 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.hunter.MoCEntityManticorePet;
-import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelManticorePet extends MoCModelManticore {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelManticorePet<T extends MoCEntityManticorePet> extends MoCModelBigCat<T> {
 
     @Override
-    public void updateAnimationModifiers(Entity entity) {
-        MoCEntityManticorePet manticorePet = (MoCEntityManticorePet) entity;
-        this.isFlyer = manticorePet.isFlyer();
-        this.isSaddled = manticorePet.getIsRideable();
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.isFlyer = entityIn.isFlyer();
+        this.isSaddled = entityIn.getIsRideable();
         this.flapwings = true;
-        this.floating = this.isFlyer && manticorePet.isOnAir() && !manticorePet.onGround;
-        this.isRidden = manticorePet.isBeingRidden();
+        this.floating = this.isFlyer && entityIn.isOnAir() && !entityIn.isOnGround();
+        this.isRidden = entityIn.isBeingRidden();
         this.hasMane = true;
         this.hasSaberTeeth = true;
-        this.onAir = manticorePet.isOnAir();
+        this.onAir = entityIn.isOnAir();
         this.hasStinger = true;
         this.isSitting = manticorePet.getIsSitting();
         this.isMovingVertically = manticorePet.motionY != 0 && !manticorePet.onGround;

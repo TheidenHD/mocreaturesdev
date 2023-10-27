@@ -7,8 +7,8 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.*;
@@ -23,30 +23,30 @@ public class MoCPetData {
     private NBTTagList tamedList = new NBTTagList();
 
     public MoCPetData(IMoCTameable pet) {
-        this.ownerData.setTag("TamedList", this.tamedList);
-        this.ownerUniqueId = MoCreatures.isServer() ? pet.getOwnerId() : Minecraft.getMinecraft().player.getUniqueID();
+        this.ownerData.put("TamedList", this.tamedList);
+        this.ownerUniqueId = MoCreatures.isServer(((Entity) pet).getEntityWorld()) ? pet.getOwnerId() : Minecraft.getInstance().player.getUniqueID();
     }
 
-    public MoCPetData(NBTTagCompound nbt, UUID owner) {
+    public MoCPetData(CompoundNBT nbt, UUID owner) {
         this.ownerData = nbt;
-        this.tamedList = nbt.getTagList("TamedList", 10);
+        this.tamedList = nbt.getList("TamedList", 10);
         this.ownerUniqueId = owner;
-        this.loadPetDataMap(nbt.getCompoundTag("PetIdData"));
+        this.loadPetDataMap(nbt.getCompound("PetIdData"));
     }
 
     public int addPet(IMoCTameable pet) {
         BlockPos coords = new BlockPos(((Entity) pet).chunkCoordX, ((Entity) pet).chunkCoordY, ((Entity) pet).chunkCoordZ);
-        NBTTagCompound petNBT = MoCTools.getEntityData((Entity) pet);
+        CompoundNBT petNBT = MoCTools.getEntityData((Entity) pet);
         if (this.tamedList != null) {
             int id = getNextFreePetId();
-            petNBT.setInteger("PetId", id);
-            NBTTagCompound petData = petNBT.copy();
-            petData.setInteger("ChunkX", coords.getX());
-            petData.setInteger("ChunkY", coords.getY());
-            petData.setInteger("ChunkZ", coords.getZ());
-            petData.setInteger("Dimension", ((Entity) pet).world.provider.getDimensionType().getId());
-            this.tamedList.appendTag(petData);
-            this.ownerData.setTag("PetIdData", savePetDataMap());
+            petNBT.putInt("PetId", id);
+            CompoundNBT petData = petNBT.copy();
+            petData.putInt("ChunkX", coords.getX());
+            petData.putInt("ChunkY", coords.getY());
+            petData.putInt("ChunkZ", coords.getZ());
+            petData.putString("Dimension", ((Entity) pet).world.getDimensionType().getEffects().toString());
+            this.tamedList.add(petData);
+            this.ownerData.put("PetIdData", savePetDataMap());
             return id;
         } else {
             return -1;
@@ -54,27 +54,27 @@ public class MoCPetData {
     }
 
     public boolean removePet(int id) {
-        for (int i = this.tamedList.tagCount() - 1; i >= 0; i--) {
-            NBTTagCompound nbt = this.tamedList.getCompoundTagAt(i);
-            if (nbt.hasKey("PetId") && nbt.getInteger("PetId") == id) {
-                this.tamedList.removeTag(i);
+        for (int i = this.tamedList.size() - 1; i >= 0; i--) {
+            CompoundNBT nbt = this.tamedList.getCompound(i);
+            if (nbt.contains("PetId") && nbt.getInt("PetId") == id) {
+                this.tamedList.remove(i);
                 this.usedPetIds.remove(id);
                 this.idMap.clear(id); // clear bit so it can be reused again
                 if (this.usedPetIds.isEmpty()) {
                     this.idMap.clear(); // fixes bug with ID 0 not able to be used again
                 }
-                this.ownerData.setTag("PetIdData", savePetDataMap());
+                this.ownerData.put("PetIdData", savePetDataMap());
                 return true;
             }
         }
         return false;
     }
 
-    public NBTTagCompound getPetData(int id) {
+    public CompoundNBT getPetData(int id) {
         if (this.tamedList != null) {
-            for (int i = 0; i < this.tamedList.tagCount(); i++) {
-                NBTTagCompound nbt = this.tamedList.getCompoundTagAt(i);
-                if (nbt.hasKey("PetId") && nbt.getInteger("PetId") == id) {
+            for (int i = 0; i < this.tamedList.size(); i++) {
+                CompoundNBT nbt = this.tamedList.getCompound(i);
+                if (nbt.contains("PetId") && nbt.getInt("PetId") == id) {
                     return nbt;
                 }
             }
@@ -82,11 +82,11 @@ public class MoCPetData {
         return null;
     }
 
-    public NBTTagCompound getOwnerRootNBT() {
+    public CompoundNBT getOwnerRootNBT() {
         return this.ownerData;
     }
 
-    public NBTTagList getTamedList() {
+    public ListNBT getTamedList() {
         return this.tamedList;
     }
 
@@ -99,7 +99,7 @@ public class MoCPetData {
     }
 
     public boolean getInAmulet(int petId) {
-        NBTTagCompound petData = getPetData(petId);
+        CompoundNBT petData = getPetData(petId);
         if (petData != null) {
             return petData.getBoolean("InAmulet");
         }
@@ -107,9 +107,9 @@ public class MoCPetData {
     }
 
     public void setInAmulet(int petId, boolean flag) {
-        NBTTagCompound petData = getPetData(petId);
+        CompoundNBT petData = getPetData(petId);
         if (petData != null) {
-            petData.setBoolean("InAmulet", flag);
+            petData.putBoolean("InAmulet", flag);
         }
     }
 
@@ -131,9 +131,9 @@ public class MoCPetData {
         }
     }
 
-    public NBTTagCompound savePetDataMap() {
+    public CompoundNBT savePetDataMap() {
         int[] data = new int[(this.idMap.length() + Integer.SIZE - 1) / Integer.SIZE];
-        NBTTagCompound dataMap = new NBTTagCompound();
+        CompoundNBT dataMap = new CompoundNBT();
         for (int i = 0; i < data.length; i++) {
             int val = 0;
             for (int j = 0; j < Integer.SIZE; j++) {
@@ -141,11 +141,11 @@ public class MoCPetData {
             }
             data[i] = val;
         }
-        dataMap.setIntArray("PetIdArray", data);
+        dataMap.putIntArray("PetIdArray", data);
         return dataMap;
     }
 
-    public void loadPetDataMap(NBTTagCompound compoundTag) {
+    public void loadPetDataMap(CompoundNBT compoundTag) {
         if (compoundTag == null) {
             this.idMap.clear();
         } else {

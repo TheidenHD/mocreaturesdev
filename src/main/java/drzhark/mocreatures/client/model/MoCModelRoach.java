@@ -3,17 +3,18 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.ambient.MoCEntityRoach;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelRoach extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelRoach<T extends MoCEntityRoach> extends EntityModel<T> {
 
     private final float radianF = 57.29578F;
     ModelRenderer Head;
@@ -34,6 +35,7 @@ public class MoCModelRoach extends ModelBase {
     ModelRenderer RShellOpen;
     ModelRenderer LeftWing;
     ModelRenderer RightWing;
+    private boolean flying;
 
     public MoCModelRoach() {
         this.textureWidth = 32;
@@ -149,40 +151,40 @@ public class MoCModelRoach extends ModelBase {
         setRotation(this.RightWing, 0F, 1.047198F, 0.4363323F);
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.flying = (entityIn.getIsFlying() || entityIn.getMotion().getY() < -0.1D);
+    }
+
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        MoCEntityRoach entityroach = (MoCEntityRoach) entity;
-        boolean isFlying = (entityroach.getIsFlying() || entityroach.motionY < -0.1D);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        //LAnthenna.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        //LAnthennaB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        //RAnthenna.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        //RAnthennaB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Thorax.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.FrontLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.MidLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RearLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Abdomen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TailL.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TailR.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        setRotationAngles(f, f1, f2, f3, f4, f5, isFlying);
-        this.Head.render(f5);
-        //LAnthenna.render(f5);
-        //LAnthennaB.render(f5);
-        //RAnthenna.render(f5);
-        //RAnthennaB.render(f5);
-        this.Thorax.render(f5);
-        this.FrontLegs.render(f5);
-        this.MidLegs.render(f5);
-        this.RearLegs.render(f5);
-        this.Abdomen.render(f5);
-        this.TailL.render(f5);
-        this.TailR.render(f5);
-
-        if (!isFlying) {
-            this.LShellClosed.render(f5);
-            this.RShellClosed.render(f5);
+        if (!this.flying) {
+            this.LShellClosed.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.RShellClosed.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else {
-            this.LShellOpen.render(f5);
-            this.RShellOpen.render(f5);
-            GlStateManager.pushMatrix();
-            GlStateManager.enableBlend();
+            this.LShellOpen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.RShellOpen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            matrixStackIn.push();
+            RenderSystem.enableBlend();
             float transparency = 0.6F;
-            GlStateManager.blendFunc(770, 771);
-            GlStateManager.color(0.8F, 0.8F, 0.8F, transparency);
-            this.LeftWing.render(f5);
-            this.RightWing.render(f5);
-            GlStateManager.disableBlend();
-            GlStateManager.popMatrix();
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.color4f(0.8F, 0.8F, 0.8F, transparency);
+            this.LeftWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.RightWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            RenderSystem.disableBlend();
+            matrixStackIn.pop();
         }
     }
 
@@ -192,14 +194,14 @@ public class MoCModelRoach extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, boolean isFlying) {
-        this.Head.rotateAngleX = -2.171231F + (f4 / 57.29578F);
-        //Head.rotateAngleY = f3 / 57.29578F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.Head.rotateAngleX = -2.171231F + (headPitch / 57.29578F);
+        //Head.rotateAngleY = netHeadYaw / 57.29578F;
 
-        //f1 = movement speed!
-        //f2 = timer!
+        //limbSwingAmount = movement speed!
+        //ageInTicks = timer!
 
-        float antMov = 5F / this.radianF + (f1 * 1.5F);
+        float antMov = 5F / this.radianF + (limbSwingAmount * 1.5F);
 
         this.LAnthenna.rotateAngleZ = -antMov;
         this.RAnthenna.rotateAngleZ = antMov;
@@ -209,17 +211,17 @@ public class MoCModelRoach extends ModelBase {
 
         float frontLegAdj = 0F;
 
-        if (isFlying) {
-            float WingRot = MathHelper.cos((f2 * 2.0F)) * 0.7F;
+        if (this.flying) {
+            float WingRot = MathHelper.cos((ageInTicks * 2.0F)) * 0.7F;
             this.RightWing.rotateAngleY = 1.047198F + WingRot;
             this.LeftWing.rotateAngleY = -1.047198F - WingRot;
-            legMov = (f1 * 1.5F);
+            legMov = (limbSwingAmount * 1.5F);
             legMovB = legMov;
             frontLegAdj = 1.4F;
 
         } else {
-            legMov = MathHelper.cos((f * 1.5F) + 3.141593F) * 0.6F * f1;
-            legMovB = MathHelper.cos(f * 1.5F) * 0.8F * f1;
+            legMov = MathHelper.cos((limbSwing * 1.5F) + 3.141593F) * 0.6F * limbSwingAmount;
+            legMovB = MathHelper.cos(limbSwing * 1.5F) * 0.8F * limbSwingAmount;
         }
 
         //AntennaB.rotateAngleX = 2.88506F - legMov;

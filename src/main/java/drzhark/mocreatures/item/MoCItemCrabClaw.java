@@ -3,95 +3,94 @@
  */
 package drzhark.mocreatures.item;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
+import drzhark.mocreatures.init.MoCItems;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import com.google.common.collect.Multimap;
-
-import drzhark.mocreatures.init.MoCItems;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.UUID;
 
 @SuppressWarnings("deprecation")
 public class MoCItemCrabClaw extends MoCItem {
-	
+
     protected static final UUID REACH_DISTANCE_MODIFIER = UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF");
     protected static final UUID TOUGHNESS_MODIFIER = UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF");
     public final int armor;
-    public final int durability;
     public final int enchantability;
     public final float reach;
     public final float toughness;
-    
-    public MoCItemCrabClaw(String name, int durability, int enchantability, float toughness, int armor, float reach) {
-        super(name);
-        this.setMaxDamage(durability);
-        this.maxStackSize = 1;
+    private Multimap<Attribute, AttributeModifier> attributeModifiers;
+
+    public MoCItemCrabClaw(Item.Properties properties, String name, int enchantability, float toughness, int armor, float reach) {
+        super(properties, name);
         this.armor = armor;
-        this.durability = durability;
         this.enchantability = enchantability;
         this.reach = reach;
         this.toughness = toughness;
     }
-    
+
     // TODO: Damage claw while placing/destroying blocks or hitting mobs
     @Override
-    public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
+    public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
     	Item itemOffhand = attacker.getHeldItemOffhand().getItem();
     	
         if (itemOffhand instanceof MoCItemCrabClaw) {
-        	stack.damageItem(1, attacker);
-        }
-        
-        return true;
-    }
-    
-    @Override
-    public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, EntityLivingBase entityLiving) {
-    	Item itemOffhand = entityLiving.getHeldItemOffhand().getItem();
-    	
-        if (!worldIn.isRemote && state.getBlockHardness(worldIn, pos) != 0.0D && itemOffhand instanceof MoCItemCrabClaw) {
-            stack.damageItem(1, entityLiving);
+            stack.damageItem(1, attacker, (entity) -> {
+                entity.sendBreakAnimation(EquipmentSlotType.MAINHAND);
+            });
         }
 
         return true;
     }
-    
-    @SideOnly(Side.CLIENT)
+
+    @Override
+    public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity entityLiving) {
+    	Item itemOffhand = entityLiving.getHeldItemOffhand().getItem();
+    	
+        if (!worldIn.isRemote && state.getBlockHardness(worldIn, pos) != 0.0D && itemOffhand instanceof MoCItemCrabClaw) {
+            stack.damageItem(1, entityLiving, (entity) -> {
+                entity.sendBreakAnimation(EquipmentSlotType.MAINHAND);
+            });
+        }
+
+        return true;
+    }
+
+    @OnlyIn(Dist.CLIENT)
     public boolean isFull3D() {
         return true;
     }
-    
+
     @Override
     public int getItemEnchantability() {
         return enchantability;
     }
-    
+
     @Override
     public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-    	return repair.getItem() == MoCItems.animalHide ? true : super.getIsRepairable(toRepair, repair);
+        return repair.getItem() == MoCItems.animalHide ? true : super.getIsRepairable(toRepair, repair);
     }
-    
+
     @Override
-	public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot equipmentSlot) {
-        Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers(equipmentSlot);
-
-        if (equipmentSlot == EntityEquipmentSlot.OFFHAND) {
-        	multimap.put(SharedMonsterAttributes.ARMOR.getName(), new AttributeModifier(TOUGHNESS_MODIFIER, "Crab claw armor", armor, 0));
-        	multimap.put(EntityPlayer.REACH_DISTANCE.getName(), new AttributeModifier(REACH_DISTANCE_MODIFIER, "Crab claw reach", reach, 0));
-        	multimap.put(SharedMonsterAttributes.ARMOR_TOUGHNESS.getName(), new AttributeModifier(TOUGHNESS_MODIFIER, "Crab claw toughness", toughness, 0));
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType equipmentSlot) {
+        if (attributeModifiers == null){
+            ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+            builder.put(Attributes.ARMOR, new AttributeModifier(TOUGHNESS_MODIFIER, "Crab claw armor", armor, AttributeModifier.Operation.ADDITION));
+            builder.put(net.minecraftforge.common.ForgeMod.REACH_DISTANCE.get(), new AttributeModifier(REACH_DISTANCE_MODIFIER, "Crab claw reach", reach, AttributeModifier.Operation.ADDITION));
+            builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(TOUGHNESS_MODIFIER, "Crab claw toughness", toughness, AttributeModifier.Operation.ADDITION));
+            this.attributeModifiers = builder.build();
         }
-
-        return multimap;
+        return equipmentSlot == EquipmentSlotType.OFFHAND ? this.attributeModifiers : super.getAttributeModifiers(equipmentSlot);
     }
 }

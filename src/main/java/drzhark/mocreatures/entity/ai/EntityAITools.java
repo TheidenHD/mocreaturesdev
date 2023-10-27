@@ -4,12 +4,12 @@
 package drzhark.mocreatures.entity.ai;
 
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class EntityAITools {
 
-    protected static boolean IsNearPlayer(EntityLiving entityliving, double d) {
+    protected static boolean IsNearPlayer(MobEntity entityliving, double d) {
         EntityPlayer entityplayer1 = entityliving.world.getClosestPlayerToEntity(entityliving, d);
         return entityplayer1 != null;
     }
@@ -19,8 +19,8 @@ public class EntityAITools {
             return null;
         }
 
-        for (int i = 0; i < ((EntityLiving) pet).world.playerEntities.size(); ++i) {
-            EntityPlayer entityplayer = ((EntityLiving) pet).world.playerEntities.get(i);
+        for (int i = 0; i < ((MobEntity) pet).world.playerEntities.size(); ++i) {
+            EntityPlayer entityplayer = ((MobEntity) pet).world.playerEntities.get(i);
 
             if (pet.getOwnerId().equals(entityplayer.getUniqueID())) {
                 return entityplayer;

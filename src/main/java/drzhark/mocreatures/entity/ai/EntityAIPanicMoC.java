@@ -4,20 +4,20 @@
 package drzhark.mocreatures.entity.ai;
 
 import drzhark.mocreatures.entity.IMoCEntity;
-import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.ai.EntityAIPanic;
 
-public class EntityAIPanicMoC extends EntityAIPanic {
+public class EntityAIPanicMoC extends PanicGoal {
 
-    private final EntityCreature entityCreature;
+    private final CreatureEntity entityCreature;
 
-    public EntityAIPanicMoC(EntityCreature creature, double speedIn) {
+    public EntityAIPanicMoC(CreatureEntity creature, double speedIn) {
         super(creature, speedIn);
         this.entityCreature = creature;
     }
 
     /**
-     * Returns whether the EntityAIBase should begin execution.
+     * Returns whether the Goal should begin execution.
      */
     @Override
     public boolean shouldExecute() {

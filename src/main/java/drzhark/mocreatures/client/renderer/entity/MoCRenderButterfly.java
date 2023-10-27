@@ -3,38 +3,39 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import drzhark.mocreatures.client.model.MoCModelButterfly;
 import drzhark.mocreatures.entity.ambient.MoCEntityButterfly;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCRenderButterfly extends MoCRenderInsect<MoCEntityButterfly> {
+@OnlyIn(Dist.CLIENT)
+public class MoCRenderButterfly extends MoCRenderInsect<MoCEntityButterfly, MoCModelButterfly<MoCEntityButterfly>> {
 
-    public MoCRenderButterfly(ModelBase modelbase) {
-        super(modelbase);
+    public MoCRenderButterfly(EntityRendererManager renderManagerIn, MoCModelButterfly modelbase) {
+        super(renderManagerIn, modelbase);
 
     }
 
     @Override
-    protected void preRenderCallback(MoCEntityButterfly entitybutterfly, float par2) {
-        if (entitybutterfly.isOnAir() || !entitybutterfly.onGround) {
-            adjustHeight(entitybutterfly, entitybutterfly.tFloat());
+    protected void preRenderCallback(MoCEntityButterfly entitybutterfly, MatrixStack matrixStackIn, float par2) {
+        if (entitybutterfly.isOnAir() || !entitybutterfly.isOnGround()) {
+            adjustHeight(entitybutterfly, entitybutterfly.tFloat(), matrixStackIn);
         }
         if (entitybutterfly.climbing()) {
-            rotateAnimal(entitybutterfly);
+            rotateAnimal(entitybutterfly, matrixStackIn);
         }
-        stretch(entitybutterfly);
+        stretch(entitybutterfly, matrixStackIn);
     }
 
-    protected void adjustHeight(MoCEntityButterfly entitybutterfly, float FHeight) {
-        GlStateManager.translate(0.0F, FHeight, 0.0F);
+    protected void adjustHeight(MoCEntityButterfly entitybutterfly, float FHeight, MatrixStack matrixStackIn) {
+        matrixStackIn.translate(0.0F, FHeight, 0.0F);
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityButterfly entitybutterfly) {
+    public ResourceLocation getEntityTexture(MoCEntityButterfly entitybutterfly) {
         return entitybutterfly.getTexture();
     }
 }

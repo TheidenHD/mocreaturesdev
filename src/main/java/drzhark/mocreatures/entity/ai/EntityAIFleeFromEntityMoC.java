@@ -3,18 +3,17 @@
  */
 package drzhark.mocreatures.entity.ai;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.MoCEntityAquatic;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 public class EntityAIFleeFromEntityMoC extends EntityAIBase {
 
@@ -25,7 +24,7 @@ public class EntityAIFleeFromEntityMoC extends EntityAIBase {
     /**
      * The entity we are attached to
      */
-    protected EntityCreature entity;
+    protected CreatureEntity entity;
     public final Predicate<Entity> canBeSeenSelector = new Predicate<Entity>() {
 
         public boolean isApplicable(Entity entityIn) {
@@ -42,7 +41,7 @@ public class EntityAIFleeFromEntityMoC extends EntityAIBase {
     private double randPosY;
     private double randPosZ;
 
-    public EntityAIFleeFromEntityMoC(EntityCreature creature, Predicate<Entity> targetSelector, float searchDistance, double farSpeedIn, double nearSpeedIn) {
+    public EntityAIFleeFromEntityMoC(CreatureEntity creature, Predicate<Entity> targetSelector, float searchDistance, double farSpeedIn, double nearSpeedIn) {
         this.entity = creature;
         this.avoidTargetSelector = targetSelector;
         this.avoidDistance = searchDistance;
@@ -52,7 +51,7 @@ public class EntityAIFleeFromEntityMoC extends EntityAIBase {
     }
 
     /**
-     * Returns whether the EntityAIBase should begin execution.
+     * Returns whether the Goal should begin execution.
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -101,7 +100,7 @@ public class EntityAIFleeFromEntityMoC extends EntityAIBase {
     }
 
     /**
-     * Returns whether an in-progress EntityAIBase should continue executing
+     * Returns whether an in-progress Goal should continue executing
      */
     @Override
     public boolean shouldContinueExecuting() {

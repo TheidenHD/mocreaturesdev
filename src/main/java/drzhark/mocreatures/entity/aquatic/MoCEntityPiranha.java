@@ -8,12 +8,14 @@ import drzhark.mocreatures.entity.ai.EntityAIFollowHerd;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIAttackMelee;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -23,30 +25,26 @@ import javax.annotation.Nullable;
 
 public class MoCEntityPiranha extends MoCEntitySmallFish {
 
-    public MoCEntityPiranha(World world) {
-        super(world);
+    public MoCEntityPiranha(EntityType<? extends MoCEntityPiranha> type, World world) {
+        super(type, world);
         experienceValue = 3;
     }
 
     @Override
-    protected void initEntityAI() {
-        this.tasks.addTask(3, new EntityAIAttackMelee(this, 1.0D, false));
-        this.tasks.addTask(4, new EntityAIFollowHerd(this, 0.6D, 4D, 20D, 1));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.0D, true));
+        this.goalSelector.addGoal(4, new EntityAIFollowHerd(this, 0.6D, 4D, 20D, 1));
         this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
-        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget<>(this, EntityPlayer.class, true));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(5.0D);
-        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(3.5D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntitySmallFish.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 5.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.5D);
     }
 
     @Override
     public void selectType() {
-        setType(1);
+        setTypeMoC(1);
     }
 
     @Override
@@ -56,7 +54,7 @@ public class MoCEntityPiranha extends MoCEntitySmallFish {
 
     protected Entity findPlayerToAttack() {
         if ((this.world.getDifficulty().getId() > 0)) {
-            EntityPlayer entityplayer = this.world.getClosestPlayerToEntity(this, 12D);
+            PlayerEntity entityplayer = this.world.getClosestPlayer(this, 12D);
             if ((entityplayer != null) && entityplayer.isInWater() && !getIsTamed()) {
                 return entityplayer;
             }
@@ -65,7 +63,7 @@ public class MoCEntityPiranha extends MoCEntitySmallFish {
     }
 
     @Override
-    protected int getExperiencePoints(EntityPlayer player) {
+    protected int getExperiencePoints(PlayerEntity player) {
         return experienceValue;
     }
 
@@ -73,12 +71,12 @@ public class MoCEntityPiranha extends MoCEntitySmallFish {
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (super.attackEntityFrom(damagesource, i) && (this.world.getDifficulty().getId() > 0)) {
             Entity entity = damagesource.getTrueSource();
-            if (entity instanceof EntityLivingBase) {
+            if (entity instanceof LivingEntity) {
                 if (this.isRidingOrBeingRiddenBy(entity)) {
                     return true;
                 }
                 if (entity != this) {
-                    this.setAttackTarget((EntityLivingBase) entity);
+                    this.setAttackTarget((LivingEntity) entity);
                 }
                 return true;
             }
@@ -92,8 +90,7 @@ public class MoCEntityPiranha extends MoCEntitySmallFish {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.PIRANHA;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.PIRANHA;
     }
     
     @Override

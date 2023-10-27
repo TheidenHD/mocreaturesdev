@@ -14,9 +14,9 @@ import javax.annotation.Nullable;
 
 public class MoCEntityAngler extends MoCEntitySmallFish {
 
-    public MoCEntityAngler(World world) {
-        super(world);
-        this.setType(3);
+    public MoCEntityAngler(EntityType<? extends MoCEntityAngler> type, World world) {
+        super(type, world);
+        this.setTypeMoC(3);
     }
 
     @Override
@@ -25,8 +25,7 @@ public class MoCEntityAngler extends MoCEntitySmallFish {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.ANGLERFISH;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.ANGLERFISH;
     }
     
     protected SoundEvent getDeathSound() {

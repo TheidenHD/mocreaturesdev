@@ -6,7 +6,10 @@ package drzhark.mocreatures.entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 
+import java.util.Random;
 import java.util.UUID;
 
 public interface IMoCEntity {
@@ -35,8 +38,6 @@ public interface IMoCEntity {
 
     boolean checkSpawningBiome();
 
-    boolean getCanSpawnHere();
-
     void performAnimation(int i);
 
     boolean renderName();
@@ -53,9 +54,9 @@ public interface IMoCEntity {
 
     void setArmorType(int i);
 
-    int getType();
+    int getTypeMoC();
 
-    void setType(int i);
+    void setTypeMoC(int i);
 
     float rollRotationOffset();
 
@@ -73,7 +74,7 @@ public interface IMoCEntity {
 
     ResourceLocation getTexture();
 
-    boolean canAttackTarget(EntityLivingBase entity);
+    boolean canAttackTarget(LivingEntity entity);
 
     boolean getIsSitting(); // is the entity sitting, for animations and AI
 

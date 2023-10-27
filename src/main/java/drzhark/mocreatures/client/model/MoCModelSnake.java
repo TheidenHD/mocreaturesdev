@@ -3,17 +3,17 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.hunter.MoCEntitySnake;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelSnake extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelSnake<T extends MoCEntitySnake> extends EntityModel<T> {
 
     //public ModelRenderer WingL[];
     //public ModelRenderer WingR[];
@@ -38,6 +38,17 @@ public class MoCModelSnake extends ModelBase {
     ModelRenderer Wing4L;
     ModelRenderer Wing5L;
     ModelRenderer Wing5R;
+    private int typeI;
+    private float tongueOff;
+    private float mouthOff;
+    private float rattleOff;
+    private boolean climbing;
+    private boolean isresting;
+    private int movInt;
+    private float f6;
+    private boolean nearplayer;
+    private boolean picked;
+    private float limbSwing;
 
     public MoCModelSnake() {
         this.textureWidth = 64;
@@ -167,22 +178,22 @@ public class MoCModelSnake extends ModelBase {
 
     }
 
-    @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        //super.render(entity, f, f1, f2, f3, f4, f5);
-        MoCEntitySnake entitysnake = (MoCEntitySnake) entity;
-        int typeI = entitysnake.getType();
-        float tongueOff = entitysnake.getfTongue();
-        float mouthOff = entitysnake.getfMouth();
-        float rattleOff = entitysnake.getfRattle();
-        boolean climbing = entitysnake.isClimbing();
-        boolean isresting = entitysnake.isResting();
-        int movInt = entitysnake.getMovInt();
-        float f6 = entitysnake.bodyswing;
-        boolean nearplayer = entitysnake.getNearPlayer();
-        boolean picked = entitysnake.pickedUp();
-        setRotationAngles(f3, f4, tongueOff, mouthOff, rattleOff, nearplayer, typeI);
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.typeI = entityIn.getTypeMoC();
+        this.tongueOff = entityIn.getfTongue();
+        this.mouthOff = entityIn.getfMouth();
+        this.rattleOff = entityIn.getfRattle();
+        this.climbing = entityIn.isClimbing();
+        this.isresting = entityIn.isResting();
+        this.movInt = entityIn.getMovInt();
+        this.f6 = entityIn.bodyswing;
+        this.nearplayer = entityIn.getNearPlayer();
+        this.picked = entityIn.pickedUp();
+        this.limbSwing = limbSwing;
+    }
 
+    @Override
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         float sidef;
 
         // y = A * sin(w * t - k *x)
@@ -195,14 +206,14 @@ public class MoCModelSnake extends ModelBase {
         @SuppressWarnings("unused")
         float A = 0.4F;//0.8F;
         float w = 1.5F;
-        float t = f / 2;
+        float t = limbSwing / 2;
 
         for (int i = 0; i < this.bodyparts; i++) {
             float sideperf = 1F;
             float yOff;
             //sideperf = 1F;
 
-            GlStateManager.pushMatrix();
+            matrixStackIn.push();
             if (isresting) {
                 //this part doesn't work at all
                 /* if (i > (bodyparts/3) && (i <2*bodyparts/3)) {
@@ -213,13 +224,13 @@ public class MoCModelSnake extends ModelBase {
 
                 //this shortens the snake while resting
                 //TODO reactivate ?
-                //GlStateManager.translate(0.0F, 0.0F, -0.05F*i);
+                //matrixStackIn.translate(0.0F, 0.0F, -0.05F*i);
             } else
 
                 //climbing animation
                 if (climbing && i < this.bodyparts / 2) {
                     yOff = (i - ((float) this.bodyparts / 2)) * 0.08F;
-                    GlStateManager.translate(0.0F, yOff / 3.0F, -yOff * 1.2F);
+                    matrixStackIn.translate(0.0F, yOff / 3.0F, -yOff * 1.2F);
                 } else
 
                     //raises head of snakes near player
@@ -229,7 +240,7 @@ public class MoCModelSnake extends ModelBase {
                             yOff = (i - ((float) this.bodyparts / 3)) * 0.09F;
                             float zOff = (i - ((float) this.bodyparts / 3)) * 0.065F;
                             // if (picked) { yOff = yOff*-1F; //zOff = zOff*-1F; }
-                            GlStateManager.translate(0.0F, yOff / 1.5F, -zOff * f6);
+                            matrixStackIn.translate(0.0F, yOff / 1.5F, -zOff * f6);
                         }
 
                         if (i < this.bodyparts / 6) {
@@ -247,7 +258,7 @@ public class MoCModelSnake extends ModelBase {
             if (typeI == 7 && nearplayer && i > (5 * this.bodyparts / 6) && !picked)//&& not picked
             {
                 yOff = 0.55F + ((i - this.bodyparts)) * 0.08F;
-                GlStateManager.translate(0.0F, -yOff / 1.5F, 0.0F);
+                matrixStackIn.translate(0.0F, -yOff / 1.5F, 0.0F);
             }
 
             //TODO reactivate once strangling is working
@@ -255,22 +266,22 @@ public class MoCModelSnake extends ModelBase {
             if (picked && i > this.bodyparts / 2)//&& big to bring down the tail
             {
                 yOff = ((i - ((float) this.bodyparts / 2))) * 0.08F;
-                GlStateManager.translate(0.0F, yOff / 1.5F, -yOff);
+                matrixStackIn.translate(0.0F, yOff / 1.5F, -yOff);
 
             }
 
             //not working strangling
             /*
              * if (picked && i > bodyparts/3)//&& big to bring down the tail {
-             * yOff =((i-(bodyparts/3)))*0.08F; GlStateManager.translate(0.0F,
+             * yOff =((i-(bodyparts/3)))*0.08F; matrixStackIn.translate(0.0F,
              * yOff/1.5F, 0.0F); anglef = (10) * (i+1) ;//works well for small
              * snakes //anglef = (6) * (i+1) ; //this may work!!
-             * //GlStateManager.translate(0.0F, 0.0F, -0.05F*i); GlStateManager.rotate(anglef,
+             * //matrixStackIn.translate(0.0F, 0.0F, -0.05F*i); matrixStackIn.rotate(anglef,
              * 0.0F, 1.0F, 0.0F); }
              */
 
             /*
-             * if (picked) //&& first persons pesrpective { GlStateManager.scale(fsize,
+             * if (picked) //&& first persons pesrpective { matrixStackIn.scale(fsize,
              * fsize, fsize); }
              */
             /*
@@ -278,50 +289,50 @@ public class MoCModelSnake extends ModelBase {
              * MathHelper.sin(w * t - 0.3F * (float)i)- (movInt/10F) *
              * MathHelper.sin(-1F * t - 0.25F * (float)i); //TODO reactivate
              * this one? //sidef = A * MathHelper.sin(w * t - 0.3F * (float)j);
-             * //sidef = 0.5F * MathHelper.sin(2F * (f)- 0.25F * (float)j) -
-             * 0.2F * MathHelper.cos(1.2F *f - 0.15F *(float)j); //sidef =
+             * //sidef = 0.5F * MathHelper.sin(2F * (limbSwing)- 0.25F * (float)j) -
+             * 0.2F * MathHelper.cos(1.2F *limbSwing - 0.15F *(float)j); //sidef =
              * MathHelper.sqrt(i/10F); //sidef = sidef * sideperf;
-             * //GlStateManager.translate(sidef, 0.0F, 0.0F); anglef = (8) * (i+1)
+             * //matrixStackIn.translate(sidef, 0.0F, 0.0F); anglef = (8) * (i+1)
              * ;//works well for small snakes //anglef = (6) * (i+1) ; //this
-             * may work!! GlStateManager.translate(0.0F, 0.0F, -0.05F*i);
-             * GlStateManager.rotate(anglef, 0.0F, 1.0F, 0.0F); }else
+             * may work!! matrixStackIn.translate(0.0F, 0.0F, -0.05F*i);
+             * matrixStackIn.rotate(anglef, 0.0F, 1.0F, 0.0F); }else
              */
             {
 
                 sidef = 0.5F * MathHelper.sin(w * t - 0.3F * i) - (movInt / 20F) * MathHelper.sin(0.8F * t - 0.2F * i);
                 sidef = sidef * sideperf;
-                //GlStateManager.translate(0.0F, 0.0F, -0.05F*i);
+                //matrixStackIn.translate(0.0F, 0.0F, -0.05F*i);
 
-                GlStateManager.translate(sidef, 0.0F, 0.0F);
+                matrixStackIn.translate(sidef, 0.0F, 0.0F);
             }
 
             //this one works as well
             //sidef = 0.5F * MathHelper.sin(w * t - 0.3F * (float)j)- 0.1F * MathHelper.sin(+0.8F * t - 0.2F * (float)j);
             //sidef = sidef * sideperf;
 
-            //GlStateManager.translate(sidef, 0.0F, sidef/5);
+            //matrixStackIn.translate(sidef, 0.0F, sidef/5);
             //sidef = (0.4F * MathHelper.sin(-3.7F * t - 0.2F * (float)i)) + (0.3F * MathHelper.sin(-2F * t - 0.2F * (float)i));
             //sidef = 1.1F * MathHelper.sin(-2F * t - 0.2F * (float)i);
 
-            this.bodySnake[i].render(f5);
+            this.bodySnake[i].render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
             if (i == 0) {
-                this.Head.render(f5);
-                this.Nose.render(f5);
+                this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.Nose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-                this.LNose.render(f5);
-                this.TeethUR.render(f5);
-                this.TeethUL.render(f5);
+                this.LNose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.TeethUR.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.TeethUL.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
                 if (tongueOff != 0.0F) {
                     if (mouthOff != 0.0F || tongueOff < 2.0F || tongueOff > 7.0F) {
-                        this.Tongue1.render(f5);
+                        this.Tongue1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     } else {
-                        this.Tongue.render(f5);
+                        this.Tongue.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     }
 
                 } else {
-                    this.Tongue0.render(f5);
+                    this.Tongue0.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
 
             }
@@ -331,32 +342,32 @@ public class MoCModelSnake extends ModelBase {
             if (typeI == 6 && nearplayer)//cobra
             {
                 if (i == 1) {
-                    this.Wing1L.render(f5);
-                    this.Wing1R.render(f5);
+                    this.Wing1L.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.Wing1R.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
                 if (i == 2) {
-                    this.Wing2L.render(f5);
-                    this.Wing2R.render(f5);
+                    this.Wing2L.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.Wing2R.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
                 if (i == 3) {
-                    this.Wing3L.render(f5);
-                    this.Wing3R.render(f5);
+                    this.Wing3L.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.Wing3R.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
                 if (i == 4) {
-                    this.Wing4L.render(f5);
-                    this.Wing4R.render(f5);
+                    this.Wing4L.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.Wing4R.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
                 if (i == 5) {
-                    this.Wing5L.render(f5);
-                    this.Wing5R.render(f5);
+                    this.Wing5L.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.Wing5R.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
             }
 
             if (i == this.bodyparts - 1 && typeI == 7) {
-                this.Tail.render(f5);
+                this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
 
-            GlStateManager.popMatrix();
+            matrixStackIn.pop();
         }
     }
 
@@ -367,9 +378,9 @@ public class MoCModelSnake extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f3, float f4, float f6, float f7, float frattle, boolean nearP, int type) {
-        float rAX = (f4 / 57.29578F);// * 1.5F;
-        float rAY = (f3 / 57.29578F);// * 1.5F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        float rAX = (headPitch / 57.29578F);// * 1.5F;
+        float rAY = (netHeadYaw / 57.29578F);// * 1.5F;
         this.Head.rotateAngleX = rAX;
         this.Head.rotateAngleY = rAY;
         this.bodySnake[0].rotateAngleX = rAX * 0.95F;/// 1.5F;
@@ -378,15 +389,15 @@ public class MoCModelSnake extends ModelBase {
         this.bodySnake[3].rotateAngleX = rAX * 0.80F;/// 3.0F;
         this.bodySnake[4].rotateAngleX = rAX * 0.75F;/// 3.5F;
 
-        float f8 = (MathHelper.cos(f6 * 10F) / 40F);
+        float f8 = (MathHelper.cos(tongueOff * 10F) / 40F);
 
-        this.Nose.rotateAngleX = this.Head.rotateAngleX - f7;
-        this.LNose.rotateAngleX = this.Head.rotateAngleX + f7;
+        this.Nose.rotateAngleX = this.Head.rotateAngleX - mouthOff;
+        this.LNose.rotateAngleX = this.Head.rotateAngleX + mouthOff;
         this.Tongue1.rotateAngleX = this.Head.rotateAngleX + f8;
         this.Tongue.rotateAngleX = this.Head.rotateAngleX + f8;
         this.Tongue0.rotateAngleX = this.LNose.rotateAngleX;
-        this.TeethUR.rotateAngleX = this.Head.rotateAngleX - f7;
-        this.TeethUL.rotateAngleX = this.Head.rotateAngleX - f7;
+        this.TeethUR.rotateAngleX = this.Head.rotateAngleX - mouthOff;
+        this.TeethUL.rotateAngleX = this.Head.rotateAngleX - mouthOff;
         this.bodySnake[0].rotateAngleY = 0.0F + (rAY * 0.85F);/// 1.5F;
         this.bodySnake[1].rotateAngleY = 0.0F + (rAY * 0.65F);/// 2.0F;
         this.bodySnake[2].rotateAngleY = 0.0F + (rAY * 0.45F);/// 2.5F;
@@ -400,7 +411,7 @@ public class MoCModelSnake extends ModelBase {
         this.TeethUR.rotateAngleY = this.Head.rotateAngleY;
         this.TeethUL.rotateAngleY = this.Head.rotateAngleY;
 
-        if (type == 6) //cobra
+        if (typeI == 6) //cobra
         {
             this.Wing1L.rotateAngleX = this.bodySnake[1].rotateAngleX;
             this.Wing1L.rotateAngleY = this.bodySnake[1].rotateAngleY;
@@ -428,15 +439,15 @@ public class MoCModelSnake extends ModelBase {
             this.Wing5R.rotateAngleY = this.bodySnake[4].rotateAngleY;
         }
 
-        if (type == 7) //rattlesnake
+        if (typeI == 7) //rattlesnake
         {
-            if (nearP || frattle != 0.0F) {
-                this.Tail.rotateAngleX = ((MathHelper.cos(f3 * 10F) * 20F) + 90F) / 57.29578F;
-                //Tail.rotateAngleX = ((MathHelper.cos(f3*10F)*20F) + 90F)/57.29578F;
+            if (nearplayer || rattleOff != 0.0F) {
+                this.Tail.rotateAngleX = ((MathHelper.cos(netHeadYaw * 10F) * 20F) + 90F) / 57.29578F;
+                //Tail.rotateAngleX = ((MathHelper.cos(netHeadYaw*10F)*20F) + 90F)/57.29578F;
             } else {
                 this.Tail.rotateAngleX = 0.0F;
             }
         }
-        //super.setRotationAngles(f, f1, f2, f3, f4, f5);
+        //super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
     }
 }

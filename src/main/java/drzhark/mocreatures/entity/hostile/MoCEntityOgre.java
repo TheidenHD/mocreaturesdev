@@ -10,16 +10,16 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import drzhark.mocreatures.network.message.MoCMessageExplode;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.*;
-import net.minecraft.entity.monster.EntityIronGolem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.passive.IronGolemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 public class MoCEntityOgre extends MoCEntityMob {
 
@@ -30,33 +30,30 @@ public class MoCEntityOgre extends MoCEntityMob {
     public int attackCounter;
     private int movingHead;
 
-    public MoCEntityOgre(World world) {
-        super(world);
-        setSize(1.8F, 3.05F);
+    public MoCEntityOgre(EntityType<? extends MoCEntityOgre> type, World world) {
+        super(type, world);
+        //setSize(1.8F, 3.05F);
         experienceValue = 12;
     }
 
     @Override
-    protected void initEntityAI() {
-        this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(2, new MoCEntityOgre.AIOgreAttack(this, 1.25D, false));
-        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
-        this.targetTasks.addTask(2, new MoCEntityOgre.AIOgreTarget<>(this, EntityPlayer.class, false));
-        this.targetTasks.addTask(3, new MoCEntityOgre.AIOgreTarget<>(this, EntityIronGolem.class, true));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(2, new MoCEntityOgre.AIOgreAttack(this));
+        this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new MoCEntityOgre.AIOgreTarget<>(this, PlayerEntity.class));
+        this.targetSelector.addGoal(3, new MoCEntityOgre.AIOgreTarget<>(this, IronGolemEntity.class));
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
-        this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntityMob.registerAttributes().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1.0D);
     }
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(this.rand.nextInt(2) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(2) + 1);
         }
     }
 
@@ -67,8 +64,8 @@ public class MoCEntityOgre extends MoCEntityMob {
             if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
-            if ((entity != this) && (this.world.getDifficulty().getId() > 0) && entity instanceof EntityLivingBase) {
-                setAttackTarget((EntityLivingBase) entity);
+            if ((entity != this) && (this.world.getDifficulty().getId() > 0) && entity instanceof LivingEntity) {
+                setAttackTarget((LivingEntity) entity);
                 return true;
             } else {
                 return false;
@@ -85,17 +82,17 @@ public class MoCEntityOgre extends MoCEntityMob {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_OGRE_DEATH;
+        return MoCSoundEvents.ENTITY_OGRE_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_OGRE_HURT;
+        return MoCSoundEvents.ENTITY_OGRE_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MoCSoundEvents.ENTITY_OGRE_AMBIENT;
+        return MoCSoundEvents.ENTITY_OGRE_AMBIENT.get();
     }
 
     public boolean isFireStarter() {
@@ -114,13 +111,12 @@ public class MoCEntityOgre extends MoCEntityMob {
     }
 
     @Override
-    public void onLivingUpdate() {
+    public void livingTick() {
         if (!this.world.isRemote) {
             if (this.smashCounter > 0 && ++this.smashCounter > 10) {
                 this.smashCounter = 0;
                 performDestroyBlastAttack();
-                MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageExplode(this.getEntityId()),
-                        new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageExplode(this.getEntityId()));
             }
 
             if ((this.getAttackTarget() != null) && (this.rand.nextInt(40) == 0) && this.smashCounter == 0 && this.attackCounter == 0) {
@@ -140,7 +136,7 @@ public class MoCEntityOgre extends MoCEntityMob {
                 this.armToAnimate = 0;
             }
         }
-        super.onLivingUpdate();
+        super.livingTick();
     }
 
     /**
@@ -148,8 +144,7 @@ public class MoCEntityOgre extends MoCEntityMob {
      */
     protected void startDestroyBlast() {
         this.smashCounter = 1;
-        MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 3),
-                new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+        MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 3));
     }
 
     /**
@@ -159,7 +154,7 @@ public class MoCEntityOgre extends MoCEntityMob {
         if (this.deathTime > 0) {
             return;
         }
-        MoCTools.destroyBlast(this, this.posX, this.posY + 1.0D, this.posZ, getDestroyForce(), isFireStarter());
+        MoCTools.destroyBlast(this, this.getPosX(), this.getPosY() + 1.0D, this.getPosZ(), getDestroyForce(), isFireStarter());
     }
 
     /**
@@ -170,17 +165,15 @@ public class MoCEntityOgre extends MoCEntityMob {
             if (this.smashCounter != 0)
                 return;
 
-            boolean leftArmW = (getType() == 2 || getType() == 4 || getType() == 6) && this.rand.nextInt(2) == 0;
+            boolean leftArmW = (getTypeMoC() == 2 || getTypeMoC() == 4 || getTypeMoC() == 6) && this.rand.nextInt(2) == 0;
 
             this.attackCounter = 1;
             if (leftArmW) {
                 this.armToAnimate = 1;
-                MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 1),
-                        new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 1));
             } else {
                 this.armToAnimate = 2;
-                MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 2),
-                        new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 2));
             }
         }
     }
@@ -195,7 +188,7 @@ public class MoCEntityOgre extends MoCEntityMob {
     }
 
     public int getMovingHead() {
-        if (getType() == 1) //single headed ogre
+        if (getTypeMoC() == 1) //single headed ogre
         {
             return 1;
         }
@@ -212,11 +205,11 @@ public class MoCEntityOgre extends MoCEntityMob {
         return super.attackEntityAsMob(entityIn);
     }
 
-    public float getEyeHeight() {
-        return this.height * 0.91F;
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return this.getHeight() * 0.91F;
     }
 
-    static class AIOgreAttack extends EntityAIAttackMelee {
+    static class AIOgreAttack extends MeleeAttackGoal {
         public AIOgreAttack(MoCEntityOgre ogre, double speed, boolean useLongMemory) {
             super(ogre, speed, useLongMemory);
         }
@@ -234,14 +227,14 @@ public class MoCEntityOgre extends MoCEntityMob {
         }
     }
 
-    static class AIOgreTarget<T extends EntityLivingBase> extends EntityAINearestAttackableTarget<T> {
+    static class AIOgreTarget<T extends LivingEntity> extends NearestAttackableTargetGoal<T> {
         public AIOgreTarget(MoCEntityOgre ogre, Class<T> classTarget, boolean checkSight) {
             super(ogre, classTarget, checkSight);
         }
 
         @Override
         public boolean shouldExecute() {
-            float f = this.taskOwner.getBrightness();
+            float f = this.goalOwner.getBrightness();
             return f < 0.5F && super.shouldExecute();
         }
     }

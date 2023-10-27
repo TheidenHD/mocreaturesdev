@@ -3,23 +3,23 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.hostile.MoCEntityWraith;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelWraith extends ModelBiped {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelWraith<T extends MoCEntityWraith> extends BipedModel<T> {
 
     private int attackCounter;
+    private boolean isSneaking;
 
     public MoCModelWraith() {
-        textureWidth = 64;
-        textureHeight = 40;
+        super(0.0F, 0.0F, 64, 40);
         this.bipedHead = new ModelRenderer(this, 0, 0);
         this.bipedHead.addBox(-4.0F, -4.0F, -4.0F, 8, 8, 8, 0.0F);
         this.bipedHead.setRotationPoint(0.0F, 0.0F, 0.0F);
@@ -35,38 +35,39 @@ public class MoCModelWraith extends ModelBiped {
         this.bipedLeftArm.setRotationPoint(5.0F, 2.0F, 0.0F);
     }
 
-    @Override
-    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
-        GlStateManager.pushMatrix();
-        if (this.isChild) {
-            GlStateManager.scale(0.75F, 0.75F, 0.75F);
-            GlStateManager.translate(0.0F, 16.0F * scale, 0.0F);
-            this.bipedHead.render(scale);
-            GlStateManager.popMatrix();
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(0.5F, 0.5F, 0.5F);
-            GlStateManager.translate(0.0F, 24.0F * scale, 0.0F);
-        } else {
-            if (entityIn.isSneaking()) {
-                GlStateManager.translate(0.0F, 0.2F, 0.0F);
-            }
-            this.bipedHead.render(scale);
-        }
-        this.bipedBody.render(scale);
-        this.bipedRightArm.render(scale);
-        this.bipedLeftArm.render(scale);
-        this.bipedRightLeg.render(scale);
-        this.bipedLeftLeg.render(scale);
-        GlStateManager.popMatrix();
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.isSneaking = entityIn.isSneaking();
     }
 
     @Override
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity par7Entity) {
-        super.setRotationAngles(f, f1, f2, f3, f4, f5, par7Entity);
-        if (par7Entity instanceof MoCEntityWraith) {
-            this.attackCounter = ((MoCEntityWraith) par7Entity).attackCounter;
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        matrixStackIn.push();
+        if (this.isChild) {
+            matrixStackIn.scale(0.75F, 0.75F, 0.75F);
+            matrixStackIn.translate(0.0F, 16.0F, 0.0F);
+            this.bipedHead.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            matrixStackIn.pop();
+            matrixStackIn.push();
+            matrixStackIn.scale(0.5F, 0.5F, 0.5F);
+            matrixStackIn.translate(0.0F, 24.0F, 0.0F);
+        } else {
+            if (isSneaking) {
+                matrixStackIn.translate(0.0F, 0.2F, 0.0F);
+            }
+            this.bipedHead.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
+        this.bipedBody.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.bipedRightArm.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.bipedLeftArm.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.bipedRightLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.bipedLeftLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        matrixStackIn.pop();
+    }
+
+    @Override
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        this.attackCounter = entityIn.attackCounter;
         float f6 = MathHelper.sin(this.swingProgress * 3.141593F);
         float f7 = MathHelper.sin((1.0F - ((1.0F - this.swingProgress) * (1.0F - this.swingProgress))) * 3.141593F);
         this.bipedRightArm.rotateAngleZ = 0.0F;
@@ -82,10 +83,10 @@ public class MoCModelWraith extends ModelBiped {
             this.bipedLeftArm.rotateAngleX = -1.570796F;
             this.bipedRightArm.rotateAngleX -= (f6 * 1.2F) - (f7 * 0.4F);
             this.bipedLeftArm.rotateAngleX -= (f6 * 1.2F) - (f7 * 0.4F);
-            this.bipedRightArm.rotateAngleX += MathHelper.sin(f2 * 0.067F) * 0.05F;
-            this.bipedLeftArm.rotateAngleX -= MathHelper.sin(f2 * 0.067F) * 0.05F;
+            this.bipedRightArm.rotateAngleX += MathHelper.sin(ageInTicks * 0.067F) * 0.05F;
+            this.bipedLeftArm.rotateAngleX -= MathHelper.sin(ageInTicks * 0.067F) * 0.05F;
         }
-        this.bipedRightArm.rotateAngleZ += (MathHelper.cos(f2 * 0.09F) * 0.05F) + 0.05F;
-        this.bipedLeftArm.rotateAngleZ -= (MathHelper.cos(f2 * 0.09F) * 0.05F) + 0.05F;
+        this.bipedRightArm.rotateAngleZ += (MathHelper.cos(ageInTicks * 0.09F) * 0.05F) + 0.05F;
+        this.bipedLeftArm.rotateAngleZ -= (MathHelper.cos(ageInTicks * 0.09F) * 0.05F) + 0.05F;
     }
 }

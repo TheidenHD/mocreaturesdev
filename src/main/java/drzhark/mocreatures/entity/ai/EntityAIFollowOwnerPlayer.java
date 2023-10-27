@@ -6,38 +6,39 @@ package drzhark.mocreatures.entity.ai;
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.MoCEntityAnimal;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.pathfinding.PathNavigate;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.pathfinding.PathNavigator;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
+import java.util.EnumSet;
 import java.util.UUID;
 
-public class EntityAIFollowOwnerPlayer extends EntityAIBase {
+public class EntityAIFollowOwnerPlayer extends Goal {
 
-    private final EntityLiving thePet;
+    private final MobEntity thePet;
     private final double speed;
-    private final PathNavigate petPathfinder;
+    private final PathNavigator petPathfinder;
     World world;
     float maxDist;
     float minDist;
-    private EntityPlayer theOwner;
+    private PlayerEntity theOwner;
     private int delayCounter;
 
-    public EntityAIFollowOwnerPlayer(EntityLiving thePetIn, double speedIn, float minDistIn, float maxDistIn) {
+    public EntityAIFollowOwnerPlayer(MobEntity thePetIn, double speedIn, float minDistIn, float maxDistIn) {
         this.thePet = thePetIn;
         this.world = thePetIn.world;
         this.speed = speedIn;
         this.petPathfinder = thePetIn.getNavigator();
         this.minDist = minDistIn;
         this.maxDist = maxDistIn;
-        this.setMutexBits(3);
+        this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 
         //if (!(thePetIn.getNavigator() instanceof PathNavigateGround)) {
         //System.out.println("exiting due to first illegal argument");
@@ -46,7 +47,7 @@ public class EntityAIFollowOwnerPlayer extends EntityAIBase {
     }
 
     /**
-     * Returns whether the EntityAIBase should begin execution.
+     * Returns whether the Goal should begin execution.
      */
     @Override
     public boolean shouldExecute() {
@@ -62,7 +63,7 @@ public class EntityAIFollowOwnerPlayer extends EntityAIBase {
             return false;
         }
 
-        EntityPlayer entityplayer = EntityAITools.getIMoCTameableOwner((IMoCTameable) this.thePet);
+        PlayerEntity entityplayer = EntityAITools.getIMoCTameableOwner((IMoCTameable) this.thePet);
 
         if (entityplayer == null) {
             return false;
@@ -76,7 +77,7 @@ public class EntityAIFollowOwnerPlayer extends EntityAIBase {
     }
 
     /**
-     * Returns whether an in-progress EntityAIBase should continue executing
+     * Returns whether an in-progress Goal should continue executing
      */
     @Override
     public boolean shouldContinueExecuting() {
@@ -104,12 +105,12 @@ public class EntityAIFollowOwnerPlayer extends EntityAIBase {
     }
 
     private boolean isEmptyBlock(BlockPos pos) {
-        IBlockState iblockstate = this.world.getBlockState(pos);
-        return iblockstate.getMaterial() == Material.AIR || !iblockstate.isFullCube();
+        BlockState iblockstate = this.world.getBlockState(pos);
+        return iblockstate.getMaterial() == Material.AIR || !iblockstate.hasOpaqueCollisionShape(this.world, pos);
     }
 
-    public void updateTask() {
-        this.thePet.getLookHelper().setLookPositionWithEntity(this.theOwner, 10.0F, (float) this.thePet.getVerticalFaceSpeed());
+    public void tick() {
+        this.thePet.getLookController().setLookPositionWithEntity(this.theOwner, 10.0F, (float) this.thePet.getVerticalFaceSpeed());
 
         if (!((IMoCEntity) this.thePet).getIsSitting()) {
             if (--this.delayCounter <= 0) {
@@ -118,14 +119,14 @@ public class EntityAIFollowOwnerPlayer extends EntityAIBase {
                 if (!this.petPathfinder.tryMoveToEntityLiving(this.theOwner, this.speed)) {
                     if (!this.thePet.getLeashed()) {
                         if (this.thePet.getDistanceSq(this.theOwner) >= 144.0D) {
-                            int i = MathHelper.floor(this.theOwner.posX) - 2;
-                            int j = MathHelper.floor(this.theOwner.posZ) - 2;
-                            int k = MathHelper.floor(this.theOwner.getEntityBoundingBox().minY);
+                            int i = MathHelper.floor(this.theOwner.getPosX()) - 2;
+                            int j = MathHelper.floor(this.theOwner.getPosZ()) - 2;
+                            int k = MathHelper.floor(this.theOwner.getBoundingBox().minY);
 
                             for (int l = 0; l <= 4; ++l) {
                                 for (int i1 = 0; i1 <= 4; ++i1) {
                                     final BlockPos pos = new BlockPos(i + l, k - 1, j + i1);
-                                    if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && this.world.getBlockState(pos).isSideSolid(world, pos, EnumFacing.DOWN) && this.isEmptyBlock(new BlockPos(i + l, k, j + i1)) && this.isEmptyBlock(new BlockPos(i + l, k + 1, j + i1))) {
+                                    if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && this.world.getBlockState(pos).isSolidSide(world, pos, Direction.DOWN) && this.isEmptyBlock(new BlockPos(i + l, k, j + i1)) && this.isEmptyBlock(new BlockPos(i + l, k + 1, j + i1))) {
                                         this.thePet.setLocationAndAngles((float) (i + l) + 0.5F, k, (float) (j + i1) + 0.5F, this.thePet.rotationYaw, this.thePet.rotationPitch);
                                         this.petPathfinder.clearPath();
                                         return;

@@ -1,35 +1,16 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "cube_column",
-    "textures": {
-      "end": "mocreatures:blocks/log_top_wyvwood",
-      "side": "mocreatures:blocks/log_side_wyvwood"
-    }
-  },
   "variants": {
-    "normal": [
-      {}
-    ],
-    "inventory": [
-      {
-        "transform": "forge:default-block"
-      }
-    ],
     "axis=x": {
-      "model": "cube_column",
+      "model": "mocreatures:block/wyvwood_log_horizontal",
       "x": 90,
       "y": 90
     },
     "axis=y": {
-      "model": "cube_column"
+      "model": "mocreatures:block/wyvwood_log"
     },
     "axis=z": {
-      "model": "cube_column",
+      "model": "mocreatures:block/wyvwood_log_horizontal",
       "x": 90
-    },
-    "axis=none": {
-      "model": "cube_all"
     }
   }
 }

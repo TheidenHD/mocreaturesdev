@@ -3,15 +3,17 @@
  */
 package drzhark.mocreatures.client.model;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.hunter.MoCEntityRaccoon;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelRaccoon extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelRaccoon<T extends MoCEntityRaccoon> extends EntityModel<T> {
 
     private final float radianF = 57.29578F;
     ModelRenderer Head;
@@ -157,31 +159,29 @@ public class MoCModelRaccoon extends ModelBase {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5);
-        this.Head.render(f5);
-        this.Snout.render(f5);
-        this.RightEar.render(f5);
-        this.LeftEar.render(f5);
-        //LeftSideburn.render(f5);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Snout.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightEar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftEar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        //LeftSideburn.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         //RightSideburn.renderWithRotation(f5);
-        this.RightRearFoot.render(f5);
-        this.Neck.render(f5);
-        this.Body.render(f5);
-        this.TailA.render(f5);
-        this.TailB.render(f5);
-        this.RightFrontLegA.render(f5);
-        this.RightFrontLegB.render(f5);
-        this.RightFrontFoot.render(f5);
-        this.LeftFrontLegA.render(f5);
-        this.LeftFrontLegB.render(f5);
-        this.LeftFrontFoot.render(f5);
-        this.RightRearLegA.render(f5);
-        this.RightRearLegB.render(f5);
-        this.LeftRearLegB.render(f5);
-        this.LeftRearLegA.render(f5);
-        this.LeftRearFoot.render(f5);
+        this.RightRearFoot.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Neck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TailA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TailB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightFrontLegA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightFrontLegB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightFrontFoot.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftFrontLegA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftFrontLegB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftFrontFoot.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightRearLegA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightRearLegB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftRearLegB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftRearLegA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftRearFoot.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {
@@ -190,9 +190,9 @@ public class MoCModelRaccoon extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        this.Head.rotateAngleY = f3 / 57.29578F;
-        this.Head.rotateAngleX = f4 / 57.29578F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.Head.rotateAngleY = netHeadYaw / 57.29578F;
+        this.Head.rotateAngleX = headPitch / 57.29578F;
         this.Snout.rotateAngleY = this.Head.rotateAngleY;
         this.Snout.rotateAngleX = this.Head.rotateAngleX;
         this.RightEar.rotateAngleX = this.Head.rotateAngleX;
@@ -204,8 +204,8 @@ public class MoCModelRaccoon extends ModelBase {
         //LeftSideburn.rotateAngleX = Head.rotateAngleX;
         //LeftSideburn.rotateAngleY = (30F/radianF) + Head.rotateAngleY;
 
-        float RLegXRot = MathHelper.cos((f) + 3.141593F) * 0.8F * f1;
-        float LLegXRot = MathHelper.cos(f) * 0.8F * f1;
+        float RLegXRot = MathHelper.cos((limbSwing) + 3.141593F) * 0.8F * limbSwingAmount;
+        float LLegXRot = MathHelper.cos(limbSwing) * 0.8F * limbSwingAmount;
 
         this.RightFrontLegA.rotateAngleX = (30F / this.radianF) + RLegXRot;
         this.LeftFrontLegA.rotateAngleX = (30F / this.radianF) + LLegXRot;
@@ -222,7 +222,7 @@ public class MoCModelRaccoon extends ModelBase {
         this.LeftRearLegB.rotateAngleX = (53F / this.radianF) + RLegXRot;
         this.LeftRearFoot.rotateAngleX = RLegXRot;
 
-        this.TailA.rotateAngleY = MathHelper.cos(f * 0.6662F) * 0.7F * f1;
+        this.TailA.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F) * 0.7F * limbSwingAmount;
         this.TailB.rotateAngleY = this.TailA.rotateAngleY;
     }
 }

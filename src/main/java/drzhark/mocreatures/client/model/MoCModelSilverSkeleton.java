@@ -3,17 +3,18 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.hostile.MoCEntitySilverSkeleton;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelSilverSkeleton extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelSilverSkeleton<T extends MoCEntitySilverSkeleton> extends EntityModel<T> {
 
     private final float radianF = 57.29578F;
     ModelRenderer Head;
@@ -37,6 +38,8 @@ public class MoCModelSilverSkeleton extends ModelBase {
     ModelRenderer LeftKnee;
     ModelRenderer LeftLeg;
     ModelRenderer LeftFoot;
+    private  float limbSwingAmount;
+    private boolean sprinting;
     private int leftAttack;
     private int rightAttack;
     private boolean riding;
@@ -135,52 +138,53 @@ public class MoCModelSilverSkeleton extends ModelBase {
         this.LeftLeg.addChild(this.LeftFoot);
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.limbSwingAmount = limbSwingAmount;
+        this.sprinting = entityIn.isSprinting();
+        this.leftAttack = entityIn.attackCounterLeft;
+        this.rightAttack = entityIn.attackCounterRight;
+        this.riding = entityIn.getRidingEntity() != null;
+    }
+
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        MoCEntitySilverSkeleton samurai = (MoCEntitySilverSkeleton) entity;
-        boolean sprinting = samurai.isSprinting();
-        this.leftAttack = samurai.attackCounterLeft;
-        this.rightAttack = samurai.attackCounterRight;
-        this.riding = samurai.getRidingEntity() != null;
-        setRotationAngles(f, f1, f2, f3, f4, f5);
-        GlStateManager.pushMatrix();
-        if (sprinting && f1 > 0.3F) {
-            //GlStateManager.pushMatrix();
-            GlStateManager.rotate((float) (f1 * -20D), -1F, 0.0F, 0.0F);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        matrixStackIn.push();
+        if (sprinting && limbSwingAmount > 0.3F) {
+            //matrixStackIn.push();
+            matrixStackIn.rotate(Vector3f.XN.rotationDegrees (limbSwingAmount * -20F));
             //renderParts(f5);
-            //GlStateManager.popMatrix();
+            //matrixStackIn.pop();
         }
         if (riding) {
 
-            GlStateManager.translate(0.0F, 0.5F, 0.0F);
+            matrixStackIn.translate(0.0F, 0.5F, 0.0F);
             //renderParts(f5);
-            //GlStateManager.popMatrix();
+            //matrixStackIn.pop();
         }
         //renderParts(f5);
 
-        renderParts(f5);
-        GlStateManager.popMatrix();
+        renderParts(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        matrixStackIn.pop();
     }
 
-    private void renderParts(float f5) {
-        this.Head.render(f5);
-        this.Body.render(f5);
-        this.Back.render(f5);
-        this.RightArm.render(f5);
-        this.RightHand.render(f5);
-        this.RightSwordA.render(f5);
-        this.RightSwordB.render(f5);
-        this.RightSwordC.render(f5);
-        this.LeftArm.render(f5);
-        this.LeftHand.render(f5);
-        this.LeftSwordA.render(f5);
-        this.LeftSwordB.render(f5);
-        this.LeftSwordC.render(f5);
-        this.RightThigh.render(f5);
-        this.RightKnee.render(f5);
-        this.LeftThigh.render(f5);
-        this.LeftKnee.render(f5);
+    private void renderParts(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Back.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightArm.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightHand.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightSwordA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightSwordB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightSwordC.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftArm.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftHand.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftSwordA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftSwordB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftSwordC.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightThigh.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightKnee.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftThigh.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftKnee.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {
@@ -189,29 +193,29 @@ public class MoCModelSilverSkeleton extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        float hRotY = f3 / 57.29578F;
-        float hRotX = f4 / 57.29578F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        float hRotY = netHeadYaw / 57.29578F;
+        float hRotX = headPitch / 57.29578F;
 
         this.Head.rotateAngleX = hRotX;
         this.Head.rotateAngleY = hRotY;
 
-        float RLegXRot = MathHelper.cos((f * 0.6662F) + 3.141593F) * 0.8F * f1;
-        float LLegXRot = MathHelper.cos(f * 0.6662F) * 0.8F * f1;
-        // float ClothRot = MathHelper.cos(f * 0.9F) * 0.6F * f1;
+        float RLegXRot = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
+        float LLegXRot = MathHelper.cos(limbSwing * 0.6662F) * 0.8F * limbSwingAmount;
+        // float ClothRot = MathHelper.cos(limbSwing * 0.9F) * 0.6F * limbSwingAmount;
 
         float RLegXRotB = RLegXRot;
         float LLegXRotB = LLegXRot;
 
         if (leftAttack == 0) {
-            this.LeftArm.rotateAngleZ = (MathHelper.cos(f2 * 0.09F) * 0.05F) - 0.05F;
+            this.LeftArm.rotateAngleZ = (MathHelper.cos(ageInTicks * 0.09F) * 0.05F) - 0.05F;
             this.LeftArm.rotateAngleX = RLegXRot;
         } else {
             this.LeftArm.rotateAngleX = -(MathHelper.cos((leftAttack) * 0.18F) * 3F);
         }
 
         if (rightAttack == 0) {
-            this.RightArm.rotateAngleZ = -(MathHelper.cos(f2 * 0.09F) * 0.05F) + 0.05F;
+            this.RightArm.rotateAngleZ = -(MathHelper.cos(ageInTicks * 0.09F) * 0.05F) + 0.05F;
             this.RightArm.rotateAngleX = LLegXRot;
         } else {
             this.RightArm.rotateAngleX = -(MathHelper.cos((rightAttack) * 0.18F) * 3F);
@@ -249,10 +253,10 @@ public class MoCModelSilverSkeleton extends ModelBase {
             this.RightKnee.rotateAngleX = this.RightThigh.rotateAngleX;
             this.LeftKnee.rotateAngleX = this.LeftThigh.rotateAngleX;
 
-            float RLegXRot2 = MathHelper.cos(((f + 0.1F) * 0.6662F) + 3.141593F) * 0.8F * f1;
-            float LLegXRot2 = MathHelper.cos((f + 0.1F) * 0.6662F) * 0.8F * f1;
+            float RLegXRot2 = MathHelper.cos(((limbSwing + 0.1F) * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
+            float LLegXRot2 = MathHelper.cos((limbSwing + 0.1F) * 0.6662F) * 0.8F * limbSwingAmount;
 
-            if (f1 > 0.15F) {
+            if (limbSwingAmount > 0.15F) {
                 if (RLegXRot > RLegXRot2) // - - >
                 {
                     RLegXRotB = RLegXRot + (25 / 57.29578F);

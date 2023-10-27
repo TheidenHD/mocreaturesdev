@@ -5,6 +5,7 @@ package drzhark.mocreatures.entity.aquatic;
 
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCLootTables;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -12,9 +13,9 @@ import javax.annotation.Nullable;
 
 public class MoCEntityHippoTang extends MoCEntitySmallFish {
 
-    public MoCEntityHippoTang(World world) {
-        super(world);
-        this.setType(6);
+    public MoCEntityHippoTang(EntityType<? extends MoCEntityHippoTang> type, World world) {
+        super(type, world);
+        this.setTypeMoC(6);
     }
 
     @Override
@@ -23,7 +24,6 @@ public class MoCEntityHippoTang extends MoCEntitySmallFish {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.HIPPO_TANG;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.HIPPO_TANG;
     }
 }

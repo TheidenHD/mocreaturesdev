@@ -3,41 +3,44 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
-import drzhark.mocreatures.proxy.MoCProxyClient;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import drzhark.mocreatures.client.model.MoCModelWraith;
 import drzhark.mocreatures.entity.hostile.MoCEntityWraith;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCRenderWraith extends RenderLiving<MoCEntityWraith> {
+@OnlyIn(Dist.CLIENT)
+public class MoCRenderWraith extends MobRenderer<MoCEntityWraith, MoCModelWraith<MoCEntityWraith>> {
 
-    public MoCRenderWraith(ModelBiped modelbiped, float f) {
-        super(MoCProxyClient.mc.getRenderManager(), modelbiped, f);
+    public MoCRenderWraith(EntityRendererManager renderManagerIn, MoCModelWraith modelbiped, float f) {
+        super(renderManagerIn, modelbiped, f);
     }
 
     @Override
-    public void doRender(MoCEntityWraith wraith, double d, double d1, double d2, float f, float f1) {
+    public void render(MoCEntityWraith wraith, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         boolean flag = wraith.isGlowing();
-        GlStateManager.pushMatrix();
-        GlStateManager.enableBlend();
+        matrixStackIn.push();
+        RenderSystem.enableBlend();
         if (!flag) {
             float transparency = 0.6F;
-            GlStateManager.blendFunc(770, 771);
-            GlStateManager.color(0.8F, 0.8F, 0.8F, transparency);
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.color4f(0.8F, 0.8F, 0.8F, transparency);
         } else {
-            GlStateManager.blendFunc(770, 1);
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
         }
-        super.doRender(wraith, d, d1, d2, f, f1);
-        GlStateManager.disableBlend();
-        GlStateManager.popMatrix();
+        super.render(wraith, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+        RenderSystem.disableBlend();
+        matrixStackIn.pop();
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityWraith wraith) {
+    public ResourceLocation getEntityTexture(MoCEntityWraith wraith) {
         return wraith.getTexture();
     }
 }

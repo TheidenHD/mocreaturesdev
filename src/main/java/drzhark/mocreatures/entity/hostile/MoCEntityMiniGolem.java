@@ -35,35 +35,30 @@ public class MoCEntityMiniGolem extends MoCEntityMob {
     public int tCounter;
     public MoCEntityThrowableRock tempRock;
 
-    public MoCEntityMiniGolem(World world) {
-        super(world);
+    public MoCEntityMiniGolem(EntityType<? extends MoCEntityMiniGolem> type, World world) {
+        super(type, world);
         this.texture = "mini_golem.png";
-        setSize(0.9F, 1.2F);
+        //setSize(0.9F, 1.2F);
         experienceValue = 5;
     }
 
     @Override
-    protected void initEntityAI() {
-        this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(2, new MoCEntityMiniGolem.AIGolemAttack(this, 1.0D, true));
-        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
-        this.targetTasks.addTask(2, new MoCEntityMiniGolem.AIGolemTarget<>(this, EntityPlayer.class, true));
-        this.targetTasks.addTask(3, new MoCEntityMiniGolem.AIGolemTarget<>(this, EntityIronGolem.class, true));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(2, new MoCEntityMiniGolem.AIGolemAttack(this));
+        this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new MoCEntityMiniGolem.AIGolemTarget<>(this, PlayerEntity.class));
+        this.targetSelector.addGoal(3, new MoCEntityMiniGolem.AIGolemTarget<>(this, IronGolemEntity.class));
+    }
+
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntityMob.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 20.0D).createMutableAttribute(Attributes.ARMOR, 6.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.0D);
     }
 
     @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(6.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.0D);
-    }
-
-    @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(ANGRY, Boolean.FALSE);
         this.dataManager.register(HAS_ROCK, Boolean.FALSE);
     }
@@ -85,8 +80,8 @@ public class MoCEntityMiniGolem extends MoCEntityMob {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
 
         if (!this.world.isRemote) {
             setIsAngry(getAttackTarget() != null);
@@ -109,7 +104,7 @@ public class MoCEntityMiniGolem extends MoCEntityMob {
     }
 
     protected void acquireTRock() {
-        IBlockState tRockState = MoCTools.destroyRandomBlockWithIBlockState(this, 3D);
+        BlockState tRockState = MoCTools.destroyRandomBlockWithIBlockState(this, 3D);
         if (tRockState == null) {
             this.tCounter = 1;
             setHasRock(false);
@@ -117,8 +112,8 @@ public class MoCEntityMiniGolem extends MoCEntityMob {
         }
 
         //creates a dummy TRock on top of it
-        MoCEntityThrowableRock tRock = new MoCEntityThrowableRock(this.world, this, this.posX, this.posY + 1.5D, this.posZ);
-        this.world.spawnEntity(tRock);
+        MoCEntityThrowableRock tRock = MoCEntityThrowableRock.build(this.world, this, this.getPosX(), this.getPosY() + 1.5D, this.getPosZ());
+        this.world.addEntity(tRock);
         tRock.setState(tRockState);
         tRock.setBehavior(1);
         this.tempRock = tRock;
@@ -133,9 +128,7 @@ public class MoCEntityMiniGolem extends MoCEntityMob {
 
         if (this.tCounter < 50) {
             //maintains position of TRock above head
-            this.tempRock.posX = this.posX;
-            this.tempRock.posY = (this.posY + 1.0D);
-            this.tempRock.posZ = this.posZ;
+            this.tempRock.setPosition(this.getPosX(), this.getPosY() + 1.0D, this.getPosZ());
         }
 
         if (this.tCounter >= 50) {
@@ -146,7 +139,7 @@ public class MoCEntityMiniGolem extends MoCEntityMob {
                 this.tempRock.transformToItem();
             }
 
-            this.tempRock.setDead();
+            this.tempRock.remove();
             setHasRock(false);
             this.tCounter = 0;
         }
@@ -188,15 +181,14 @@ public class MoCEntityMiniGolem extends MoCEntityMob {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.MINI_GOLEM;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.MINI_GOLEM;
     }
 
-    public float getEyeHeight() {
-        return this.height * 0.92F;
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return this.getHeight() * 0.92F;
     }
 
-    static class AIGolemAttack extends EntityAIAttackMelee {
+    static class AIGolemAttack extends MeleeAttackGoal {
         public AIGolemAttack(MoCEntityMiniGolem golem, double speed, boolean useLongMemory) {
             super(golem, speed, useLongMemory);
         }
@@ -214,14 +206,14 @@ public class MoCEntityMiniGolem extends MoCEntityMob {
         }
     }
 
-    static class AIGolemTarget<T extends EntityLivingBase> extends EntityAINearestAttackableTarget<T> {
+    static class AIGolemTarget<T extends LivingEntity> extends NearestAttackableTargetGoal<T> {
         public AIGolemTarget(MoCEntityMiniGolem golem, Class<T> classTarget, boolean checkSight) {
             super(golem, classTarget, checkSight);
         }
 
         @Override
         public boolean shouldExecute() {
-            float f = this.taskOwner.getBrightness();
+            float f = this.goalOwner.getBrightness();
             return f < 0.5F && super.shouldExecute();
         }
     }

@@ -9,22 +9,21 @@ import drzhark.mocreatures.entity.MoCEntityAnimal;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDirt;
-import net.minecraft.block.BlockGrass;
-import net.minecraft.block.BlockSapling;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIAttackMelee;
-import net.minecraft.entity.ai.EntityAISwimming;
-import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.SaplingBlock;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.AxeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -32,7 +31,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.world.BlockEvent;
 
@@ -40,49 +39,45 @@ import java.util.List;
 
 public class MoCEntityEnt extends MoCEntityAnimal {
 
-    public MoCEntityEnt(World world) {
-        super(world);
-        setSize(1.4F, 7F);
+    private static  final Block[] tallgrass = new Block[]{Blocks.GRASS, Blocks.FERN};
+    private static  final Block[] double_plant = new Block[]{Blocks.SUNFLOWER, Blocks.LILAC, Blocks.ROSE_BUSH, Blocks.PEONY, Blocks.TALL_GRASS, Blocks.LARGE_FERN};
+    private static  final Block[] red_flower = new Block[]{Blocks.POPPY, Blocks.BLUE_ORCHID, Blocks.ALLIUM, Blocks.AZURE_BLUET, Blocks.RED_TULIP, Blocks.ORANGE_TULIP, Blocks.WHITE_TULIP, Blocks.PINK_TULIP, Blocks.OXEYE_DAISY};
+    public MoCEntityEnt(EntityType<? extends MoCEntityEnt> type, World world) {
+        super(type, world);
+        //setSize(1.4F, 7F);
         this.stepHeight = 2F;
         experienceValue = 10;
     }
 
     @Override
-    protected void initEntityAI() {
-        this.tasks.addTask(1, new EntityAISwimming(this));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new SwimGoal(this));
         this.tasks.addTask(5, new EntityAIAttackMelee(this, 1.0D, false));
-        this.tasks.addTask(6, new EntityAIWanderMoC2(this, 1.0D));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.goalSelector.addGoal(6, new EntityAIWanderMoC2(this, 1.0D));
+        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 8.0F));
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(60.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(7.0D);
-        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(7.5D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
-        this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntityAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 60.0D).createMutableAttribute(Attributes.ARMOR, 7.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.5D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1.0D);
     }
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(this.rand.nextInt(2) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(2) + 1);
         }
     }
 
     @Override
     public ResourceLocation getTexture() {
-        if (getType() == 2) {
+        if (getTypeMoC() == 2) {
             return MoCreatures.proxy.getModelTexture("ent_birch.png");
         }
         return MoCreatures.proxy.getModelTexture("ent_oak.png");
     }
 
     @Override
-    protected int getExperiencePoints(EntityPlayer player) {
+    protected int getExperiencePoints(PlayerEntity player) {
         return experienceValue;
     }
 
@@ -107,43 +102,52 @@ public class MoCEntityEnt extends MoCEntityAnimal {
     }
 
     @Override
-    protected void dropFewItems(boolean flag, int x) {
+    protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         int i = this.rand.nextInt(3);
         int qty = this.rand.nextInt(12) + 4;
-        int typ = 0;
-        if (getType() == 2) {
-            typ = 2;
-        }
-        if (i == 0) {
-            entityDropItem(new ItemStack(Blocks.LOG, qty, typ), 0.0F);
-            return;
-        }
-        if (i == 1) {
-            entityDropItem(new ItemStack(Items.STICK, qty, 0), 0.0F);
-            return;
+        if (getTypeMoC() == 2) {
+            if (i == 0) {
+                entityDropItem(new ItemStack(Blocks.BIRCH_LOG, qty), 0.0F);
+                return;
+            }
+            if (i == 1) {
+                entityDropItem(new ItemStack(Items.STICK, qty), 0.0F);
+                return;
 
+            }
+            entityDropItem(new ItemStack(Blocks.BIRCH_SAPLING, qty), 0.0F);
+        } else {
+            if (i == 0) {
+                entityDropItem(new ItemStack(Blocks.OAK_LOG, qty), 0.0F);
+                return;
+            }
+            if (i == 1) {
+                entityDropItem(new ItemStack(Items.STICK, qty), 0.0F);
+                return;
+
+            }
+            entityDropItem(new ItemStack(Blocks.OAK_SAPLING, qty), 0.0F);
         }
-        entityDropItem(new ItemStack(Blocks.SAPLING, qty, typ), 0.0F);
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_ENT_DEATH;
+        return MoCSoundEvents.ENTITY_ENT_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_ENT_HURT;
+        return MoCSoundEvents.ENTITY_ENT_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MoCSoundEvents.ENTITY_ENT_AMBIENT;
+        return MoCSoundEvents.ENTITY_ENT_AMBIENT.get();
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
         if (!this.world.isRemote) {
 
             if (this.getAttackTarget() == null && this.rand.nextInt(500) == 0) {
@@ -160,14 +164,14 @@ public class MoCEntityEnt extends MoCEntityAnimal {
      * Makes small creatures follow the Ent
      */
     private void atractCritter() {
-        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(8D, 3D, 8D));
+        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(8D, 3D, 8D));
         int n = this.rand.nextInt(3) + 1;
         int j = 0;
         for (Entity entity : list) {
-            if (entity instanceof EntityAnimal && entity.width < 0.6F && entity.height < 0.6F) {
-                EntityAnimal entityanimal = (EntityAnimal) entity;
+            if (entity instanceof AnimalEntity && entity.getWidth() < 0.6F && entity.getHeight() < 0.6F) {
+                AnimalEntity entityanimal = (AnimalEntity) entity;
                 if (entityanimal.getAttackTarget() == null && !MoCTools.isTamed(entityanimal)) {
-                    Path pathentity = entityanimal.getNavigator().getPathToEntityLiving(this);
+                    Path pathentity = entityanimal.getNavigator().pathfind(this, 0);
                     entityanimal.setAttackTarget(this);
                     entityanimal.getNavigator().setPath(pathentity, 1D);
                     j++;
@@ -181,11 +185,11 @@ public class MoCEntityEnt extends MoCEntityAnimal {
     }
 
     private void plantOnFertileGround() {
-        BlockPos pos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.posY), MathHelper.floor(this.posZ));
+        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(this.getPosY()), MathHelper.floor(this.getPosZ()));
         Block blockUnderFeet = this.world.getBlockState(pos.down()).getBlock();
         Block blockOnFeet = this.world.getBlockState(pos).getBlock();
 
-        if (blockUnderFeet instanceof BlockDirt) {
+        if (Blocks.DIRT.matchesBlock(blockUnderFeet)) {
             Block block = Blocks.GRASS;
             BlockEvent.BreakEvent event = null;
             if (!this.world.isRemote) {
@@ -198,21 +202,21 @@ public class MoCEntityEnt extends MoCEntityAnimal {
             return;
         }
 
-        if (blockUnderFeet instanceof BlockGrass && blockOnFeet == Blocks.AIR) {
-            IBlockState iblockstate = getBlockStateToBePlanted();
+        if (Blocks.GRASS_BLOCK.matchesBlock(blockUnderFeet) && blockOnFeet == Blocks.AIR) {
+            BlockState iblockstate = getBlockStateToBePlanted();
             int plantChance = 3;
-            if (iblockstate.getBlock() instanceof BlockSapling) {
+            if (iblockstate.getBlock() instanceof SaplingBlock) {
                 plantChance = 10;
             }
             //boolean cantPlant = false;
             // check perms first
             for (int x = -1; x < 2; x++) {
                 for (int z = -1; z < 2; z++) {
-                    BlockPos pos1 = new BlockPos(MathHelper.floor(this.posX + x), MathHelper.floor(this.posY), MathHelper.floor(this.posZ + z));
+                    BlockPos pos1 = new BlockPos(MathHelper.floor(this.getPosX() + x), MathHelper.floor(this.getPosY()), MathHelper.floor(this.getPosZ() + z));
                     //BlockEvent.BreakEvent event = null;
                     //if (!this.world.isRemote) {
                     //    event =
-                    //            new BlockEvent.BreakEvent(this.world, pos1, iblockstate, FakePlayerFactory.get((WorldServer) this.world,
+                    //            new BlockEvent.BreakEvent(this.world, pos1, iblockstate, FakePlayerFactory.get((ServerWorld) this.world,
                     //                    MoCreatures.MOCFAKEPLAYER));
                     //}
                     //cantPlant = (event != null && event.isCanceled());
@@ -232,9 +236,8 @@ public class MoCEntityEnt extends MoCEntityAnimal {
      *
      * @return Any of the flowers, mushrooms, grass and saplings
      */
-    private IBlockState getBlockStateToBePlanted() {
-        int blockID;
-        int metaData = 0;
+    private BlockState getBlockStateToBePlanted() {
+        Block blockID;
         switch (this.rand.nextInt(20)) {
             case 0:
             case 1:
@@ -244,45 +247,40 @@ public class MoCEntityEnt extends MoCEntityAnimal {
             case 5:
             case 6:
             case 7:
-                blockID = 31;
-                metaData = rand.nextInt(2) + 1;
+                blockID = tallgrass[this.rand.nextInt(tallgrass.length)];
                 break;
             case 8:
             case 9:
             case 10:
-                blockID = 175; //other flowers
-                metaData = rand.nextInt(6);
+                blockID = double_plant[this.rand.nextInt(double_plant.length)];
                 break;
             case 11:
             case 12:
             case 13:
-                blockID = 37; //dandelion
+                blockID = Blocks.DANDELION;
                 break;
             case 14:
             case 15:
             case 16:
-                blockID = 38; //flowers
-                metaData = rand.nextInt(9);
+                blockID = red_flower[this.rand.nextInt(red_flower.length)];
                 break;
             case 17:
-                blockID = 39; //brown mushroom
+                blockID = Blocks.BROWN_MUSHROOM;
                 break;
             case 18:
-                blockID = 40; //red mushroom
+                blockID = Blocks.RED_MUSHROOM;
                 break;
             case 19:
-                blockID = 6; //sapling
-                if (getType() == 2) {
-                    metaData = 2; //to place the right sapling
+                blockID = Blocks.OAK_SAPLING;
+                if (getTypeMoC() == 2) {
+                    blockID = Blocks.BIRCH_SAPLING;
                 }
                 break;
 
             default:
-                blockID = 31;
+                blockID = Blocks.DEAD_BUSH;
         }
-        IBlockState iblockstate;
-        iblockstate = Block.getBlockById(blockID).getStateFromMeta(metaData);
-        return iblockstate;
+        return blockID.getDefaultState();
 
     }
 
@@ -293,8 +291,8 @@ public class MoCEntityEnt extends MoCEntityAnimal {
 
     /*@Override
     protected void attackEntity(Entity entity, float f) {
-        if (this.attackTime <= 0 && (f < 2.5D) && (entity.getEntityBoundingBox().maxY > getEntityBoundingBox().minY)
-                && (entity.getEntityBoundingBox().minY < getEntityBoundingBox().maxY)) {
+        if (this.attackTime <= 0 && (f < 2.5D) && (entity.getBoundingBox().maxY > getBoundingBox().minY)
+                && (entity.getBoundingBox().minY < getBoundingBox().maxY)) {
             attackTime = 200;
             this.world.playSoundAtEntity(this, "mocreatures:goatsmack", 1.0F, 1.0F + ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F));
             entity.attackEntityFrom(DamageSource.causeMobDamage(this), 3);
@@ -319,7 +317,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
         return false;
     }
 
-    public float getEyeHeight() {
-        return this.height * 0.73F;
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return this.getHeight() * 0.73F;
     }
 }

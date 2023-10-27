@@ -3,16 +3,17 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.hostile.MoCEntityOgre;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelOgre extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelOgre<T extends MoCEntityOgre> extends EntityModel<T> {
 
     private final float radianF = 57.29578F;
     ModelRenderer Head;
@@ -588,86 +589,84 @@ public class MoCModelOgre extends ModelBase {
         setRotation(this.Head2DiamondHorn, 0.0872665F, 0F, 0F);
     }
 
-    @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        //super.render(entity, f, f1, f2, f3, f4, f5);
-        MoCEntityOgre entityogre = (MoCEntityOgre) entity;
-        this.type = entityogre.getType();
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.type = entityIn.getTypeMoC();
         //int leftAttack = entityogre.attackCounterLeft;
         //int rightAttack = entityogre.attackCounterRight;
-        this.attackCounter = entityogre.attackCounter;
-        this.headMoving = entityogre.getMovingHead();
-        this.armToAnimate = entityogre.armToAnimate;
+        this.attackCounter = entityIn.attackCounter;
+        this.headMoving = entityIn.getMovingHead();
+        this.armToAnimate = entityIn.armToAnimate;
+    }
 
-        setRotationAngles(f, f1, f2, f3, f4, f5);
-
+    @Override
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         if (type == 1) {
-            this.Head.render(f5);
-            this.Brow.render(f5);
-            this.NoseBridge.render(f5);
-            this.Nose.render(f5);
-            this.RgtTusk.render(f5);
-            this.RgtTooth.render(f5);
-            this.LftTooth.render(f5);
-            this.LftTusk.render(f5);
-            this.Lip.render(f5);
-            this.RgtEar.render(f5);
-            this.RgtRing.render(f5);
-            this.RgtRingHole.render(f5);
-            this.LftEar.render(f5);
-            this.LftRing.render(f5);
-            this.LftRingHole.render(f5);
-            this.HairRope.render(f5);
-            this.Hair1.render(f5);
-            this.Hair2.render(f5);
-            this.Hair3.render(f5);
-            this.DiamondHorn.render(f5);
-            this.RgtHorn.render(f5);
-            this.RgtHornTip.render(f5);
-            this.LftHorn.render(f5);
-            this.LftHornTip.render(f5);
+            this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Brow.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.NoseBridge.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Nose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.RgtTusk.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.RgtTooth.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LftTooth.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LftTusk.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Lip.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.RgtEar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.RgtRing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.RgtRingHole.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LftEar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LftRing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LftRingHole.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.HairRope.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Hair1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Hair2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Hair3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.DiamondHorn.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.RgtHorn.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.RgtHornTip.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LftHorn.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.LftHornTip.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-            this.LftWeaponRoot.isHidden = true;
+            this.LftWeaponRoot.showModel = !true;
         } else {
-            this.Head3RgtEar.render(f5);
-            this.Head3LftEar.render(f5);
-            this.Head3Eyelid.render(f5);
-            this.Head3Nose.render(f5);
-            this.Head3.render(f5);
-            this.Head3Brow.render(f5);
-            this.Head3Hair.render(f5);
-            this.Head3Lip.render(f5);
-            this.Head3RgtTusk.render(f5);
-            this.Head3RgtTooth.render(f5);
-            this.Head3LftTooth.render(f5);
-            this.Head3LftTusk.render(f5);
-            this.Head3RingHole.render(f5);
-            this.Head3Ring.render(f5);
+            this.Head3RgtEar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head3LftEar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head3Eyelid.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head3Nose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head3Brow.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head3Hair.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head3Lip.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head3RgtTusk.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head3RgtTooth.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head3LftTooth.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head3LftTusk.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head3RingHole.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head3Ring.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-            this.Head2Chin.render(f5);
-            this.Head2.render(f5);
-            this.Head2Lip.render(f5);
-            this.Head2LftTusk.render(f5);
-            this.Head2RgtTusk.render(f5);
-            this.Head2Nose.render(f5);
-            this.Head2NoseBridge.render(f5);
-            this.Head2Brow.render(f5);
-            this.Head2RgtHorn.render(f5);
-            this.Head2LftHorn.render(f5);
-            this.Head2DiamondHorn.render(f5);
+            this.Head2Chin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head2Lip.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head2LftTusk.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head2RgtTusk.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head2Nose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head2NoseBridge.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head2Brow.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head2RgtHorn.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head2LftHorn.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.Head2DiamondHorn.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-            this.LftWeaponRoot.isHidden = false;
+            this.LftWeaponRoot.showModel = !false;
         }
 
-        this.NeckRest.render(f5);
-        this.Chest.render(f5);
-        this.Stomach.render(f5);
-        this.ButtCover.render(f5);
-        this.LoinCloth.render(f5);
-        this.RgtThigh.render(f5);
-        this.LftThigh.render(f5);
-        this.RgtShoulder.render(f5);
-        this.LftShoulder.render(f5);
+        this.NeckRest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Chest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Stomach.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.ButtCover.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LoinCloth.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RgtThigh.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LftThigh.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RgtShoulder.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LftShoulder.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
     }
 
@@ -677,13 +676,13 @@ public class MoCModelOgre extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        float hRotY = f3 / 57.29578F;
-        float hRotX = f4 / 57.29578F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        float hRotY = netHeadYaw / 57.29578F;
+        float hRotX = headPitch / 57.29578F;
 
-        float RLegXRot = MathHelper.cos((f * 0.6662F) + 3.141593F) * 0.8F * f1;
-        float LLegXRot = MathHelper.cos(f * 0.6662F) * 0.8F * f1;
-        float ClothRot = MathHelper.cos(f * 0.9F) * 0.6F * f1;
+        float RLegXRot = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
+        float LLegXRot = MathHelper.cos(limbSwing * 0.6662F) * 0.8F * limbSwingAmount;
+        float ClothRot = MathHelper.cos(limbSwing * 0.9F) * 0.6F * limbSwingAmount;
 
         float RLegXRotB = RLegXRot;
         float LLegXRotB = LLegXRot;
@@ -691,9 +690,9 @@ public class MoCModelOgre extends ModelBase {
         this.RgtThigh.rotateAngleX = RLegXRot;
         this.LftThigh.rotateAngleX = LLegXRot;
 
-        float RLegXRot2 = MathHelper.cos(((f + 0.1F) * 0.6662F) + 3.141593F) * 0.8F * f1;
-        float LLegXRot2 = MathHelper.cos((f + 0.1F) * 0.6662F) * 0.8F * f1;
-        if (f1 > 0.15F) {
+        float RLegXRot2 = MathHelper.cos(((limbSwing + 0.1F) * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
+        float LLegXRot2 = MathHelper.cos((limbSwing + 0.1F) * 0.6662F) * 0.8F * limbSwingAmount;
+        if (limbSwingAmount > 0.15F) {
             if (RLegXRot > RLegXRot2) // - - >
             {
                 RLegXRotB = RLegXRot + (25 / 57.29578F);
@@ -727,7 +726,7 @@ public class MoCModelOgre extends ModelBase {
             this.LftHand.rotateAngleX = (-45F / this.radianF);
         } else //normal left arm movement
         {
-            this.LftShoulder.rotateAngleZ = (MathHelper.cos(f2 * 0.09F) * 0.05F) - 0.05F;
+            this.LftShoulder.rotateAngleZ = (MathHelper.cos(ageInTicks * 0.09F) * 0.05F) - 0.05F;
             this.LftShoulder.rotateAngleX = RLegXRot;
             this.LftHand.rotateAngleX = 0F;
         }
@@ -739,7 +738,7 @@ public class MoCModelOgre extends ModelBase {
             this.RgtHand.rotateAngleX = (-45F / this.radianF);
         } else //normal right arm movement
         {
-            this.RgtShoulder.rotateAngleZ = -(MathHelper.cos(f2 * 0.09F) * 0.05F) + 0.05F;
+            this.RgtShoulder.rotateAngleZ = -(MathHelper.cos(ageInTicks * 0.09F) * 0.05F) + 0.05F;
             this.RgtShoulder.rotateAngleX = LLegXRot;
             this.RgtHand.rotateAngleX = 0F;
         }

@@ -3,15 +3,14 @@
  */
 package drzhark.mocreatures.client.model;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.hunter.MoCEntityCrocodile;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelCrocodile extends ModelBase {
+public class MoCModelCrocodile<T extends MoCEntityCrocodile> extends EntityModel<T> {
 
     public float biteProgress;
     public boolean swimming;
@@ -345,62 +344,60 @@ public class MoCModelCrocodile extends ModelBase {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5);
-        this.LJaw.render(f5);
-        this.TailA.render(f5);
-        this.TailB.render(f5);
-        this.TailC.render(f5);
-        this.UJaw.render(f5);
-        this.Head.render(f5);
-        this.Body.render(f5);
-        this.Leg1.render(f5);
-        this.Leg3.render(f5);
-        this.Leg2.render(f5);
-        this.Leg4.render(f5);
-        this.TailD.render(f5);
-        this.Leg1A.render(f5);
-        this.Leg2A.render(f5);
-        this.Leg3A.render(f5);
-        this.Leg4A.render(f5);
-        this.UJaw2.render(f5);
-        this.LJaw2.render(f5);
-        this.TeethA.render(f5);
-        this.TeethB.render(f5);
-        this.TeethC.render(f5);
-        this.TeethD.render(f5);
-        this.TeethF.render(f5);
-        this.Spike0.render(f5);
-        this.Spike1.render(f5);
-        this.Spike2.render(f5);
-        this.Spike3.render(f5);
-        this.Spike4.render(f5);
-        this.Spike5.render(f5);
-        this.Spike6.render(f5);
-        this.Spike7.render(f5);
-        this.Spike8.render(f5);
-        this.Spike9.render(f5);
-        this.Spike10.render(f5);
-        this.Spike11.render(f5);
-        this.SpikeBack0.render(f5);
-        this.SpikeBack1.render(f5);
-        this.SpikeBack2.render(f5);
-        this.SpikeBack3.render(f5);
-        this.SpikeBack4.render(f5);
-        this.SpikeBack5.render(f5);
-        this.SpikeEye.render(f5);
-        this.SpikeEye1.render(f5);
-        this.TeethA1.render(f5);
-        this.TeethB1.render(f5);
-        this.TeethC1.render(f5);
-        this.TeethD1.render(f5);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.LJaw.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TailA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TailB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TailC.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.UJaw.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TailD.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg1A.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg2A.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg3A.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg4A.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.UJaw2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LJaw2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TeethA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TeethB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TeethC.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TeethD.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TeethF.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Spike0.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Spike1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Spike2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Spike3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Spike4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Spike5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Spike6.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Spike7.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Spike8.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Spike9.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Spike10.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Spike11.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.SpikeBack0.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.SpikeBack1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.SpikeBack2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.SpikeBack3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.SpikeBack4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.SpikeBack5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.SpikeEye.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.SpikeEye1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TeethA1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TeethB1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TeethC1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.TeethD1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        //super.setRotationAngles(f, f1, f2, f3, f4, f5);
-        this.Head.rotateAngleX = f4 / 57.29578F;
-        this.Head.rotateAngleY = f3 / 57.29578F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        //super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
+        this.Head.rotateAngleX = headPitch / 57.29578F;
+        this.Head.rotateAngleY = netHeadYaw / 57.29578F;
         this.SpikeEye.rotateAngleX = this.Head.rotateAngleX;
         this.SpikeEye.rotateAngleY = this.Head.rotateAngleY;
         this.SpikeEye1.rotateAngleX = this.Head.rotateAngleX;
@@ -572,10 +569,10 @@ public class MoCModelCrocodile extends ModelBase {
             this.Leg4A.rotationPointY = 19F;
             this.Leg4A.rotationPointZ = 9F;
 
-            this.Leg1.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
-            this.Leg2.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.4F * f1;
-            this.Leg3.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.4F * f1;
-            this.Leg4.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
+            this.Leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+            this.Leg2.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.4F * limbSwingAmount;
+            this.Leg3.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.4F * limbSwingAmount;
+            this.Leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
 
             this.Leg1.rotateAngleY = 0F;
             this.Leg2.rotateAngleY = 0F;
@@ -587,7 +584,7 @@ public class MoCModelCrocodile extends ModelBase {
             this.Leg3A.rotateAngleX = this.Leg3.rotateAngleX;
             this.Leg4A.rotateAngleX = this.Leg4.rotateAngleX;
 
-            float latrot = MathHelper.cos(f / (1.919107651F * 1)) * 0.261799387799149F * f1 * 5;
+            float latrot = MathHelper.cos(limbSwing / (1.919107651F * 1)) * 0.261799387799149F * limbSwingAmount * 5;
             this.Leg1.rotateAngleZ = latrot;
             this.Leg1A.rotateAngleZ = latrot;
             this.Leg4.rotateAngleZ = -latrot;
@@ -599,13 +596,13 @@ public class MoCModelCrocodile extends ModelBase {
             this.Leg2.rotateAngleZ = -latrot;
             this.Leg2A.rotateAngleZ = -latrot;
 
-            //Leg1.rotateAngleZ = MathHelper.cos(f / (1.919107651F * 1 )) * 0.261799387799149F * f1 *10;
-            //Leg1A.rotateAngleZ = MathHelper.cos(f / (1.919107651F * 1 )) * 0.261799387799149F * f1 *10;
+            //Leg1.rotateAngleZ = MathHelper.cos(limbSwing / (1.919107651F * 1 )) * 0.261799387799149F * limbSwingAmount *10;
+            //Leg1A.rotateAngleZ = MathHelper.cos(limbSwing / (1.919107651F * 1 )) * 0.261799387799149F * limbSwingAmount *10;
 
-            //LArm.rotateAngleY = MathHelper.cos(f / (1.919107651F * 1 )) * -0.349065850398866F * f1 + 0.785398163397448F ;
+            //LArm.rotateAngleY = MathHelper.cos(limbSwing / (1.919107651F * 1 )) * -0.349065850398866F * limbSwingAmount + 0.785398163397448F ;
 
         }
-        this.TailA.rotateAngleY = MathHelper.cos(f * 0.6662F) * 0.7F * f1;
+        this.TailA.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F) * 0.7F * limbSwingAmount;
         this.TailB.rotateAngleY = this.TailA.rotateAngleY;
         this.TailC.rotateAngleY = this.TailA.rotateAngleY;
         this.TailD.rotateAngleY = this.TailA.rotateAngleY;

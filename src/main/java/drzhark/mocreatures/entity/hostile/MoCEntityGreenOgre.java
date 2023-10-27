@@ -5,7 +5,9 @@ package drzhark.mocreatures.entity.hostile;
 
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCLootTables;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -13,16 +15,12 @@ import javax.annotation.Nullable;
 
 public class MoCEntityGreenOgre extends MoCEntityOgre {
 
-    public MoCEntityGreenOgre(World world) {
-        super(world);
+    public MoCEntityGreenOgre(EntityType<? extends MoCEntityGreenOgre> type, World world) {
+        super(type, world);
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(50.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(8.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(7.0D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntityOgre.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 50.0D).createMutableAttribute(Attributes.ARMOR, 8.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0D);
     }
 
     @Override
@@ -39,7 +37,6 @@ public class MoCEntityGreenOgre extends MoCEntityOgre {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.GREEN_OGRE;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.GREEN_OGRE;
     }
 }

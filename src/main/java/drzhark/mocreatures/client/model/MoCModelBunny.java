@@ -3,15 +3,14 @@
  */
 package drzhark.mocreatures.client.model;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.passive.MoCEntityBunny;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelBunny extends ModelBase {
+public class MoCModelBunny<T extends MoCEntityBunny> extends EntityModel<T> {
 
     public ModelRenderer part1;
     public ModelRenderer part2;
@@ -24,7 +23,6 @@ public class MoCModelBunny extends ModelBase {
     public ModelRenderer part9;
     public ModelRenderer part10;
     public ModelRenderer part11;
-    private boolean bunnyHat;
 
     public MoCModelBunny() {
         byte byte0 = 16;
@@ -64,25 +62,23 @@ public class MoCModelBunny extends ModelBase {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        this.bunnyHat = entity.getRidingEntity() != null;
-        setRotationAngles(f, f1, f2, f3, f4, f5);
-        this.part1.render(f5);
-        this.part8.render(f5);
-        this.part9.render(f5);
-        this.part10.render(f5);
-        this.part11.render(f5);
-        this.part2.render(f5);
-        this.part3.render(f5);
-        this.part4.render(f5);
-        this.part5.render(f5);
-        this.part6.render(f5);
-        this.part7.render(f5);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.part1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.part8.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.part9.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.part10.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.part11.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.part2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.part3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.part4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.part5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.part6.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.part7.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        this.part1.rotateAngleX = -(f4 / 57.29578F);
-        this.part1.rotateAngleY = f3 / 57.29578F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.part1.rotateAngleX = -(headPitch / 57.29578F);
+        this.part1.rotateAngleY = netHeadYaw / 57.29578F;
 
         this.part8.rotateAngleX = this.part1.rotateAngleX;
         this.part8.rotateAngleY = this.part1.rotateAngleY;
@@ -94,11 +90,11 @@ public class MoCModelBunny extends ModelBase {
         this.part11.rotateAngleY = this.part1.rotateAngleY;
         this.part2.rotateAngleX = 1.570796F;
         this.part3.rotateAngleX = 1.570796F;
-        if (!this.bunnyHat) {
-            this.part4.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.0F * f1;
-            this.part6.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.2F * f1;
-            this.part5.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.0F * f1;
-            this.part7.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.2F * f1;
+        if (entityIn.getRidingEntity() == null) {
+            this.part4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.0F * limbSwingAmount;
+            this.part6.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.2F * limbSwingAmount;
+            this.part5.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.0F * limbSwingAmount;
+            this.part7.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.2F * limbSwingAmount;
         }
     }
 }

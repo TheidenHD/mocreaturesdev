@@ -4,15 +4,14 @@
 package drzhark.mocreatures.init;
 
 import drzhark.mocreatures.MoCConstants;
-import net.minecraft.init.Bootstrap;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
-@ObjectHolder(MoCConstants.MOD_ID)
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+
 public class MoCSoundEvents {
     /* Entity */
     // Ambient
@@ -544,9 +543,8 @@ public class MoCSoundEvents {
      * @param soundName The SoundEvent's name without the testmod3 prefix
      * @return The SoundEvent
      */
-    private static SoundEvent createSoundEvent(final String soundName) {
-        final ResourceLocation soundID = new ResourceLocation(MoCConstants.MOD_ID, soundName);
-        return new SoundEvent(soundID).setRegistryName(soundID);
+    private static RegistryObject<SoundEvent> createSoundEvent(final String soundName) {
+        return SOUND_DEFERRED.register(soundName, () -> new SoundEvent(new ResourceLocation(MoCConstants.MOD_ID, soundName)));
     }
 
     @Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID)

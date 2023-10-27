@@ -10,12 +10,17 @@ import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -23,23 +28,19 @@ import javax.annotation.Nullable;
 
 public class MoCEntityPandaBear extends MoCEntityBear {
 
-    public MoCEntityPandaBear(World world) {
-        super(world);
-        setSize(0.8F, 1.05F);
+    public MoCEntityPandaBear(EntityType<? extends MoCEntityPandaBear> type, World world) {
+        super(type, world);
+        //setSize(0.8F, 1.05F);
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntityBear.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 20.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(1);
         }
         super.selectType();
     }
@@ -76,24 +77,24 @@ public class MoCEntityPandaBear extends MoCEntityBear {
 
     @Override
     public boolean isMyFavoriteFood(ItemStack stack) {
-        return this.getType() == 3 && !stack.isEmpty() && stack.getItem() == Items.REEDS;
+        return this.getTypeMoC() == 3 && !stack.isEmpty() && stack.getItem() == Items.SUGAR_CANE;
     }
 
     @Override
     public boolean isMyHealFood(ItemStack stack) {
-        return this.getType() == 3 && !stack.isEmpty() && stack.getItem() == Items.REEDS;
+        return this.getTypeMoC() == 3 && !stack.isEmpty() && stack.getItem() == Items.SUGAR_CANE;
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
 
         final ItemStack stack = player.getHeldItem(hand);
-        if (!stack.isEmpty() && (stack.getItem() == MoCItems.sugarlump || stack.getItem() == Items.REEDS)) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+        if (!stack.isEmpty() && (stack.getItem() == MoCItems.sugarlump || stack.getItem() == Items.SUGAR_CANE)) {
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
 
             if (!this.world.isRemote) {
                 MoCTools.tameWithName(player, this);
@@ -105,7 +106,7 @@ public class MoCEntityPandaBear extends MoCEntityBear {
                 setAge(getAge() + 1);
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
         if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.whip)) {
             this.processBearWhipped();
@@ -118,24 +119,20 @@ public class MoCEntityPandaBear extends MoCEntityBear {
                 setBearState(0);
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.PANDA_BEAR;
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
         /*
          * panda bears and cubs will sit down sometimes
          */
@@ -160,7 +157,7 @@ public class MoCEntityPandaBear extends MoCEntityBear {
     }
 
     // TODO: Change depending on whether it's sitting or not
-    public float getEyeHeight() {
-        return this.height * 0.76F;
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return this.getHeight() * 0.76F;
     }
 }

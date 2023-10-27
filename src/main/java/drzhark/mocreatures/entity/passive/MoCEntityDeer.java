@@ -12,14 +12,19 @@ import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIPanic;
-import net.minecraft.entity.ai.EntityAISwimming;
-import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.PanicGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -28,42 +33,39 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
 
     private int readyToJumpTimer;
 
-    public MoCEntityDeer(World world) {
-        super(world);
+    public MoCEntityDeer(EntityType<? extends MoCEntityDeer> type, World world) {
+        super(type, world);
         setAge(75);
-        setSize(0.9F, 1.425F);
+        //setSize(0.9F, 1.425F);
         setAdult(true);
         setTamed(false);
     }
 
     @Override
-    protected void initEntityAI() {
-        this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAIFleeFromEntityMoC(this, entity -> !(entity instanceof MoCEntityDeer) && (entity.height > 0.8F || entity.width > 0.8F), 6.0F, this.getMyAISpeed(), this.getMyAISpeed() * 1.2D));
-        this.tasks.addTask(2, new EntityAIPanic(this, this.getMyAISpeed() * 1.2D));
-        this.tasks.addTask(4, new EntityAIFollowAdult(this, getMyAISpeed()));
-        this.tasks.addTask(5, new EntityAIWanderMoC2(this, getMyAISpeed()));
-        this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(1, new EntityAIFleeFromEntityMoC(this, entity -> !(entity instanceof MoCEntityDeer) && (entity.getHeight() > 0.8F || entity.getWidth() > 0.8F), 6.0F, this.getMyAISpeed(), this.getMyAISpeed() * 1.2D));
+        this.goalSelector.addGoal(2, new PanicGoal(this, this.getMyAISpeed() * 1.2D));
+        this.goalSelector.addGoal(4, new EntityAIFollowAdult(this, getMyAISpeed()));
+        this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, getMyAISpeed()));
+        this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 6.0F));
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.35D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 10.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.35D);
     }
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
+        if (getTypeMoC() == 0) {
             int i = this.rand.nextInt(100);
             if (i <= 20) {
-                setType(1);
+                setTypeMoC(1);
             } else if (i <= 70) {
-                setType(2);
+                setTypeMoC(2);
             } else {
                 setAdult(false);
-                setType(3);
+                setTypeMoC(3);
             }
         }
     }
@@ -71,7 +73,7 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
     @Override
     public ResourceLocation getTexture() {
 
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return MoCreatures.proxy.getModelTexture("deer_doe.png");
             case 3:
@@ -83,7 +85,8 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void fall(float f, float f1) {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
     }
 
     @Override
@@ -93,36 +96,32 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_DEER_DEATH;
+        return MoCSoundEvents.ENTITY_DEER_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_DEER_HURT;
+        return MoCSoundEvents.ENTITY_DEER_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
         if (!getIsAdult()) {
-            return MoCSoundEvents.ENTITY_DEER_AMBIENT_BABY;
+            return MoCSoundEvents.ENTITY_DEER_AMBIENT_BABY.get();
         } else {
-            return MoCSoundEvents.ENTITY_DEER_AMBIENT;
+            return MoCSoundEvents.ENTITY_DEER_AMBIENT.get();
         }
     }
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.DEER;
     }
 
     public double getMyAISpeed() {
-        /*if (getType() == 1) {
+        /*if (getTypeMoC() == 1) {
             return 1.1D;
-        } else if (getType() == 2) {
+        } else if (getTypeMoC() == 2) {
             return 1.3D;
         }*/
         return 1.1D;
@@ -141,19 +140,19 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
     @Override
     public void setAdult(boolean flag) {
         if (!this.world.isRemote) {
-            setType(this.rand.nextInt(1));
+            setTypeMoC(this.rand.nextInt(1));
         }
         super.setAdult(flag);
     }
 
     @Override
     public boolean getIsAdult() {
-        return this.getType() != 3 && super.getIsAdult();
+        return this.getTypeMoC() != 3 && super.getIsAdult();
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
 
         if (!this.world.isRemote) {
 
@@ -161,9 +160,7 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
                 if (MoCTools.getMyMovementSpeed(this) > 0.17F) {
                     float velX = (float) (0.5F * Math.cos((MoCTools.realAngle(this.rotationYaw - 90F)) / 57.29578F));
                     float velZ = (float) (0.5F * Math.sin((MoCTools.realAngle(this.rotationYaw - 90F)) / 57.29578F));
-                    this.motionX -= velX;
-                    this.motionZ -= velZ;
-                    this.motionY = 0.5D;
+                    this.setMotion(new Vector3d(this.getMotion().getX(), 0.5D, this.getMotion().getZ()).subtract(velX, 0.0D, velZ));
                     this.readyToJumpTimer = this.rand.nextInt(10) + 20;
                 }
             }
@@ -173,29 +170,29 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
     @Override
     public float pitchRotationOffset() {
         if (!this.onGround && MoCTools.getMyMovementSpeed(this) > 0.08F) {
-            if (this.motionY > 0.5D) {
+            if (this.getMotion().getY() > 0.5D) {
                 return 25F;
             }
-            if (this.motionY < -0.5D) {
+            if (this.getMotion().getY() < -0.5D) {
                 return -25F;
             }
-            return (float) (this.motionY * 70D);
+            return (float) (this.getMotion().getY() * 70D);
         }
         return 0F;
     }
 
     @Override
     public float getSizeFactor() {
-        if (getType() == 1) {
+        if (getTypeMoC() == 1) {
             return 1.6F;
         }
-        if (getType() == 2) {
+        if (getTypeMoC() == 2) {
             return 1.3F;
         }
         return getAge() * 0.01F;
     }
 
-    public float getEyeHeight() {
-        return this.height * 0.945F;
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return this.getHeight() * 0.945F;
     }
 }

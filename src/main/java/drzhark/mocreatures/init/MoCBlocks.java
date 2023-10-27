@@ -7,7 +7,7 @@ import com.google.common.base.Preconditions;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.block.*;
-import drzhark.mocreatures.block.MoCBlockSapling.EnumWoodType;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockSlab;
@@ -20,32 +20,22 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemSlab;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 
-@SuppressWarnings("deprecation")
-@Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID)
-@GameRegistry.ObjectHolder(MoCConstants.MOD_ID)
+@Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MoCBlocks {
 
-    @GameRegistry.ObjectHolder("ancient_ore")
     public static MoCBlockOre ancientOre;
-    @GameRegistry.ObjectHolder("ancient_silver_block")
     public static Block ancientSilverBlock;
-    @GameRegistry.ObjectHolder("carved_silver_sandstone")
     public static Block carvedSilverSandstone;
-    @GameRegistry.ObjectHolder("cobbled_wyvstone")
     public static Block cobbledWyvstone;
     @GameRegistry.ObjectHolder("cobbled_wyvstone_slab")
     public static MoCBlockSlab.Half cobbledWyvstoneSlab;
@@ -83,7 +73,6 @@ public class MoCBlocks {
     public static Block fineSilverBlock;
     @GameRegistry.ObjectHolder("firestone")
     public static Block firestone;
-    @GameRegistry.ObjectHolder("gleaming_glass")
     public static Block gleamingGlass;
     @GameRegistry.ObjectHolder("gleaming_glass_pane")
     public static Block gleamingGlassPane;
@@ -109,7 +98,6 @@ public class MoCBlocks {
     public static MoCBlockWall mossyCobbledDeepWyvstoneWall;
     @GameRegistry.ObjectHolder("silver_sand")
     public static Block silverSand;
-    @GameRegistry.ObjectHolder("silver_sandstone")
     public static Block silverSandstone;
     @GameRegistry.ObjectHolder("silver_sandstone_slab")
     public static MoCBlockSlab.Half silverSandstoneSlab;
@@ -121,21 +109,13 @@ public class MoCBlocks {
     public static MoCBlockWall silverSandstoneWall;
     @GameRegistry.ObjectHolder("smooth_silver_sandstone")
     public static Block smoothSilverSandstone;
-    @GameRegistry.ObjectHolder("tall_wyvgrass")
     public static Block tallWyvgrass;
-    @GameRegistry.ObjectHolder("wyvern_diamond_ore")
     public static MoCBlockOre wyvernDiamondOre;
-    @GameRegistry.ObjectHolder("wyvern_emerald_ore")
     public static MoCBlockOre wyvernEmeraldOre;
-    @GameRegistry.ObjectHolder("wyvern_gold_ore")
     public static MoCBlockOre wyvernGoldOre;
-    @GameRegistry.ObjectHolder("wyvern_iron_ore")
     public static MoCBlockOre wyvernIronOre;
-    @GameRegistry.ObjectHolder("wyvern_lapis_ore")
     public static MoCBlockOre wyvernLapisOre;
-    @GameRegistry.ObjectHolder("wyvern_nest_block")
     public static MoCBlockNest wyvernNestBlock;
-    @GameRegistry.ObjectHolder("wyvstone")
     public static Block wyvstone;
     @GameRegistry.ObjectHolder("wyvwstone_button")
     public static MoCBlockButtonStone wyvwstoneButton;
@@ -151,7 +131,6 @@ public class MoCBlocks {
     public static MoCBlockWall wyvstoneWall;
     @GameRegistry.ObjectHolder("wyvgrass")
     public static Block wyvgrass;
-    @GameRegistry.ObjectHolder("wyvdirt")
     public static Block wyvdirt;
     @GameRegistry.ObjectHolder("wyvwood_button")
     public static MoCBlockButtonWood wyvwoodButton;
@@ -165,7 +144,6 @@ public class MoCBlocks {
     public static Block wyvwoodLeaves;
     @GameRegistry.ObjectHolder("wyvwood_log")
     public static Block wyvwoodLog;
-    @GameRegistry.ObjectHolder("wyvwood_planks")
     public static Block wyvwoodPlanks;
     @GameRegistry.ObjectHolder("wyvwood_sapling")
     public static Block wyvwoodSapling;
@@ -297,8 +275,10 @@ public class MoCBlocks {
     }
 
     @Nonnull
-    public static <T extends IForgeRegistryEntry<T>> T setup(T entry, String name) {
-        return setup(entry, new ResourceLocation(MoCConstants.MOD_ID, name));
+    public static <T extends Block> T  setup(T entry, String name) {
+        ForgeRegistries.BLOCKS.register(setup(entry, new ResourceLocation(MoCConstants.MOD_ID, name)));
+        ForgeRegistries.ITEMS.register(setup(new BlockItem(entry, new Item.Properties().group(MoCreatures.tabMoC)), new ResourceLocation(MoCConstants.MOD_ID, name)));
+        return entry;
     }
 
     @Nonnull
@@ -306,12 +286,6 @@ public class MoCBlocks {
         Preconditions.checkNotNull(entry, "Entry to setup must not be null!");
         Preconditions.checkNotNull(registryName, "Registry name to assign must not be null!");
         entry.setRegistryName(registryName);
-        if (entry instanceof Block) {
-            ((Block) entry).setTranslationKey(registryName.getNamespace() + "." + registryName.getPath()).setCreativeTab(MoCreatures.tabMoC);
-        }
-        if (entry instanceof Item) {
-            ((Item) entry).setTranslationKey(registryName.getNamespace() + "." + registryName.getPath()).setCreativeTab(MoCreatures.tabMoC);
-        }
         return entry;
     }
 }

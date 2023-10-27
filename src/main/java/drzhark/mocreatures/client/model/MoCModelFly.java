@@ -3,17 +3,18 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.ambient.MoCEntityFly;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelFly extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelFly<T extends MoCEntityFly> extends EntityModel<T> {
 
     ModelRenderer FrontLegs;
     ModelRenderer RearLegs;
@@ -25,6 +26,7 @@ public class MoCModelFly extends ModelBase {
     ModelRenderer RightWing;
     ModelRenderer Thorax;
     ModelRenderer LeftWing;
+    private boolean flying;
 
     public MoCModelFly() {
         this.textureWidth = 32;
@@ -89,32 +91,32 @@ public class MoCModelFly extends ModelBase {
 
     }
 
-    @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        MoCEntityFly fly = (MoCEntityFly) entity;
-        boolean isFlying = (fly.getIsFlying() || fly.motionY < -0.1D);
-        setRotationAngles(f, f1, f2, f3, f4, f5, !isFlying);
-        this.FrontLegs.render(f5);
-        this.RearLegs.render(f5);
-        this.MidLegs.render(f5);
-        this.Head.render(f5);
-        this.Tail.render(f5);
-        this.Abdomen.render(f5);
-        this.Thorax.render(f5);
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.flying = (entityIn.getIsFlying() || entityIn.getMotion().getY() < -0.1D);
+    }
 
-        if (!isFlying) {
-            this.FoldedWings.render(f5);
+    @Override
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.FrontLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RearLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.MidLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Abdomen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Thorax.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
+        if (!this.flying) {
+            this.FoldedWings.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else {
-            GlStateManager.pushMatrix();
-            GlStateManager.enableBlend();
+            matrixStackIn.push();
+            RenderSystem.enableBlend();
             float transparency = 0.6F;
-            GlStateManager.blendFunc(770, 771);
-            GlStateManager.color(0.8F, 0.8F, 0.8F, transparency);
-            this.LeftWing.render(f5);
-            this.RightWing.render(f5);
-            GlStateManager.disableBlend();
-            GlStateManager.popMatrix();
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.color4f(0.8F, 0.8F, 0.8F, transparency);
+            this.LeftWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.RightWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            RenderSystem.disableBlend();
+            matrixStackIn.pop();
         }
     }
 
@@ -125,29 +127,29 @@ public class MoCModelFly extends ModelBase {
     }
 
     /*
-     * public void setRotationAngles(float f, float f1, float f2, float f3,
-     * float f4, float f5) { super.setRotationAngles(f, f1, f2, f3, f4, f5);
-     * float WingRot = MathHelper.cos((f2 * 3.0F)) * 0.7F;
+     * public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
+     * float headPitch, float f5) { super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
+     * float WingRot = MathHelper.cos((ageInTicks * 3.0F)) * 0.7F;
      * RightWing.rotateAngleZ = WingRot; LeftWing.rotateAngleZ = -WingRot; float
-     * legMov = (f1*1.5F); FrontLegs.rotateAngleX = 0.1487144F + legMov;
+     * legMov = (limbSwingAmount*1.5F); FrontLegs.rotateAngleX = 0.1487144F + legMov;
      * MidLegs.rotateAngleX = 0.5948578F + legMov; RearLegs.rotateAngleX =
      * 1.070744F + legMov; }
      */
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, boolean onGround) {
-        //super.setRotationAngles(f, f1, f2, f3, f4, f5);
-        float WingRot = MathHelper.cos((f2 * 3.0F)) * 0.7F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        //super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
+        float WingRot = MathHelper.cos((ageInTicks * 3.0F)) * 0.7F;
         this.RightWing.rotateAngleZ = WingRot;
         this.LeftWing.rotateAngleZ = -WingRot;
         float legMov;
         float legMovB;
 
-        if (!onGround) {
-            legMov = (f1 * 1.5F);
+        if (this.flying) {
+            legMov = (limbSwingAmount * 1.5F);
             legMovB = legMov;
         } else {
-            legMov = MathHelper.cos((f * 1.5F) + 3.141593F) * 2.0F * f1;
-            legMovB = MathHelper.cos(f * 1.5F) * 2.0F * f1;
+            legMov = MathHelper.cos((limbSwing * 1.5F) + 3.141593F) * 2.0F * limbSwingAmount;
+            legMovB = MathHelper.cos(limbSwing * 1.5F) * 2.0F * limbSwingAmount;
         }
 
         this.FrontLegs.rotateAngleX = 0.1487144F + legMov;

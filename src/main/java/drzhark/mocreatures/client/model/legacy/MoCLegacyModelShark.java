@@ -3,15 +3,17 @@
  */
 package drzhark.mocreatures.client.model.legacy;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.aquatic.MoCEntityShark;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCLegacyModelShark extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCLegacyModelShark<T extends MoCEntityShark> extends EntityModel<T> {
 
     public ModelRenderer LHead;
 
@@ -87,23 +89,22 @@ public class MoCLegacyModelShark extends ModelBase {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        setRotationAngles(f, f1, f2, f3, f4, f5);
-        this.Body.render(f5);
-        this.PTail.render(f5);
-        this.UHead.render(f5);
-        this.DHead.render(f5);
-        this.RHead.render(f5);
-        this.LHead.render(f5);
-        this.UpperFin.render(f5);
-        this.UpperTailFin.render(f5);
-        this.LowerTailFin.render(f5);
-        this.LeftFin.render(f5);
-        this.RightFin.render(f5);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.PTail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.UHead.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.DHead.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RHead.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LHead.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.UpperFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.UpperTailFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LowerTailFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        this.UpperTailFin.rotateAngleY = MathHelper.cos(f * 0.6662F) * f1;
-        this.LowerTailFin.rotateAngleY = MathHelper.cos(f * 0.6662F) * f1;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.UpperTailFin.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
+        this.LowerTailFin.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
     }
 }

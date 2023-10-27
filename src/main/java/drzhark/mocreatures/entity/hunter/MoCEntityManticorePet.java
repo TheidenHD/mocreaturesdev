@@ -7,9 +7,12 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumHand;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -19,32 +22,28 @@ import javax.annotation.Nullable;
 // TODO: Make it comaptible with essences
 public class MoCEntityManticorePet extends MoCEntityBigCat {
 
-    public MoCEntityManticorePet(World world) {
-        super(world);
+    public MoCEntityManticorePet(EntityType<? extends MoCEntityManticorePet> type, World world) {
+        super(type, world);
         this.chestName = "ManticoreChest";
     }
 
     // TODO: Varied stats depending on type
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.4D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(7.0D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntityBigCat.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 40.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.4D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0D);
     }
 
     @Override
     public void selectType() {
 
-        if (getType() == 0) {
-            setType(this.rand.nextInt(4) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(4) + 1);
         }
         super.selectType();
     }
 
     @Override
     public ResourceLocation getTexture() {
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return MoCreatures.proxy.getModelTexture("manticore_dark.png");
             case 3:
@@ -69,8 +68,8 @@ public class MoCEntityManticorePet extends MoCEntityBigCat {
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -91,10 +90,10 @@ public class MoCEntityManticorePet extends MoCEntityBigCat {
                 setSitting(false);
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Override
@@ -124,11 +123,7 @@ public class MoCEntityManticorePet extends MoCEntityBigCat {
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return MoCLootTables.DARK_MANTICORE;
             case 3:

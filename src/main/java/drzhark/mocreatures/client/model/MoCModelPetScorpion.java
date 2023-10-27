@@ -4,22 +4,16 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.hunter.MoCEntityPetScorpion;
-import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelPetScorpion extends MoCModelScorpion {
+
+public class MoCModelPetScorpion<T extends MoCEntityPetScorpion> extends MoCModelAbstractScorpion<T> {
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        MoCEntityPetScorpion scorpy = (MoCEntityPetScorpion) entity;
-        poisoning = scorpy.swingingTail();
-        isTalking = scorpy.mouthCounter != 0;
-        babies = scorpy.getHasBabies();
-        attacking = scorpy.armCounter;
-        sitting = scorpy.getIsSitting();
-        setRotationAngles(f, f1, f2, f3, f4, f5);
-        renderParts(f5);
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        poisoning = entityIn.swingingTail();
+        isTalking = entityIn.mouthCounter != 0;
+        babies = entityIn.getHasBabies();
+        attacking = entityIn.armCounter;
+        sitting = entityIn.getIsSitting();
     }
 }

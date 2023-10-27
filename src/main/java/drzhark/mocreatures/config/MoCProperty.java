@@ -318,7 +318,7 @@ public class MoCProperty {
         return this.wasRead;
     }
 
-    public Type getType() {
+    public Type getTypeMoC() {
         return this.type;
     }
 

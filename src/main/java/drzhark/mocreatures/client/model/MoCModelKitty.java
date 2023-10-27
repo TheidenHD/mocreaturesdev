@@ -3,17 +3,17 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.neutral.MoCEntityKitty;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelKitty extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelKitty<T extends MoCEntityKitty> extends EntityModel<T> {
 
     private final ModelRenderer body;
     public boolean isSitting;
@@ -31,96 +31,97 @@ public class MoCModelKitty extends ModelBase {
         this(0.0F);
     }
 
-    public MoCModelKitty(float f) {
-        this(f, 0.0F);
+    public MoCModelKitty(float limbSwing) {
+        this(limbSwing, 0.0F);
     }
 
-    public MoCModelKitty(float f, float f1) {
+    public MoCModelKitty(float limbSwing, float limbSwingAmount) {
         this.headParts = new ModelRenderer[10];
         this.headParts[0] = new ModelRenderer(this, 16, 0);
-        this.headParts[0].addBox(-2F, -5F, -3F, 1, 1, 1, f);
-        this.headParts[0].setRotationPoint(0.0F, 0.0F + f1, -2F);
+        this.headParts[0].addBox(-2F, -5F, -3F, 1, 1, 1, limbSwing);
+        this.headParts[0].setRotationPoint(0.0F, 0.0F + limbSwingAmount, -2F);
         this.headParts[1] = new ModelRenderer(this, 16, 0);
         this.headParts[1].mirror = true;
-        this.headParts[1].addBox(1.0F, -5F, -3F, 1, 1, 1, f);
-        this.headParts[1].setRotationPoint(0.0F, 0.0F + f1, -2F);
+        this.headParts[1].addBox(1.0F, -5F, -3F, 1, 1, 1, limbSwing);
+        this.headParts[1].setRotationPoint(0.0F, 0.0F + limbSwingAmount, -2F);
         this.headParts[2] = new ModelRenderer(this, 20, 0);
-        this.headParts[2].addBox(-2.5F, -4F, -3F, 2, 1, 1, f);
-        this.headParts[2].setRotationPoint(0.0F, 0.0F + f1, -2F);
+        this.headParts[2].addBox(-2.5F, -4F, -3F, 2, 1, 1, limbSwing);
+        this.headParts[2].setRotationPoint(0.0F, 0.0F + limbSwingAmount, -2F);
         this.headParts[3] = new ModelRenderer(this, 20, 0);
         this.headParts[3].mirror = true;
-        this.headParts[3].addBox(0.5F, -4F, -3F, 2, 1, 1, f);
-        this.headParts[3].setRotationPoint(0.0F, 0.0F + f1, -2F);
+        this.headParts[3].addBox(0.5F, -4F, -3F, 2, 1, 1, limbSwing);
+        this.headParts[3].setRotationPoint(0.0F, 0.0F + limbSwingAmount, -2F);
         this.headParts[4] = new ModelRenderer(this, 40, 0);
-        this.headParts[4].addBox(-4F, -1.5F, -5F, 3, 3, 1, f);
-        this.headParts[4].setRotationPoint(0.0F, 0.0F + f1, -2F);
+        this.headParts[4].addBox(-4F, -1.5F, -5F, 3, 3, 1, limbSwing);
+        this.headParts[4].setRotationPoint(0.0F, 0.0F + limbSwingAmount, -2F);
         this.headParts[5] = new ModelRenderer(this, 40, 0);
         this.headParts[5].mirror = true;
-        this.headParts[5].addBox(1.0F, -1.5F, -5F, 3, 3, 1, f);
-        this.headParts[5].setRotationPoint(0.0F, 0.0F + f1, -2F);
+        this.headParts[5].addBox(1.0F, -1.5F, -5F, 3, 3, 1, limbSwing);
+        this.headParts[5].setRotationPoint(0.0F, 0.0F + limbSwingAmount, -2F);
         this.headParts[6] = new ModelRenderer(this, 21, 6);
-        this.headParts[6].addBox(-1F, -1F, -5F, 2, 2, 1, f);
-        this.headParts[6].setRotationPoint(0.0F, 0.0F + f1, -2F);
+        this.headParts[6].addBox(-1F, -1F, -5F, 2, 2, 1, limbSwing);
+        this.headParts[6].setRotationPoint(0.0F, 0.0F + limbSwingAmount, -2F);
         this.headParts[7] = new ModelRenderer(this, 50, 0);
-        this.headParts[7].addBox(-2.5F, 0.5F, -1F, 5, 4, 1, f);
-        this.headParts[7].setRotationPoint(0.0F, 0.0F + f1, -2F);
+        this.headParts[7].addBox(-2.5F, 0.5F, -1F, 5, 4, 1, limbSwing);
+        this.headParts[7].setRotationPoint(0.0F, 0.0F + limbSwingAmount, -2F);
         this.headParts[8] = new ModelRenderer(this, 60, 0);
-        this.headParts[8].addBox(-1.5F, -2F, -4.1F, 3, 1, 1, f);
-        this.headParts[8].setRotationPoint(0.0F, 0.0F + f1, -2F);
+        this.headParts[8].addBox(-1.5F, -2F, -4.1F, 3, 1, 1, limbSwing);
+        this.headParts[8].setRotationPoint(0.0F, 0.0F + limbSwingAmount, -2F);
         this.headParts[9] = new ModelRenderer(this, 1, 1);
-        this.headParts[9].addBox(-2.5F, -3F, -4F, 5, 4, 4, f);
-        this.headParts[9].setRotationPoint(0.0F, 0.0F + f1, -2F);
+        this.headParts[9].addBox(-2.5F, -3F, -4F, 5, 4, 4, limbSwing);
+        this.headParts[9].setRotationPoint(0.0F, 0.0F + limbSwingAmount, -2F);
         this.body = new ModelRenderer(this, 20, 0);
-        this.body.addBox(-2.5F, -2F, -0F, 5, 5, 10, f);
-        this.body.setRotationPoint(0.0F, 0.0F + f1, -2F);
+        this.body.addBox(-2.5F, -2F, -0F, 5, 5, 10, limbSwing);
+        this.body.setRotationPoint(0.0F, 0.0F + limbSwingAmount, -2F);
         this.rightArm = new ModelRenderer(this, 0, 9);
-        this.rightArm.addBox(-1F, 0.0F, -1F, 2, 6, 2, f);
-        this.rightArm.setRotationPoint(-1.5F, 3F + f1, -1F);
+        this.rightArm.addBox(-1F, 0.0F, -1F, 2, 6, 2, limbSwing);
+        this.rightArm.setRotationPoint(-1.5F, 3F + limbSwingAmount, -1F);
         this.leftArm = new ModelRenderer(this, 0, 9);
         this.leftArm.mirror = true;
-        this.leftArm.addBox(-1F, 0.0F, -1F, 2, 6, 2, f);
-        this.leftArm.setRotationPoint(1.5F, 3F + f1, -1F);
+        this.leftArm.addBox(-1F, 0.0F, -1F, 2, 6, 2, limbSwing);
+        this.leftArm.setRotationPoint(1.5F, 3F + limbSwingAmount, -1F);
         this.rightLeg = new ModelRenderer(this, 8, 9);
-        this.rightLeg.addBox(-1F, 0.0F, -1F, 2, 6, 2, f);
-        this.rightLeg.setRotationPoint(-1.5F, 3F + f1, 7F);
+        this.rightLeg.addBox(-1F, 0.0F, -1F, 2, 6, 2, limbSwing);
+        this.rightLeg.setRotationPoint(-1.5F, 3F + limbSwingAmount, 7F);
         this.leftLeg = new ModelRenderer(this, 8, 9);
         this.leftLeg.mirror = true;
-        this.leftLeg.addBox(-1F, 0.0F, -1F, 2, 6, 2, f);
-        this.leftLeg.setRotationPoint(1.5F, 3F + f1, 7F);
+        this.leftLeg.addBox(-1F, 0.0F, -1F, 2, 6, 2, limbSwing);
+        this.leftLeg.setRotationPoint(1.5F, 3F + limbSwingAmount, 7F);
         this.tail = new ModelRenderer(this, 16, 9);
         this.tail.mirror = true;
-        this.tail.addBox(-0.5F, -8F, -1F, 1, 8, 1, f);
-        this.tail.setRotationPoint(0.0F, -0.5F + f1, 7.5F);
+        this.tail.addBox(-0.5F, -8F, -1F, 1, 8, 1, limbSwing);
+        this.tail.setRotationPoint(0.0F, -0.5F + limbSwingAmount, 7.5F);
+    }
+
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.isSitting = entityIn.getIsSitting();
+        this.isSwinging = entityIn.getIsSwinging();
+        this.swingProgress = entityIn.swingProgress;
+        this.kittystate = entityIn.getKittyState();
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        MoCEntityKitty kitty = (MoCEntityKitty) entity;
-        this.isSitting = kitty.getIsSitting();
-        this.isSwinging = kitty.getIsSwinging();
-        this.swingProgress = kitty.swingProgress;
-        this.kittystate = kitty.getKittyState();
-        GlStateManager.pushMatrix();
-        setRotationAngles(f, f1, f2, f3, f4, f5);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        matrixStackIn.push();
         if (this.isSitting) {
-            GlStateManager.translate(0.0F, 0.25F, 0.0F);
+            matrixStackIn.translate(0.0F, 0.25F, 0.0F);
             this.tail.rotateAngleZ = 0.0F;
             this.tail.rotateAngleX = -2.3F;
         }
         for (int i = 0; i < 7; i++) {
-            this.headParts[i].render(f5);
+            this.headParts[i].render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
         if (this.kittystate > 2) {
-            this.headParts[7].render(f5);
+            this.headParts[7].render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
         if (this.kittystate == 12) {
-            this.headParts[8].render(f5);
+            this.headParts[8].render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
-        this.headParts[9].render(f5);
-        this.body.render(f5);
-        this.tail.render(f5);
+        this.headParts[9].render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         if (this.isSitting) {
-            GlStateManager.translate(0.0F, 0.0625F, 0.0625F);
+            matrixStackIn.translate(0.0F, 0.0625F, 0.0625F);
             float f6 = -1.570796F;
             this.rightArm.rotateAngleX = f6;
             this.leftArm.rotateAngleX = f6;
@@ -129,26 +130,26 @@ public class MoCModelKitty extends ModelBase {
             this.rightLeg.rotateAngleY = 0.1F;
             this.leftLeg.rotateAngleY = -0.1F;
         }
-        this.rightArm.render(f5);
-        this.leftArm.render(f5);
-        this.rightLeg.render(f5);
-        this.leftLeg.render(f5);
-        GlStateManager.popMatrix();
+        this.rightArm.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.leftArm.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.rightLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.leftLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        matrixStackIn.pop();
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        this.headParts[9].rotateAngleY = f3 / 57.29578F;
-        this.headParts[9].rotateAngleX = f4 / 57.29578F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.headParts[9].rotateAngleY = netHeadYaw / 57.29578F;
+        this.headParts[9].rotateAngleX = headPitch / 57.29578F;
         for (int i = 0; i < 9; i++) {
             this.headParts[i].rotateAngleY = this.headParts[9].rotateAngleY;
             this.headParts[i].rotateAngleX = this.headParts[9].rotateAngleX;
         }
-        this.rightArm.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 2.0F * f1 * 0.5F;
-        this.leftArm.rotateAngleX = MathHelper.cos(f * 0.6662F) * 2.0F * f1 * 0.5F;
+        this.rightArm.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 2.0F * limbSwingAmount * 0.5F;
+        this.leftArm.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
         this.rightArm.rotateAngleZ = 0.0F;
         this.leftArm.rotateAngleZ = 0.0F;
-        this.rightLeg.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
-        this.leftLeg.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.4F * f1;
+        this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        this.leftLeg.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.4F * limbSwingAmount;
         this.rightLeg.rotateAngleY = 0.0F;
         this.leftLeg.rotateAngleY = 0.0F;
         if (this.isSwinging) {

@@ -4,16 +4,14 @@
 package drzhark.mocreatures.item;
 
 import drzhark.mocreatures.entity.item.MoCEntityEgg;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
+import drzhark.mocreatures.init.MoCEntities;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /*
  * ID LIST:
@@ -77,29 +75,26 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class MoCItemEgg extends MoCItem {
 
-    public MoCItemEgg(String name) {
-        super(name);
-        this.maxStackSize = 16;
-        setHasSubtypes(true);
+    public MoCItemEgg(Item.Properties properties, String name) {
+        super(properties.maxStackSize(16), name);
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         final ItemStack stack = player.getHeldItem(hand);
-        if (!player.capabilities.isCreativeMode) stack.shrink(1);
-        if (!world.isRemote && player.onGround) {
-            int i = stack.getItemDamage();
+        if (!player.abilities.isCreativeMode) stack.shrink(1);
+        if (!world.isRemote && player.isOnGround()) {
+            int i = 0;
             if (i == 30) {
                 i = 31; // For ostrich eggs. Placed eggs become stolen eggs.
             }
-            MoCEntityEgg entityegg = new MoCEntityEgg(world, i);
-            entityegg.setPosition(player.posX, player.posY, player.posZ);
-            player.world.spawnEntity(entityegg);
-            entityegg.motionY += world.rand.nextFloat() * 0.05F;
-            entityegg.motionX += (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F;
-            entityegg.motionZ += (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F;
+            MoCEntityEgg entityegg = MoCEntities.EGG.create(world);
+            entityegg.setEggType(i);
+            entityegg.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
+            player.world.addEntity(entityegg);
+            entityegg.setMotion(entityegg.getMotion().add((world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F, world.rand.nextFloat() * 0.05F, (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F));
         }
-        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+        return new ActionResult<>(ActionResultType.SUCCESS, stack);
     }
 
     @Override

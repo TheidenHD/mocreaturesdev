@@ -3,17 +3,17 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.aquatic.MoCEntityFishy;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelFishy extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelFishy<T extends MoCEntityFishy> extends EntityModel<T> {
 
     public ModelRenderer Body;
     public ModelRenderer UpperFin;
@@ -21,6 +21,7 @@ public class MoCModelFishy extends ModelBase {
     public ModelRenderer RightFin;
     public ModelRenderer LeftFin;
     public ModelRenderer Tail;
+    private MoCEntityFishy smallFish;
 
     public MoCModelFishy() {
         this.Body = new ModelRenderer(this, 0, 0);
@@ -33,23 +34,23 @@ public class MoCModelFishy extends ModelBase {
         this.Tail.rotateAngleX = 0.7853981F;
     }
 
-    @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        float scale = 0.0865F;
-
-        setRotationAngles(f, f1, f2, f3, f4, f5);
-        MoCEntityFishy smallFish = (MoCEntityFishy) entity;
-        float yOffset = smallFish.getAdjustedYOffset();
-        float xOffset = smallFish.getAdjustedXOffset();
-        float zOffset = smallFish.getAdjustedZOffset();
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(xOffset, yOffset, zOffset);
-        this.Body.render(scale);
-        this.Tail.render(scale);
-        GlStateManager.popMatrix();
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.smallFish = entityIn;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        this.Tail.rotateAngleY = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
+    @Override
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        float yOffset = this.smallFish.getAdjustedYOffset();
+        float xOffset = this.smallFish.getAdjustedXOffset();
+        float zOffset = this.smallFish.getAdjustedZOffset();
+        matrixStackIn.push();
+        matrixStackIn.translate(xOffset, yOffset, zOffset);
+        this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        matrixStackIn.pop();
+    }
+
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.Tail.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
     }
 }

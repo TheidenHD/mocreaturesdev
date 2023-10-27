@@ -3,21 +3,25 @@
  */
 package drzhark.mocreatures.client.model;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.ambient.MoCEntityMaggot;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelMaggot extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelMaggot<T extends MoCEntityMaggot> extends EntityModel<T> {
 
     ModelRenderer Head;
     ModelRenderer Body;
     ModelRenderer Tail;
     ModelRenderer Tailtip;
+    private float limbSwing;
+    private float limbSwingAmount;
 
     public MoCModelMaggot() {
         this.textureWidth = 32;
@@ -40,30 +44,31 @@ public class MoCModelMaggot extends ModelBase {
         this.Tailtip.setRotationPoint(0F, 23F, 4F);
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.limbSwing = limbSwing;
+        this.limbSwingAmount = limbSwingAmount;
+    }
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        //super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        //limbSwingAmount = movement speed!
+        //ageInTicks = timer!
+        //System.out.println("ageInTicks = " + ageInTicks);
 
-        //f1 = movement speed!
-        //f2 = timer!
-        //System.out.println("f2 = " + f2);
-
-        GlStateManager.pushMatrix();
-        GlStateManager.enableBlend();
+        matrixStackIn.push();
+        RenderSystem.enableBlend();
         //float transparency = 0.9F;
-        GlStateManager.blendFunc(770, 771);
-        //GlStateManager.color(1.2F, 1.2F, 1.2F, transparency);
-        float f9 = -(MathHelper.cos(f * 3F)) * f1 * 2F;
-        //GlStateManager.scale(1.0F, 1.0F, 1.0F + (f1 * 3F));
-        GlStateManager.scale(1.0F, 1.0F, 1.0F + (f9));
+        RenderSystem.defaultBlendFunc();
+        //RenderSystem.color4f(1.2F, 1.2F, 1.2F, transparency);
+        float f9 = -(MathHelper.cos(this.limbSwing * 3F)) * this.limbSwingAmount * 2F;
+        //matrixStackIn.scale(1.0F, 1.0F, 1.0F + (limbSwingAmount * 3F));
+        matrixStackIn.scale(1.0F, 1.0F, 1.0F + (f9));
 
-        this.Head.render(f5);
-        this.Body.render(f5);
-        this.Tail.render(f5);
-        this.Tailtip.render(f5);
-        GlStateManager.disableBlend();
-        GlStateManager.popMatrix();
+        this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Tailtip.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        RenderSystem.disableBlend();
+        matrixStackIn.pop();
 
     }
 
@@ -74,6 +79,6 @@ public class MoCModelMaggot extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
     }
 }

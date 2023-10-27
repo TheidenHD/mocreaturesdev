@@ -4,7 +4,6 @@
 package drzhark.mocreatures.init;
 
 import drzhark.mocreatures.MoCConstants;
-import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.item.*;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Items;
@@ -22,6 +21,7 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -99,24 +99,24 @@ public class MoCItems {
     // Doors - These need to be registered alongside the blocks
     public static final MoCItemDoor wyvwoodDoor = new MoCItemDoor(MoCBlocks.wyvwoodDoor, "wyvwood_door");
     // Food
-    public static final MoCItemFood cookedTurkey = new MoCItemFood("turkeycooked", 7, 0.8F, true);
-    public static final MoCItemFood crabraw = (MoCItemFood) new MoCItemFood("crabraw", 2, 0.1F, true).setPotionEffect(new PotionEffect(MobEffects.HUNGER, 30 * 20, 0), 0.8F);
-    public static final MoCItemFood crabcooked = new MoCItemFood("crabcooked", 4, 0.6F, true);
-    public static final MoCItemFood duckCooked = new MoCItemFood("duckcooked", 6, 0.7F, true);
-    public static final MoCItemFood duckRaw = new MoCItemFood("duckraw", 2, 0.4F, true);
-    public static final MoCItemFood mysticPear = new MoCItemFood("mysticpear", 4, 0.8F, false, 16).setAlwaysEdible();
-    public static final MoCItemFood omelet = new MoCItemFood("omelet", 3, 0.5F, false);
-    public static final MoCItemFood ostrichraw = (MoCItemFood) new MoCItemFood("ostrichraw", 3, 0.4F, true).setPotionEffect(new PotionEffect(MobEffects.HUNGER, 30 * 20, 0), 0.8F);
-    public static final MoCItemFood ostrichcooked = new MoCItemFood("ostrichcooked", 7, 0.8F, true);
-    public static final MoCItemFood ratBurger = new MoCItemFood("ratburger", 9, 0.5F, false);
-    public static final MoCItemFood ratCooked = new MoCItemFood("ratcooked", 4, 0.5F, true);
-    public static final MoCItemFood ratRaw = (MoCItemFood) new MoCItemFood("ratraw", 2, 0.1F, true).setPotionEffect(new PotionEffect(MobEffects.HUNGER, 30 * 20, 0), 0.8F);
-    public static final MoCItemFood rawTurkey = (MoCItemFood) new MoCItemFood("turkeyraw", 3, 0.4F, true).setPotionEffect(new PotionEffect(MobEffects.HUNGER, 30 * 20, 0), 0.8F);
-    public static final MoCItemFood turtlecooked = new MoCItemFood("turtlecooked", 6, 0.7F, true);
-    public static final MoCItemFood turtleraw = new MoCItemFood("turtleraw", 2, 0.2F, true);
-    public static final MoCItemFood turtlesoup = new MoCItemTurtleSoup("turtlesoup", 8, 0.8F, false);
-    public static final MoCItemFood venisonCooked = new MoCItemFood("venisoncooked", 8, 0.9F, true);
-    public static final MoCItemFood venisonRaw = new MoCItemFood("venisonraw", 3, 0.4F, true);
+    public static final MoCItemFood cookedTurkey = new MoCItemFood.Builder((new Item.Properties()), "turkeycooked", 7, 0.8F, true).build();
+    public static final MoCItemFood crabraw = new MoCItemFood.Builder((new Item.Properties()), "crabraw", 2, 0.1F, true).setPotionEffect(new EffectInstance(Effects.HUNGER, 30 * 20, 0), 0.8F).build();
+    public static final MoCItemFood crabcooked = new MoCItemFood.Builder((new Item.Properties()), "crabcooked", 4, 0.6F, true).build();
+    public static final MoCItemFood duckCooked = new MoCItemFood.Builder((new Item.Properties()), "duckcooked", 6, 0.7F, true).build();
+    public static final MoCItemFood duckRaw = new MoCItemFood.Builder((new Item.Properties()), "duckraw", 2, 0.4F, true).build();
+    public static final MoCItemFood mysticPear = new MoCItemFood.Builder((new Item.Properties()), "mysticpear", 4, 0.8F, false, 16).setAlwaysEdible().setPotionEffect(new EffectInstance(Effects.RESISTANCE, 10 * 20, 1), 1.0F).setPotionEffect(new EffectInstance(Effects.SPEED, 10 * 20, 1), 1.0F).build();
+    public static final MoCItemFood omelet = new MoCItemFood.Builder((new Item.Properties()), "omelet", 3, 0.5F, false).build();
+    public static final MoCItemFood ostrichraw = new MoCItemFood.Builder((new Item.Properties()), "ostrichraw", 3, 0.4F, true).setPotionEffect(new EffectInstance(Effects.HUNGER, 30 * 20, 0), 0.8F).build();
+    public static final MoCItemFood ostrichcooked = new MoCItemFood.Builder((new Item.Properties()), "ostrichcooked", 7, 0.8F, true).build();
+    public static final MoCItemFood ratBurger = new MoCItemFood.Builder((new Item.Properties()), "ratburger", 9, 0.5F, false).build();
+    public static final MoCItemFood ratCooked = new MoCItemFood.Builder((new Item.Properties()), "ratcooked", 4, 0.5F, true).build();
+    public static final MoCItemFood ratRaw = new MoCItemFood.Builder((new Item.Properties()), "ratraw", 2, 0.1F, true).setPotionEffect(new EffectInstance(Effects.HUNGER, 30 * 20, 0), 0.8F).build();
+    public static final MoCItemFood rawTurkey = new MoCItemFood.Builder((new Item.Properties()), "turkeyraw", 3, 0.4F, true).setPotionEffect(new EffectInstance(Effects.HUNGER, 30 * 20, 0), 0.8F).build();
+    public static final MoCItemFood turtlecooked = new MoCItemFood.Builder((new Item.Properties()), "turtlecooked", 6, 0.7F, true).build();
+    public static final MoCItemFood turtleraw = new MoCItemFood.Builder((new Item.Properties()), "turtleraw", 2, 0.2F, true).build();
+    public static final MoCItemFood turtlesoup = new MoCItemTurtleSoup.Builder((new Item.Properties()), "turtlesoup", 8, 0.8F, false).build();
+    public static final MoCItemFood venisonCooked = new MoCItemFood.Builder((new Item.Properties()), "venisoncooked", 8, 0.9F, true).build();
+    public static final MoCItemFood venisonRaw = new MoCItemFood.Builder((new Item.Properties()), "venisonraw", 3, 0.4F, true).build();
     // Weapons
     static ToolMaterial WHIP = EnumHelper.addToolMaterial("WHIP", 0, 184, 2.0F, 3.0F, 15).setRepairItem(new ItemStack(Items.LEATHER));
     public static final MoCItemWhip whip = new MoCItemWhip("whip", WHIP, 1.9F);
@@ -393,30 +393,15 @@ public class MoCItems {
             final IForgeRegistry<Item> registry = event.getRegistry();
 
             for (int i = 0; i < 16; i++) {
-                String s = EnumDyeColor.byMetadata(i).getTranslationKey().toLowerCase();
+                String s = DyeColor.byId(i).getTranslationKey().toLowerCase();
                 if (s.equalsIgnoreCase("lightBlue")) s = "light_blue";
-                kittybed[i] = new MoCItemKittyBed("kittybed_" + s, i);
+                kittybed[i] = new MoCItemKittyBed((new Item.Properties()), "kittybed_" + s, i);
                 registry.register(kittybed[i]);
-                if (!MoCreatures.isServer()) {
-                    ModelLoader.setCustomModelResourceLocation(kittybed[i], 0,
-                            new ModelResourceLocation(MoCConstants.MOD_PREFIX + kittybed[i].getTranslationKey().replace("item.", ""), "inventory"));
-                }
             }
 
             for (final Item item : items) {
                 registry.register(item);
                 ITEMS.add(item);
-                if (!MoCreatures.isServer()) {
-                    ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(MoCConstants.MOD_PREFIX + item.getTranslationKey().replace("item.",
-                            ""), "inventory"));
-                }
-                if (item instanceof MoCItemEgg) {
-                    for (int i = 0; i < 91; i++) {
-                        if (!MoCreatures.isServer()) {
-                            ModelLoader.setCustomModelResourceLocation(item, i, new ModelResourceLocation(MoCConstants.MOD_PREFIX + "mocegg", "inventory"));
-                        }
-                    }
-                }
             }
         }
     }

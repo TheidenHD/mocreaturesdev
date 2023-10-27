@@ -3,15 +3,12 @@
  */
 package drzhark.mocreatures.block;
 
-import net.minecraft.block.BlockBreakable;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.AbstractGlassBlock;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.common.ToolType;
 
-import java.util.Random;
 
 public class MoCBlockGlass extends BlockBreakable {
     private final boolean isTranslucent;

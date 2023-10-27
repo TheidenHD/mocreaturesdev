@@ -22,31 +22,29 @@ public class MoCEntityGrasshopper extends MoCEntityInsect {
     private int jumpCounter;
     //private int soundCounter;
 
-    public MoCEntityGrasshopper(World world) {
-        super(world);
+    public MoCEntityGrasshopper(EntityType<? extends MoCEntityGrasshopper> type, World world) {
+        super(type, world);
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(1.0D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntityInsect.registerAttributes().createMutableAttribute(Attributes.ARMOR, 1.0D);
     }
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
+        if (getTypeMoC() == 0) {
             int i = this.rand.nextInt(100);
             if (i <= 50) {
-                setType(1);
+                setTypeMoC(1);
             } else {
-                setType(2);
+                setTypeMoC(2);
             }
         }
     }
 
     @Override
     public ResourceLocation getTexture() {
-        if (getType() == 1) {
+        if (getTypeMoC() == 1) {
             return MoCreatures.proxy.getModelTexture("grasshopper_bright_green.png");
         } else {
             return MoCreatures.proxy.getModelTexture("grasshopper_olive_green.png");
@@ -54,13 +52,13 @@ public class MoCEntityGrasshopper extends MoCEntityInsect {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
         if (!this.world.isRemote) {
             /*if (getIsFlying() || !this.onGround) {
                 EntityPlayer ep = this.world.getClosestPlayerToEntity(this, 5D);
                 if (ep != null && --this.soundCounter == -1) {
-                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GRASSHOPPER_FLY);
+                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GRASSHOPPER_FLY.get());
                     this.soundCounter = 10;
                 }
             }*/
@@ -75,36 +73,33 @@ public class MoCEntityGrasshopper extends MoCEntityInsect {
     protected SoundEvent getAmbientSound() {
         if (world.isDaytime()) {
             // TODO: Add grasshopper daytime ambient sound
-            return world.rand.nextDouble() <= 0.1D ? MoCSoundEvents.ENTITY_GRASSHOPPER_CHIRP : null;
+            return world.rand.nextDouble() <= 0.1D ? MoCSoundEvents.ENTITY_GRASSHOPPER_CHIRP.get() : null;
         } else {
-            return world.rand.nextDouble() <= 0.1D ? MoCSoundEvents.ENTITY_GRASSHOPPER_CHIRP : null;
+            return world.rand.nextDouble() <= 0.1D ? MoCSoundEvents.ENTITY_GRASSHOPPER_CHIRP.get() : null;
         }
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_GRASSHOPPER_HURT;
+        return MoCSoundEvents.ENTITY_GRASSHOPPER_HURT.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_GRASSHOPPER_HURT;
+        return MoCSoundEvents.ENTITY_GRASSHOPPER_HURT.get();
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.GRASSHOPPER;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.GRASSHOPPER;
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
         if (!this.world.isRemote) {
-            if (onGround && ((motionX > 0.05D) || (motionZ > 0.05D) || (motionX < -0.05D) || (motionZ < -0.05D)))
+            if (onGround && ((getMotion().getX() > 0.05D) || (getMotion().getZ() > 0.05D) || (getMotion().getX() < -0.05D) || (getMotion().getZ() < -0.05D)))
                 if (this.jumpCounter == 0) {
-                    this.motionY = 0.45D;
-                    this.motionX *= 5D;
-                    this.motionZ *= 5D;
+                    this.setMotion(this.getMotion().getX() * 5D, 0.45D, this.getMotion().getZ() * 5D);
                     this.jumpCounter = 1;
                 }
         }
@@ -124,7 +119,7 @@ public class MoCEntityGrasshopper extends MoCEntityInsect {
     }
 
     @Override
-    public float getEyeHeight() {
+    public float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return 0.15F;
     }
     

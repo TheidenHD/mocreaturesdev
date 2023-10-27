@@ -3,17 +3,18 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.ambient.MoCEntityDragonfly;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelDragonfly extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelDragonfly<T extends MoCEntityDragonfly> extends EntityModel<T> {
 
     ModelRenderer Abdomen;
     ModelRenderer FrontLegs;
@@ -100,35 +101,29 @@ public class MoCModelDragonfly extends ModelBase {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Abdomen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.FrontLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RAntenna.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LAntenna.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RearLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.MidLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Mouth.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Thorax.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        MoCEntityDragonfly dragonfly = (MoCEntityDragonfly) entity;
-        //boolean onGround = dragonfly.onGround;
-        boolean isFlying = (dragonfly.getIsFlying() || dragonfly.motionY < -0.1D);
-        setRotationAngles(f, f1, f2, f3, f4, f5, isFlying);
-        this.Head.render(f5);
-        this.Abdomen.render(f5);
-        this.FrontLegs.render(f5);
-        this.RAntenna.render(f5);
-        this.LAntenna.render(f5);
-        this.RearLegs.render(f5);
-        this.MidLegs.render(f5);
-        this.Mouth.render(f5);
-        this.Thorax.render(f5);
-
-        GlStateManager.pushMatrix();
-        GlStateManager.enableBlend();
+        matrixStackIn.push();
+        RenderSystem.enableBlend();
         float transparency = 0.6F;
-        GlStateManager.blendFunc(770, 771);
-        GlStateManager.color(0.8F, 0.8F, 0.8F, transparency);
-        //GlStateManager.scale(1.3F, 1.0F, 1.3F);
-        this.WingRearRight.render(f5);
-        this.WingFrontRight.render(f5);
-        this.WingFrontLeft.render(f5);
-        this.WingRearLeft.render(f5);
-        GlStateManager.disableBlend();
-        GlStateManager.popMatrix();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.color4f(0.8F, 0.8F, 0.8F, transparency);
+        //matrixStackIn.scale(1.3F, 1.0F, 1.3F);
+        this.WingRearRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.WingFrontRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.WingFrontLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.WingRearLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        RenderSystem.disableBlend();
+        matrixStackIn.pop();
 
     }
 
@@ -138,24 +133,24 @@ public class MoCModelDragonfly extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, boolean flying) {
-        //super.setRotationAngles(f, f1, f2, f3, f4, f5);
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        //super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
 
         /*
-         * f = distance walked f1 = speed 0 - 1 f2 = timer
+         * limbSwing = distance walked limbSwingAmount = speed 0 - 1 ageInTicks = timer
          */
 
         float WingRot = 0F;
         float legMov;
         float legMovB;
 
-        if (flying) {
-            WingRot = MathHelper.cos((f2 * 2.0F)) * 0.5F;
-            legMov = (f1 * 1.5F);
+        if (entityIn.getIsFlying() || entityIn.getMotion().getY() < -0.1D) {
+            WingRot = MathHelper.cos((ageInTicks * 2.0F)) * 0.5F;
+            legMov = (limbSwingAmount * 1.5F);
             legMovB = legMov;
         } else {
-            legMov = MathHelper.cos((f * 1.5F) + 3.141593F) * 2.0F * f1;
-            legMovB = MathHelper.cos(f * 1.5F) * 2.0F * f1;
+            legMov = MathHelper.cos((limbSwing * 1.5F) + 3.141593F) * 2.0F * limbSwingAmount;
+            legMovB = MathHelper.cos(limbSwing * 1.5F) * 2.0F * limbSwingAmount;
         }
 
         this.WingFrontRight.rotateAngleZ = WingRot;

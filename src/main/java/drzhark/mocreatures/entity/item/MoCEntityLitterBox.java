@@ -7,25 +7,25 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.hostile.MoCEntityOgre;
 import drzhark.mocreatures.init.MoCItems;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntityMob;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.monster.CreeperEntity;
+import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.*;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -37,9 +37,8 @@ public class MoCEntityLitterBox extends EntityLiving {
     private static final DataParameter<Boolean> USED_LITTER = EntityDataManager.createKey(MoCEntityLitterBox.class, DataSerializers.BOOLEAN);
     public int litterTime;
 
-    public MoCEntityLitterBox(World world) {
-        super(world);
-        setSize(1.0F, 0.15F);
+    public MoCEntityLitterBox(EntityType<? extends MoCEntityLitterBox> type, World world) {
+        super(type, world);
         setNoAI(true);
     }
 
@@ -47,15 +46,13 @@ public class MoCEntityLitterBox extends EntityLiving {
         return MoCreatures.proxy.getModelTexture("litter_box.png");
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20.0D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 20.0D);
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(PICKED_UP, Boolean.FALSE);
         this.dataManager.register(USED_LITTER, Boolean.FALSE);
     }
@@ -82,7 +79,7 @@ public class MoCEntityLitterBox extends EntityLiving {
 
     @Override
     public boolean canBePushed() {
-        return !this.isDead;
+        return !this.removed;
     }
 
     @Override
@@ -91,12 +88,13 @@ public class MoCEntityLitterBox extends EntityLiving {
     }
 
     @Override
-    protected boolean canDespawn() {
+    public boolean canDespawn(double distanceToClosestPlayer) {
         return false;
     }
 
     @Override
-    public void fall(float f, float f1) {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
     }
 
     @Override
@@ -114,61 +112,61 @@ public class MoCEntityLitterBox extends EntityLiving {
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && stack.getItem() == Item.getItemFromBlock(Blocks.SAND)) {
             MoCTools.playCustomSound(this, SoundEvents.BLOCK_SAND_PLACE);
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             setUsedLitter(false);
             this.litterTime = 0;
-            return true;
+            return ActionResultType.SUCCESS;
         }
         if (this.getRidingEntity() == null) {
             if (player.isSneaking()) {
                 player.inventory.addItemStackToInventory(new ItemStack(MoCItems.litterbox));
                 MoCTools.playCustomSound(this, SoundEvents.ENTITY_ITEM_PICKUP, 0.2F);
-                setDead();
+                remove();
             } else {
                 setRotationYawHead((float) MoCTools.roundToNearest90Degrees(this.rotationYawHead) + 90.0F);
-                MoCTools.playCustomSound(this, SoundEvents.ENTITY_ITEMFRAME_ROTATE_ITEM);
+                MoCTools.playCustomSound(this, SoundEvents.ENTITY_ITEM_FRAME_ROTATE_ITEM);
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
-        return true;
+        return ActionResultType.SUCCESS;
     }
 
     @Override
-    public void move(MoverType type, double d, double d1, double d2) {
+    public void move(MoverType type, Vector3d pos) {
         if (!this.world.isRemote && (getRidingEntity() != null || !this.onGround || !MoCreatures.proxy.staticLitter)) {
-            super.move(type, d, d1, d2);
+            super.move(type, pos);
         }
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
         if (this.onGround) {
             setPickedUp(false);
         }
         if (getUsedLitter()) {
             if (!this.world.isRemote) {
                 this.litterTime++;
-                List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(12D, 4D, 12D));
+                List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(12D, 4D, 12D));
                 for (Entity entity : list) {
-                    if (!(entity instanceof EntityMob)) {
+                    if (!(entity instanceof MonsterEntity)) {
                         continue;
                     }
-                    EntityMob entityMob = (EntityMob) entity;
+                    MonsterEntity entityMob = (MonsterEntity) entity;
                     entityMob.setAttackTarget(this);
-                    if (entityMob instanceof EntityCreeper) {
-                        ((EntityCreeper) entityMob).setCreeperState(-1);
+                    if (entityMob instanceof CreeperEntity) {
+                        ((CreeperEntity) entityMob).setCreeperState(-1);
                     }
                     if (entityMob instanceof MoCEntityOgre) {
                         ((MoCEntityOgre) entityMob).smashCounter = 0;
                     }
                 }
             } else {
-                this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
+                this.world.addParticle(ParticleTypes.SMOKE, this.getPosX(), this.getPosY(), this.getPosZ(), 0.0D, 0.0D, 0.0D);
             }
         }
         if (this.litterTime > 5000 && !this.world.isRemote) {
@@ -179,13 +177,13 @@ public class MoCEntityLitterBox extends EntityLiving {
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
+    public void writeAdditional(CompoundNBT compound) {
         compound = MoCTools.getEntityData(this);
-        compound.setBoolean("UsedLitter", getUsedLitter());
+        compound.putBoolean("UsedLitter", getUsedLitter());
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
+    public void readAdditional(CompoundNBT compound) {
         compound = MoCTools.getEntityData(this);
         setUsedLitter(compound.getBoolean("UsedLitter"));
     }

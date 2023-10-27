@@ -7,8 +7,12 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.MoCEntityAmbient;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -25,29 +29,25 @@ public class MoCEntityAnt extends MoCEntityAmbient {
 
     private static final DataParameter<Boolean> FOUND_FOOD = EntityDataManager.createKey(MoCEntityAnt.class, DataSerializers.BOOLEAN);
 
-    public MoCEntityAnt(World world) {
-        super(world);
-        setSize(0.3F, 0.2F);
+    public MoCEntityAnt(EntityType<? extends MoCEntityAnt> type, World world) {
+        super(type, world);
+        //setSize(0.3F, 0.2F);
         this.texture = "ant.png";
     }
 
     @Override
-    protected void initEntityAI() {
-        this.tasks.addTask(1, new EntityAIWanderMoC2(this, 1.2D));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new EntityAIWanderMoC2(this, 1.2D));
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(FOUND_FOOD, Boolean.FALSE);
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(3.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(1.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.28D);
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntityAmbient.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 3.0D).createMutableAttribute(Attributes.ARMOR, 1.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.28D);
     }
 
     public boolean getHasFood() {
@@ -59,8 +59,8 @@ public class MoCEntityAnt extends MoCEntityAmbient {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
 
         if (this.isInWater()) {
             this.motionY *= 0.6D;
@@ -68,16 +68,16 @@ public class MoCEntityAnt extends MoCEntityAmbient {
 
         if (!this.world.isRemote) {
             if (!getHasFood()) {
-                EntityItem entityitem = MoCTools.getClosestFood(this, 8D);
-                if (entityitem == null || entityitem.isDead) {
+                ItemEntity entityitem = MoCTools.getClosestFood(this, 8D);
+                if (entityitem == null || entityitem.removed) {
                     return;
                 }
                 if (entityitem.getRidingEntity() == null) {
                     float f = entityitem.getDistance(this);
                     if (f > 1.0F) {
-                        int i = MathHelper.floor(entityitem.posX);
-                        int j = MathHelper.floor(entityitem.posY);
-                        int k = MathHelper.floor(entityitem.posZ);
+                        int i = MathHelper.floor(entityitem.getPosX());
+                        int j = MathHelper.floor(entityitem.getPosY());
+                        int k = MathHelper.floor(entityitem.getPosZ());
                         faceLocation(i, j, k, 30F);
 
                         getMyOwnPath(entityitem, f);
@@ -95,7 +95,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
 
         if (getHasFood()) {
             if (!this.isBeingRidden()) {
-                EntityItem entityitem = MoCTools.getClosestFood(this, 2D);
+                ItemEntity entityitem = MoCTools.getClosestFood(this, 2D);
                 if (entityitem != null && entityitem.getRidingEntity() == null) {
                     entityitem.startRiding(this);
                     return;
@@ -109,11 +109,11 @@ public class MoCEntityAnt extends MoCEntityAmbient {
         }
     }
 
-    private void exchangeItem(EntityItem entityitem) {
-        EntityItem cargo = new EntityItem(this.world, this.posX, this.posY + 0.2D, this.posZ, entityitem.getItem());
-        entityitem.setDead();
+    private void exchangeItem(ItemEntity entityitem) {
+        ItemEntity cargo = new ItemEntity(this.world, this.getPosX(), this.getPosY() + 0.2D, this.getPosZ(), entityitem.getItem());
+        entityitem.remove();
         if (!this.world.isRemote) {
-            this.world.spawnEntity(cargo);
+            this.world.addEntity(cargo);
         }
     }
 
@@ -141,12 +141,11 @@ public class MoCEntityAnt extends MoCEntityAmbient {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.ANT;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.ANT;
     }
 
     @Override
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return 0.1F;
     }
     

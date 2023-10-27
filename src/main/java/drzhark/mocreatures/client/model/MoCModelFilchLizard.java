@@ -3,14 +3,15 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.passive.MoCEntityFilchLizard;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
 
 // Courtesy of Daveyx0, permission given
-public class MoCModelFilchLizard extends ModelBase {
+public class MoCModelFilchLizard<T extends MoCEntityFilchLizard> extends EntityModel<T> {
 
     public ModelRenderer Body;
     public ModelRenderer Head;
@@ -30,6 +31,7 @@ public class MoCModelFilchLizard extends ModelBase {
     public ModelRenderer Filch5;
     public ModelRenderer Filch4;
     public ModelRenderer Filch6;
+    private boolean heldItem;
 
     public MoCModelFilchLizard() {
         textureWidth = 64;
@@ -119,24 +121,24 @@ public class MoCModelFilchLizard extends ModelBase {
         Head.addChild(Filch5);
         Head.addChild(Filch6);
     }
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.heldItem = !entityIn.getHeldItemMainhand().isEmpty();
+    }
 
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-        MoCEntityFilchLizard lizard = (MoCEntityFilchLizard) entity;
-        if (!lizard.getHeldItemMainhand().isEmpty()) {
-            Head.render(f5);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        if (this.heldItem) {
+            Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else {
-            FoldHead.render(f5);
-            FoldFilch1.render(f5);
-            FoldFilch2.render(f5);
+            FoldHead.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            FoldFilch1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            FoldFilch2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
-        Body.render(f5);
-        Tail.render(f5);
-        Leg1.render(f5);
-        Leg2.render(f5);
-        Leg3.render(f5);
-        Leg4.render(f5);
+        Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        Leg1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        Leg2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        Leg3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        Leg4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {
@@ -145,10 +147,8 @@ public class MoCModelFilchLizard extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
-        super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-        MoCEntityFilchLizard lizard = (MoCEntityFilchLizard) entity;
-        if (!lizard.getHeldItemMainhand().isEmpty()) {
+    public void setRotationAngles(T entityIn,float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        if (this.heldItem) {
             Leg1.setRotationPoint(-2F, 13F, -1F);
             setRotation(Leg1, 0F, 1.047198F, 0.6981317F);
             Leg2.setRotationPoint(2F, 13F, -1F);
@@ -161,8 +161,8 @@ public class MoCModelFilchLizard extends ModelBase {
             setRotation(Body, -0.9948377F, 0F, 0F);
             Tail.setRotationPoint(0F, 20F, 6F);
             setRotation(Tail, 0.6806784F, 0F, 0F);
-            Head.rotateAngleX = f4 / (180F / (float) Math.PI);
-            Head.rotateAngleY = f3 / (180F / (float) Math.PI);
+            Head.rotateAngleX = headPitch / (180F / (float) Math.PI);
+            Head.rotateAngleY = netHeadYaw / (180F / (float) Math.PI);
         } else {
             Leg1.setRotationPoint(2F, 22F, -4F);
             setRotation(Leg1, 0F, 0F, 0.3839724F);
@@ -176,13 +176,13 @@ public class MoCModelFilchLizard extends ModelBase {
             setRotation(Body, 0F, 0F, 0F);
             Tail.setRotationPoint(0F, 21F, 6F);
             setRotation(Tail, 0F, 0F, 0F);
-            Leg1.rotateAngleY = MathHelper.cos(f * 0.6662F * 2.0F + (float) Math.PI) * 0.6F * f1;
-            Leg2.rotateAngleY = -MathHelper.cos(f * 0.6662F * 2.0F + (float) Math.PI) * 0.6F * f1;
-            FoldHead.rotateAngleX = f4 / (180F / (float) Math.PI);
-            FoldHead.rotateAngleY = f3 / (180F / (float) Math.PI);
+            Leg1.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F * 2.0F + (float) Math.PI) * 0.6F * limbSwingAmount;
+            Leg2.rotateAngleY = -MathHelper.cos(limbSwing * 0.6662F * 2.0F + (float) Math.PI) * 0.6F * limbSwingAmount;
+            FoldHead.rotateAngleX = headPitch / (180F / (float) Math.PI);
+            FoldHead.rotateAngleY = netHeadYaw / (180F / (float) Math.PI);
         }
-        Leg3.rotateAngleY = MathHelper.cos(f * 0.6662F * 2.0F + (float) Math.PI) * 0.6F * f1;
-        Leg4.rotateAngleY = MathHelper.cos(f * 0.6662F * 2.0F + (float) Math.PI) * 0.6F * f1;
-        Tail.rotateAngleY = -MathHelper.cos(f * 0.6662F * 2.0F + (float) Math.PI) * 0.2F * f1;
+        Leg3.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F * 2.0F + (float) Math.PI) * 0.6F * limbSwingAmount;
+        Leg4.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F * 2.0F + (float) Math.PI) * 0.6F * limbSwingAmount;
+        Tail.rotateAngleY = -MathHelper.cos(limbSwing * 0.6662F * 2.0F + (float) Math.PI) * 0.2F * limbSwingAmount;
     }
 }

@@ -3,15 +3,17 @@
  */
 package drzhark.mocreatures.client.model.legacy;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.hostile.MoCEntityScorpion;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCLegacyModelScorpion extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCLegacyModelScorpion<T extends MoCEntityScorpion> extends EntityModel<T> {
     public boolean attacking;
     public boolean isSwinging;
     public float swingProgress;
@@ -150,34 +152,32 @@ public class MoCLegacyModelScorpion extends ModelBase {
     }
 
     @Override
-    public void render(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        this.setRotationAngles(f, f1, f2, f3, f4, f5);
-        this.Head.render(f5);
-        this.RearEnd.render(f5);
-        this.Leg8.render(f5);
-        this.Leg6.render(f5);
-        this.Leg4.render(f5);
-        this.Leg2.render(f5);
-        this.Leg7.render(f5);
-        this.Leg5.render(f5);
-        this.Leg3.render(f5);
-        this.Leg1.render(f5);
-        this.Tail1.render(f5);
-        this.Tail2.render(f5);
-        this.Tail3.render(f5);
-        this.Tail4.render(f5);
-        this.Tail7.render(f5);
-        this.RArm.render(f5);
-        this.LArm.render(f5);
-        this.RHand.render(f5);
-        this.LHand.render(f5);
-        this.RHandB.render(f5);
-        this.LHandB.render(f5);
-        this.Tail5.render(f5);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RearEnd.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg8.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg6.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg7.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Tail1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Tail2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Tail3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Tail4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Tail7.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RArm.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LArm.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RHand.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LHand.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RHandB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LHandB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Tail5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
-    public void setRotationAngles(final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         final float f6 = 0.7853982f;
         this.Leg1.rotateAngleZ = -f6;
         this.Leg2.rotateAngleZ = f6;
@@ -197,14 +197,14 @@ public class MoCLegacyModelScorpion extends ModelBase {
         this.Leg6.rotateAngleY = f8 - f7;
         this.Leg7.rotateAngleY = -f8 * 2.0f + f7;
         this.Leg8.rotateAngleY = f8 * 2.0f - f7;
-        final float f9 = -(MathHelper.cos(f * 0.6662f * 2.0f + 0.0f) * 0.4f) * f1;
-        final float f10 = -(MathHelper.cos(f * 0.6662f * 2.0f + 3.141593f) * 0.4f) * f1;
-        final float f11 = -(MathHelper.cos(f * 0.6662f * 2.0f + 1.570796f) * 0.4f) * f1;
-        final float f12 = -(MathHelper.cos(f * 0.6662f * 2.0f + 4.712389f) * 0.4f) * f1;
-        final float f13 = Math.abs(MathHelper.sin(f * 0.6662f + 0.0f) * 0.4f) * f1;
-        final float f14 = Math.abs(MathHelper.sin(f * 0.6662f + 3.141593f) * 0.4f) * f1;
-        final float f15 = Math.abs(MathHelper.sin(f * 0.6662f + 1.570796f) * 0.4f) * f1;
-        final float f16 = Math.abs(MathHelper.sin(f * 0.6662f + 4.712389f) * 0.4f) * f1;
+        final float f9 = -(MathHelper.cos(limbSwing * 0.6662f * 2.0f + 0.0f) * 0.4f) * limbSwingAmount;
+        final float f10 = -(MathHelper.cos(limbSwing * 0.6662f * 2.0f + 3.141593f) * 0.4f) * limbSwingAmount;
+        final float f11 = -(MathHelper.cos(limbSwing * 0.6662f * 2.0f + 1.570796f) * 0.4f) * limbSwingAmount;
+        final float f12 = -(MathHelper.cos(limbSwing * 0.6662f * 2.0f + 4.712389f) * 0.4f) * limbSwingAmount;
+        final float f13 = Math.abs(MathHelper.sin(limbSwing * 0.6662f + 0.0f) * 0.4f) * limbSwingAmount;
+        final float f14 = Math.abs(MathHelper.sin(limbSwing * 0.6662f + 3.141593f) * 0.4f) * limbSwingAmount;
+        final float f15 = Math.abs(MathHelper.sin(limbSwing * 0.6662f + 1.570796f) * 0.4f) * limbSwingAmount;
+        final float f16 = Math.abs(MathHelper.sin(limbSwing * 0.6662f + 4.712389f) * 0.4f) * limbSwingAmount;
         final ModelRenderer leg1 = this.Leg1;
         leg1.rotateAngleY += f9;
         final ModelRenderer leg2 = this.Leg2;
@@ -285,7 +285,7 @@ public class MoCLegacyModelScorpion extends ModelBase {
             this.LHand.rotateAngleY = 0.27925f + f18;
             this.LHandB.rotateAngleY = 0.27925f + f18;
         } else {
-            final float mov = MathHelper.cos(f * 0.4f) * 0.3f * f1;
+            final float mov = MathHelper.cos(limbSwing * 0.4f) * 0.3f * limbSwingAmount;
             this.Tail1.rotateAngleX = mov * 0.8f;
             this.Tail2.rotateAngleX = mov;
             this.Tail3.rotateAngleX = mov;

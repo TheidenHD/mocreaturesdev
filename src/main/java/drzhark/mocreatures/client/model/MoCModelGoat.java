@@ -3,16 +3,17 @@
  */
 package drzhark.mocreatures.client.model;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.neutral.MoCEntityGoat;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelGoat extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelGoat<T extends MoCEntityGoat> extends EntityModel<T> {
 
     public int typeInt;
     public int attacking;
@@ -159,77 +160,75 @@ public class MoCModelGoat extends ModelBase {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5);
-        this.Leg1.render(f5);
-        this.Leg2.render(f5);
-        this.Leg3.render(f5);
-        this.Leg4.render(f5);
-        this.Body.render(f5);
-        this.Tail.render(f5);
-        this.Neck.render(f5);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.Leg1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Neck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         if (this.typeInt > 1 && this.typeInt < 5) {
-            this.Tits.render(f5);
+            this.Tits.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
-        GlStateManager.pushMatrix();
+        matrixStackIn.push();
         if (this.attacking != 0) {
             float yOff = (this.attacking / 150F) - (1F / 5F);
             float zOff = (this.attacking / 450F) - (1F / 15F);
-            GlStateManager.translate(0.0F, yOff, -zOff);
+            matrixStackIn.translate(0.0F, yOff, -zOff);
         }
-        this.LEar.render(f5);
-        this.REar.render(f5);
-        this.Head.render(f5);
-        this.Nose.render(f5);
+        this.LEar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.REar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Nose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         if (this.typeInt > 1) {
             if (this.age > 0.7) {
-                this.RHorn1.render(f5);
-                this.LHorn1.render(f5);
+                this.RHorn1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.LHorn1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
             if (this.age > 0.8) {
-                this.RHorn2.render(f5);
-                this.LHorn2.render(f5);
+                this.RHorn2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.LHorn2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
         }
         if (this.typeInt > 4) {
             if (this.age > 0.8) {
-                this.RHorn3.render(f5);
-                this.LHorn3.render(f5);
+                this.RHorn3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.LHorn3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
             if (this.age > 0.85) {
-                this.RHorn4.render(f5);
-                this.LHorn4.render(f5);
+                this.RHorn4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.LHorn4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
             if (this.age > 0.9) {
-                this.RHorn5.render(f5);
-                this.LHorn5.render(f5);
+                this.RHorn5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.LHorn5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
         }
         if (this.eatMov != 0 && !this.bleat) {
-            GlStateManager.translate(this.eatMov / 100F, 0.0F, 0.0F);
+            matrixStackIn.translate(this.eatMov / 100F, 0.0F, 0.0F);
         }
         if (this.typeInt > 4 && this.age > 0.9) {
-            this.Goatie.render(f5);
+            this.Goatie.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
-        this.Tongue.render(f5);
-        this.Mouth.render(f5);
-        GlStateManager.popMatrix();
+        this.Tongue.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Mouth.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        matrixStackIn.pop();
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        this.Leg1.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
-        this.Leg2.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.4F * f1;
-        this.Leg3.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.4F * f1;
-        this.Leg4.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
-        float baseAngle = (30 / 57.29578F) + (f4 / 57.29578F);
-        if (f3 > 20F) {
-            f3 = 20F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.Leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        this.Leg2.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.4F * limbSwingAmount;
+        this.Leg3.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.4F * limbSwingAmount;
+        this.Leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        float baseAngle = (30 / 57.29578F) + (headPitch / 57.29578F);
+        if (netHeadYaw > 20F) {
+            netHeadYaw = 20F;
         }
-        if (f3 < -20F) {
-            f3 = -20F;
+        if (netHeadYaw < -20F) {
+            netHeadYaw = -20F;
         }
-        this.Head.rotateAngleY = (f3 / 57.29578F);
+        this.Head.rotateAngleY = (netHeadYaw / 57.29578F);
         this.Neck.rotateAngleX = -30 / 57.29578F;
         this.Head.rotateAngleX = baseAngle;
         if (this.bleat) {

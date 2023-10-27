@@ -14,13 +14,13 @@ import net.minecraft.world.World;
 
 public class MoCEntityRay extends MoCEntityTameableAquatic {
 
-    public MoCEntityRay(World world) {
-        super(world);
+    public MoCEntityRay(EntityType<? extends MoCEntityRay> type, World world) {
+        super(type, world);
     }
 
     @Override
-    protected void initEntityAI() {
-        this.tasks.addTask(2, new EntityAIWanderMoC2(this, 1.0D, 80));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(2, new EntityAIWanderMoC2(this, 1.0D, 80));
     }
 
     public boolean isPoisoning() {
@@ -28,23 +28,23 @@ public class MoCEntityRay extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
 
-        if (!this.isBeingRidden() && getType() == 1) {
+        if (!this.isBeingRidden() && getTypeMoC() == 1) {
             if (!this.world.isRemote && player.startRiding(this)) {
                 player.rotationYaw = this.rotationYaw;
                 player.rotationPitch = this.rotationPitch;
-                player.posY = this.posY;
+                player.setPosition(player.getPosX(), this.getPosY(), player.getPosZ());
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class MoCEntityRay extends MoCEntityTameableAquatic {
 
     @Override
     public double getMountedYOffset() {
-        return this.height * 0.15D * getSizeFactor();
+        return this.getHeight() * 0.15D * getSizeFactor();
     }
 
     @Override

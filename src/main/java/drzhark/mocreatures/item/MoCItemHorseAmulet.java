@@ -4,31 +4,35 @@
 package drzhark.mocreatures.item;
 
 import drzhark.mocreatures.MoCConstants;
-import drzhark.mocreatures.entity.tameable.MoCPetData;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
-import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.entity.hunter.MoCEntityBigCat;
 import drzhark.mocreatures.entity.neutral.MoCEntityWyvern;
-import drzhark.mocreatures.entity.passive.MoCEntityHorse;
+import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
+import drzhark.mocreatures.entity.tameable.MoCPetData;
+import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAppear;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -50,18 +54,16 @@ public class MoCItemHorseAmulet extends MoCItem {
     private String ownerName;
     private int PetId;
 
-    public MoCItemHorseAmulet(String name) {
-        super(name);
-        this.maxStackSize = 1;
-        setHasSubtypes(true);
+    public MoCItemHorseAmulet(Item.Properties properties, String name) {
+        super(properties.maxStackSize(1), name);
         this.ageCounter = 0;
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, Hand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (++this.ageCounter < 2) {
-            return new ActionResult<>(EnumActionResult.PASS, stack);
+            return new ActionResult<>(ActionResultType.PASS, stack);
         }
 
         if (!worldIn.isRemote) {
@@ -69,22 +71,22 @@ public class MoCItemHorseAmulet extends MoCItem {
         }
 
         double dist = 3D;
-        double newPosY = player.posY;
-        double newPosX = player.posX - (dist * Math.cos((MoCTools.realAngle(player.rotationYaw - 90F)) / 57.29578F));
-        double newPosZ = player.posZ - (dist * Math.sin((MoCTools.realAngle(player.rotationYaw - 90F)) / 57.29578F));
+        double newPosY = player.getPosY();
+        double newPosX = player.getPosX() - (dist * Math.cos((MoCTools.realAngle(player.rotationYaw - 90F)) / 57.29578F));
+        double newPosZ = player.getPosZ() - (dist * Math.sin((MoCTools.realAngle(player.rotationYaw - 90F)) / 57.29578F));
 
         if (!player.world.isRemote) {
             try {
                 MoCEntityTameableAnimal storedCreature;
                 this.spawnClass = this.spawnClass.replace(MoCConstants.MOD_PREFIX, "").toLowerCase();
                 if (this.spawnClass.equalsIgnoreCase("Wyvern")) { //ghost wyvern
-                    storedCreature = new MoCEntityWyvern(worldIn);
+                    storedCreature = MoCEntities.WYVERN.create(worldIn);
                     ((MoCEntityWyvern) storedCreature).setIsGhost(true);
                     this.isGhost = true;
                 } else if (this.spawnClass.equalsIgnoreCase("WildHorse")) {
-                    storedCreature = new MoCEntityHorse(worldIn);
+                    storedCreature = MoCEntities.WILDHORSE.create(worldIn);
                 } else {
-                    storedCreature = (MoCEntityTameableAnimal) EntityList.createEntityByIDFromName(new ResourceLocation(MoCConstants.MOD_PREFIX + this.spawnClass.toLowerCase()), worldIn);
+                    storedCreature = (MoCEntityTameableAnimal) EntityType.byKey(new ResourceLocation(MoCConstants.MOD_PREFIX + this.spawnClass.toLowerCase()).toString()).get().create(worldIn);
                     if (storedCreature instanceof MoCEntityBigCat) {
                         this.isGhost = true;
                         ((MoCEntityBigCat) storedCreature).setIsGhost(true);
@@ -92,7 +94,7 @@ public class MoCItemHorseAmulet extends MoCItem {
                 }
 
                 storedCreature.setPosition(newPosX, newPosY, newPosZ);
-                storedCreature.setType(this.creatureType);
+                storedCreature.setTypeMoC(this.creatureType);
                 storedCreature.setTamed(true);
                 storedCreature.setRideable(this.rideable);
                 storedCreature.setAge(this.age);
@@ -102,7 +104,7 @@ public class MoCItemHorseAmulet extends MoCItem {
                 storedCreature.setArmorType(this.armor);
                 storedCreature.setOwnerPetId(this.PetId);
                 storedCreature.setOwnerId(player.getUniqueID());
-                this.ownerName = player.getName();
+                this.ownerName = player.getName().getString();
 
                 if (this.ownerUniqueId == null) {
                     this.ownerUniqueId = player.getUniqueID();
@@ -119,7 +121,7 @@ public class MoCItemHorseAmulet extends MoCItem {
                             }
                         } else // add pet to existing pet data
                         {
-                            if (newOwner.getTamedList().tagCount() < maxCount || !MoCreatures.proxy.enableOwnership) {
+                            if (newOwner.getTamedList().size() < maxCount || !MoCreatures.proxy.enableOwnership) {
                                 MoCreatures.instance.mapData.updateOwnerPet(storedCreature);
                             }
                         }
@@ -140,17 +142,17 @@ public class MoCItemHorseAmulet extends MoCItem {
                             }
                         } else // add pet to existing pet data
                         {
-                            if (newOwner.getTamedList().tagCount() < maxCount || !MoCreatures.proxy.enableOwnership) {
+                            if (newOwner.getTamedList().size() < maxCount || !MoCreatures.proxy.enableOwnership) {
                                 MoCreatures.instance.mapData.updateOwnerPet(storedCreature);
                             }
                         }
                         // remove pet entry from old owner
                         if (oldOwner != null) {
-                            for (int j = 0; j < oldOwner.getTamedList().tagCount(); j++) {
-                                NBTTagCompound petEntry = oldOwner.getTamedList().getCompoundTagAt(j);
-                                if (petEntry.getInteger("PetId") == this.PetId) {
+                            for (int j = 0; j < oldOwner.getTamedList().size(); j++) {
+                                CompoundNBT petEntry = oldOwner.getTamedList().getCompound(j);
+                                if (petEntry.getInt("PetId") == this.PetId) {
                                     // found match, remove
-                                    oldOwner.getTamedList().removeTag(j);
+                                    oldOwner.getTamedList().remove(j);
                                 }
                             }
                         }
@@ -162,13 +164,13 @@ public class MoCItemHorseAmulet extends MoCItem {
                     MoCTools.playCustomSound(storedCreature, MoCSoundEvents.ENTITY_GENERIC_MAGIC_ENCHANTED);
                     //gives an empty amulet
                     if (storedCreature instanceof MoCEntityBigCat || storedCreature instanceof MoCEntityWyvern || this.creatureType == 21 || this.creatureType == 22) {
-                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletghost, 1, 0));
+                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletghost, 1));
                     } else if (this.creatureType == 26 || this.creatureType == 27 || this.creatureType == 28) {
-                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletbone, 1, 0));
+                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletbone, 1));
                     } else if ((this.creatureType > 47 && this.creatureType < 60)) {
-                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletfairy, 1, 0));
+                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletfairy, 1));
                     } else if (this.creatureType == 39 || this.creatureType == 40) {
-                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletpegasus, 1, 0));
+                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletpegasus, 1));
                     }
                     MoCPetData petData = MoCreatures.instance.mapData.getPetData(storedCreature.getOwnerId());
                     if (petData != null) {
@@ -182,16 +184,16 @@ public class MoCItemHorseAmulet extends MoCItem {
         }
         this.ageCounter = 0;
 
-        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+        return new ActionResult<>(ActionResultType.SUCCESS, stack);
     }
 
-    public void readFromNBT(NBTTagCompound nbt) {
-        this.PetId = nbt.getInteger("PetId");
-        this.creatureType = nbt.getInteger("CreatureType");
+    public void readFromNBT(CompoundNBT nbt) {
+        this.PetId = nbt.getInt("PetId");
+        this.creatureType = nbt.getInt("CreatureType");
         this.health = nbt.getFloat("Health");
-        this.age = nbt.getInteger("Edad");
+        this.age = nbt.getInt("Edad");
         this.name = nbt.getString("Name");
-        int spawnClassOld = nbt.getInteger("SpawnClass");
+        int spawnClassOld = nbt.getInt("SpawnClass");
         if (spawnClassOld > 0) {
             if (spawnClassOld == 100) {
                 this.spawnClass = "Wyvern";
@@ -199,7 +201,7 @@ public class MoCItemHorseAmulet extends MoCItem {
             } else {
                 this.spawnClass = "WildHorse";
             }
-            nbt.removeTag("SpawnClass");
+            nbt.remove("SpawnClass");
         } else {
             this.spawnClass = nbt.getString("SpawnClass");
         }
@@ -212,43 +214,43 @@ public class MoCItemHorseAmulet extends MoCItem {
         }
     }
 
-    public void writeToNBT(NBTTagCompound nbt) {
-        nbt.setInteger("PetId", this.PetId);
-        nbt.setInteger("CreatureType", this.creatureType);
-        nbt.setFloat("Health", this.health);
-        nbt.setInteger("Edad", this.age);
-        nbt.setString("Name", this.name);
-        nbt.setString("SpawnClass", this.spawnClass);
-        nbt.setBoolean("Rideable", this.rideable);
-        nbt.setByte("Armor", this.armor);
-        nbt.setBoolean("Adult", this.adult);
-        nbt.setString("OwnerName", this.ownerName);
+    public void writeToNBT(CompoundNBT nbt) {
+        nbt.putInt("PetId", this.PetId);
+        nbt.putInt("CreatureType", this.creatureType);
+        nbt.putFloat("Health", this.health);
+        nbt.putInt("Edad", this.age);
+        nbt.putString("Name", this.name);
+        nbt.putString("SpawnClass", this.spawnClass);
+        nbt.putBoolean("Rideable", this.rideable);
+        nbt.putByte("Armor", this.armor);
+        nbt.putBoolean("Adult", this.adult);
+        nbt.putString("OwnerName", this.ownerName);
         if (this.ownerUniqueId != null) {
-            nbt.setUniqueId("OwnerUUID", ownerUniqueId);
+            nbt.putUniqueId("OwnerUUID", ownerUniqueId);
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     /*
      * allows items to add custom lines of information to the mouseover description
      */
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         initAndReadNBT(stack);
-        tooltip.add(TextFormatting.AQUA + this.spawnClass);
+        tooltip.add(new StringTextComponent(this.spawnClass).setStyle(Style.EMPTY.setFormatting(TextFormatting.AQUA)));
         if (!this.name.equals("")) {
-            tooltip.add(TextFormatting.BLUE + this.name);
+            tooltip.add(new StringTextComponent(this.name).setStyle(Style.EMPTY.setFormatting(TextFormatting.BLUE)));
         }
         if (!this.ownerName.equals("")) {
-            tooltip.add(TextFormatting.DARK_BLUE + "Owned by " + this.ownerName);
+            tooltip.add(new StringTextComponent("Owned by " + this.ownerName).setStyle(Style.EMPTY.setFormatting(TextFormatting.DARK_BLUE)));
         }
     }
 
     private void initAndReadNBT(ItemStack itemstack) {
-        if (itemstack.getTagCompound() == null) {
-            itemstack.setTagCompound(new NBTTagCompound());
+        if (itemstack.getTag() == null) {
+            itemstack.setTag(new CompoundNBT());
         }
-        NBTTagCompound nbtcompound = itemstack.getTagCompound();
+        CompoundNBT nbtcompound = itemstack.getTag();
         readFromNBT(nbtcompound);
     }
 }

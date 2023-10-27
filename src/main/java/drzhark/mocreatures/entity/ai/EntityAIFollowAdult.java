@@ -4,28 +4,28 @@
 package drzhark.mocreatures.entity.ai;
 
 import drzhark.mocreatures.entity.IMoCEntity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.EntityAIBase;
 
 import java.util.List;
 
-public class EntityAIFollowAdult extends EntityAIBase {
+public class EntityAIFollowAdult extends Goal {
 
     /**
      * The child that is following its parent.
      */
-    EntityLiving childAnimal;
-    EntityLiving parentAnimal;
+    MobEntity childAnimal;
+    MobEntity parentAnimal;
     double moveSpeed;
     private int delayCounter;
 
-    public EntityAIFollowAdult(EntityLiving animal, double speed) {
+    public EntityAIFollowAdult(MobEntity animal, double speed) {
         this.childAnimal = animal;
         this.moveSpeed = speed;
     }
 
     /**
-     * Returns whether the EntityAIBase should begin execution.
+     * Returns whether the Goal should begin execution.
      */
     @Override
     public boolean shouldExecute() {
@@ -35,13 +35,13 @@ public class EntityAIFollowAdult extends EntityAIBase {
         if ((!(this.childAnimal instanceof IMoCEntity)) || ((IMoCEntity) this.childAnimal).getIsAdult()) {
             return false;
         } else {
-            List<EntityLiving> list =
+            List<MobEntity> list =
                     this.childAnimal.world.getEntitiesWithinAABB(this.childAnimal.getClass(),
                             this.childAnimal.getEntityBoundingBox().grow(8.0D, 4.0D, 8.0D));
-            EntityLiving entityliving = null;
+            MobEntity entityliving = null;
             double d0 = Double.MAX_VALUE;
 
-            for (EntityLiving entityliving1 : list) {
+            for (MobEntity entityliving1 : list) {
                 if (((IMoCEntity) entityliving1).getIsAdult()) {
                     double d1 = this.childAnimal.getDistanceSq(entityliving1);
 
@@ -64,7 +64,7 @@ public class EntityAIFollowAdult extends EntityAIBase {
     }
 
     /**
-     * Returns whether an in-progress EntityAIBase should continue executing
+     * Returns whether an in-progress Goal should continue executing
      */
     @Override
     public boolean shouldContinueExecuting() {
@@ -73,7 +73,7 @@ public class EntityAIFollowAdult extends EntityAIBase {
         }
         if (((IMoCEntity) this.childAnimal).getIsAdult()) {
             return false;
-        } else if (!this.parentAnimal.isEntityAlive()) {
+        } else if (!this.parentAnimal.isAlive()) {
             return false;
         } else {
             double d0 = this.childAnimal.getDistanceSq(this.parentAnimal);
@@ -101,7 +101,7 @@ public class EntityAIFollowAdult extends EntityAIBase {
      * Updates the task
      */
     @Override
-    public void updateTask() {
+    public void tick() {
         if (--this.delayCounter <= 0) {
             this.delayCounter = 10;
             this.childAnimal.getNavigator().tryMoveToEntityLiving(this.parentAnimal, this.moveSpeed);

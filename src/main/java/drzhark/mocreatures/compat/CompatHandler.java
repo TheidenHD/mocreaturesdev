@@ -3,9 +3,6 @@
  */
 package drzhark.mocreatures.compat;
 
-import com.buuz135.industrial.api.IndustrialForegoingHelper;
-import com.buuz135.industrial.api.extractor.ExtractorEntry;
-import com.buuz135.industrial.api.recipe.ProteinReactorEntry;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.compat.industrialforegoing.IndustrialForegoingIntegration;
 import drzhark.mocreatures.compat.jer.JERIntegration;
@@ -22,21 +19,20 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID)
+@Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CompatHandler {
 
     static {
         try {
-            File file = new File(Launch.minecraftHome, "config" + File.separator + "mia" + File.separator + "mocreatures.cfg");
+            File file = new File(Minecraft.getInstance().gameDir, "config" + File.separator + "mia" + File.separator + "mocreatures.cfg");
             if (Files.exists(file.toPath())) {
-                File tempFile = new File(Launch.minecraftHome, "config" + File.separator + "mia" + File.separator + "mocreatures_temp.cfg");
+                File tempFile = new File(Minecraft.getInstance().gameDir, "config" + File.separator + "mia" + File.separator + "mocreatures_temp.cfg");
                 List<String> configEntries = new ArrayList<>();
                 configEntries.add("Enable FutureMC integration");
                 configEntries.add("Enable Hatchery integration");
@@ -60,9 +56,9 @@ public class CompatHandler {
                 file.delete();
                 tempFile.renameTo(file);
             }
-            file = new File(Launch.minecraftHome, "config" + File.separator + "mia" + File.separator + "base.cfg");
+            file = new File(Minecraft.getInstance().gameDir, "config" + File.separator + "mia" + File.separator + "base.cfg");
             if (Files.exists(file.toPath())) {
-                File tempFile = new File(Launch.minecraftHome, "config" + File.separator + "mia" + File.separator + "base_temp.cfg");
+                File tempFile = new File(Minecraft.getInstance().gameDir, "config" + File.separator + "mia" + File.separator + "base_temp.cfg");
                 String targetConfigEntry = "Replaces all raw meat drops with cooked ones";
                 try (BufferedReader br = new BufferedReader(new FileReader(file)); BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile))) {
                     String line;
@@ -102,11 +98,8 @@ public class CompatHandler {
     }
 
     public static void init() {
-        if (Loader.isModLoaded("industrialforegoing")) {
-            for (ItemStack proteinGeneratorEntry : IndustrialForegoingIntegration.getBasicProteinGeneratorEntries())
-                IndustrialForegoingHelper.addProteinReactorEntry(new ProteinReactorEntry(proteinGeneratorEntry));
-            for (ExtractorEntry entry : IndustrialForegoingIntegration.getLatexEntries())
-                IndustrialForegoingHelper.addWoodToLatex(entry);
+        if (ModList.get().isLoaded("industrialforegoing")) {
+            IndustrialForegoingIntegration.generateLatexEntries();
         }
         if (Loader.isModLoaded("thaumcraft")) MinecraftForge.EVENT_BUS.register(ThaumcraftIntegration.class);
         if (Loader.isModLoaded("tconstruct")) TinkersConstructIntegration.init();
