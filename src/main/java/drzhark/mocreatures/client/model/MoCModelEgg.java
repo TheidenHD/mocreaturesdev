@@ -3,14 +3,11 @@
  */
 package drzhark.mocreatures.client.model;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelEgg extends ModelBase {
+public class MoCModelEgg<T extends Entity> extends EntityModel<T> {
 
     public ModelRenderer Egg;
     ModelRenderer Egg1;

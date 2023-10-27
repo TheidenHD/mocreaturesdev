@@ -11,8 +11,8 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -67,7 +67,7 @@ public class CommandMoCTP extends CommandBase {
                     + ": You must enter a valid entity ID."));
             return;
         }
-        if (!(sender instanceof EntityPlayer)) {
+        if (!(sender instanceof PlayerEntity)) {
             return;
         }
         try {
@@ -76,12 +76,12 @@ public class CommandMoCTP extends CommandBase {
             petId = -1;
         }
         String playername = sender.getName();
-        EntityPlayer player = (EntityPlayer) sender;//FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(playername);
+        PlayerEntity player = (PlayerEntity) sender;//FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(playername);
         // search for tamed entity in mocreatures.dat
         MoCPetData ownerPetData = MoCreatures.instance.mapData.getPetData(player.getUniqueID());
         if (ownerPetData != null) {
             for (int i = 0; i < ownerPetData.getTamedList().tagCount(); i++) {
-                NBTTagCompound nbt = ownerPetData.getTamedList().getCompoundTagAt(i);
+                CompoundNBT nbt = ownerPetData.getTamedList().getCompoundTagAt(i);
                 if (nbt.hasKey("PetId") && nbt.getInteger("PetId") == petId) {
                     String petName = nbt.getString("Name");
                     WorldServer world = DimensionManager.getWorld(nbt.getInteger("Dimension"));
@@ -121,14 +121,14 @@ public class CommandMoCTP extends CommandBase {
         return CommandMoCTP.commands;
     }
 
-    public boolean teleportLoadedPet(WorldServer world, EntityPlayer player, int petId, String petName, ICommandSender par1ICommandSender) {
+    public boolean teleportLoadedPet(WorldServer world, PlayerEntity player, int petId, String petName, ICommandSender par1ICommandSender) {
         for (int j = 0; j < world.loadedEntityList.size(); j++) {
             Entity entity = world.loadedEntityList.get(j);
             // search for entities that are MoCEntityAnimal's
             if (IMoCTameable.class.isAssignableFrom(entity.getClass()) && !((IMoCTameable) entity).getPetName().equals("")
                     && ((IMoCTameable) entity).getOwnerPetId() == petId) {
                 // grab the entity data
-                NBTTagCompound compound = new NBTTagCompound();
+                CompoundNBT compound = new CompoundNBT();
                 entity.writeToNBT(compound);
                 if (!compound.isEmpty() && !compound.getString("Owner").isEmpty()) {
                     String owner = compound.getString("Owner");
@@ -136,14 +136,14 @@ public class CommandMoCTP extends CommandBase {
                     if (!owner.isEmpty() && owner.equalsIgnoreCase(player.getName())) {
                         // check if in same dimension
                         if (entity.dimension == player.dimension) {
-                            entity.setPosition(player.posX, player.posY, player.posZ);
+                            entity.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
                         } else if (!player.world.isRemote)// transfer entity to player dimension
                         {
                             Entity newEntity = EntityList.newEntity(entity.getClass(), player.world);
                             if (newEntity != null) {
                                 MoCTools.copyDataFromOld(newEntity, entity); // transfer all existing data to our new entity
-                                newEntity.setPosition(player.posX, player.posY, player.posZ);
-                                DimensionManager.getWorld(player.dimension).spawnEntity(newEntity);
+                                newEntity.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
+                                DimensionManager.getWorld(player.dimension).addEntity(newEntity);
                             }
                             if (entity.getRidingEntity() != null) {
                                 entity.getRidingEntity().dismountRidingEntity();
@@ -153,8 +153,8 @@ public class CommandMoCTP extends CommandBase {
                             DimensionManager.getWorld(player.dimension).resetUpdateEntityTick();
                         }
                         par1ICommandSender.sendMessage(new TextComponentTranslation(TextFormatting.GREEN + name + TextFormatting.WHITE
-                                + " has been tp'd to location " + Math.round(player.posX) + ", " + Math.round(player.posY) + ", "
-                                + Math.round(player.posZ) + " in dimension " + player.dimension));
+                                + " has been tp'd to location " + Math.round(player.getPosX()) + ", " + Math.round(player.getPosY()) + ", "
+                                + Math.round(player.getPosZ()) + " in dimension " + player.dimension));
                         return true;
                     }
                 }

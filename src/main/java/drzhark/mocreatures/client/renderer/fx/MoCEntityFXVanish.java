@@ -9,10 +9,8 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MoCEntityFXVanish extends Particle {
 
     private final double portalPosX;
@@ -30,9 +28,9 @@ public class MoCEntityFXVanish extends Particle {
         this.motionX = par8;
         this.motionY = par10 * 5D;
         this.motionZ = par12;
-        this.portalPosX = this.posX = par2;
-        this.portalPosY = this.posY = par4;// + 0.7D;
-        this.portalPosZ = this.posZ = par6;
+        this.portalPosX = this.getPosX() = par2;
+        this.portalPosY = this.getPosY() = par4;// + 0.7D;
+        this.portalPosZ = this.getPosZ() = par6;
         this.implode = flag;
         this.particleMaxAge = (int) (Math.random() * 10.0D) + 70;
     }
@@ -50,9 +48,9 @@ public class MoCEntityFXVanish extends Particle {
      */
     @Override
     public void onUpdate() {
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+        this.prevPosX = this.getPosX();
+        this.prevPosY = this.getPosY();
+        this.prevPosZ = this.getPosZ();
 
         int speeder = 0;
         float sizeExp = 2.0F;
@@ -65,9 +63,9 @@ public class MoCEntityFXVanish extends Particle {
         float var2 = var1;
         var1 = -var1 + var1 * var1 * sizeExp;//5 insteaf of 2 makes an explosion
         var1 = 1.0F - var1;
-        this.posX = this.portalPosX + this.motionX * var1;
-        this.posY = this.portalPosY + this.motionY * var1 + (1.0F - var2);
-        this.posZ = this.portalPosZ + this.motionZ * var1;
+        this.getPosX() = this.portalPosX + this.motionX * var1;
+        this.getPosY() = this.portalPosY + this.motionY * var1 + (1.0F - var2);
+        this.getPosZ() = this.portalPosZ + this.motionZ * var1;
 
         if (this.particleAge++ >= this.particleMaxAge) {
             this.setExpired();
@@ -78,9 +76,9 @@ public class MoCEntityFXVanish extends Particle {
     public void renderParticle(BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, float par3, float par4, float par5, float par6, float par7) {
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(MoCreatures.proxy.getMiscTexture("fx_vanish.png"));
         float scale = 0.1F * this.particleScale;
-        float xPos = (float) (this.prevPosX + (this.posX - this.prevPosX) * partialTicks - interpPosX);
-        float yPos = (float) (this.prevPosY + (this.posY - this.prevPosY) * partialTicks - interpPosY);
-        float zPos = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * partialTicks - interpPosZ);
+        float xPos = (float) (this.prevPosX + (this.getPosX() - this.prevPosX) * partialTicks - interpPosX);
+        float yPos = (float) (this.prevPosY + (this.getPosY() - this.prevPosY) * partialTicks - interpPosY);
+        float zPos = (float) (this.prevPosZ + (this.getPosZ() - this.prevPosZ) * partialTicks - interpPosZ);
         float colorIntensity = 1.0F;
         int i = this.getBrightnessForRender(partialTicks);
         int j = i >> 16 & 65535;

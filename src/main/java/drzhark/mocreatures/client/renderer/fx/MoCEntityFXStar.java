@@ -9,10 +9,8 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MoCEntityFXStar extends Particle {
 
     public MoCEntityFXStar(World world, double posX, double posY, double posZ, float red, float green, float blue) {
@@ -45,9 +43,9 @@ public class MoCEntityFXStar extends Particle {
      */
     @Override
     public void onUpdate() {
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+        this.prevPosX = this.getPosX();
+        this.prevPosY = this.getPosY();
+        this.prevPosZ = this.getPosZ();
         this.particleScale *= 0.995F; //slowly shrinks it
 
         this.motionY -= 0.03D;
@@ -74,9 +72,9 @@ public class MoCEntityFXStar extends Particle {
     public void renderParticle(BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, float par3, float par4, float par5, float par6, float par7) {
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(MoCreatures.proxy.getMiscTexture("fx_star.png"));
         float sizeFactor = 0.1F * this.particleScale;
-        float var13 = (float) (this.prevPosX + (this.posX - this.prevPosX) * partialTicks - interpPosX);
-        float var14 = (float) (this.prevPosY + (this.posY - this.prevPosY) * partialTicks - interpPosY);
-        float var15 = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * partialTicks - interpPosZ);
+        float var13 = (float) (this.prevPosX + (this.getPosX() - this.prevPosX) * partialTicks - interpPosX);
+        float var14 = (float) (this.prevPosY + (this.getPosY() - this.prevPosY) * partialTicks - interpPosY);
+        float var15 = (float) (this.prevPosZ + (this.getPosZ() - this.prevPosZ) * partialTicks - interpPosZ);
         float var16 = 1.2F - ((float) Math.random() * 0.5F);
         int i = this.getBrightnessForRender(partialTicks);
         int j = i >> 16 & 65535;

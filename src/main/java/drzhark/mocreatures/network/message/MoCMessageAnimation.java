@@ -3,41 +3,41 @@
  */
 package drzhark.mocreatures.network.message;
 
-import drzhark.mocreatures.network.MoCMessageHandler;
+import drzhark.mocreatures.entity.IMoCEntity;
 import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MoCMessageAnimation implements IMessage, IMessageHandler<MoCMessageAnimation, IMessage> {
+import java.util.function.Supplier;
+
+public class MoCMessageAnimation {
 
     public int entityId;
     public int animationType;
-
-    public MoCMessageAnimation() {
-    }
 
     public MoCMessageAnimation(int entityId, int animationType) {
         this.entityId = entityId;
         this.animationType = animationType;
     }
 
-    @Override
-    public void toBytes(ByteBuf buffer) {
+    public void encode(ByteBuf buffer) {
         buffer.writeInt(this.entityId);
         buffer.writeInt(this.animationType);
     }
 
-    @Override
-    public void fromBytes(ByteBuf buffer) {
+    public MoCMessageAnimation(ByteBuf buffer) {
         this.entityId = buffer.readInt();
         this.animationType = buffer.readInt();
     }
 
-    @Override
-    public IMessage onMessage(MoCMessageAnimation message, MessageContext ctx) {
-        MoCMessageHandler.handleMessage(message, ctx);
-        return null;
+    public static boolean onMessage(MoCMessageAnimation message, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().setPacketHandled(true);
+        Entity ent = Minecraft.getInstance().player.world.getEntityByID(message.entityId);
+        if (ent instanceof IMoCEntity) {
+            ((IMoCEntity) ent).performAnimation(message.animationType);
+        }
+        return true;
     }
 
     @Override

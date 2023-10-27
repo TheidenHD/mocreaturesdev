@@ -3,13 +3,15 @@
  */
 package drzhark.mocreatures.network.message;
 
-import drzhark.mocreatures.network.MoCMessageHandler;
+import drzhark.mocreatures.entity.IMoCTameable;
 import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MoCMessageHeart implements IMessage, IMessageHandler<MoCMessageHeart, IMessage> {
+import java.util.function.Supplier;
+
+public class MoCMessageHeart {
 
     public int entityId;
 
@@ -20,20 +22,21 @@ public class MoCMessageHeart implements IMessage, IMessageHandler<MoCMessageHear
         this.entityId = entityId;
     }
 
-    @Override
-    public void toBytes(ByteBuf buffer) {
+    public void encode(ByteBuf buffer) {
         buffer.writeInt(this.entityId);
     }
 
-    @Override
-    public void fromBytes(ByteBuf buffer) {
+    public MoCMessageHeart(ByteBuf buffer) {
         this.entityId = buffer.readInt();
     }
 
-    @Override
-    public IMessage onMessage(MoCMessageHeart message, MessageContext ctx) {
-        MoCMessageHandler.handleMessage(message, ctx);
-        return null;
+    public static boolean onMessage(MoCMessageHeart message, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().setPacketHandled(true);
+        Entity ent = Minecraft.getInstance().player.world.getEntityByID(message.entityId);
+        if (ent instanceof IMoCTameable) {
+            ((IMoCTameable)ent).spawnHeart();
+        }
+        return true;
     }
 
     @Override

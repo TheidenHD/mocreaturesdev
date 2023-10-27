@@ -12,10 +12,8 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MoCRenderWerewolf extends RenderLiving<MoCEntityWerewolf> {
 
     private final MoCModelWerewolf tempWerewolf;
@@ -48,7 +46,7 @@ public class MoCRenderWerewolf extends RenderLiving<MoCEntityWerewolf> {
         }
 
         public void doRenderLayer(MoCEntityWerewolf entity, float f, float f1, float f2, float f3, float f4, float f5, float f6) {
-            int myType = entity.getType();
+            int myType = entity.getTypeMoC();
 
             if (!entity.getIsHumanForm()) {
                 bindTexture(MoCreatures.proxy.getModelTexture("wereblank.png"));

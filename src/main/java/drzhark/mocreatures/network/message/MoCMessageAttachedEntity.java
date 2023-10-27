@@ -3,13 +3,14 @@
  */
 package drzhark.mocreatures.network.message;
 
-import drzhark.mocreatures.network.MoCMessageHandler;
 import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MoCMessageAttachedEntity implements IMessage, IMessageHandler<MoCMessageAttachedEntity, IMessage> {
+import java.util.function.Supplier;
+
+public class MoCMessageAttachedEntity {
 
     public int sourceEntityId;
     public int targetEntityId;
@@ -22,22 +23,25 @@ public class MoCMessageAttachedEntity implements IMessage, IMessageHandler<MoCMe
         this.targetEntityId = targetEntityId;
     }
 
-    @Override
-    public void toBytes(ByteBuf buffer) {
+    public void encode(ByteBuf buffer) {
         buffer.writeInt(this.sourceEntityId);
         buffer.writeInt(this.targetEntityId);
     }
 
-    @Override
-    public void fromBytes(ByteBuf buffer) {
+    public MoCMessageAttachedEntity(ByteBuf buffer) {
         this.sourceEntityId = buffer.readInt();
         this.targetEntityId = buffer.readInt();
     }
 
-    @Override
-    public IMessage onMessage(MoCMessageAttachedEntity message, MessageContext ctx) {
-        MoCMessageHandler.handleMessage(message, ctx);
-        return null;
+    public static boolean onMessage(MoCMessageAttachedEntity message, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().setPacketHandled(true);
+        Object var2 = Minecraft.getInstance().player.world.getEntityByID(message.sourceEntityId);
+        Entity var3 = Minecraft.getInstance().player.world.getEntityByID(message.targetEntityId);
+
+        if (var2 != null) {
+            ((Entity) var2).startRiding(var3);
+        }
+        return true;
     }
 
     @Override

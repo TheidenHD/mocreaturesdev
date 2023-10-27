@@ -3,13 +3,15 @@
  */
 package drzhark.mocreatures.network.message;
 
-import drzhark.mocreatures.network.MoCMessageHandler;
+import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MoCMessageShuffle implements IMessage, IMessageHandler<MoCMessageShuffle, IMessage> {
+import java.util.function.Supplier;
+
+public class MoCMessageShuffle {
 
     public int entityId;
     public boolean flag;
@@ -22,22 +24,27 @@ public class MoCMessageShuffle implements IMessage, IMessageHandler<MoCMessageSh
         this.flag = flag;
     }
 
-    @Override
-    public void toBytes(ByteBuf buffer) {
+    public void encode(ByteBuf buffer) {
         buffer.writeInt(this.entityId);
         buffer.writeBoolean(this.flag);
     }
 
-    @Override
-    public void fromBytes(ByteBuf buffer) {
+    public MoCMessageShuffle(ByteBuf buffer) {
         this.entityId = buffer.readInt();
         this.flag = buffer.readBoolean();
     }
 
-    @Override
-    public IMessage onMessage(MoCMessageShuffle message, MessageContext ctx) {
-        MoCMessageHandler.handleMessage(message, ctx);
-        return null;
+    public static boolean onMessage(MoCMessageShuffle message, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().setPacketHandled(true);
+        Entity ent = Minecraft.getInstance().player.world.getEntityByID(message.entityId);
+        if (ent instanceof MoCEntityHorse) {
+            if (message.flag) {
+                //((MoCEntityHorse) ent).shuffle();
+            } else {
+                ((MoCEntityHorse) ent).shuffleCounter = 0;
+            }
+        }
+        return true;
     }
 
     @Override

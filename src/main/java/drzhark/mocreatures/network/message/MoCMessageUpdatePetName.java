@@ -9,17 +9,15 @@ import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-import java.util.List;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+import java.util.function.Supplier;
 
-public class MoCMessageUpdatePetName implements IMessage, IMessageHandler<MoCMessageUpdatePetName, IMessage> {
+public class MoCMessageUpdatePetName {
 
     public String name;
     public int entityId;
@@ -36,46 +34,44 @@ public class MoCMessageUpdatePetName implements IMessage, IMessageHandler<MoCMes
         this.name = name;
     }
 
-    @Override
-    public void toBytes(ByteBuf buffer) {
-        ByteBufUtils.writeUTF8String(buffer, this.name);
-        ByteBufUtils.writeVarInt(buffer, this.entityId, 5);
+    public void encode(ByteBuf buffer) {
+        buffer.writeInt(name.length());
+        buffer.writeCharSequence(this.name, StandardCharsets.UTF_8);;
+        buffer.writeInt(this.entityId);
     }
 
-    @Override
-    public void fromBytes(ByteBuf buffer) {
-        this.name = ByteBufUtils.readUTF8String(buffer);
-        this.entityId = ByteBufUtils.readVarInt(buffer, 5);
+    public MoCMessageUpdatePetName(ByteBuf buffer) {
+        this.name = buffer.readCharSequence(buffer.readInt(), StandardCharsets.UTF_8).toString();
+        this.entityId = buffer.readInt();
     }
 
-    @Override
-    public IMessage onMessage(MoCMessageUpdatePetName message, MessageContext ctx) {
+    public static boolean onMessage(MoCMessageUpdatePetName message, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().setPacketHandled(true);
         Entity pet = null;
-        List<Entity> entList = ctx.getServerHandler().player.world.loadedEntityList;
+
         UUID ownerUniqueId = null;
 
-        for (Entity ent : entList) {
-            if (ent.getEntityId() == message.entityId && ent instanceof IMoCTameable) {
-                ((IMoCEntity) ent).setPetName(message.name);
-                ownerUniqueId = ((IMoCEntity) ent).getOwnerId();
-                pet = ent;
-                break;
-            }
+        Entity ent = ctx.get().getSender().world.getEntityByID(message.entityId);
+        if (ent.getEntityId() == message.entityId && ent instanceof IMoCTameable) {
+            ((IMoCEntity) ent).setPetName(message.name);
+            ownerUniqueId = ((IMoCEntity) ent).getOwnerId();
+            pet = ent;
+
         }
         // update petdata
         MoCPetData petData = MoCreatures.instance.mapData.getPetData(ownerUniqueId);
         if (petData != null && pet != null && ((IMoCTameable) pet).getOwnerPetId() != -1) {
             int id = ((IMoCTameable) pet).getOwnerPetId();
-            NBTTagList tag = petData.getOwnerRootNBT().getTagList("TamedList", 10);
-            for (int i = 0; i < tag.tagCount(); i++) {
-                NBTTagCompound nbt = tag.getCompoundTagAt(i);
-                if (nbt.getInteger("PetId") == id) {
-                    nbt.setString("Name", message.name);
+            ListNBT tag = petData.getOwnerRootNBT().getList("TamedList", 10);
+            for (int i = 0; i < tag.size(); i++) {
+                CompoundNBT nbt = tag.getCompound(i);
+                if (nbt.getInt("PetId") == id) {
+                    nbt.putString("Name", message.name);
                     ((IMoCTameable) pet).setPetName(message.name);
                 }
             }
         }
-        return null;
+        return true;
     }
 
     @Override

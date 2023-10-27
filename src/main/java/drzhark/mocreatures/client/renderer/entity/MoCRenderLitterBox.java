@@ -8,10 +8,8 @@ import drzhark.mocreatures.client.model.MoCModelLitterBox;
 import drzhark.mocreatures.entity.item.MoCEntityLitterBox;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MoCRenderLitterBox extends RenderLiving<MoCEntityLitterBox> {
 
     public MoCModelLitterBox litterbox;

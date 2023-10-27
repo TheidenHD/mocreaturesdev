@@ -7,10 +7,8 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MoCEntityFXVacuum extends Particle {
 
     private final float portalParticleScale;
@@ -29,9 +27,9 @@ public class MoCEntityFXVacuum extends Particle {
         this.motionX = par8;
         this.motionY = par10;
         this.motionZ = par12;
-        this.portalPosX = this.posX = par2;
-        this.portalPosY = this.posY = par4;// + 0.7D;
-        this.portalPosZ = this.posZ = par6;
+        this.portalPosX = this.getPosX() = par2;
+        this.portalPosY = this.getPosY() = par4;// + 0.7D;
+        this.portalPosZ = this.getPosZ() = par6;
         this.portalParticleScale = this.particleScale = this.rand.nextFloat() * 0.2F + 0.5F;
         this.setParticleTextureIndex(partTexture);
         this.particleMaxAge = (int) (Math.random() * 10.0D) + 30;
@@ -77,16 +75,16 @@ public class MoCEntityFXVacuum extends Particle {
      */
     @Override
     public void onUpdate() {
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+        this.prevPosX = this.getPosX();
+        this.prevPosY = this.getPosY();
+        this.prevPosZ = this.getPosZ();
         float var1 = (float) this.particleAge / (float) this.particleMaxAge;
         float var2 = var1;
         var1 = -var1 + var1 * var1 * 2.0F;
         var1 = 1.0F - var1;
-        this.posX = this.portalPosX + this.motionX * var1;
-        this.posY = this.portalPosY + this.motionY * var1 + (1.0F - var2);
-        this.posZ = this.portalPosZ + this.motionZ * var1;
+        this.getPosX() = this.portalPosX + this.motionX * var1;
+        this.getPosY() = this.portalPosY + this.motionY * var1 + (1.0F - var2);
+        this.getPosZ() = this.portalPosZ + this.motionZ * var1;
 
         if (this.particleAge++ >= this.particleMaxAge) {
             this.setExpired();

@@ -3,9 +3,15 @@
  */
 package drzhark.mocreatures.entity;
 
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 
+import java.util.Random;
 import java.util.UUID;
 
 public interface IMoCEntity {
@@ -32,7 +38,7 @@ public interface IMoCEntity {
 
     boolean checkSpawningBiome();
 
-    boolean getCanSpawnHere();
+    static boolean canAnimalSpawn(EntityType<? extends AnimalEntity> animal, IWorld worldIn, SpawnReason reason, BlockPos pos, Random random){return true;}; //TODO TheidenHD ?
 
     void performAnimation(int i);
 
@@ -50,9 +56,9 @@ public interface IMoCEntity {
 
     void setArmorType(int i);
 
-    int getType();
+    int getTypeMoC();
 
-    void setType(int i);
+    void setTypeMoC(int i);
 
     float rollRotationOffset();
 
@@ -70,7 +76,7 @@ public interface IMoCEntity {
 
     ResourceLocation getTexture();
 
-    boolean canAttackTarget(EntityLivingBase entity);
+    boolean canAttackTarget(LivingEntity entity);
 
     boolean getIsSitting(); // is the entity sitting, for animations and AI
 

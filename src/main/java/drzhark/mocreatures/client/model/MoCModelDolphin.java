@@ -3,15 +3,14 @@
  */
 package drzhark.mocreatures.client.model;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.aquatic.MoCEntityDolphin;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelDolphin extends ModelBase {
+public class MoCModelDolphin extends EntityModel<MoCEntityDolphin> {
 
     public ModelRenderer UHead;
     public ModelRenderer DHead;
@@ -64,20 +63,19 @@ public class MoCModelDolphin extends ModelBase {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        setRotationAngles(f, f1, f2, f3, f4, f5);
-        this.Body.render(f5);
-        this.PTail.render(f5);
-        this.UHead.render(f5);
-        this.DHead.render(f5);
-        this.UpperFin.render(f5);
-        this.LTailFin.render(f5);
-        this.RTailFin.render(f5);
-        this.LeftFin.render(f5);
-        this.RightFin.render(f5);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.PTail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.UHead.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.DHead.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.UpperFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LTailFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RTailFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LeftFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
+    public void setRotationAngles(MoCEntityDolphin entityIn, float f, float f1, float f2, float f3, float f4) {
         this.RTailFin.rotateAngleX = MathHelper.cos(f * 0.4F) * f1;
         this.LTailFin.rotateAngleX = MathHelper.cos(f * 0.4F) * f1;
     }

@@ -3,13 +3,15 @@
  */
 package drzhark.mocreatures.network.message;
 
-import drzhark.mocreatures.network.MoCMessageHandler;
 import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MoCMessageHealth implements IMessage, IMessageHandler<MoCMessageHealth, IMessage> {
+import java.util.function.Supplier;
+
+public class MoCMessageHealth {
 
     public int entityId;
     public float health;
@@ -22,22 +24,23 @@ public class MoCMessageHealth implements IMessage, IMessageHandler<MoCMessageHea
         this.health = health;
     }
 
-    @Override
-    public void toBytes(ByteBuf buffer) {
+    public void encode(ByteBuf buffer) {
         buffer.writeInt(this.entityId);
         buffer.writeFloat(this.health);
     }
 
-    @Override
-    public void fromBytes(ByteBuf buffer) {
+    public MoCMessageHealth(ByteBuf buffer) {
         this.entityId = buffer.readInt();
         this.health = buffer.readFloat();
     }
 
-    @Override
-    public IMessage onMessage(MoCMessageHealth message, MessageContext ctx) {
-        MoCMessageHandler.handleMessage(message, ctx);
-        return null;
+    public static boolean onMessage(MoCMessageHealth message, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().setPacketHandled(true);
+        Entity ent = Minecraft.getInstance().player.world.getEntityByID(message.entityId);
+        if (ent.getEntityId() == message.entityId && ent instanceof LivingEntity) {
+            ((LivingEntity) ent).setHealth(message.health);
+        }
+        return true;
     }
 
     @Override

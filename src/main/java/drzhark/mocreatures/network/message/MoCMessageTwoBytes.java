@@ -3,13 +3,15 @@
  */
 package drzhark.mocreatures.network.message;
 
-import drzhark.mocreatures.network.MoCMessageHandler;
+import drzhark.mocreatures.entity.monster.MoCEntityGolem;
 import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MoCMessageTwoBytes implements IMessage, IMessageHandler<MoCMessageTwoBytes, IMessage> {
+import java.util.function.Supplier;
+
+public class MoCMessageTwoBytes {
 
     public int entityId;
     public byte slot;
@@ -24,24 +26,25 @@ public class MoCMessageTwoBytes implements IMessage, IMessageHandler<MoCMessageT
         this.value = value;
     }
 
-    @Override
-    public void toBytes(ByteBuf buffer) {
+    public void encode(ByteBuf buffer) {
         buffer.writeInt(this.entityId);
         buffer.writeByte(this.slot);
         buffer.writeByte(this.value);
     }
 
-    @Override
-    public void fromBytes(ByteBuf buffer) {
+    public MoCMessageTwoBytes(ByteBuf buffer) {
         this.entityId = buffer.readInt();
         this.slot = buffer.readByte();
         this.value = buffer.readByte();
     }
 
-    @Override
-    public IMessage onMessage(MoCMessageTwoBytes message, MessageContext ctx) {
-        MoCMessageHandler.handleMessage(message, ctx);
-        return null;
+    public static boolean onMessage(MoCMessageTwoBytes message, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().setPacketHandled(true);
+        Entity ent = Minecraft.getInstance().player.world.getEntityByID(message.entityId);
+        if (ent instanceof MoCEntityGolem) {
+            ((MoCEntityGolem) ent).saveGolemCube(message.slot, message.value);
+        }
+        return true;
     }
 
     @Override

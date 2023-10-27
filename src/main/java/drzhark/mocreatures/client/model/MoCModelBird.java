@@ -4,15 +4,12 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.passive.MoCEntityBird;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelBird extends ModelBase {
+public class MoCModelBird<T extends Entity> extends EntityModel<T> {
 
     public ModelRenderer head;
     public ModelRenderer body;
