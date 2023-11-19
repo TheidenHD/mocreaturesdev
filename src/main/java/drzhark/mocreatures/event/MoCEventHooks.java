@@ -5,14 +5,14 @@ package drzhark.mocreatures.event;
 
 import com.google.common.primitives.Ints;
 import drzhark.mocreatures.MoCConstants;
-import drzhark.mocreatures.entity.MoCEntityData;
-import drzhark.mocreatures.entity.tameable.MoCPetMapData;
 import drzhark.mocreatures.MoCreatures;
-import drzhark.mocreatures.entity.tameable.IMoCTameable;
+import drzhark.mocreatures.entity.MoCEntityData;
 import drzhark.mocreatures.entity.neutral.MoCEntityKitty;
-import net.minecraft.block.state.IBlockState;
+import drzhark.mocreatures.entity.tameable.IMoCTameable;
+import drzhark.mocreatures.entity.tameable.MoCPetMapData;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -110,7 +110,7 @@ public class MoCEventHooks {
 
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
-        EntityPlayer player = event.player;
+        PlayerEntity player = event.player;
         if (player.getRidingEntity() instanceof IMoCTameable) {
             IMoCTameable mocEntity = (IMoCTameable) player.getRidingEntity();
             mocEntity.setRiderDisconnecting(true);
@@ -129,7 +129,7 @@ public class MoCEventHooks {
             while (entity.getEntityWorld().isAirBlock(testing) && testing.getY() > 0) {
                 testing = testing.down(1);
             }
-            IBlockState iblockstate = entity.getEntityWorld().getBlockState(testing);
+            BlockState iblockstate = entity.getEntityWorld().getBlockState(testing);
             if (iblockstate.canEntitySpawn(entity)) {
                 return testing.up(1);
             }

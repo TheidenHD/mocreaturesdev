@@ -15,15 +15,15 @@ import drzhark.mocreatures.network.message.MoCMessageHealth;
 import drzhark.mocreatures.network.message.MoCMessageHeart;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -104,8 +104,8 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         Entity entity = damagesource.getTrueSource();
         //this avoids damage done by Players to a tamed creature that is not theirs
-        if (MoCreatures.proxy.enableOwnership && this.getOwnerId() != null && entity instanceof EntityPlayer && !entity.getUniqueID().equals(this.getOwnerId())
-                && !MoCTools.isThisPlayerAnOP(((EntityPlayer) entity))) {
+        if (MoCreatures.proxy.enableOwnership && this.getOwnerId() != null && entity instanceof PlayerEntity && !entity.getUniqueID().equals(this.getOwnerId())
+                && !MoCTools.isThisPlayerAnOP(((PlayerEntity) entity))) {
             return false;
         }
 
@@ -116,7 +116,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
         return super.attackEntityFrom(damagesource, i);
     }
 
-    private boolean checkOwnership(EntityPlayer player, EnumHand hand) {
+    private boolean checkOwnership(PlayerEntity player, EnumHand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (!this.getIsTamed() || MoCTools.isThisPlayerAnOP(player)) {
             return true;
@@ -125,7 +125,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
         if (this.getIsGhost() && !stack.isEmpty() && stack.getItem() == MoCItems.petamulet) {
             if (!this.world.isRemote) {
                 // Remove when client is updated
-                ((EntityPlayerMP) player).sendAllContents(player.openContainer, player.openContainer.getInventory());
+                ((ServerPlayerEntity) player).sendAllContents(player.openContainer, player.openContainer.getInventory());
                 ITextComponent message = new TextComponentTranslation("msg.mocreatures.foreignpet");
                 message.getStyle().setColor(TextFormatting.RED);
                 player.sendMessage(message);
@@ -146,7 +146,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, EnumHand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -156,7 +156,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
     }
 
     // This should always run first for all tameable ambients
-    public Boolean processTameInteract(EntityPlayer player, EnumHand hand) {
+    public Boolean processTameInteract(PlayerEntity player, EnumHand hand) {
         if (!this.checkOwnership(player, hand)) {
             return false;
         }
@@ -298,7 +298,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound) {
+    public void writeEntityToNBT(CompoundNBT nbttagcompound) {
         super.writeEntityToNBT(nbttagcompound);
         nbttagcompound.setBoolean("Tamed", getIsTamed());
         if (this.getOwnerId() != null) {
@@ -313,7 +313,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound) {
+    public void readEntityFromNBT(CompoundNBT nbttagcompound) {
         super.readEntityFromNBT(nbttagcompound);
         setTamed(nbttagcompound.getBoolean("Tamed"));
         String s = "";
@@ -329,9 +329,9 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
         if (this.getIsTamed() && nbttagcompound.hasKey("PetId")) {
             MoCPetData petData = MoCreatures.instance.mapData.getPetData(this.getOwnerId());
             if (petData != null) {
-                NBTTagList tag = petData.getOwnerRootNBT().getTagList("TamedList", 10);
+                ListNBT tag = petData.getOwnerRootNBT().getTagList("TamedList", 10);
                 for (int i = 0; i < tag.tagCount(); i++) {
-                    NBTTagCompound nbt = tag.getCompoundTagAt(i);
+                    CompoundNBT nbt = tag.getCompoundTagAt(i);
                     if (nbt.getInteger("PetId") == nbttagcompound.getInteger("PetId")) {
                         // update amulet flag
                         nbt.setBoolean("InAmulet", false);
@@ -456,11 +456,11 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
 
                 String offspringName = this.getOffspringClazz((IMoCTameable) mate);
 
-                EntityLiving offspring = (EntityLiving) EntityList.createEntityByIDFromName(new ResourceLocation(MoCConstants.MOD_PREFIX + offspringName.toLowerCase()), this.world);
+                LivingEntity offspring = (LivingEntity) EntityList.createEntityByIDFromName(new ResourceLocation(MoCConstants.MOD_PREFIX + offspringName.toLowerCase()), this.world);
                 if (offspring instanceof IMoCTameable) {
                     IMoCTameable baby = (IMoCTameable) offspring;
-                    ((EntityLiving) baby).setPosition(this.posX, this.posY, this.posZ);
-                    this.world.spawnEntity((EntityLiving) baby);
+                    ((LivingEntity) baby).setPosition(this.posX, this.posY, this.posZ);
+                    this.world.spawnEntity((LivingEntity) baby);
                     baby.setAdult(false);
                     baby.setAge(35);
                     baby.setTamed(true);
@@ -468,7 +468,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
                     baby.setType(getOffspringTypeInt((IMoCTameable) mate));
 
                     UUID ownerId = this.getOwnerId();
-                    EntityPlayer entityplayer = null;
+                    PlayerEntity entityplayer = null;
                     if (ownerId != null) {
                         entityplayer = this.world.getPlayerEntityByUUID(this.getOwnerId());
                     }

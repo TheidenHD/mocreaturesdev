@@ -12,15 +12,15 @@ import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -74,7 +74,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
         this.tasks.addTask(2, new EntityAIFleeFromEntityMoC(this, entity -> !(entity instanceof MoCEntityBird) && (entity.height > 0.4F || entity.width > 0.4F), 6.0F, 1.D, 1.3D));
         this.tasks.addTask(3, new EntityAIFollowOwnerPlayer(this, 0.8D, 2F, 10F));
         this.tasks.addTask(4, this.wander = new EntityAIWanderMoC2(this, 1.0D, 80));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(7, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
     }
 
     @Override
@@ -163,7 +163,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
             label0:
             for (int j2 = i1; j2 < l1; j2++) {
                 BlockPos pos = new BlockPos(i2, j, j2);
-                IBlockState blockstate = this.world.getBlockState(pos);
+                BlockState blockstate = this.world.getBlockState(pos);
                 if (blockstate.getBlock().isAir(blockstate, this.world, pos) || (blockstate.getMaterial() != Material.WOOD)) {
                     continue;
                 }
@@ -173,7 +173,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
                         continue label0;
                     }
                     BlockPos pos1 = new BlockPos(i2, l2, j2);
-                    IBlockState blockstate1 = this.world.getBlockState(pos1);
+                    BlockState blockstate1 = this.world.getBlockState(pos1);
                     if (blockstate1.getBlock().isAir(blockstate1, this.world, pos1)) {
                         return (new int[]{i2, l2 + 2, j2});
                     }
@@ -298,7 +298,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
 
     @Override
     public double getYOffset() {
-        if (this.getRidingEntity() instanceof EntityPlayer) {
+        if (this.getRidingEntity() instanceof PlayerEntity) {
             return this.getRidingEntity().isSneaking() ? 0.2 : 0.45F;
         }
 
@@ -306,7 +306,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, EnumHand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -398,10 +398,10 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
 
             //TODO move to new AI
             if (!this.fleeing) {
-                EntityItem entityitem = getClosestItem(this, 12D, Items.WHEAT_SEEDS, Items.MELON_SEEDS);
+                ItemEntity entityitem = getClosestItem(this, 12D, Items.WHEAT_SEEDS, Items.MELON_SEEDS);
                 if (entityitem != null) {
                     FlyToNextEntity(entityitem);
-                    EntityItem entityitem1 = getClosestItem(this, 1.0D, Items.WHEAT_SEEDS, Items.MELON_SEEDS);
+                    ItemEntity entityitem1 = getClosestItem(this, 1.0D, Items.WHEAT_SEEDS, Items.MELON_SEEDS);
                     if ((this.rand.nextInt(50) == 0) && (entityitem1 != null)) {
                         entityitem1.setDead();
                         setPreTamed(true);
@@ -422,8 +422,8 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
             this.rotationYaw = this.getRidingEntity().rotationYaw;
         }
 
-        if ((this.getRidingEntity() != null) && (this.getRidingEntity() instanceof EntityPlayer)) {
-            EntityPlayer entityplayer = (EntityPlayer) this.getRidingEntity();
+        if ((this.getRidingEntity() != null) && (this.getRidingEntity() instanceof PlayerEntity)) {
+            PlayerEntity entityplayer = (PlayerEntity) this.getRidingEntity();
             this.rotationYaw = entityplayer.rotationYaw;
             entityplayer.fallDistance = 0.0F;
             if (entityplayer.motionY < -0.1D)
@@ -454,7 +454,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
             for (int l1 = k; l1 < l; l1++) {
                 for (int i2 = i1; i2 < j1; i2++) {
                     BlockPos pos = new BlockPos(k1, l1, i2);
-                    IBlockState blockstate = this.world.getBlockState(pos);
+                    BlockState blockstate = this.world.getBlockState(pos);
                     blockstate.getBlock();
                     if (!blockstate.getBlock().isAir(blockstate, this.world, pos) && blockstate.getMaterial() == material) {
                         return (new int[]{k1, l1, i2});

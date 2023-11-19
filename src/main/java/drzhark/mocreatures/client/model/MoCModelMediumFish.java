@@ -4,16 +4,13 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.aquatic.MoCEntityMediumFish;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelMediumFish extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelMediumFish<T extends Entity> extends EntityModel<T> {
 
     //fields
     ModelRenderer Head;

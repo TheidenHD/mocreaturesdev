@@ -5,11 +5,11 @@ package drzhark.mocreatures.entity.ai;
 
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -20,16 +20,16 @@ import java.util.UUID;
 
 public class EntityAIFollowOwnerPlayer extends EntityAIBase {
 
-    private final EntityLiving thePet;
+    private final LivingEntity thePet;
     private final double speed;
     private final PathNavigate petPathfinder;
     World world;
     float maxDist;
     float minDist;
-    private EntityPlayer theOwner;
+    private PlayerEntity theOwner;
     private int delayCounter;
 
-    public EntityAIFollowOwnerPlayer(EntityLiving thePetIn, double speedIn, float minDistIn, float maxDistIn) {
+    public EntityAIFollowOwnerPlayer(LivingEntity thePetIn, double speedIn, float minDistIn, float maxDistIn) {
         this.thePet = thePetIn;
         this.world = thePetIn.world;
         this.speed = speedIn;
@@ -58,7 +58,7 @@ public class EntityAIFollowOwnerPlayer extends EntityAIBase {
             return false;
         }
 
-        EntityPlayer entityplayer = EntityAITools.getIMoCTameableOwner((IMoCTameable) this.thePet);
+        PlayerEntity entityplayer = EntityAITools.getIMoCTameableOwner((IMoCTameable) this.thePet);
 
         if (entityplayer == null) {
             return false;
@@ -101,7 +101,7 @@ public class EntityAIFollowOwnerPlayer extends EntityAIBase {
     }
 
     private boolean isEmptyBlock(BlockPos pos) {
-        IBlockState iblockstate = this.world.getBlockState(pos);
+        BlockState iblockstate = this.world.getBlockState(pos);
         return iblockstate.getMaterial() == Material.AIR || !iblockstate.isFullCube();
     }
 

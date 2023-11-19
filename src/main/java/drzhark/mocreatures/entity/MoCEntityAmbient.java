@@ -7,10 +7,12 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.MoverType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -21,13 +23,11 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 import java.util.UUID;
 
-public abstract class MoCEntityAmbient extends EntityCreature implements IMoCEntity {
+public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEntity {
 
     protected static final DataParameter<Boolean> ADULT = EntityDataManager.createKey(MoCEntityAmbient.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Integer> TYPE = EntityDataManager.createKey(MoCEntityAmbient.class, DataSerializers.VARINT);
@@ -41,7 +41,7 @@ public abstract class MoCEntityAmbient extends EntityCreature implements IMoCEnt
         super(world);
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public String getName() {
         String entityString = EntityList.getEntityString(this);
@@ -251,7 +251,7 @@ public abstract class MoCEntityAmbient extends EntityCreature implements IMoCEnt
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound) {
+    public void writeEntityToNBT(CompoundNBT nbttagcompound) {
         super.writeEntityToNBT(nbttagcompound);
         nbttagcompound = MoCTools.getEntityData(this);
         nbttagcompound.setBoolean("Adult", getIsAdult());
@@ -261,7 +261,7 @@ public abstract class MoCEntityAmbient extends EntityCreature implements IMoCEnt
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound) {
+    public void readEntityFromNBT(CompoundNBT nbttagcompound) {
         super.readEntityFromNBT(nbttagcompound);
         nbttagcompound = MoCTools.getEntityData(this);
         setAdult(nbttagcompound.getBoolean("Adult"));
@@ -402,7 +402,7 @@ public abstract class MoCEntityAmbient extends EntityCreature implements IMoCEnt
     }
 
     @Override
-    public boolean canBeLeashedTo(EntityPlayer player) {
+    public boolean canBeLeashedTo(PlayerEntity player) {
         if (!this.world.isRemote && !MoCTools.isThisPlayerAnOP(player) && this.getIsTamed() && !player.getUniqueID().equals(this.getOwnerId())) {
             return false;
         }
@@ -507,8 +507,8 @@ public abstract class MoCEntityAmbient extends EntityCreature implements IMoCEnt
 
     @Override
     public void setLeashHolder(Entity entityIn, boolean sendAttachNotification) {
-        if (this.getIsTamed() && entityIn instanceof EntityPlayer) {
-            EntityPlayer entityplayer = (EntityPlayer) entityIn;
+        if (this.getIsTamed() && entityIn instanceof PlayerEntity) {
+            PlayerEntity entityplayer = (PlayerEntity) entityIn;
             if (MoCreatures.proxy.enableOwnership && this.getOwnerId() != null && !entityplayer.getUniqueID().equals(this.getOwnerId()) && !MoCTools.isThisPlayerAnOP((entityplayer))) {
                 return;
             }

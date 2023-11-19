@@ -7,14 +7,14 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -51,11 +51,11 @@ public class MoCEntityThrowableRock extends Entity {
         this.setMasterID(entitythrower.getEntityId());
     }
 
-    public IBlockState getState() {
+    public BlockState getState() {
         return Block.getStateById(this.dataManager.get(ROCK_STATE) & 65535);
     }
 
-    public void setState(IBlockState state) {
+    public void setState(BlockState state) {
         this.dataManager.set(ROCK_STATE, (Block.getStateId(state) & 65535));
     }
 
@@ -83,8 +83,8 @@ public class MoCEntityThrowableRock extends Entity {
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound) {
-        IBlockState iblockstate = this.getState();
+    public void writeEntityToNBT(CompoundNBT nbttagcompound) {
+        BlockState iblockstate = this.getState();
         nbttagcompound = MoCTools.getEntityData(this);
         nbttagcompound.setInteger("Behavior", getBehavior());
         nbttagcompound.setInteger("MasterID", getMasterID());
@@ -93,11 +93,11 @@ public class MoCEntityThrowableRock extends Entity {
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound) {
+    public void readEntityFromNBT(CompoundNBT nbttagcompound) {
         nbttagcompound = MoCTools.getEntityData(this);
         setBehavior(nbttagcompound.getInteger("Behavior"));
         setMasterID(nbttagcompound.getInteger("MasterID"));
-        IBlockState iblockstate;
+        BlockState iblockstate;
         iblockstate = Block.getBlockById(nbttagcompound.getShort("BlockID")).getStateFromMeta(nbttagcompound.getShort("BlockMetadata") & 65535);
         this.setState(iblockstate);
     }
@@ -223,7 +223,7 @@ public class MoCEntityThrowableRock extends Entity {
     public void transformToItem() {
         // don't drop rocks if mob griefing is set to false, prevents duping
         if (!this.world.isRemote && MoCTools.mobGriefing(this.world) && MoCreatures.proxy.golemDestroyBlocks) {
-            EntityItem entityitem = new EntityItem(this.world, this.posX, this.posY, this.posZ, new ItemStack(Item.getItemFromBlock(this.getState().getBlock())));
+            ItemEntity entityitem = new ItemEntity(this.world, this.posX, this.posY, this.posZ, new ItemStack(Item.getItemFromBlock(this.getState().getBlock())));
             entityitem.setDefaultPickupDelay();
             entityitem.setAgeToCreativeDespawnTime();
             this.world.spawnEntity(entityitem);

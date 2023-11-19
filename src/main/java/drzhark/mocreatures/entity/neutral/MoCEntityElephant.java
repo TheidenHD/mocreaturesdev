@@ -14,25 +14,25 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -92,7 +92,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         this.tasks.addTask(4, new EntityAIFollowAdult(this, 1.0D));
         this.tasks.addTask(5, new EntityAIAttackMelee(this, 1.0D, true));
         this.tasks.addTask(6, new EntityAIWanderMoC2(this, 1.0D));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(7, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
     }
 
     @Override
@@ -166,7 +166,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected int getExperiencePoints(EntityPlayer player) {
+    protected int getExperiencePoints(PlayerEntity player) {
         return experienceValue;
     }
 
@@ -219,7 +219,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
             }
 
             if (getIsTamed() && (!this.isBeingRidden()) && getArmorType() >= 1 && this.rand.nextInt(20) == 0) {
-                EntityPlayer ep = this.world.getClosestPlayerToEntity(this, 3D);
+                PlayerEntity ep = this.world.getClosestPlayerToEntity(this, 3D);
                 if (ep != null && (!MoCreatures.proxy.enableOwnership || ep.getUniqueID().equals(this.getOwnerId())) && ep.isSneaking()) {
                     sit();
                 }
@@ -305,7 +305,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, EnumHand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -511,20 +511,20 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         int i = getTusks();
 
         if (i == 1) {
-            EntityItem entityitem =
-                    new EntityItem(this.world, this.posX, this.posY, this.posZ, new ItemStack(MoCItems.tusksWood, 1, this.tuskUses));
+            ItemEntity entityitem =
+                    new ItemEntity(this.world, this.posX, this.posY, this.posZ, new ItemStack(MoCItems.tusksWood, 1, this.tuskUses));
             entityitem.setDefaultPickupDelay();
             this.world.spawnEntity(entityitem);
         }
         if (i == 2) {
-            EntityItem entityitem =
-                    new EntityItem(this.world, this.posX, this.posY, this.posZ, new ItemStack(MoCItems.tusksIron, 1, this.tuskUses));
+            ItemEntity entityitem =
+                    new ItemEntity(this.world, this.posX, this.posY, this.posZ, new ItemStack(MoCItems.tusksIron, 1, this.tuskUses));
             entityitem.setDefaultPickupDelay();
             this.world.spawnEntity(entityitem);
         }
         if (i == 3) {
-            EntityItem entityitem =
-                    new EntityItem(this.world, this.posX, this.posY, this.posZ, new ItemStack(MoCItems.tusksDiamond, 1, this.tuskUses));
+            ItemEntity entityitem =
+                    new ItemEntity(this.world, this.posX, this.posY, this.posZ, new ItemStack(MoCItems.tusksDiamond, 1, this.tuskUses));
             entityitem.setDefaultPickupDelay();
             this.world.spawnEntity(entityitem);
         }
@@ -592,17 +592,17 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound) {
+    public void readEntityFromNBT(CompoundNBT nbttagcompound) {
         super.readEntityFromNBT(nbttagcompound);
         setTusks(nbttagcompound.getInteger("Tusks"));
         setArmorType(nbttagcompound.getInteger("Harness"));
         setStorage(nbttagcompound.getInteger("Storage"));
         this.tuskUses = nbttagcompound.getByte("TuskUses");
         if (getStorage() > 0) {
-            NBTTagList nbttaglist = nbttagcompound.getTagList("Items", 10);
+            ListNBT nbttaglist = nbttagcompound.getTagList("Items", 10);
             this.localelephantchest = new MoCAnimalChest("ElephantChest", 18);
             for (int i = 0; i < nbttaglist.tagCount(); i++) {
-                NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
+                CompoundNBT nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
                 if (j < this.localelephantchest.getSizeInventory()) {
                     this.localelephantchest.setInventorySlotContents(j, new ItemStack(nbttagcompound1));
@@ -610,10 +610,10 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
             }
         }
         if (getStorage() >= 2) {
-            NBTTagList nbttaglist = nbttagcompound.getTagList("Items2", 10);
+            ListNBT nbttaglist = nbttagcompound.getTagList("Items2", 10);
             this.localelephantchest2 = new MoCAnimalChest("ElephantChest", 18);
             for (int i = 0; i < nbttaglist.tagCount(); i++) {
-                NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
+                CompoundNBT nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
                 if (j < this.localelephantchest2.getSizeInventory()) {
                     this.localelephantchest2.setInventorySlotContents(j, new ItemStack(nbttagcompound1));
@@ -622,10 +622,10 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         }
 
         if (getStorage() >= 3) {
-            NBTTagList nbttaglist = nbttagcompound.getTagList("Items3", 10);
+            ListNBT nbttaglist = nbttagcompound.getTagList("Items3", 10);
             this.localelephantchest3 = new MoCAnimalChest("ElephantChest", 9);
             for (int i = 0; i < nbttaglist.tagCount(); i++) {
-                NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
+                CompoundNBT nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
                 if (j < this.localelephantchest3.getSizeInventory()) {
                     this.localelephantchest3.setInventorySlotContents(j, new ItemStack(nbttagcompound1));
@@ -633,10 +633,10 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
             }
         }
         if (getStorage() >= 4) {
-            NBTTagList nbttaglist = nbttagcompound.getTagList("Items4", 10);
+            ListNBT nbttaglist = nbttagcompound.getTagList("Items4", 10);
             this.localelephantchest4 = new MoCAnimalChest("ElephantChest", 9);
             for (int i = 0; i < nbttaglist.tagCount(); i++) {
-                NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
+                CompoundNBT nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
                 if (j < this.localelephantchest4.getSizeInventory()) {
                     this.localelephantchest4.setInventorySlotContents(j, new ItemStack(nbttagcompound1));
@@ -646,7 +646,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound) {
+    public void writeEntityToNBT(CompoundNBT nbttagcompound) {
         super.writeEntityToNBT(nbttagcompound);
         nbttagcompound.setInteger("Tusks", getTusks());
         nbttagcompound.setInteger("Harness", getArmorType());
@@ -654,11 +654,11 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         nbttagcompound.setByte("TuskUses", this.tuskUses);
 
         if (getStorage() > 0 && this.localelephantchest != null) {
-            NBTTagList nbttaglist = new NBTTagList();
+            ListNBT nbttaglist = new ListNBT();
             for (int i = 0; i < this.localelephantchest.getSizeInventory(); i++) {
                 this.localstack = this.localelephantchest.getStackInSlot(i);
                 if (!this.localstack.isEmpty()) {
-                    NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                    CompoundNBT nbttagcompound1 = new CompoundNBT();
                     nbttagcompound1.setByte("Slot", (byte) i);
                     this.localstack.writeToNBT(nbttagcompound1);
                     nbttaglist.appendTag(nbttagcompound1);
@@ -668,11 +668,11 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         }
 
         if (getStorage() >= 2 && this.localelephantchest2 != null) {
-            NBTTagList nbttaglist = new NBTTagList();
+            ListNBT nbttaglist = new ListNBT();
             for (int i = 0; i < this.localelephantchest2.getSizeInventory(); i++) {
                 this.localstack = this.localelephantchest2.getStackInSlot(i);
                 if (!this.localstack.isEmpty()) {
-                    NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                    CompoundNBT nbttagcompound1 = new CompoundNBT();
                     nbttagcompound1.setByte("Slot", (byte) i);
                     this.localstack.writeToNBT(nbttagcompound1);
                     nbttaglist.appendTag(nbttagcompound1);
@@ -682,11 +682,11 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         }
 
         if (getStorage() >= 3 && this.localelephantchest3 != null) {
-            NBTTagList nbttaglist = new NBTTagList();
+            ListNBT nbttaglist = new ListNBT();
             for (int i = 0; i < this.localelephantchest3.getSizeInventory(); i++) {
                 this.localstack = this.localelephantchest3.getStackInSlot(i);
                 if (!this.localstack.isEmpty()) {
-                    NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                    CompoundNBT nbttagcompound1 = new CompoundNBT();
                     nbttagcompound1.setByte("Slot", (byte) i);
                     this.localstack.writeToNBT(nbttagcompound1);
                     nbttaglist.appendTag(nbttagcompound1);
@@ -696,11 +696,11 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         }
 
         if (getStorage() >= 4 && this.localelephantchest4 != null) {
-            NBTTagList nbttaglist = new NBTTagList();
+            ListNBT nbttaglist = new ListNBT();
             for (int i = 0; i < this.localelephantchest4.getSizeInventory(); i++) {
                 this.localstack = this.localelephantchest4.getStackInSlot(i);
                 if (!this.localstack.isEmpty()) {
-                    NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                    CompoundNBT nbttagcompound1 = new CompoundNBT();
                     nbttagcompound1.setByte("Slot", (byte) i);
                     this.localstack.writeToNBT(nbttagcompound1);
                     nbttaglist.appendTag(nbttagcompound1);
@@ -723,8 +723,8 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
 
     @Override
     public void riding() {
-        if ((this.isBeingRidden()) && (this.getRidingEntity() instanceof EntityPlayer)) {
-            EntityPlayer entityplayer = (EntityPlayer) this.getRidingEntity();
+        if ((this.isBeingRidden()) && (this.getRidingEntity() instanceof PlayerEntity)) {
+            PlayerEntity entityplayer = (PlayerEntity) this.getRidingEntity();
             List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(1.0D, 0.0D, 1.0D));
             for (Entity entity : list) {
                 if (entity.isDead) {
@@ -921,7 +921,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
-            if ((entity != null && getIsTamed() && entity instanceof EntityPlayer) || !(entity instanceof EntityLivingBase)) {
+            if ((entity != null && getIsTamed() && entity instanceof PlayerEntity) || !(entity instanceof EntityLivingBase)) {
                 return false;
             }
             if (this.isRidingOrBeingRiddenBy(entity)) {
@@ -948,7 +948,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
                     entity.attackEntityFrom(DamageSource.FALL, i);
                 }
             }
-            IBlockState iblockstate = this.world.getBlockState(new BlockPos(this.posX, this.posY - 0.2D - (double) this.prevRotationYaw, this.posZ));
+            BlockState iblockstate = this.world.getBlockState(new BlockPos(this.posX, this.posY - 0.2D - (double) this.prevRotationYaw, this.posZ));
             Block block = iblockstate.getBlock();
 
             if (iblockstate.getMaterial() != Material.AIR && !this.isSilent()) {

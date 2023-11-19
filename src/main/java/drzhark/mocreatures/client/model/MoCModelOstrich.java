@@ -14,15 +14,15 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.neutral.MoCEntityOstrich;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelOstrich extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelOstrich<T extends Entity> extends EntityModel<T> {
 
     private final float radianF = 57.29578F;
     ModelRenderer UBeak;
@@ -573,7 +573,7 @@ public class MoCModelOstrich extends ModelBase {
      * setRotationAngles method.
      */
     /*
-     * public void setLivingAnimations(EntityLiving entityliving, float par2,
+     * public void setLivingAnimations(LivingEntity entityliving, float par2,
      * float par3, float par4) { super.setLivingAnimations(entityliving, par2,
      * par3, par4); this.Head.rotationPointY = 6.0F +
      * ((EntitySheep)entityliving).func_44003_c(par4) * 9.0F; this.field_44016_o

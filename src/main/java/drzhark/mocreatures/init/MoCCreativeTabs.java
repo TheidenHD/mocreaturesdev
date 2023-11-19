@@ -3,13 +3,10 @@
  */
 package drzhark.mocreatures.init;
 
-import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class MoCCreativeTabs extends CreativeTabs {
 
@@ -18,7 +15,7 @@ public class MoCCreativeTabs extends CreativeTabs {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public ItemStack createIcon() {
         return new ItemStack(MoCItems.amuletfairyfull, 1);
     }
@@ -26,7 +23,7 @@ public class MoCCreativeTabs extends CreativeTabs {
     /**
      * only shows items which have tabToDisplayOn == this
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void displayAllRelevantItems(NonNullList<ItemStack> items) {
         for (Item item : Item.REGISTRY) {
             if (item == MoCItems.mocegg) {

@@ -14,7 +14,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIPanic;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -47,7 +47,7 @@ public class MoCEntityMouse extends MoCEntityAnimal {
         this.tasks.addTask(1, new EntityAIFleeFromPlayer(this, 1.2D, 4D));
         this.tasks.addTask(2, new EntityAIPanic(this, 1.4D));
         this.tasks.addTask(5, new EntityAIWanderMoC2(this, 1.0D));
-        this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
+        this.tasks.addTask(6, new EntityAIWatchClosest(this, PlayerEntity.class, 6.0F));
     }
 
     @Override
@@ -142,11 +142,11 @@ public class MoCEntityMouse extends MoCEntityAnimal {
 
     @Override
     public double getYOffset() {
-        if (this.getRidingEntity() instanceof EntityPlayer && this.getRidingEntity() == MoCreatures.proxy.getPlayer() && this.world.isRemote) {
+        if (this.getRidingEntity() instanceof PlayerEntity && this.getRidingEntity() == MoCreatures.proxy.getPlayer() && this.world.isRemote) {
             return (super.getYOffset() - 0.7F);
         }
 
-        if ((this.getRidingEntity() instanceof EntityPlayer) && this.world.isRemote) {
+        if ((this.getRidingEntity() instanceof PlayerEntity) && this.world.isRemote) {
             return (super.getYOffset() - 0.1F);
         } else {
             return super.getYOffset();
@@ -154,7 +154,7 @@ public class MoCEntityMouse extends MoCEntityAnimal {
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, EnumHand hand) {
         if (this.getRidingEntity() == null) {
             if (this.startRiding(player)) {
                 this.rotationYaw = player.rotationYaw;

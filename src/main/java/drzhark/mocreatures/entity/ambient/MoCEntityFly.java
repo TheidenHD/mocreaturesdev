@@ -7,7 +7,7 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -32,7 +32,7 @@ public class MoCEntityFly extends MoCEntityInsect {
 
         if (!this.world.isRemote) {
             if (getIsFlying() && --this.soundCount == -1) {
-                EntityPlayer ep = this.world.getClosestPlayerToEntity(this, 5D);
+                PlayerEntity ep = this.world.getClosestPlayerToEntity(this, 5D);
                 if (ep != null) {
                     MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_FLY_AMBIENT);
                     this.soundCount = 55;

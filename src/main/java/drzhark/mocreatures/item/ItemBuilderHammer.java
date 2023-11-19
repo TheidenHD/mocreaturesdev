@@ -6,14 +6,15 @@ package drzhark.mocreatures.item;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -56,7 +57,7 @@ public class ItemBuilderHammer extends MoCItem {
      * pressed. Args: itemStack, world, entityPlayer
      */
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, EnumHand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         double coordY = player.posY + player.getEyeHeight();
         double coordZ = player.posZ;
@@ -67,7 +68,7 @@ public class ItemBuilderHammer extends MoCItem {
             double newPosX = coordX + Math.cos((MoCTools.realAngle(player.rotationYaw - 90F) / 57.29578F)) * (Math.sin((player.rotationPitch - 90F) / 57.29578F) * x);
             double newPosZ = coordZ + Math.sin((MoCTools.realAngle(player.rotationYaw - 90F) / 57.29578F)) * (Math.sin((player.rotationPitch - 90F) / 57.29578F) * x);
             BlockPos pos = new BlockPos(MathHelper.floor(newPosX), MathHelper.floor(newPosY), MathHelper.floor(newPosZ));
-            IBlockState blockstate = player.world.getBlockState(pos);
+            BlockState blockstate = player.world.getBlockState(pos);
 
             if (blockstate.getBlock() != Blocks.AIR) {
 
@@ -99,7 +100,7 @@ public class ItemBuilderHammer extends MoCItem {
      * Finds a block from the belt inventory of player, passes the block ID and
      * Metadata and reduces the stack by 1 if not on Creative mode
      */
-    private int[] obtainBlockAndMetadataFromBelt(EntityPlayer entityplayer, boolean remove) {
+    private int[] obtainBlockAndMetadataFromBelt(PlayerEntity entityplayer, boolean remove) {
         for (int y = 0; y < 9; y++) {
             ItemStack slotStack = entityplayer.inventory.getStackInSlot(y);
             if (slotStack.isEmpty()) {
@@ -123,7 +124,7 @@ public class ItemBuilderHammer extends MoCItem {
     }
 
     @Override
-    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(PlayerEntity playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         return EnumActionResult.FAIL;
     }
 }

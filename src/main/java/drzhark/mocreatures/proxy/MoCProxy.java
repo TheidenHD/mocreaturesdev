@@ -12,7 +12,7 @@ import drzhark.mocreatures.entity.MoCEntityData;
 import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.BiomeDictionary;
@@ -130,10 +130,10 @@ public class MoCProxy implements IGuiHandler {
     public void VacuumFX(MoCEntityGolem entity) {
     }
 
-    public void hammerFX(EntityPlayer entityplayer) {
+    public void hammerFX(PlayerEntity entityplayer) {
     }
 
-    public void teleportFX(EntityPlayer entity) {
+    public void teleportFX(PlayerEntity entity) {
     }
 
     public boolean getAnimateTextures() {
@@ -180,7 +180,7 @@ public class MoCProxy implements IGuiHandler {
         return null;
     }
 
-    public EntityPlayer getPlayer() {
+    public PlayerEntity getPlayer() {
         return null;
     }
 
@@ -311,12 +311,12 @@ public class MoCProxy implements IGuiHandler {
     }
 
     @Override
-    public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+    public Object getServerGuiElement(int ID, PlayerEntity player, World world, int x, int y, int z) {
         return null;
     }
 
     @Override
-    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+    public Object getClientGuiElement(int ID, PlayerEntity player, World world, int x, int y, int z) {
         return null;
     }
 
@@ -330,6 +330,6 @@ public class MoCProxy implements IGuiHandler {
     /**
      * Sets the name on client side. Name is synchronized with data watchers
      */
-    public void setName(EntityPlayer player, IMoCEntity mocanimal) {
+    public void setName(PlayerEntity player, IMoCEntity mocanimal) {
     }
 }

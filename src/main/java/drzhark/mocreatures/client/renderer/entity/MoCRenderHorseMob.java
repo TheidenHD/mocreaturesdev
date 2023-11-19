@@ -3,16 +3,14 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
-import drzhark.mocreatures.proxy.MoCProxyClient;
 import drzhark.mocreatures.client.model.MoCModelHorseMob;
 import drzhark.mocreatures.entity.hostile.MoCEntityHorseMob;
+import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MoCRenderHorseMob extends RenderLiving<MoCEntityHorseMob> {
 
     public MoCRenderHorseMob(MoCModelHorseMob modelbase) {

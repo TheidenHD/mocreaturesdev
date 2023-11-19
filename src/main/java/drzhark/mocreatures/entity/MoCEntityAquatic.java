@@ -10,15 +10,16 @@ import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.*;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.monster.EntityMob;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.MoverType;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.EntityFishHook;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -32,14 +33,12 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class MoCEntityAquatic extends EntityCreature implements IMoCEntity {
+public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEntity {
 
     protected static final DataParameter<Boolean> ADULT = EntityDataManager.createKey(MoCEntityAquatic.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Integer> TYPE = EntityDataManager.createKey(MoCEntityAquatic.class, DataSerializers.VARINT);
@@ -72,7 +71,7 @@ public abstract class MoCEntityAquatic extends EntityCreature implements IMoCEnt
         this.moveHelper = new EntityAIMoverHelperMoC(this);
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public String getName() {
         String entityString = EntityList.getEntityString(this);
@@ -231,13 +230,13 @@ public abstract class MoCEntityAquatic extends EntityCreature implements IMoCEnt
     public void fall(float f, float f1) {
     }
 
-    public EntityItem getClosestFish(Entity entity, double d) {
+    public ItemEntity getClosestFish(Entity entity, double d) {
         double d1 = -1D;
-        EntityItem entityitem = null;
+        ItemEntity entityitem = null;
         List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(d));
         for (Entity entity1 : list) {
-            if (!(entity1 instanceof EntityItem)) continue;
-            EntityItem entityitem1 = (EntityItem) entity1;
+            if (!(entity1 instanceof ItemEntity)) continue;
+            ItemEntity entityitem1 = (ItemEntity) entity1;
             if ((entityitem1.getItem().getItem() != Items.FISH) || !entityitem1.isInWater()) continue;
             double d2 = entityitem1.getDistanceSq(entity.posX, entity.posY, entity.posZ);
             if (((d < 0.0D) || (d2 < (d * d))) && ((d1 == -1D) || (d2 < d1))) {
@@ -337,16 +336,16 @@ public abstract class MoCEntityAquatic extends EntityCreature implements IMoCEnt
 
     // used to pick up objects while riding an entity
     public void riding() {
-        if ((this.isBeingRidden()) && (this.getRidingEntity() instanceof EntityPlayer)) {
-            EntityPlayer entityplayer = (EntityPlayer) this.getRidingEntity();
+        if ((this.isBeingRidden()) && (this.getRidingEntity() instanceof PlayerEntity)) {
+            PlayerEntity entityplayer = (PlayerEntity) this.getRidingEntity();
             List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(1.0D, 0.0D, 1.0D));
             for (Entity entity : list) {
                 if (entity.isDead) continue;
                 entity.onCollideWithPlayer(entityplayer);
-                if (!(entity instanceof EntityMob)) continue;
+                if (!(entity instanceof MobEntity)) continue;
                 float f = getDistance(entity);
                 if (f < 2.0F && this.rand.nextInt(10) == 0) {
-                    attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) entity), (float) ((EntityMob) entity).getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue());
+                    attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) entity), (float) ((MobEntity) entity).getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue());
                 }
             }
         }
@@ -447,7 +446,7 @@ public abstract class MoCEntityAquatic extends EntityCreature implements IMoCEnt
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound) {
+    public void writeEntityToNBT(CompoundNBT nbttagcompound) {
         super.writeEntityToNBT(nbttagcompound);
         nbttagcompound.setBoolean("Adult", getIsAdult());
         nbttagcompound.setInteger("Edad", getAge());
@@ -456,7 +455,7 @@ public abstract class MoCEntityAquatic extends EntityCreature implements IMoCEnt
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound) {
+    public void readEntityFromNBT(CompoundNBT nbttagcompound) {
         super.readEntityFromNBT(nbttagcompound);
         setAdult(nbttagcompound.getBoolean("Adult"));
         setAge(nbttagcompound.getInteger("Edad"));
@@ -482,7 +481,7 @@ public abstract class MoCEntityAquatic extends EntityCreature implements IMoCEnt
      */
     @Override
     protected void despawnEntity() {
-        EntityPlayer var1 = this.world.getClosestPlayerToEntity(this, -1.0D);
+        PlayerEntity var1 = this.world.getClosestPlayerToEntity(this, -1.0D);
         if (var1 != null) {
             double var2 = var1.posX - this.posX;
             double var4 = var1.posY - this.posY;
@@ -590,7 +589,7 @@ public abstract class MoCEntityAquatic extends EntityCreature implements IMoCEnt
      * The act of getting Hooked into a fish Hook.
      */
     private void getFished() {
-        EntityPlayer entityplayer1 = this.world.getClosestPlayerToEntity(this, 18D);
+        PlayerEntity entityplayer1 = this.world.getClosestPlayerToEntity(this, 18D);
         if (entityplayer1 != null) {
             EntityFishHook fishHook = entityplayer1.fishEntity;
             if (fishHook != null && fishHook.caughtEntity == null) {
@@ -633,7 +632,7 @@ public abstract class MoCEntityAquatic extends EntityCreature implements IMoCEnt
     }
 
     @Override
-    public boolean canBeLeashedTo(EntityPlayer player) {
+    public boolean canBeLeashedTo(PlayerEntity player) {
         if (!this.world.isRemote && !MoCTools.isThisPlayerAnOP(player) && this.getIsTamed() && !player.getUniqueID().equals(this.getOwnerId())) {
             return false;
         }
@@ -751,13 +750,13 @@ public abstract class MoCEntityAquatic extends EntityCreature implements IMoCEnt
             if (this.onGround) {
                 setIsJumping(false);
             }
-            if (!this.world.isRemote && this instanceof IMoCTameable && passenger instanceof EntityPlayer) {
+            if (!this.world.isRemote && this instanceof IMoCTameable && passenger instanceof PlayerEntity) {
                 int chance = (getMaxTemper() - getTemper());
                 if (chance <= 0) {
                     chance = 1;
                 }
                 if (this.rand.nextInt(chance * 8) == 0) {
-                    MoCTools.tameWithName((EntityPlayer) passenger, (IMoCTameable) this);
+                    MoCTools.tameWithName((PlayerEntity) passenger, (IMoCTameable) this);
                 }
             }
         }
@@ -780,7 +779,7 @@ public abstract class MoCEntityAquatic extends EntityCreature implements IMoCEnt
     }
 
     @Override
-    protected int getExperiencePoints(EntityPlayer player) {
+    protected int getExperiencePoints(PlayerEntity player) {
         return 1 + this.world.rand.nextInt(3);
     }
 
@@ -867,7 +866,7 @@ public abstract class MoCEntityAquatic extends EntityCreature implements IMoCEnt
         this.jump();
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float yawRotationOffset() {
         double d4 = 0F;
@@ -952,8 +951,8 @@ public abstract class MoCEntityAquatic extends EntityCreature implements IMoCEnt
 
     @Override
     public void setLeashHolder(Entity entityIn, boolean sendAttachNotification) {
-        if (this.getIsTamed() && entityIn instanceof EntityPlayer) {
-            EntityPlayer entityplayer = (EntityPlayer) entityIn;
+        if (this.getIsTamed() && entityIn instanceof PlayerEntity) {
+            PlayerEntity entityplayer = (PlayerEntity) entityIn;
             if (MoCreatures.proxy.enableOwnership && this.getOwnerId() != null && !entityplayer.getUniqueID().equals(this.getOwnerId()) && !MoCTools.isThisPlayerAnOP((entityplayer))) {
                 return;
             }

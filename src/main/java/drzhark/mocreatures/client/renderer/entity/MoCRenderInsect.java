@@ -6,10 +6,8 @@ package drzhark.mocreatures.client.renderer.entity;
 import drzhark.mocreatures.entity.MoCEntityInsect;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MoCRenderInsect<T extends MoCEntityInsect> extends MoCRenderMoC<T> {
 
     public MoCRenderInsect(ModelBase modelbase) {

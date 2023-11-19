@@ -3,8 +3,8 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
-import drzhark.mocreatures.proxy.MoCProxyClient;
 import drzhark.mocreatures.entity.passive.MoCEntityFilchLizard;
+import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;

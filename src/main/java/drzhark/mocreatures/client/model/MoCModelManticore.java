@@ -5,10 +5,8 @@ package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.hostile.MoCEntityManticore;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MoCModelManticore extends MoCModelBigCat {
 
     @Override

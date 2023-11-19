@@ -4,7 +4,7 @@
 package drzhark.mocreatures.dimension.worldgen;
 
 import drzhark.mocreatures.init.MoCBlocks;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
@@ -17,7 +17,7 @@ public class MoCWorldGenWyvernNest extends WorldGenerator {
     public boolean generate(World world, Random rand, BlockPos position) {
         // Generate the log pillar
         int pillarHeight = 8;
-        IBlockState logState = MoCBlocks.wyvwoodLog.getDefaultState();
+        BlockState logState = MoCBlocks.wyvwoodLog.getDefaultState();
 
         for (int i = 0; i < pillarHeight; i++) {
             BlockPos currentPos = position.up(i);
@@ -26,7 +26,7 @@ public class MoCWorldGenWyvernNest extends WorldGenerator {
 
         // Generate the log circle on top of the pillar
         int circleRadius = 3;
-        IBlockState nestState = MoCBlocks.wyvernNestBlock.getDefaultState();
+        BlockState nestState = MoCBlocks.wyvernNestBlock.getDefaultState();
 
         for (int y = 0; y <= 1; y++) {
             for (int x = -circleRadius - y; x <= circleRadius + y; x++) {

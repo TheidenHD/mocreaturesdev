@@ -5,7 +5,7 @@ package drzhark.mocreatures.item;
 
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.item.MoCEntityLitterBox;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -21,7 +21,7 @@ public class MoCItemLitterBox extends MoCItem {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, EnumHand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (!world.isRemote) {
             if (!player.capabilities.isCreativeMode) stack.shrink(1);

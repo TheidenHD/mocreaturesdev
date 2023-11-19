@@ -4,22 +4,22 @@
 package drzhark.mocreatures.item;
 
 import drzhark.mocreatures.MoCConstants;
-import drzhark.mocreatures.entity.tameable.MoCPetData;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
-import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.entity.hunter.MoCEntityBigCat;
 import drzhark.mocreatures.entity.neutral.MoCEntityWyvern;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
+import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
+import drzhark.mocreatures.entity.tameable.MoCPetData;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAppear;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityList;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
@@ -27,8 +27,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -58,7 +56,7 @@ public class MoCItemHorseAmulet extends MoCItem {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, EnumHand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (++this.ageCounter < 2) {
             return new ActionResult<>(EnumActionResult.PASS, stack);
@@ -147,7 +145,7 @@ public class MoCItemHorseAmulet extends MoCItem {
                         // remove pet entry from old owner
                         if (oldOwner != null) {
                             for (int j = 0; j < oldOwner.getTamedList().tagCount(); j++) {
-                                NBTTagCompound petEntry = oldOwner.getTamedList().getCompoundTagAt(j);
+                                CompoundNBT petEntry = oldOwner.getTamedList().getCompoundTagAt(j);
                                 if (petEntry.getInteger("PetId") == this.PetId) {
                                     // found match, remove
                                     oldOwner.getTamedList().removeTag(j);
@@ -185,7 +183,7 @@ public class MoCItemHorseAmulet extends MoCItem {
         return new ActionResult<>(EnumActionResult.SUCCESS, stack);
     }
 
-    public void readFromNBT(NBTTagCompound nbt) {
+    public void readFromNBT(CompoundNBT nbt) {
         this.PetId = nbt.getInteger("PetId");
         this.creatureType = nbt.getInteger("CreatureType");
         this.health = nbt.getFloat("Health");
@@ -212,7 +210,7 @@ public class MoCItemHorseAmulet extends MoCItem {
         }
     }
 
-    public void writeToNBT(NBTTagCompound nbt) {
+    public void writeToNBT(CompoundNBT nbt) {
         nbt.setInteger("PetId", this.PetId);
         nbt.setInteger("CreatureType", this.creatureType);
         nbt.setFloat("Health", this.health);
@@ -228,7 +226,7 @@ public class MoCItemHorseAmulet extends MoCItem {
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     /*
      * allows items to add custom lines of information to the mouseover description
      */
@@ -246,9 +244,9 @@ public class MoCItemHorseAmulet extends MoCItem {
 
     private void initAndReadNBT(ItemStack itemstack) {
         if (itemstack.getTagCompound() == null) {
-            itemstack.setTagCompound(new NBTTagCompound());
+            itemstack.setTagCompound(new CompoundNBT());
         }
-        NBTTagCompound nbtcompound = itemstack.getTagCompound();
+        CompoundNBT nbtcompound = itemstack.getTagCompound();
         readFromNBT(nbtcompound);
     }
 }

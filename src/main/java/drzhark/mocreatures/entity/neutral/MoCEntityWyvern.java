@@ -15,14 +15,14 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.*;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
@@ -30,8 +30,8 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemSaddle;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -90,8 +90,8 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
         this.tasks.addTask(1, new EntityAISwimming(this));
         this.tasks.addTask(5, new EntityAIAttackMelee(this, 1.0D, true));
         this.tasks.addTask(4, this.wander = new EntityAIWanderMoC2(this, 1.0D, 80));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        //this.targetTasks.addTask(1, new EntityAIHunt<>(this, EntityAnimal.class, true));
+        this.tasks.addTask(7, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
+        //this.targetTasks.addTask(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
         this.targetTasks.addTask(2, new EntityAIHurtByTarget(this, false));
     }
 
@@ -117,7 +117,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected int getExperiencePoints(EntityPlayer player) {
+    protected int getExperiencePoints(PlayerEntity player) {
         return experienceValue;
     }
 
@@ -129,7 +129,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
 
     @Override
     public boolean getCanSpawnHere() {
-        IBlockState iblockstate = this.world.getBlockState((new BlockPos(this)).down());
+        BlockState iblockstate = this.world.getBlockState((new BlockPos(this)).down());
         return iblockstate.canEntitySpawn(this);
     }
 
@@ -417,7 +417,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, EnumHand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -587,17 +587,17 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             }
 
             if (i == 1) {
-                EntityItem entityitem = new EntityItem(this.world, this.posX, this.posY, this.posZ, new ItemStack(Items.IRON_HORSE_ARMOR, 1));
+                ItemEntity entityitem = new ItemEntity(this.world, this.posX, this.posY, this.posZ, new ItemStack(Items.IRON_HORSE_ARMOR, 1));
                 entityitem.setDefaultPickupDelay();
                 this.world.spawnEntity(entityitem);
             }
             if (i == 2) {
-                EntityItem entityitem = new EntityItem(this.world, this.posX, this.posY, this.posZ, new ItemStack(Items.GOLDEN_HORSE_ARMOR, 1));
+                ItemEntity entityitem = new ItemEntity(this.world, this.posX, this.posY, this.posZ, new ItemStack(Items.GOLDEN_HORSE_ARMOR, 1));
                 entityitem.setDefaultPickupDelay();
                 this.world.spawnEntity(entityitem);
             }
             if (i == 3) {
-                EntityItem entityitem = new EntityItem(this.world, this.posX, this.posY, this.posZ, new ItemStack(Items.DIAMOND_HORSE_ARMOR, 1));
+                ItemEntity entityitem = new ItemEntity(this.world, this.posX, this.posY, this.posZ, new ItemStack(Items.DIAMOND_HORSE_ARMOR, 1));
                 entityitem.setDefaultPickupDelay();
                 this.world.spawnEntity(entityitem);
             }
@@ -670,7 +670,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
 
     @Override
     public boolean attackEntityAsMob(Entity entityIn) {
-        if (entityIn instanceof EntityPlayer && !shouldAttackPlayers()) {
+        if (entityIn instanceof PlayerEntity && !shouldAttackPlayers()) {
             return false;
         }
         openMouth();
@@ -679,7 +679,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
 
     @Override
     protected void applyEnchantments(EntityLivingBase entityLivingBaseIn, Entity entityIn) {
-        if (entityIn instanceof EntityPlayer && this.rand.nextInt(3) == 0) {
+        if (entityIn instanceof PlayerEntity && this.rand.nextInt(3) == 0) {
             ((EntityLivingBase) entityIn).addPotionEffect(new PotionEffect(MobEffects.POISON, 200, 0));
         }
 
@@ -693,7 +693,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             return false;
         }
         if (super.attackEntityFrom(damagesource, i)) {
-            if (entity != null && getIsTamed() && entity instanceof EntityPlayer) {
+            if (entity != null && getIsTamed() && entity instanceof PlayerEntity) {
                 return false;
             }
 
@@ -707,11 +707,11 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
 
     /*@Override
     public boolean entitiesToIgnore(Entity entity) {
-        return (super.entitiesToIgnore(entity) || (entity instanceof MoCEntityWyvern) || (entity instanceof EntityPlayer));
+        return (super.entitiesToIgnore(entity) || (entity instanceof MoCEntityWyvern) || (entity instanceof PlayerEntity));
     }*/
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound) {
+    public void writeEntityToNBT(CompoundNBT nbttagcompound) {
         super.writeEntityToNBT(nbttagcompound);
         nbttagcompound.setBoolean("Saddle", getIsRideable());
         nbttagcompound.setBoolean("Chested", getIsChested());
@@ -719,11 +719,11 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
         nbttagcompound.setBoolean("isSitting", getIsSitting());
         nbttagcompound.setBoolean("isGhost", getIsGhost());
         if (getIsChested() && this.localchest != null) {
-            NBTTagList nbttaglist = new NBTTagList();
+            ListNBT nbttaglist = new ListNBT();
             for (int i = 0; i < this.localchest.getSizeInventory(); i++) {
                 this.localstack = this.localchest.getStackInSlot(i);
                 if (!this.localstack.isEmpty()) {
-                    NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                    CompoundNBT nbttagcompound1 = new CompoundNBT();
                     nbttagcompound1.setByte("Slot", (byte) i);
                     this.localstack.writeToNBT(nbttagcompound1);
                     nbttaglist.appendTag(nbttagcompound1);
@@ -734,7 +734,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound) {
+    public void readEntityFromNBT(CompoundNBT nbttagcompound) {
         super.readEntityFromNBT(nbttagcompound);
         setRideable(nbttagcompound.getBoolean("Saddle"));
         setIsChested(nbttagcompound.getBoolean("Chested"));
@@ -742,10 +742,10 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
         setSitting(nbttagcompound.getBoolean("isSitting"));
         setIsGhost(nbttagcompound.getBoolean("isGhost"));
         if (getIsChested()) {
-            NBTTagList nbttaglist = nbttagcompound.getTagList("Items", 10);
+            ListNBT nbttaglist = nbttagcompound.getTagList("Items", 10);
             this.localchest = new MoCAnimalChest("WyvernChest", 14);
             for (int i = 0; i < nbttaglist.tagCount(); i++) {
-                NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
+                CompoundNBT nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
                 if (j < this.localchest.getSizeInventory()) {
                     this.localchest.setInventorySlotContents(j, new ItemStack(nbttagcompound1));
@@ -931,7 +931,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
 
                 entitywyvern.setOwnerId(this.getOwnerId());
                 entitywyvern.setTamed(true);
-                EntityPlayer entityplayer = this.world.getClosestPlayerToEntity(this, 24D);
+                PlayerEntity entityplayer = this.world.getClosestPlayerToEntity(this, 24D);
                 if (entityplayer != null) {
                     MoCTools.tameWithName(entityplayer, entitywyvern);
                 }

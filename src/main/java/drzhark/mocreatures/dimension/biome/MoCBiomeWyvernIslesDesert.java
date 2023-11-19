@@ -8,15 +8,13 @@ import drzhark.mocreatures.entity.hunter.MoCEntitySnake;
 import drzhark.mocreatures.entity.neutral.MoCEntityWyvern;
 import drzhark.mocreatures.entity.passive.MoCEntityFilchLizard;
 import drzhark.mocreatures.init.MoCBlocks;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkPrimer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
@@ -41,8 +39,8 @@ public class MoCBiomeWyvernIslesDesert extends Biome {
     @Override
     public void genTerrainBlocks(World world, Random random, ChunkPrimer primer, int x, int z, double noiseVal) {
         int i = world.getSeaLevel();
-        IBlockState iblockstate = this.topBlock;
-        IBlockState iblockstate1 = this.fillerBlock;
+        BlockState iblockstate = this.topBlock;
+        BlockState iblockstate1 = this.fillerBlock;
         int j = -1;
         int k = (int) (noiseVal / 3.0D + 3.0D + random.nextDouble() * 0.25D);
         int l = x & 15;
@@ -53,7 +51,7 @@ public class MoCBiomeWyvernIslesDesert extends Biome {
             if (j1 <= random.nextInt(5)) {
                 primer.setBlockState(i1, j1, l, BEDROCK);
             } else {
-                IBlockState iblockstate2 = primer.getBlockState(i1, j1, l);
+                BlockState iblockstate2 = primer.getBlockState(i1, j1, l);
 
                 if (iblockstate2.getMaterial() == Material.AIR) {
                     j = -1;
@@ -106,19 +104,19 @@ public class MoCBiomeWyvernIslesDesert extends Biome {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public int getModdedBiomeFoliageColor(final int original) {
         return 0x8C95A5;
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public int getModdedBiomeGrassColor(final int original) {
         return 0x8C95A5;
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public int getSkyColorByTemp(final float currentTemperature) {
         return 0xADB7CC;
     }

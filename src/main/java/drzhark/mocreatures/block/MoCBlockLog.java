@@ -4,9 +4,9 @@
 package drzhark.mocreatures.block;
 
 import net.minecraft.block.BlockLog;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -28,12 +28,12 @@ public class MoCBlockLog extends BlockLog {
     }
 
     @Override
-    public int getMetaFromState(IBlockState state) {
+    public int getMetaFromState(BlockState state) {
         return state.getValue(LOG_AXIS).ordinal();
     }
 
     @Override
-    public IBlockState getStateFromMeta(int meta) {
+    public BlockState getStateFromMeta(int meta) {
         for (EnumAxis axis : EnumAxis.values()) {
             if (axis.ordinal() == meta) {
                 return getDefaultState().withProperty(LOG_AXIS, axis);
@@ -44,7 +44,7 @@ public class MoCBlockLog extends BlockLog {
     }
 
     @Override
-    public MapColor getMapColor(IBlockState state, IBlockAccess world, BlockPos pos) {
+    public MapColor getMapColor(BlockState state, IBlockAccess world, BlockPos pos) {
         return mapColor;
     }
 

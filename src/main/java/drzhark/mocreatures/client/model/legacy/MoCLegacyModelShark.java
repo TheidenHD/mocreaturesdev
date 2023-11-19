@@ -3,15 +3,15 @@
  */
 package drzhark.mocreatures.client.model.legacy;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCLegacyModelShark extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCLegacyModelShark<T extends Entity> extends EntityModel<T> {
 
     public ModelRenderer LHead;
 

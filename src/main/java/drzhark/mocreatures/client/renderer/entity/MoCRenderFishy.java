@@ -3,16 +3,14 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
-import drzhark.mocreatures.proxy.MoCProxyClient;
 import drzhark.mocreatures.entity.aquatic.MoCEntityFishy;
+import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MoCRenderFishy extends RenderLiving<MoCEntityFishy> {
 
     public MoCRenderFishy(ModelBase modelbase, float f) {

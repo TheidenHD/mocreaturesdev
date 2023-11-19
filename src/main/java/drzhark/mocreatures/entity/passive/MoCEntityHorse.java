@@ -17,31 +17,33 @@ import drzhark.mocreatures.network.message.MoCMessageHeart;
 import drzhark.mocreatures.network.message.MoCMessageVanish;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockJukebox.TileEntityJukebox;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.passive.EntityDonkey;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityWolf;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemRecord;
 import net.minecraft.item.ItemSaddle;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
@@ -107,7 +109,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         this.tasks.addTask(1, new EntityAISwimming(this));
         this.tasks.addTask(3, new EntityAIFollowAdult(this, 1.0D));
         this.tasks.addTask(4, this.wander = new EntityAIWanderMoC2(this, 1.0D, 80));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(7, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
     }
 
     @Override
@@ -177,7 +179,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         Entity entity = damagesource.getTrueSource();
         if ((this.isBeingRidden()) && (entity == this.getRidingEntity())) return false;
         if (entity instanceof EntityWolf) {
-            EntityCreature entitycreature = (EntityCreature) entity;
+            CreatureEntity entitycreature = (CreatureEntity) entity;
             entitycreature.setAttackTarget(null);
             return false;
         } else {
@@ -364,7 +366,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             default:
                 return; // No armor to drop
         }
-        EntityItem entityItem = new EntityItem(this.world, this.posX, this.posY, this.posZ, armorStack);
+        ItemEntity entityItem = new ItemEntity(this.world, this.posX, this.posY, this.posZ, armorStack);
         entityItem.setDefaultPickupDelay();
         this.world.spawnEntity(entityItem);
         setArmorType((byte) 0);
@@ -378,7 +380,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             return;
         }
 
-        EntityItem entityitem = new EntityItem(this.world, this.posX, this.posY, this.posZ, new ItemStack(Blocks.CHEST, 1));
+        ItemEntity entityitem = new ItemEntity(this.world, this.posX, this.posY, this.posZ, new ItemStack(Blocks.CHEST, 1));
         float f3 = 0.05F;
         entityitem.motionX = (float) this.world.rand.nextGaussian() * f3;
         entityitem.motionY = ((float) this.world.rand.nextGaussian() * f3) + 0.2F;
@@ -402,7 +404,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             if ((this.isBeingRidden()) && (i > 1F)) {
                 for (Entity entity : this.getRecursivePassengers()) entity.attackEntityFrom(DamageSource.FALL, i);
             }
-            IBlockState iblockstate = this.world.getBlockState(new BlockPos(this.posX, this.posY - 0.2D - (double) this.prevRotationYaw, this.posZ));
+            BlockState iblockstate = this.world.getBlockState(new BlockPos(this.posX, this.posY - 0.2D - (double) this.prevRotationYaw, this.posZ));
             Block block = iblockstate.getBlock();
             if (iblockstate.getMaterial() != Material.AIR && !this.isSilent()) {
                 SoundType soundtype = block.getSoundType(iblockstate, world, new BlockPos(this.posX, this.posY - 0.2D - (double) this.prevRotationYaw, this.posZ), this);
@@ -1256,7 +1258,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, EnumHand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
 
         if (tameResult != null) return tameResult;
@@ -1482,7 +1484,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         if (!stack.isEmpty() && (this.getType() == 60) && stack.getItem() instanceof ItemRecord && MoCreatures.proxy.easterEggs) {
             player.setHeldItem(hand, ItemStack.EMPTY);
             if (!this.world.isRemote) {
-                EntityItem entityitem1 = new EntityItem(this.world, this.posX, this.posY, this.posZ, new ItemStack(MoCItems.recordshuffle, 1));
+                ItemEntity entityitem1 = new ItemEntity(this.world, this.posX, this.posY, this.posZ, new ItemStack(MoCItems.recordshuffle, 1));
                 entityitem1.setPickupDelay(20);
                 this.world.spawnEntity(entityitem1);
             }
@@ -1707,7 +1709,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
     public boolean isZebraRunning() {
         boolean flag = false;
-        EntityPlayer ep1 = this.world.getClosestPlayerToEntity(this, 8D);
+        PlayerEntity ep1 = this.world.getClosestPlayerToEntity(this, 8D);
         if (ep1 != null) {
             flag = true;
             if (ep1.getRidingEntity() instanceof MoCEntityHorse) {
@@ -1772,7 +1774,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         int j = MathHelper.floor(getEntityBoundingBox().minY);
         int k = MathHelper.floor(this.posZ);
         BlockPos pos = new BlockPos(i, j, k);
-        IBlockState blockstate = this.world.getBlockState(pos.add(-1, 0, -1));
+        BlockState blockstate = this.world.getBlockState(pos.add(-1, 0, -1));
         BlockEvent.BreakEvent event = null;
         if (!this.world.isRemote) {
             try {
@@ -1783,7 +1785,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         }
         if (event != null && !event.isCanceled()) {
             this.world.setBlockState(pos, Blocks.FIRE.getDefaultState(), 3);//MC1.5
-            EntityPlayer entityplayer = (EntityPlayer) this.getRidingEntity();
+            PlayerEntity entityplayer = (PlayerEntity) this.getRidingEntity();
             if ((entityplayer != null) && (entityplayer.isBurning())) entityplayer.extinguish();
             setNightmareInt(getNightmareInt() - 1);
         }
@@ -1804,7 +1806,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
                 entityhorse1.setOwnerId(this.getOwnerId());
                 entityhorse1.setTamed(true);
-                EntityPlayer entityplayer = this.world.getClosestPlayerToEntity(this, 24D);
+                PlayerEntity entityplayer = this.world.getClosestPlayerToEntity(this, 24D);
                 if (entityplayer != null) MoCTools.tameWithName(entityplayer, entityhorse1);
 
                 entityhorse1.setAdult(false);
@@ -1968,7 +1970,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 //baby.setBred(true);
                 baby.setAdult(false);
                 UUID ownerId = this.getOwnerId();
-                EntityPlayer entityplayer = null;
+                PlayerEntity entityplayer = null;
                 if (ownerId != null) entityplayer = this.world.getPlayerEntityByUUID(this.getOwnerId());
                 if (entityplayer != null) MoCTools.tameWithName(entityplayer, baby);
                 baby.setType(l);
@@ -2235,7 +2237,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound) {
+    public void writeEntityToNBT(CompoundNBT nbttagcompound) {
         super.writeEntityToNBT(nbttagcompound);
         nbttagcompound.setBoolean("Saddle", getIsRideable());
         nbttagcompound.setBoolean("EatingHaystack", getIsSitting());
@@ -2245,12 +2247,12 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         nbttagcompound.setInteger("ArmorType", getArmorType());
 
         if (getIsChested() && this.localChest != null) {
-            NBTTagList nbttaglist = new NBTTagList();
+            ListNBT nbttaglist = new ListNBT();
             for (int i = 0; i < this.localChest.getSizeInventory(); i++) {
                 // grab the current item stack
                 this.localStack = this.localChest.getStackInSlot(i);
                 if (!this.localStack.isEmpty()) {
-                    NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                    CompoundNBT nbttagcompound1 = new CompoundNBT();
                     nbttagcompound1.setByte("Slot", (byte) i);
                     this.localStack.writeToNBT(nbttagcompound1);
                     nbttaglist.appendTag(nbttagcompound1);
@@ -2261,7 +2263,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound) {
+    public void readEntityFromNBT(CompoundNBT nbttagcompound) {
         super.readEntityFromNBT(nbttagcompound);
         setRideable(nbttagcompound.getBoolean("Saddle"));
         setSitting(nbttagcompound.getBoolean("EatingHaystack"));
@@ -2270,10 +2272,10 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         setReproduced(nbttagcompound.getBoolean("HasReproduced"));
         setArmorType((byte) nbttagcompound.getInteger("ArmorType"));
         if (getIsChested()) {
-            NBTTagList nbttaglist = nbttagcompound.getTagList("Items", 10);
+            ListNBT nbttaglist = nbttagcompound.getTagList("Items", 10);
             this.localChest = new MoCAnimalChest("HorseChest", getInventorySize());
             for (int i = 0; i < nbttaglist.tagCount(); i++) {
-                NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
+                CompoundNBT nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
                 if (j < this.localChest.getSizeInventory()) {
                     this.localChest.setInventorySlotContents(j, new ItemStack(nbttagcompound1));

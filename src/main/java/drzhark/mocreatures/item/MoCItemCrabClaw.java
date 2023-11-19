@@ -3,22 +3,18 @@
  */
 package drzhark.mocreatures.item;
 
-import net.minecraft.block.state.IBlockState;
+import com.google.common.collect.Multimap;
+import drzhark.mocreatures.init.MoCItems;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import com.google.common.collect.Multimap;
-
-import drzhark.mocreatures.init.MoCItems;
 
 import java.util.UUID;
 
@@ -57,7 +53,7 @@ public class MoCItemCrabClaw extends MoCItem {
     }
     
     @Override
-    public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, EntityLivingBase entityLiving) {
+    public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, EntityLivingBase entityLiving) {
     	Item itemOffhand = entityLiving.getHeldItemOffhand().getItem();
     	
         if (!worldIn.isRemote && state.getBlockHardness(worldIn, pos) != 0.0D && itemOffhand instanceof MoCItemCrabClaw) {
@@ -67,7 +63,7 @@ public class MoCItemCrabClaw extends MoCItem {
         return true;
     }
     
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public boolean isFull3D() {
         return true;
     }
@@ -88,7 +84,7 @@ public class MoCItemCrabClaw extends MoCItem {
 
         if (equipmentSlot == EntityEquipmentSlot.OFFHAND) {
         	multimap.put(SharedMonsterAttributes.ARMOR.getName(), new AttributeModifier(TOUGHNESS_MODIFIER, "Crab claw armor", armor, 0));
-        	multimap.put(EntityPlayer.REACH_DISTANCE.getName(), new AttributeModifier(REACH_DISTANCE_MODIFIER, "Crab claw reach", reach, 0));
+        	multimap.put(PlayerEntity.REACH_DISTANCE.getName(), new AttributeModifier(REACH_DISTANCE_MODIFIER, "Crab claw reach", reach, 0));
         	multimap.put(SharedMonsterAttributes.ARMOR_TOUGHNESS.getName(), new AttributeModifier(TOUGHNESS_MODIFIER, "Crab claw toughness", toughness, 0));
         }
 

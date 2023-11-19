@@ -3,7 +3,7 @@
  */
 package drzhark.mocreatures.dimension.chunk;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.world.chunk.ChunkPrimer;
 
 // Courtesy of lhns
@@ -17,12 +17,12 @@ public class MoCOffsetChunkPrimer extends ChunkPrimer {
     }
 
     @Override
-    public void setBlockState(int x, int y, int z, IBlockState state) {
+    public void setBlockState(int x, int y, int z, BlockState state) {
         primer.setBlockState(x, y + offset, z, state);
     }
 
     @Override
-    public IBlockState getBlockState(int x, int y, int z) {
+    public BlockState getBlockState(int x, int y, int z) {
         return primer.getBlockState(x, y + offset, z);
     }
 

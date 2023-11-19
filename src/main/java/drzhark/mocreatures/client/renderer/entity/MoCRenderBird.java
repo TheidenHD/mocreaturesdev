@@ -6,13 +6,11 @@ package drzhark.mocreatures.client.renderer.entity;
 import drzhark.mocreatures.entity.passive.MoCEntityBird;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MoCRenderBird extends MoCRenderMoC<MoCEntityBird> {
 
     public MoCRenderBird(ModelBase modelbase, float f) {
@@ -20,7 +18,7 @@ public class MoCRenderBird extends MoCRenderMoC<MoCEntityBird> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityLiving par1Entity) {
+    protected ResourceLocation getEntityTexture(LivingEntity par1Entity) {
         return ((MoCEntityBird) par1Entity).getTexture();
     }
 

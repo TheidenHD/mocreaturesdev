@@ -3,13 +3,12 @@
  */
 package drzhark.mocreatures.client.model;
 
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
-public class MoCModelShark extends ModelBase {
+public class MoCModelShark<T extends Entity> extends EntityModel<T> {
     private final ModelRenderer body;
     private final ModelRenderer torso_1;
     private final ModelRenderer neck;

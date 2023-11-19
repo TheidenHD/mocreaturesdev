@@ -7,12 +7,12 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.dimension.biome.MoCBiomeProviderWyvernSkylands;
 import drzhark.mocreatures.dimension.chunk.MoCChunkProviderWyvernSkylands;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProviderSurface;
@@ -20,8 +20,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProvider;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 import java.util.Random;
@@ -51,14 +49,14 @@ public class MoCWorldProviderWyvernSkylands extends WorldProviderSurface {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public float[] calcSunriseSunsetColors(float celestialAngle, float partialTicks) {
         return MoCreatures.proxy.legacyWyvernLairSky ? null : super.calcSunriseSunsetColors(celestialAngle, partialTicks);
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public Vec3d getFogColor(float par1, float par2) {
+    @OnlyIn(Dist.CLIENT)
+    public Vector3d getFogColor(float par1, float par2) {
         float var4 = MathHelper.cos(par1 * (float) Math.PI * 2.0F) * 2.0F + 0.5F;
 
         // Classic Sky
@@ -79,7 +77,7 @@ public class MoCWorldProviderWyvernSkylands extends WorldProviderSurface {
             var6 *= var4 * 0.0F + 0.15F;
             var7 *= var4 * 0.0F + 0.15F;
 
-            return new Vec3d(var5, var6, var7);
+            return new Vector3d(var5, var6, var7);
         }
 
         // New Sky
@@ -100,12 +98,12 @@ public class MoCWorldProviderWyvernSkylands extends WorldProviderSurface {
             var6 *= var4 * (var4 * 0.94F + 0.06F);
             var7 *= var4 * (var4 * 0.91F + 0.09F);
 
-            return new Vec3d(var5, var6, var7);
+            return new Vector3d(var5, var6, var7);
         }
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public boolean isSkyColored() {
         return true;
     }
@@ -116,7 +114,7 @@ public class MoCWorldProviderWyvernSkylands extends WorldProviderSurface {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public float getCloudHeight() {
         return -5.0F;
     }
@@ -129,7 +127,7 @@ public class MoCWorldProviderWyvernSkylands extends WorldProviderSurface {
     @Override
     public boolean canCoordinateBeSpawn(int xPos, int zPos) {
         BlockPos pos = this.world.getTopSolidOrLiquidBlock(new BlockPos(xPos, 0, zPos));
-        IBlockState blockState = this.world.getBlockState(pos);
+        BlockState blockState = this.world.getBlockState(pos);
         Block block = blockState.getBlock();
         Material material = blockState.getMaterial();
         return material.blocksMovement() && !block.isLeaves(blockState, this.world, pos) && !block.isFoliage(this.world, pos);
@@ -171,7 +169,7 @@ public class MoCWorldProviderWyvernSkylands extends WorldProviderSurface {
 
     // No bed explosions allowed
     @Override
-    public WorldSleepResult canSleepAt(EntityPlayer player, BlockPos pos) {
+    public WorldSleepResult canSleepAt(PlayerEntity player, BlockPos pos) {
         Random message = player.world.rand;
         int random;
         random = message.nextInt(4);
@@ -199,7 +197,7 @@ public class MoCWorldProviderWyvernSkylands extends WorldProviderSurface {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public boolean doesXZShowFog(int par1, int par2) {
         return MoCreatures.proxy.foggyWyvernLair;
     }

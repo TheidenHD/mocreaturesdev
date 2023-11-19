@@ -7,10 +7,8 @@ import drzhark.mocreatures.client.model.MoCModelScorpion;
 import drzhark.mocreatures.entity.hunter.MoCEntityPetScorpion;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MoCRenderPetScorpion extends MoCRenderMoC<MoCEntityPetScorpion> {
 
     public MoCRenderPetScorpion(MoCModelScorpion modelbase, float f) {

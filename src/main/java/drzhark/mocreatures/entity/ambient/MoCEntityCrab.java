@@ -18,14 +18,12 @@ import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
@@ -42,7 +40,7 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
         this.tasks.addTask(1, new EntityAIFollowOwnerPlayer(this, 0.8D, 6F, 5F));
         this.tasks.addTask(4, new EntityAIWanderMoC2(this, 1.0D));
         this.tasks.addTask(5, new EntityAIAttackMelee(this, 1.0D, true));
-        this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(6, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
         this.tasks.addTask(6, new EntityAILookIdle(this));
         this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
     }
@@ -82,7 +80,7 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected int getExperiencePoints(EntityPlayer player) {
+    protected int getExperiencePoints(PlayerEntity player) {
         return 1 + this.world.rand.nextInt(3);
     }
 
@@ -111,7 +109,7 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
 
     @Override
     protected void collideWithEntity(Entity entity) {
-        if (entity instanceof EntityPlayer && this.getAttackTarget() == null && !(entity.world.getDifficulty() == EnumDifficulty.PEACEFUL)) {
+        if (entity instanceof PlayerEntity && this.getAttackTarget() == null && !(entity.world.getDifficulty() == EnumDifficulty.PEACEFUL)) {
             entity.attackEntityFrom(DamageSource.causeMobDamage(this), 1.5F);
         }
 
@@ -124,7 +122,7 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
         return super.attackEntityAsMob(entity);
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getSizeFactor() {
         return 0.7F * getAge() * 0.01F;
@@ -135,7 +133,7 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
         return true;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public boolean isFleeing() {
         return MoCTools.getMyMovementSpeed(this) > 0.09F;
     }

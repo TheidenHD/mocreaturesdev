@@ -11,8 +11,6 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -67,12 +65,12 @@ public class MoCBlockSapling extends BlockBush implements IGrowable {
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+    public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos) {
         return AABB;
     }
 
     @Override
-    public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
+    public void updateTick(World world, BlockPos pos, BlockState state, Random rand) {
         if (!world.isRemote) {
             super.updateTick(world, pos, state, rand);
 
@@ -83,7 +81,7 @@ public class MoCBlockSapling extends BlockBush implements IGrowable {
         }
     }
 
-    public void grow(World world, BlockPos pos, IBlockState state, Random rand) {
+    public void grow(World world, BlockPos pos, BlockState state, Random rand) {
         if (state.getValue(STAGE) == 0) {
             world.setBlockState(pos, state.cycleProperty(STAGE), 4);
         } else {
@@ -92,7 +90,7 @@ public class MoCBlockSapling extends BlockBush implements IGrowable {
     }
 
     @SuppressWarnings("deprecation")
-    public void generateTree(World world, BlockPos pos, IBlockState state, Random rand) {
+    public void generateTree(World world, BlockPos pos, BlockState state, Random rand) {
         if (!TerrainGen.saplingGrowTree(world, rand, pos)) return;
         WorldGenerator generator = null;
         int i = 0;
@@ -123,7 +121,7 @@ public class MoCBlockSapling extends BlockBush implements IGrowable {
                 break;
         }
 
-        IBlockState air = Blocks.AIR.getDefaultState();
+        BlockState air = Blocks.AIR.getDefaultState();
 
         if (flag) {
             world.setBlockState(pos.add(i, 0, j), air, 4);
@@ -157,7 +155,7 @@ public class MoCBlockSapling extends BlockBush implements IGrowable {
     }
 
     public boolean isTypeAt(final World world, final BlockPos pos, final EnumWoodType type) {
-        final IBlockState state = world.getBlockState(pos);
+        final BlockState state = world.getBlockState(pos);
 
         if (state.getBlock() instanceof MoCBlockSapling) {
             return ((MoCBlockSapling) state.getBlock()).getWoodType() == type;
@@ -166,23 +164,23 @@ public class MoCBlockSapling extends BlockBush implements IGrowable {
         }
     }
 
-    public boolean canGrow(World world, BlockPos pos, IBlockState state, boolean isClient) {
+    public boolean canGrow(World world, BlockPos pos, BlockState state, boolean isClient) {
         return true;
     }
 
-    public boolean canUseBonemeal(World world, Random rand, BlockPos pos, IBlockState state) {
+    public boolean canUseBonemeal(World world, Random rand, BlockPos pos, BlockState state) {
         return world.rand.nextFloat() < 0.45D;
     }
 
-    public void grow(World world, Random rand, BlockPos pos, IBlockState state) {
+    public void grow(World world, Random rand, BlockPos pos, BlockState state) {
         this.grow(world, pos, state, rand);
     }
 
-    public IBlockState getStateFromMeta(int meta) {
+    public BlockState getStateFromMeta(int meta) {
         return this.getDefaultState().withProperty(STAGE, meta);
     }
 
-    public int getMetaFromState(IBlockState state) {
+    public int getMetaFromState(BlockState state) {
         return state.getValue(STAGE);
     }
 
@@ -191,14 +189,14 @@ public class MoCBlockSapling extends BlockBush implements IGrowable {
     }
 
     @Override
-    public boolean canBlockStay(World world, BlockPos pos, IBlockState state) {
+    public boolean canBlockStay(World world, BlockPos pos, BlockState state) {
         Block soil = world.getBlockState(pos.down()).getBlock();
         return soil instanceof MoCBlockGrass || soil instanceof MoCBlockDirt || soil instanceof BlockGrass || soil instanceof BlockDirt || soil instanceof BlockFarmland;
     }
 
     @Override
     public boolean canPlaceBlockAt(World world, BlockPos pos) {
-        IBlockState soil = world.getBlockState(pos.down());
+        BlockState soil = world.getBlockState(pos.down());
         Block tempblock = soil.getBlock();
         if (tempblock instanceof MoCBlockDirt || tempblock instanceof MoCBlockGrass) {
             return true;

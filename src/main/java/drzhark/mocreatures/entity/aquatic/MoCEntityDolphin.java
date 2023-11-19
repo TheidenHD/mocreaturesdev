@@ -15,8 +15,8 @@ import drzhark.mocreatures.network.message.MoCMessageHeart;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -256,7 +256,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, EnumHand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -325,10 +325,10 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
             }
             //TODO
             if ((!this.isBeingRidden()) && (this.deathTime == 0) && (!getIsTamed() || getIsHungry())) {
-                EntityItem entityitem = getClosestFish(this, 12D);
+                ItemEntity entityitem = getClosestFish(this, 12D);
                 if (entityitem != null) {
                     moveToNextEntity(entityitem);
-                    EntityItem entityitem1 = getClosestFish(this, 2D);
+                    ItemEntity entityitem1 = getClosestFish(this, 2D);
                     if ((this.rand.nextInt(20) == 0) && (entityitem1 != null) && (this.deathTime == 0)) {
 
                         entityitem1.setDead();
@@ -387,7 +387,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
                     babydolphin.setOwnerId(this.getOwnerId());
                     babydolphin.setTamed(true);
                     UUID ownerId = this.getOwnerId();
-                    EntityPlayer entityplayer = null;
+                    PlayerEntity entityplayer = null;
                     if (ownerId != null) {
                         entityplayer = this.world.getPlayerEntityByUUID(this.getOwnerId());
                     }

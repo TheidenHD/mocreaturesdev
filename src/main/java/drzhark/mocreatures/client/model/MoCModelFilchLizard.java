@@ -4,13 +4,13 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.passive.MoCEntityFilchLizard;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
 // Courtesy of Daveyx0, permission given
-public class MoCModelFilchLizard extends ModelBase {
+public class MoCModelFilchLizard<T extends Entity> extends EntityModel<T> {
 
     public ModelRenderer Body;
     public ModelRenderer Head;

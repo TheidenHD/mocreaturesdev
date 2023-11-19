@@ -8,17 +8,16 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.hostile.MoCEntityOgre;
 import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntityMob;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -30,7 +29,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class MoCEntityLitterBox extends EntityLiving {
+public class MoCEntityLitterBox extends LivingEntity {
 
     private static final DataParameter<Boolean> PICKED_UP = EntityDataManager.createKey(MoCEntityLitterBox.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> USED_LITTER = EntityDataManager.createKey(MoCEntityLitterBox.class, DataSerializers.BOOLEAN);
@@ -113,7 +112,7 @@ public class MoCEntityLitterBox extends EntityLiving {
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, EnumHand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && stack.getItem() == Item.getItemFromBlock(Blocks.SAND)) {
             MoCTools.playCustomSound(this, SoundEvents.BLOCK_SAND_PLACE);
@@ -154,10 +153,10 @@ public class MoCEntityLitterBox extends EntityLiving {
                 this.litterTime++;
                 List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(12D, 4D, 12D));
                 for (Entity entity : list) {
-                    if (!(entity instanceof EntityMob)) {
+                    if (!(entity instanceof MobEntity)) {
                         continue;
                     }
-                    EntityMob entityMob = (EntityMob) entity;
+                    MobEntity entityMob = (MobEntity) entity;
                     entityMob.setAttackTarget(this);
                     if (entityMob instanceof EntityCreeper) {
                         ((EntityCreeper) entityMob).setCreeperState(-1);
@@ -178,13 +177,13 @@ public class MoCEntityLitterBox extends EntityLiving {
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
+    public void writeEntityToNBT(CompoundNBT compound) {
         compound = MoCTools.getEntityData(this);
         compound.setBoolean("UsedLitter", getUsedLitter());
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
+    public void readEntityFromNBT(CompoundNBT compound) {
         compound = MoCTools.getEntityData(this);
         setUsedLitter(compound.getBoolean("UsedLitter"));
     }

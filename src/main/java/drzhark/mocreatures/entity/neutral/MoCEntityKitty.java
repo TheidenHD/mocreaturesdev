@@ -16,17 +16,17 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWanderAvoidWater;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -57,7 +57,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
     private boolean foundTree;
     private boolean isSwinging;
     private boolean onTree;
-    private EntityItem itemAttackTarget;
+    private ItemEntity itemAttackTarget;
 
     public MoCEntityKitty(World world) {
         super(world);
@@ -77,7 +77,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
         this.tasks.addTask(4, new EntityAIFollowAdult(this, 1.0D));
         this.tasks.addTask(5, new EntityAIAttackMelee(this, 1.0D, true));
         this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 1.0D));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(7, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
     }
 
     @Override
@@ -213,7 +213,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
         if (getKittyState() != 18 && getKittyState() != 10) {
             swingArm();
         }
-        if ((getKittyState() == 13 && entityIn instanceof EntityPlayer) || (getKittyState() == 8 && entityIn instanceof EntityItem) || (getKittyState() == 18 && entityIn instanceof MoCEntityKitty) || getKittyState() == 10) {
+        if ((getKittyState() == 13 && entityIn instanceof PlayerEntity) || (getKittyState() == 8 && entityIn instanceof ItemEntity) || (getKittyState() == 18 && entityIn instanceof MoCEntityKitty) || getKittyState() == 10) {
             return false;
         }
         return super.attackEntityAsMob(entityIn);
@@ -235,7 +235,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                     }
                     return true;
                 }
-                if (entity1 instanceof EntityPlayer && super.shouldAttackPlayers() && (getTemper() == 2 || (getTemper() == 0 && this.rand.nextInt(2) < 1))) {
+                if (entity1 instanceof PlayerEntity && super.shouldAttackPlayers() && (getTemper() == 2 || (getTemper() == 0 && this.rand.nextInt(2) < 1))) {
                     if (getKittyState() < 2) {
                         setAttackTarget(entity1);
                     } else if (getKittyState() == 19 || getKittyState() == 20 || getKittyState() == 21) {
@@ -368,9 +368,9 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
         }
     }
 
-    public EntityLiving getKittyStuff(Entity entity, double d, boolean flag) {
+    public LivingEntity getKittyStuff(Entity entity, double d, boolean flag) {
         double d1 = -1D;
-        EntityLiving obj = null;
+        LivingEntity obj = null;
         List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(entity, getEntityBoundingBox().grow(d));
         for (Entity entity1 : list) {
             if (flag) {
@@ -403,7 +403,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
 
     @Override
     public double getYOffset() {
-        if (this.getRidingEntity() instanceof EntityPlayer && this.world.isRemote) {
+        if (this.getRidingEntity() instanceof PlayerEntity && this.world.isRemote) {
             if (getKittyState() == 10) {
                 return (super.getYOffset() + 0.4F);
             }
@@ -418,7 +418,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, EnumHand hand) {
         // Only process one hand to prevent double interactions
         if (hand != EnumHand.MAIN_HAND) {
             return false;
@@ -451,7 +451,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
             if (!player.capabilities.isCreativeMode) stack.shrink(1);
             setKittyState(8);
             if (!this.world.isRemote) {
-                EntityItem entityitem = new EntityItem(this.world, this.posX, this.posY + 1.0D, this.posZ, new ItemStack(MoCItems.woolball, 1));
+                ItemEntity entityitem = new ItemEntity(this.world, this.posX, this.posY + 1.0D, this.posZ, new ItemStack(MoCItems.woolball, 1));
                 entityitem.setPickupDelay(30);
                 entityitem.setNoDespawn();
                 this.world.spawnEntity(entityitem);
@@ -556,7 +556,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                     if (!getIsHungry() || this.rand.nextInt(10) != 0) {
                         break;
                     }
-                    EntityItem entityItem = getClosestItem(this, 10D, Items.COOKED_FISH, Items.COOKED_FISH);
+                    ItemEntity entityItem = getClosestItem(this, 10D, Items.COOKED_FISH, Items.COOKED_FISH);
                     if (entityItem != null) {
                         float f = entityItem.getDistance(this);
                         if (f > 2.0F) {
@@ -670,7 +670,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                         break;
                     }
                     if (this.rand.nextInt(20) < 1) {
-                        EntityPlayer player = this.world.getClosestPlayerToEntity(this, 12D);
+                        PlayerEntity player = this.world.getClosestPlayerToEntity(this, 12D);
                         if (player != null) {
                             ItemStack stack = player.inventory.getCurrentItem();
                             if (!stack.isEmpty() && stack.getItem() == MoCItems.woolball) {
@@ -802,7 +802,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                             this.getNavigator().clearPath();
                         }
                     }
-                    if (!(getAttackTarget() instanceof EntityPlayer)) {
+                    if (!(getAttackTarget() instanceof PlayerEntity)) {
                         break;
                     }
                     float f4 = getDistance(getAttackTarget());
@@ -811,7 +811,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                     }
                     break;
                 case 11: // Looking for player holding wool ball
-                    EntityPlayer player1 = this.world.getClosestPlayerToEntity(this, 18D);
+                    PlayerEntity player1 = this.world.getClosestPlayerToEntity(this, 18D);
                     if ((player1 == null) || (this.rand.nextInt(10) != 0)) {
                         break;
                     }
@@ -875,7 +875,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                         break;
                     }
                     this.rotationYaw = this.getRidingEntity().rotationYaw + 90F;
-                    EntityPlayer player2 = (EntityPlayer) this.getRidingEntity();
+                    PlayerEntity player2 = (PlayerEntity) this.getRidingEntity();
                     if (player2 == null) {
                         changeKittyState(13);
                         break;
@@ -945,7 +945,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                     if (getTemper() == 2 || (getTemper() == 0 && this.rand.nextInt(2) < 1)) {
                         changeKittyState(7);
                     }
-                    EntityPlayer player3 = this.world.getClosestPlayerToEntity(this, 2D);
+                    PlayerEntity player3 = this.world.getClosestPlayerToEntity(this, 2D);
                     if (player3 != null) {
                         changeKittyState(7);
                     }
@@ -1031,7 +1031,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                         }
                         this.kittyTimer = 1000;
                     }
-                    if (getAttackTarget() instanceof EntityPlayer && this.rand.nextInt(300) < 1) {
+                    if (getAttackTarget() instanceof PlayerEntity && this.rand.nextInt(300) < 1) {
                         setAttackTarget(null);
                     }
                     break;
@@ -1117,7 +1117,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
+    public void readEntityFromNBT(CompoundNBT compound) {
         super.readEntityFromNBT(compound);
         setSitting(compound.getBoolean("Sitting"));
         setKittyState(compound.getInteger("KittyState"));
@@ -1125,7 +1125,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
+    public void writeEntityToNBT(CompoundNBT compound) {
         super.writeEntityToNBT(compound);
         compound.setBoolean("Sitting", getIsSitting());
         compound.setInteger("KittyState", getKittyState());

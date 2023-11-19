@@ -9,7 +9,7 @@ import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -58,7 +58,7 @@ public class MoCEntityGrasshopper extends MoCEntityInsect {
         super.onLivingUpdate();
         if (!this.world.isRemote) {
             if (getIsFlying() || !this.onGround) {
-                EntityPlayer ep = this.world.getClosestPlayerToEntity(this, 5D);
+                PlayerEntity ep = this.world.getClosestPlayerToEntity(this, 5D);
                 if (ep != null && --this.soundCounter == -1) {
                     MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GRASSHOPPER_FLY);
                     this.soundCounter = 10;

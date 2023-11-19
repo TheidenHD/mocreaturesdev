@@ -4,13 +4,7 @@
 package drzhark.mocreatures;
 
 import com.mojang.authlib.GameProfile;
-import drzhark.mocreatures.event.MoCEventHooksClient;
-import drzhark.mocreatures.init.MoCCreativeTabs;
 import drzhark.mocreatures.client.MoCKeyHandler;
-import drzhark.mocreatures.network.command.CommandMoCPets;
-import drzhark.mocreatures.network.command.CommandMoCSpawn;
-import drzhark.mocreatures.network.command.CommandMoCTP;
-import drzhark.mocreatures.network.command.CommandMoCreatures;
 import drzhark.mocreatures.compat.CompatHandler;
 import drzhark.mocreatures.compat.datafixes.BlockIDFixer;
 import drzhark.mocreatures.compat.datafixes.EntityIDFixer;
@@ -18,15 +12,21 @@ import drzhark.mocreatures.dimension.MoCWorldProviderWyvernSkylands;
 import drzhark.mocreatures.entity.MoCEntityData;
 import drzhark.mocreatures.entity.tameable.MoCPetMapData;
 import drzhark.mocreatures.event.MoCEventHooks;
+import drzhark.mocreatures.event.MoCEventHooksClient;
 import drzhark.mocreatures.event.MoCEventHooksTerrain;
+import drzhark.mocreatures.init.MoCCreativeTabs;
 import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.network.MoCMessageHandler;
+import drzhark.mocreatures.network.command.CommandMoCPets;
+import drzhark.mocreatures.network.command.CommandMoCSpawn;
+import drzhark.mocreatures.network.command.CommandMoCTP;
+import drzhark.mocreatures.network.command.CommandMoCreatures;
 import drzhark.mocreatures.proxy.MoCProxy;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.DimensionType;
@@ -62,8 +62,8 @@ public class MoCreatures {
     public static DimensionType WYVERN_SKYLANDS;
     public static int wyvernSkylandsDimensionID;
     public static Object2ObjectLinkedOpenHashMap<String, MoCEntityData> mocEntityMap = new Object2ObjectLinkedOpenHashMap<>();
-    public static Object2ObjectOpenHashMap<Class<? extends EntityLiving>, MoCEntityData> entityMap = new Object2ObjectOpenHashMap<>();
-    public static Int2ObjectOpenHashMap<Class<? extends EntityLiving>> instaSpawnerMap = new Int2ObjectOpenHashMap<>();
+    public static Object2ObjectOpenHashMap<Class<? extends LivingEntity>, MoCEntityData> entityMap = new Object2ObjectOpenHashMap<>();
+    public static Int2ObjectOpenHashMap<Class<? extends LivingEntity>> instaSpawnerMap = new Int2ObjectOpenHashMap<>();
     public MoCPetMapData mapData;
 
     public static boolean isServer() {

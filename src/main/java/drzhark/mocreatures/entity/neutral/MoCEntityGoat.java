@@ -18,8 +18,8 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
@@ -70,7 +70,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         this.tasks.addTask(4, new EntityAIFollowAdult(this, 1.0D));
         this.tasks.addTask(5, new EntityAIAttackMelee(this, 1.0D, true));
         this.tasks.addTask(6, new EntityAIWanderMoC2(this, 1.0D));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(7, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
     }
 
     @Override
@@ -263,11 +263,11 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         }
 
         if (!getUpset() && !getCharging()) {
-            EntityPlayer entityplayer1 = this.world.getClosestPlayerToEntity(this, 24D);
+            PlayerEntity entityplayer1 = this.world.getClosestPlayerToEntity(this, 24D);
             if (entityplayer1 != null) {// Behaviour that happens only close to player :)
 
                 // is there food around? only check with player near
-                EntityItem entityitem = getClosestEntityItem(this, 10D);
+                ItemEntity entityitem = getClosestEntityItem(this, 10D);
                 if (entityitem != null) {
                     float f = entityitem.getDistance(this);
                     if (f > 2.0F) {
@@ -439,7 +439,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         if (getEating()) {
             this.eatcount += 1;
             if (this.eatcount == 2) {
-                EntityPlayer entityplayer1 = this.world.getClosestPlayerToEntity(this, 3D);
+                PlayerEntity entityplayer1 = this.world.getClosestPlayerToEntity(this, 3D);
                 if (entityplayer1 != null) {
                     MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EATING);
                 }
@@ -508,7 +508,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, EnumHand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;

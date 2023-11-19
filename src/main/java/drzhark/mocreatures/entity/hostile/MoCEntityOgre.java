@@ -13,9 +13,8 @@ import drzhark.mocreatures.network.message.MoCMessageExplode;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.*;
 import net.minecraft.entity.monster.EntityIronGolem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
@@ -40,9 +39,9 @@ public class MoCEntityOgre extends MoCEntityMob {
     protected void initEntityAI() {
         this.tasks.addTask(0, new EntityAISwimming(this));
         this.tasks.addTask(2, new MoCEntityOgre.AIOgreAttack(this));
-        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(8, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
         this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
-        this.targetTasks.addTask(2, new MoCEntityOgre.AIOgreTarget<>(this, EntityPlayer.class));
+        this.targetTasks.addTask(2, new MoCEntityOgre.AIOgreTarget<>(this, PlayerEntity.class));
         this.targetTasks.addTask(3, new MoCEntityOgre.AIOgreTarget<>(this, EntityIronGolem.class));
     }
 

@@ -9,13 +9,12 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.block.Block;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.*;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -57,9 +56,9 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         this.tasks.addTask(1, new EntityAIPanic(this, 1.25D));
         this.tasks.addTask(2, new EntityAIGrabItemFromFloor(this, 1.2D, Sets.newHashSet(stealItems), true));
         this.tasks.addTask(3, new EntityAIStealFromPlayer(this, 0.8D, Sets.newHashSet(stealItems), true));
-        this.tasks.addTask(4, new MoCEntityFilchLizard.AIAvoidWhenNasty(this, EntityPlayer.class, 16.0F, 1.0D, 1.33D));
+        this.tasks.addTask(4, new MoCEntityFilchLizard.AIAvoidWhenNasty(this, PlayerEntity.class, 16.0F, 1.0D, 1.33D));
         this.tasks.addTask(5, new EntityAIWander(this, 1.0D));
-        this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
+        this.tasks.addTask(6, new EntityAIWatchClosest(this, PlayerEntity.class, 6.0F));
         this.tasks.addTask(7, new EntityAILookIdle(this));
     }
 
@@ -109,7 +108,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
     }
 
     @Override
-    protected int getExperiencePoints(EntityPlayer player) {
+    protected int getExperiencePoints(PlayerEntity player) {
         return experienceValue;
     }
 
@@ -207,7 +206,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
     }
 
     static class AIAvoidWhenNasty extends EntityAIAvoidEntity {
-        public AIAvoidWhenNasty(EntityCreature theEntityIn, Class classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn) {
+        public AIAvoidWhenNasty(CreatureEntity theEntityIn, Class classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn) {
             super(theEntityIn, classToAvoidIn, avoidDistanceIn, farSpeedIn, nearSpeedIn);
         }
 
@@ -223,7 +222,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         /**
          * The entity using this AI that is tempted by the player.
          */
-        private final EntityCreature temptedEntity;
+        private final CreatureEntity temptedEntity;
         private final double speed;
         private final Set<ItemStack> temptItem;
         private final boolean canGetScared;
@@ -250,11 +249,11 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         /**
          * The player that is tempting the entity that is using this AI.
          */
-        private EntityItem temptingItem;
+        private ItemEntity temptingItem;
         private boolean isRunning;
         private int stealDelay = 0;
 
-        public EntityAIGrabItemFromFloor(EntityCreature temptedEntityIn, double speedIn, Set<ItemStack> temptItemIn, boolean canGetScared) {
+        public EntityAIGrabItemFromFloor(CreatureEntity temptedEntityIn, double speedIn, Set<ItemStack> temptItemIn, boolean canGetScared) {
             this.temptedEntity = temptedEntityIn;
             this.speed = speedIn;
             this.temptItem = temptItemIn;
@@ -284,8 +283,8 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
                 return false;
             } else if (!list.isEmpty()) {
                 for (Entity entity : list) {
-                    if (entity instanceof EntityItem) {
-                        EntityItem item = (EntityItem) entity;
+                    if (entity instanceof ItemEntity) {
+                        ItemEntity item = (ItemEntity) entity;
                         ItemStack stack = item.getItem();
                         if (!stack.isEmpty() && this.isTempting(stack)) {
                             this.temptingItem = item;
@@ -364,7 +363,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         /**
          * The entity using this AI that is tempted by the player.
          */
-        private final EntityCreature temptedEntity;
+        private final CreatureEntity temptedEntity;
         private final double speed;
         private final Set<ItemStack> temptItem;
         private final boolean canGetScared;
@@ -391,11 +390,11 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         /**
          * The player that is tempting the entity that is using this AI.
          */
-        private EntityPlayer temptingPlayer;
+        private PlayerEntity temptingPlayer;
         private boolean isRunning;
         private int stealDelay = 0;
 
-        public EntityAIStealFromPlayer(EntityCreature temptedEntityIn, double speedIn, Set<ItemStack> temptItemIn, boolean canGetScared) {
+        public EntityAIStealFromPlayer(CreatureEntity temptedEntityIn, double speedIn, Set<ItemStack> temptItemIn, boolean canGetScared) {
             this.temptedEntity = temptedEntityIn;
             this.speed = speedIn;
             this.temptItem = temptItemIn;

@@ -4,8 +4,8 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.MoCreatures;
-import drzhark.mocreatures.proxy.MoCProxyClient;
 import drzhark.mocreatures.entity.IMoCEntity;
+import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
@@ -13,13 +13,11 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
-public class MoCRenderMoC<T extends EntityLiving> extends RenderLiving<T> {
+@OnlyIn(Dist.CLIENT)
+public class MoCRenderMoC<T extends LivingEntity> extends RenderLiving<T> {
 
     private float prevPitch;
     private float prevRoll;
@@ -63,8 +61,8 @@ public class MoCRenderMoC<T extends EntityLiving> extends RenderLiving<T> {
                     }
                     tessellator1.getBuffer().begin(7, DefaultVertexFormats.POSITION_COLOR);
                     // might break SSP
-                    float f8 = ((EntityLiving) entityMoC).getHealth();
-                    float f9 = ((EntityLiving) entityMoC).getMaxHealth();
+                    float f8 = ((LivingEntity) entityMoC).getHealth();
+                    float f9 = ((LivingEntity) entityMoC).getMaxHealth();
                     float f10 = f8 / f9;
                     float f11 = 40F * f10;
                     tessellator1.getBuffer().pos(-20F + f11, -10 + yOff, 0.0D).color(0.7F, 0.0F, 0.0F, 1.0F).endVertex();
@@ -180,7 +178,7 @@ public class MoCRenderMoC<T extends EntityLiving> extends RenderLiving<T> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityLiving entity) {
+    protected ResourceLocation getEntityTexture(LivingEntity entity) {
         return ((IMoCEntity) entity).getTexture();
     }
 }

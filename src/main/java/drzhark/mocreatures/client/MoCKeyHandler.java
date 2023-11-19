@@ -3,13 +3,13 @@
  */
 package drzhark.mocreatures.client;
 
-import drzhark.mocreatures.proxy.MoCProxyClient;
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageEntityDive;
 import drzhark.mocreatures.network.message.MoCMessageEntityJump;
+import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -32,7 +32,7 @@ public class MoCKeyHandler {
             keyPressed = Keyboard.getEventKey();
         }
 
-        EntityPlayer ep = MoCProxyClient.mc.player;
+        PlayerEntity ep = MoCProxyClient.mc.player;
         if (ep == null) {
             return;
         }

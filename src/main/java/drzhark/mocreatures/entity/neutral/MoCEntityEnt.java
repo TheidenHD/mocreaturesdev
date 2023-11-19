@@ -9,19 +9,16 @@ import drzhark.mocreatures.entity.MoCEntityAnimal;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDirt;
-import net.minecraft.block.BlockGrass;
-import net.minecraft.block.BlockSapling;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemAxe;
@@ -53,7 +50,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
         this.tasks.addTask(1, new EntityAISwimming(this));
         this.tasks.addTask(5, new EntityAIAttackMelee(this, 1.0D, true));
         this.tasks.addTask(6, new EntityAIWanderMoC2(this, 1.0D));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(7, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
     }
 
     @Override
@@ -83,14 +80,14 @@ public class MoCEntityEnt extends MoCEntityAnimal {
     }
 
     @Override
-    protected int getExperiencePoints(EntityPlayer player) {
+    protected int getExperiencePoints(PlayerEntity player) {
         return experienceValue;
     }
 
     @Override
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
-        if (damagesource.getTrueSource() != null && damagesource.getTrueSource() instanceof EntityPlayer) {
-            EntityPlayer ep = (EntityPlayer) damagesource.getTrueSource();
+        if (damagesource.getTrueSource() != null && damagesource.getTrueSource() instanceof PlayerEntity) {
+            PlayerEntity ep = (PlayerEntity) damagesource.getTrueSource();
             ItemStack currentItem = ep.inventory.getCurrentItem();
             Item itemheld = currentItem.getItem();
             if (itemheld instanceof ItemAxe) {
@@ -166,8 +163,8 @@ public class MoCEntityEnt extends MoCEntityAnimal {
         int n = this.rand.nextInt(3) + 1;
         int j = 0;
         for (Entity entity : list) {
-            if (entity instanceof EntityAnimal && entity.width < 0.6F && entity.height < 0.6F) {
-                EntityAnimal entityanimal = (EntityAnimal) entity;
+            if (entity instanceof AnimalEntity && entity.width < 0.6F && entity.height < 0.6F) {
+                AnimalEntity entityanimal = (AnimalEntity) entity;
                 if (entityanimal.getAttackTarget() == null && !MoCTools.isTamed(entityanimal)) {
                     Path pathentity = entityanimal.getNavigator().getPathToEntityLiving(this);
                     entityanimal.setAttackTarget(this);
@@ -203,7 +200,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
         }
 
         if (blockUnderFeet instanceof BlockGrass && blockOnFeet == Blocks.AIR) {
-            IBlockState iblockstate = getBlockStateToBePlanted();
+            BlockState iblockstate = getBlockStateToBePlanted();
             int plantChance = 3;
             if (iblockstate.getBlock() instanceof BlockSapling) {
                 plantChance = 10;
@@ -236,7 +233,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
      *
      * @return Any of the flowers, mushrooms, grass and saplings
      */
-    private IBlockState getBlockStateToBePlanted() {
+    private BlockState getBlockStateToBePlanted() {
         int blockID;
         int metaData = 0;
         switch (this.rand.nextInt(20)) {
@@ -284,7 +281,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
             default:
                 blockID = 31;
         }
-        IBlockState iblockstate;
+        BlockState iblockstate;
         iblockstate = Block.getBlockById(blockID).getStateFromMeta(metaData);
         return iblockstate;
 

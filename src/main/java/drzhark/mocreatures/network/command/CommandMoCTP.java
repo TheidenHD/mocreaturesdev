@@ -3,10 +3,10 @@
  */
 package drzhark.mocreatures.network.command;
 
-import drzhark.mocreatures.entity.tameable.MoCPetData;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
+import drzhark.mocreatures.entity.tameable.MoCPetData;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;

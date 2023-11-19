@@ -5,7 +5,7 @@ package drzhark.mocreatures.dimension.worldgen;
 
 import drzhark.mocreatures.init.MoCBlocks;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -55,8 +55,8 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree {
      * Contains a list of a points at which to generate groups of leaves.
      */
     int[][] leafNodes;
-    private IBlockState iBlockStateLog;
-    private IBlockState iBlockStateLeaf;
+    private BlockState iBlockStateLog;
+    private BlockState iBlockStateLeaf;
 
     public MoCWorldGenBigTree(boolean par1) {
         super(par1);
@@ -65,7 +65,7 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree {
     /**
      * Generates a Big Tree with the given log and leaf block IDs
      */
-    public MoCWorldGenBigTree(boolean par1, IBlockState iblockstateLog, IBlockState iblockstateleaf, int trunksize, int heightlimit, int leafdist) {
+    public MoCWorldGenBigTree(boolean par1, BlockState iblockstateLog, BlockState iblockstateleaf, int trunksize, int heightlimit, int leafdist) {
         super(par1);
         this.iBlockStateLog = iblockstateLog;
         this.iBlockStateLeaf = iblockstateleaf;
@@ -165,7 +165,7 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree {
                 if (!(var15 > par4 * par4)) {
                     var11[var9] = var10[var9] + var13;
                     BlockPos pos = new BlockPos(var11[0], var11[1], var11[2]);
-                    IBlockState blockstate = this.world.getBlockState(pos);
+                    BlockState blockstate = this.world.getBlockState(pos);
                     Block block = blockstate.getBlock();
 
                     if (block == Blocks.AIR || block == this.iBlockStateLeaf.getBlock()) {
@@ -392,7 +392,7 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree {
         int[] var2 = new int[]{pos.getX(), pos.getY() + this.heightLimit - 1, pos.getZ()};
         Block block = par1World.getBlockState(pos.down()).getBlock();
 
-        /*IBlockState iblockstate2 = this.world.getBlockState(new BlockPos(this.basePos[0], this.basePos[1] - 1, this.basePos[2]));
+        /*BlockState iblockstate2 = this.world.getBlockState(new BlockPos(this.basePos[0], this.basePos[1] - 1, this.basePos[2]));
 
         if (iblockstate2.getBlock() != MoCreatures.mocDirt.getDefaultState().getBlock() 
                 && iblockstate2.getBlock() != MoCreatures.mocGrass.getDefaultState().getBlock() ) {

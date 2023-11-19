@@ -4,15 +4,12 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.aquatic.MoCEntityRay;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelRay extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelRay<T extends Entity> extends EntityModel<T> {
 
     //public int typeInt;
     public boolean isMantaRay;

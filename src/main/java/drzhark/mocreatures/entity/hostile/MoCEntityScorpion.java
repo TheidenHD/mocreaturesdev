@@ -14,11 +14,10 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
-import net.minecraft.entity.ai.*;
 import net.minecraft.entity.monster.EntityIronGolem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -62,10 +61,10 @@ public class MoCEntityScorpion extends MoCEntityMob {
         this.tasks.addTask(3, new EntityAILeapAtTarget(this, 0.4F));
         this.tasks.addTask(4, new MoCEntityScorpion.AIScorpionAttack(this));
         this.tasks.addTask(5, new EntityAIWanderAvoidWater(this, 0.8D));
-        this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(6, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
         this.tasks.addTask(6, new EntityAILookIdle(this));
         this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
-        this.targetTasks.addTask(2, new MoCEntityScorpion.AIScorpionTarget<>(this, EntityPlayer.class));
+        this.targetTasks.addTask(2, new MoCEntityScorpion.AIScorpionTarget<>(this, PlayerEntity.class));
         this.targetTasks.addTask(3, new MoCEntityScorpion.AIScorpionTarget<>(this, EntityIronGolem.class));
     }
 
@@ -162,10 +161,10 @@ public class MoCEntityScorpion extends MoCEntityMob {
             /*List list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(4D, 2D, 4D));
             for (int i = 0; i < list.size(); i++) {
                 Entity entity = (Entity) list.get(i);
-                if (!(entity instanceof EntityMob)) {
+                if (!(entity instanceof MobEntity)) {
                     continue;
                 }
-                EntityMob entitymob = (EntityMob) entity;
+                MobEntity entitymob = (MobEntity) entity;
                 if (entitymob.getRidingEntity() == null
                         && (entitymob instanceof EntitySkeleton || entitymob instanceof EntityZombie || entitymob instanceof MoCEntitySilverSkeleton)) {
                     entitymob.mountEntity(this);
@@ -269,13 +268,13 @@ public class MoCEntityScorpion extends MoCEntityMob {
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound) {
+    public void readEntityFromNBT(CompoundNBT nbttagcompound) {
         super.readEntityFromNBT(nbttagcompound);
         setHasBabies(nbttagcompound.getBoolean("Babies"));
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound) {
+    public void writeEntityToNBT(CompoundNBT nbttagcompound) {
         super.writeEntityToNBT(nbttagcompound);
         nbttagcompound.setBoolean("Babies", getHasBabies());
     }

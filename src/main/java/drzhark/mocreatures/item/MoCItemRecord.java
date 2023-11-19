@@ -8,8 +8,6 @@ import drzhark.mocreatures.MoCreatures;
 import net.minecraft.item.ItemRecord;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class MoCItemRecord extends ItemRecord {
 
@@ -22,7 +20,7 @@ public class MoCItemRecord extends ItemRecord {
         this.setTranslationKey(name);
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     /*
      * Return the title for this record.
      */ public String getRecordTitle() {

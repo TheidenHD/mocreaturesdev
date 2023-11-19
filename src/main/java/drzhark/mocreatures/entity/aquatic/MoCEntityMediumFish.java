@@ -9,8 +9,6 @@ import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class MoCEntityMediumFish extends MoCEntityTameableAquatic {
 
@@ -91,7 +89,7 @@ public class MoCEntityMediumFish extends MoCEntityTameableAquatic {
         return !getIsTamed();
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float yawRotationOffset() {
         if (!this.isInsideOfMaterial(Material.WATER)) {

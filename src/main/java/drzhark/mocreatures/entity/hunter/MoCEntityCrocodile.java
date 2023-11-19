@@ -12,13 +12,13 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -56,9 +56,9 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
         this.tasks.addTask(3, new EntityAIFleeFromPlayer(this, 0.8D, 4D));
         this.tasks.addTask(4, new EntityAIAttackMelee(this, 1.0D, true));
         this.tasks.addTask(7, new EntityAIWanderMoC2(this, 0.9D));
-        this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        //this.targetTasks.addTask(1, new EntityAIHunt<>(this, EntityAnimal.class, true));
-        this.targetTasks.addTask(2, new EntityAIHunt<>(this, EntityPlayer.class, true));
+        this.tasks.addTask(9, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
+        //this.targetTasks.addTask(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
+        this.targetTasks.addTask(2, new EntityAIHunt<>(this, PlayerEntity.class, true));
         this.targetTasks.addTask(2, new EntityAIHurtByTarget(this, false));
 
     }
@@ -106,7 +106,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected int getExperiencePoints(EntityPlayer player) {
+    protected int getExperiencePoints(PlayerEntity player) {
         return experienceValue;
     }
 
@@ -181,7 +181,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
 
                 if (!isInsideOfMaterial(Material.WATER)) {
                     this.waterbound = true;
-                    if (this.getRidingEntity() instanceof EntityLiving && ((EntityLivingBase) this.getRidingEntity()).getHealth() > 0) {
+                    if (this.getRidingEntity() instanceof LivingEntity && ((EntityLivingBase) this.getRidingEntity()).getHealth() > 0) {
                         ((EntityLivingBase) this.getRidingEntity()).deathTime = 0;
                     }
 
@@ -207,7 +207,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
 
                 //TODO 4FIX
                 //the following if to be removed from SMP
-                //if (!this.world.isRemote && this.isBeingRidden() && this.getRidingEntity() instanceof EntityPlayer) {
+                //if (!this.world.isRemote && this.isBeingRidden() && this.getRidingEntity() instanceof PlayerEntity) {
                 //MoCreatures.mc.gameSettings.thirdPersonView = 1;
                 //}
             }
@@ -366,7 +366,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     public void unMount() {
 
         if (this.isBeingRidden()) {
-            if (this.getRidingEntity() instanceof EntityLiving && ((EntityLivingBase) this.getRidingEntity()).getHealth() > 0) {
+            if (this.getRidingEntity() instanceof LivingEntity && ((EntityLivingBase) this.getRidingEntity()).getHealth() > 0) {
                 ((EntityLivingBase) this.getRidingEntity()).deathTime = 0;
             }
 

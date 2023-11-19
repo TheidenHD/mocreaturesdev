@@ -17,7 +17,7 @@ import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -49,8 +49,8 @@ public class MoCEntityHorseMob extends MoCEntityMob {
     protected void initEntityAI() {
         this.tasks.addTask(0, new EntityAISwimming(this));
         this.tasks.addTask(2, new EntityAIAttackMelee(this, 1.0D, true));
-        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        this.targetTasks.addTask(1, new EntityAINearestAttackableTarget<>(this, EntityPlayer.class, true));
+        this.tasks.addTask(8, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
+        this.targetTasks.addTask(1, new EntityAINearestAttackableTarget<>(this, PlayerEntity.class, true));
     }
 
     @Override
@@ -272,10 +272,10 @@ public class MoCEntityHorseMob extends MoCEntityMob {
                 /*List list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(4D));
                 for (int i = 0; i < list.size(); i++) {
                     Entity entity = (Entity) list.get(i);
-                    if (!(entity instanceof EntityMob)) {
+                    if (!(entity instanceof MobEntity)) {
                         continue;
                     }
-                    EntityMob entitymob = (EntityMob) entity;
+                    MobEntity entitymob = (MobEntity) entity;
                     if (entitymob.getRidingEntity() == null
                             && (entitymob instanceof EntitySkeleton || entitymob instanceof EntityZombie || entitymob instanceof MoCEntitySilverSkeleton)) {
                         entitymob.mountEntity(this);
@@ -346,7 +346,7 @@ public class MoCEntityHorseMob extends MoCEntityMob {
 
     @Override
     public boolean attackEntityAsMob(Entity entityIn) {
-        if (entityIn instanceof EntityPlayer && !shouldAttackPlayers()) {
+        if (entityIn instanceof PlayerEntity && !shouldAttackPlayers()) {
             return false;
         }
         if (this.onGround && !isOnAir()) {

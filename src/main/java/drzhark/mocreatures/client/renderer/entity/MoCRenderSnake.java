@@ -8,10 +8,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MoCRenderSnake extends MoCRenderMoC<MoCEntitySnake> {
 
     public MoCRenderSnake(ModelBase modelbase, float f) {
@@ -69,7 +67,7 @@ public class MoCRenderSnake extends MoCRenderMoC<MoCEntitySnake> {
     }
 
     /*
-     * @Override protected void preRenderCallback(EntityLiving entityliving,
+     * @Override protected void preRenderCallback(LivingEntity entityliving,
      * float f) { MoCEntitySnake entitysnake = (MoCEntitySnake) entityliving;
      * //tempSnake.textPos = entitysnake.type - 1; if (entitysnake.type <4) {
      * tempSnake.textPos = 0; }else { tempSnake.textPos = 1; }

@@ -3,9 +3,9 @@
  */
 package drzhark.mocreatures.entity.ai;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.pathfinding.NodeProcessor;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.pathfinding.PathPoint;
@@ -58,7 +58,7 @@ public class FlyNodeProcessor extends NodeProcessor {
         for (int i = p_186327_1_; i < p_186327_1_ + this.entitySizeX; ++i) {
             for (int j = p_186327_2_; j < p_186327_2_ + this.entitySizeY; ++j) {
                 for (int k = p_186327_3_; k < p_186327_3_ + this.entitySizeZ; ++k) {
-                    IBlockState iblockstate = this.blockaccess.getBlockState(blockpos$mutableblockpos.setPos(i, j, k));
+                    BlockState iblockstate = this.blockaccess.getBlockState(blockpos$mutableblockpos.setPos(i, j, k));
 
                     if (iblockstate.getMaterial() != Material.AIR) {
                         return PathNodeType.BLOCKED;
@@ -71,7 +71,7 @@ public class FlyNodeProcessor extends NodeProcessor {
     }
 
     @Override
-    public PathNodeType getPathNodeType(IBlockAccess blockaccessIn, int x, int y, int z, EntityLiving entitylivingIn, int xSize, int ySize, int zSize, boolean canBreakDoorsIn, boolean canEnterDoorsIn) {
+    public PathNodeType getPathNodeType(IBlockAccess blockaccessIn, int x, int y, int z, LivingEntity entitylivingIn, int xSize, int ySize, int zSize, boolean canBreakDoorsIn, boolean canEnterDoorsIn) {
         return PathNodeType.OPEN;
     }
 

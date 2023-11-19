@@ -22,8 +22,8 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -32,8 +32,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemSaddle;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -85,7 +85,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         this.tasks.addTask(4, new EntityAIFollowAdult(this, 1.0D));
         this.tasks.addTask(5, new EntityAIAttackMelee(this, 1.0D, true));
         this.tasks.addTask(6, new EntityAIWanderMoC2(this, 1.0D));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(7, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
     }
 
     @Override
@@ -212,7 +212,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
 
-            if (!(entity instanceof EntityLivingBase) || ((this.isBeingRidden()) && (entity == this.getRidingEntity())) || (entity instanceof EntityPlayer && getIsTamed())) {
+            if (!(entity instanceof EntityLivingBase) || ((this.isBeingRidden()) && (entity == this.getRidingEntity())) || (entity instanceof PlayerEntity && getIsTamed())) {
                 return false;
             }
 
@@ -234,7 +234,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
 
     @Override
     public boolean attackEntityAsMob(Entity entityIn) {
-        if (entityIn instanceof EntityPlayer && !shouldAttackPlayers()) {
+        if (entityIn instanceof PlayerEntity && !shouldAttackPlayers()) {
             return false;
         }
         openMouth();
@@ -492,7 +492,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                 if (myEgg == null) {
                     setEggWatching(false);
 
-                    EntityPlayer eggStealer = this.world.getClosestPlayerToEntity(this, 10D);
+                    PlayerEntity eggStealer = this.world.getClosestPlayerToEntity(this, 10D);
                     if (eggStealer != null) {
                         this.world.getDifficulty();
                         if (!getIsTamed() && this.world.getDifficulty() != EnumDifficulty.PEACEFUL) {
@@ -529,7 +529,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, EnumHand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -713,7 +713,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             if (color == 16) {
                 color = 0;
             }
-            EntityItem entityitem = new EntityItem(this.world, this.posX, this.posY, this.posZ, new ItemStack(Blocks.WOOL, 1, color));
+            ItemEntity entityitem = new ItemEntity(this.world, this.posX, this.posY, this.posZ, new ItemStack(Blocks.WOOL, 1, color));
             entityitem.setDefaultPickupDelay();
             this.world.spawnEntity(entityitem);
             setFlagColor((byte) 0);
@@ -783,7 +783,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound) {
+    public void readEntityFromNBT(CompoundNBT nbttagcompound) {
         super.readEntityFromNBT(nbttagcompound);
         setRideable(nbttagcompound.getBoolean("Saddle"));
         setEggWatching(nbttagcompound.getBoolean("EggWatch"));
@@ -794,10 +794,10 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         setFertile(nbttagcompound.getBoolean("Fertile"));
 
         if (getIsChested()) {
-            NBTTagList nbttaglist = nbttagcompound.getTagList("Items", 10);
+            ListNBT nbttaglist = nbttagcompound.getTagList("Items", 10);
             this.localchest = new MoCAnimalChest("OstrichChest", 18);
             for (int i = 0; i < nbttaglist.tagCount(); i++) {
-                NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
+                CompoundNBT nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
                 if (j < this.localchest.getSizeInventory()) {
                     this.localchest.setInventorySlotContents(j, new ItemStack(nbttagcompound1));
@@ -807,7 +807,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound) {
+    public void writeEntityToNBT(CompoundNBT nbttagcompound) {
         super.writeEntityToNBT(nbttagcompound);
         nbttagcompound.setBoolean("Saddle", getIsRideable());
         nbttagcompound.setBoolean("EggWatch", getEggWatching());
@@ -818,11 +818,11 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         nbttagcompound.setBoolean("Fertile", getIsFertile());
 
         if (getIsChested() && this.localchest != null) {
-            NBTTagList nbttaglist = new NBTTagList();
+            ListNBT nbttaglist = new ListNBT();
             for (int i = 0; i < this.localchest.getSizeInventory(); i++) {
                 this.localstack = this.localchest.getStackInSlot(i);
                 if (!this.localstack.isEmpty()) {
-                    NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                    CompoundNBT nbttagcompound1 = new CompoundNBT();
                     nbttagcompound1.setByte("Slot", (byte) i);
                     this.localstack.writeToNBT(nbttagcompound1);
                     nbttaglist.appendTag(nbttagcompound1);
@@ -878,7 +878,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         if (!this.world.isRemote) {
             final ItemStack itemStack = this.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
             if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemArmor) {
-                final EntityItem entityitem = new EntityItem(this.world, this.posX, this.posY, this.posZ, itemStack.copy());
+                final ItemEntity entityitem = new ItemEntity(this.world, this.posX, this.posY, this.posZ, itemStack.copy());
                 entityitem.setDefaultPickupDelay();
                 this.world.spawnEntity(entityitem);
             }

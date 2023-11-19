@@ -6,10 +6,10 @@ package drzhark.mocreatures.block;
 import drzhark.mocreatures.init.MoCBlocks;
 import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
@@ -31,7 +31,7 @@ public class MoCBlockOre extends Block {
     }
 
     @Override
-    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+    public Item getItemDropped(BlockState state, Random rand, int fortune) {
         if (this == MoCBlocks.ancientOre) {
             if (rand.nextDouble() <= 0.3D) {
                 return Items.QUARTZ;
@@ -87,7 +87,7 @@ public class MoCBlockOre extends Block {
     }
 
     @Override
-    public int getExpDrop(IBlockState state, net.minecraft.world.IBlockAccess world, BlockPos pos, int fortune) {
+    public int getExpDrop(BlockState state, net.minecraft.world.IBlockAccess world, BlockPos pos, int fortune) {
         Random rand = world instanceof World ? ((World) world).rand : new Random();
 
         if (this.getItemDropped(state, rand, fortune) != Item.getItemFromBlock(this)) {
@@ -110,7 +110,7 @@ public class MoCBlockOre extends Block {
     }
 
     @Override
-    public int damageDropped(IBlockState state) {
+    public int damageDropped(BlockState state) {
         return this == MoCBlocks.wyvernLapisOre ? EnumDyeColor.BLUE.getDyeDamage() : 0;
     }
 }

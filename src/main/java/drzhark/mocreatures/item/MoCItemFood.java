@@ -6,7 +6,7 @@ package drzhark.mocreatures.item;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCItems;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
@@ -49,7 +49,7 @@ public class MoCItemFood extends ItemFood {
     }
 
     @Override
-    protected void onFoodEaten(ItemStack stack, World world, EntityPlayer player) {
+    protected void onFoodEaten(ItemStack stack, World world, PlayerEntity player) {
         if (this == MoCItems.mysticPear) {
             player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 10 * 20, 1));
             player.addPotionEffect(new PotionEffect(MobEffects.SPEED, 10 * 20, 1));

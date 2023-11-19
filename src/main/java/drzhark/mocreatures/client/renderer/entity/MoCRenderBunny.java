@@ -7,10 +7,8 @@ import drzhark.mocreatures.entity.passive.MoCEntityBunny;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MoCRenderBunny extends MoCRenderMoC<MoCEntityBunny> {
 
     public MoCRenderBunny(ModelBase modelbase, float f) {

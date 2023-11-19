@@ -10,7 +10,7 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -71,7 +71,7 @@ public class MoCEntityDragonfly extends MoCEntityInsect {
         super.onLivingUpdate();
 
         if (!this.world.isRemote) {
-            EntityPlayer ep = this.world.getClosestPlayerToEntity(this, 5D);
+            PlayerEntity ep = this.world.getClosestPlayerToEntity(this, 5D);
             if (ep != null && getIsFlying() && --this.soundCount == -1) {
                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_DRAGONFLY_AMBIENT);
                 this.soundCount = 20;

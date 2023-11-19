@@ -9,7 +9,7 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
@@ -109,7 +109,7 @@ public class EntityAIMateMoC extends EntityAIBase {
         EntityAgeable entityageable = this.animal.createChild(this.targetMate);
 
         if (entityageable != null) {
-            EntityPlayerMP entityplayermp = this.animal.getLoveCause();
+            ServerPlayerEntity entityplayermp = this.animal.getLoveCause();
 
             if (entityplayermp == null && this.targetMate.getLoveCause() != null) {
                 entityplayermp = this.targetMate.getLoveCause();

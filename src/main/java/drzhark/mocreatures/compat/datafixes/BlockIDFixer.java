@@ -6,7 +6,7 @@ package drzhark.mocreatures.compat.datafixes;
 import drzhark.mocreatures.MoCConstants;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.datafix.IFixableData;
 import net.minecraftforge.common.MinecraftForge;
@@ -40,7 +40,7 @@ public class BlockIDFixer implements IFixableData {
     }
 
     @Override
-    public NBTTagCompound fixTagCompound(NBTTagCompound compound) {
+    public CompoundNBT fixTagCompound(CompoundNBT compound) {
         return compound;
     }
 

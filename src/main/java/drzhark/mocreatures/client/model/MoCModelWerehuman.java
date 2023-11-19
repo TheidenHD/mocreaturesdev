@@ -4,10 +4,8 @@
 package drzhark.mocreatures.client.model;
 
 import net.minecraft.client.model.ModelBiped;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MoCModelWerehuman extends ModelBiped {
 
     public MoCModelWerehuman() {

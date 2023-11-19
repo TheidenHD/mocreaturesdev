@@ -13,7 +13,7 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -39,7 +39,7 @@ public class MoCEntityBee extends MoCEntityInsect {
 
         if (!this.world.isRemote) {
             if (getIsFlying() && --this.soundCount == -1) {
-                EntityPlayer ep = this.world.getClosestPlayerToEntity(this, 5D);
+                PlayerEntity ep = this.world.getClosestPlayerToEntity(this, 5D);
                 if (ep != null) {
                     MoCTools.playCustomSound(this, getMySound());
                     this.soundCount = 20;

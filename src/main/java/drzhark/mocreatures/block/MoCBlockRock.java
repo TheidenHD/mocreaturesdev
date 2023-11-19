@@ -5,10 +5,10 @@ package drzhark.mocreatures.block;
 
 import drzhark.mocreatures.init.MoCBlocks;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 
 import java.util.Random;
@@ -25,7 +25,7 @@ public class MoCBlockRock extends Block {
     }
 
     @Override
-    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+    public Item getItemDropped(BlockState state, Random rand, int fortune) {
         if (this == MoCBlocks.deepWyvstone) {
             return MoCBlocks.cobbledDeepWyvstone.getItemDropped(MoCBlocks.cobbledDeepWyvstone.getDefaultState(), rand, fortune);
         } else if (this == MoCBlocks.wyvstone) {

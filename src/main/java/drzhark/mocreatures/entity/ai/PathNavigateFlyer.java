@@ -3,16 +3,16 @@
  */
 package drzhark.mocreatures.entity.ai;
 
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.pathfinding.PathFinder;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class PathNavigateFlyer extends PathNavigate {
 
-    public PathNavigateFlyer(EntityLiving entitylivingIn, World worldIn) {
+    public PathNavigateFlyer(LivingEntity entitylivingIn, World worldIn) {
         super(entitylivingIn, worldIn);
     }
 
@@ -27,12 +27,12 @@ public class PathNavigateFlyer extends PathNavigate {
         return true;
     }
 
-    protected Vec3d getEntityPosition() {
-        return new Vec3d(this.entity.posX, this.entity.posY + (double) this.entity.height * 0.5D, this.entity.posZ);
+    protected Vector3d getEntityPosition() {
+        return new Vector3d(this.entity.posX, this.entity.posY + (double) this.entity.height * 0.5D, this.entity.posZ);
     }
 
     protected void pathFollow() {
-        Vec3d vec3 = this.getEntityPosition();
+        Vector3d vec3 = this.getEntityPosition();
         float f = this.entity.width * this.entity.width;
         byte b0 = 6;
 
@@ -42,7 +42,7 @@ public class PathNavigateFlyer extends PathNavigate {
 
         for (int i = Math.min(this.currentPath.getCurrentPathIndex() + b0, this.currentPath.getCurrentPathLength() - 1); i > this.currentPath
                 .getCurrentPathIndex(); --i) {
-            Vec3d vec31 = this.currentPath.getVectorFromIndex(this.entity, i);
+            Vector3d vec31 = this.currentPath.getVectorFromIndex(this.entity, i);
 
             if (vec31.squareDistanceTo(vec3) <= 36.0D && this.isDirectPathBetweenPoints(vec3, vec31, 0, 0, 0)) {
                 this.currentPath.setCurrentPathIndex(i);
@@ -65,8 +65,8 @@ public class PathNavigateFlyer extends PathNavigate {
      * pos1, pos2, entityXSize, entityYSize, entityZSize
      */
     @Override
-    protected boolean isDirectPathBetweenPoints(Vec3d posVec31, Vec3d posVec32, int sizeX, int sizeY, int sizeZ) {
-        RayTraceResult raytraceresult = this.world.rayTraceBlocks(posVec31, new Vec3d(posVec32.x, posVec32.y + (double) this.entity.height * 0.5D, posVec32.z), false, true, false);
+    protected boolean isDirectPathBetweenPoints(Vector3d posVec31, Vector3d posVec32, int sizeX, int sizeY, int sizeZ) {
+        RayTraceResult raytraceresult = this.world.rayTraceBlocks(posVec31, new Vector3d(posVec32.x, posVec32.y + (double) this.entity.height * 0.5D, posVec32.z), false, true, false);
         return raytraceresult == null || raytraceresult.typeOfHit == RayTraceResult.Type.MISS;
     }
 }

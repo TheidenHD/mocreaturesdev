@@ -23,7 +23,7 @@ import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
@@ -76,9 +76,9 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
         this.tasks.addTask(3, new EntityAIFleeFromPlayer(this, 0.8D, 4D));
         this.tasks.addTask(4, new EntityAIAttackMelee(this, 1.0D, true));
         this.tasks.addTask(5, new EntityAIWanderMoC2(this, 0.8D, 30));
-        this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        //this.targetTasks.addTask(1, new EntityAIHunt<>(this, EntityAnimal.class, true));
-        this.targetTasks.addTask(2, new EntityAIHunt<>(this, EntityPlayer.class, true));
+        this.tasks.addTask(9, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
+        //this.targetTasks.addTask(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
+        this.targetTasks.addTask(2, new EntityAIHunt<>(this, PlayerEntity.class, true));
     }
 
     @Override
@@ -142,7 +142,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected int getExperiencePoints(EntityPlayer player) {
+    protected int getExperiencePoints(PlayerEntity player) {
         return experienceValue;
     }
 
@@ -168,7 +168,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, EnumHand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -224,7 +224,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
 
     @Override
     public double getYOffset() {
-        if (this.getRidingEntity() instanceof EntityPlayer) {
+        if (this.getRidingEntity() instanceof PlayerEntity) {
             return 0.1F;
         }
 
@@ -414,7 +414,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
             setAttackTarget(null);
         }
 
-        EntityPlayer entityplayer1 = this.world.getClosestPlayerToEntity(this, 12D);
+        PlayerEntity entityplayer1 = this.world.getClosestPlayerToEntity(this, 12D);
         if (entityplayer1 != null) {
             double distP = MoCTools.getSqDistanceTo(entityplayer1, this.posX, this.posY, this.posZ);
             if (isNotScared()) {
@@ -438,11 +438,11 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
 
     @Override
     public boolean attackEntityAsMob(Entity entityIn) {
-        if ((getType() < 3 || getIsTamed()) && entityIn instanceof EntityPlayer) {
+        if ((getType() < 3 || getIsTamed()) && entityIn instanceof PlayerEntity) {
             return false;
         }
 
-        if (entityIn instanceof EntityPlayer && !shouldAttackPlayers()) {
+        if (entityIn instanceof PlayerEntity && !shouldAttackPlayers()) {
             return false;
         }
         setBiting(true);

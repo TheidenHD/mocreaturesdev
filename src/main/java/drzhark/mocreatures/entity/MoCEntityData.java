@@ -4,8 +4,8 @@
 package drzhark.mocreatures.entity;
 
 import drzhark.mocreatures.MoCreatures;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
@@ -55,7 +55,7 @@ public class MoCEntityData {
         MoCreatures.entityMap.put(spawnListEntry.entityClass, this);
     }
 
-    public Class<? extends EntityLiving> getEntityClass() {
+    public Class<? extends LivingEntity> getEntityClass() {
         return this.spawnListEntry.entityClass;
     }
 

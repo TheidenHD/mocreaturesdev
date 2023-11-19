@@ -5,16 +5,16 @@ package drzhark.mocreatures.item;
 
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.dimension.MoCDirectTeleporter;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -37,7 +37,7 @@ public class ItemStaffPortal extends MoCItem {
     }
 
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(PlayerEntity player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         final ItemStack stack = player.getHeldItem(hand);
         if (worldIn.isRemote) {
             return EnumActionResult.FAIL;
@@ -57,12 +57,12 @@ public class ItemStaffPortal extends MoCItem {
         }
 
         if (stack.getTagCompound() == null) {
-            stack.setTagCompound(new NBTTagCompound());
+            stack.setTagCompound(new CompoundNBT());
         }
 
-        NBTTagCompound nbtcompound = stack.getTagCompound();
+        CompoundNBT nbtcompound = stack.getTagCompound();
 
-        EntityPlayerMP playerMP = (EntityPlayerMP) player;
+        ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
         if (player.getRidingEntity() != null || player.isBeingRidden()) {
             return EnumActionResult.FAIL;
         } else {
@@ -90,8 +90,8 @@ public class ItemStaffPortal extends MoCItem {
                     BlockPos var2 = playerMP.getServer().getWorld(0).getSpawnPoint();
 
                     for (int i1 = 0; i1 < 60; i1++) {
-                        IBlockState blockstate = playerMP.getServer().getWorld(0).getBlockState(pos.add(0, i1, 0));
-                        IBlockState blockstate1 = playerMP.getServer().getWorld(0).getBlockState(pos.add(0, i1 + 1, 0));
+                        BlockState blockstate = playerMP.getServer().getWorld(0).getBlockState(pos.add(0, i1, 0));
+                        BlockState blockstate1 = playerMP.getServer().getWorld(0).getBlockState(pos.add(0, i1 + 1, 0));
 
                         if (blockstate.getBlock() == Blocks.AIR && blockstate1.getBlock() == Blocks.AIR) {
                             playerMP.connection.setPlayerLocation(var2.getX(), (double) var2.getY() + i1 + 1, var2.getZ(), 0.0F, 0.0F);
@@ -137,14 +137,14 @@ public class ItemStaffPortal extends MoCItem {
         return EnumAction.BLOCK;
     }
 
-    public void readFromNBT(NBTTagCompound nbt) {
+    public void readFromNBT(CompoundNBT nbt) {
         this.portalPosX = nbt.getInteger("portalPosX");
         this.portalPosY = nbt.getInteger("portalPosY");
         this.portalPosZ = nbt.getInteger("portalPosZ");
         this.portalDimension = nbt.getInteger("portalDimension");
     }
 
-    public void writeToNBT(NBTTagCompound nbt) {
+    public void writeToNBT(CompoundNBT nbt) {
         nbt.setInteger("portalPosX", this.portalPosX);
         nbt.setInteger("portalPosY", this.portalPosY);
         nbt.setInteger("portalPosZ", this.portalPosZ);

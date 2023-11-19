@@ -4,16 +4,15 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.hunter.MoCEntityBigCat;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class MoCModelBigCat extends ModelBase {
+@OnlyIn(Dist.CLIENT)
+public class MoCModelBigCat<T extends Entity> extends EntityModel<T> {
 
     private final float radianF = 57.29578F;
     private final float lLegMov = 0F;

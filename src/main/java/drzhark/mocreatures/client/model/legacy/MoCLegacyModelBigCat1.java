@@ -4,11 +4,11 @@
 package drzhark.mocreatures.client.model.legacy;
 
 import net.minecraft.client.model.ModelQuadruped;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MoCLegacyModelBigCat1 extends ModelQuadruped {
 
     public MoCLegacyModelBigCat1() {

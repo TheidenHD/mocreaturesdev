@@ -9,9 +9,9 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagDouble;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.DimensionManager;
@@ -69,13 +69,13 @@ public class MoCPetMapData extends WorldSavedData {
             // update pet data
             UUID owner = pet.getOwnerId();
             MoCPetData petData = this.getPetData(owner);
-            NBTTagCompound rootNBT = petData.getOwnerRootNBT();
-            NBTTagList tag = rootNBT.getTagList("TamedList", 10);
+            CompoundNBT rootNBT = petData.getOwnerRootNBT();
+            ListNBT tag = rootNBT.getTagList("TamedList", 10);
             int id;
             id = pet.getOwnerPetId();
 
             for (int i = 0; i < tag.tagCount(); i++) {
-                NBTTagCompound nbt = tag.getCompoundTagAt(i);
+                CompoundNBT nbt = tag.getCompoundTagAt(i);
                 if (nbt.getInteger("PetId") == id) {
                     // Update what we need for commands
                     nbt.setTag("Pos", this.newDoubleNBTList(((Entity) pet).posX, ((Entity) pet).posY, ((Entity) pet).posZ));
@@ -89,8 +89,8 @@ public class MoCPetMapData extends WorldSavedData {
         }
     }
 
-    protected NBTTagList newDoubleNBTList(double... par1ArrayOfDouble) {
-        NBTTagList nbttaglist = new NBTTagList();
+    protected ListNBT newDoubleNBTList(double... par1ArrayOfDouble) {
+        ListNBT nbttaglist = new ListNBT();
         for (double d1 : par1ArrayOfDouble) {
             nbttaglist.appendTag(new NBTTagDouble(d1));
         }
@@ -100,9 +100,9 @@ public class MoCPetMapData extends WorldSavedData {
     public boolean isExistingPet(UUID owner, IMoCTameable pet) {
         MoCPetData petData = MoCreatures.instance.mapData.getPetData(owner);
         if (petData != null) {
-            NBTTagList tag = petData.getTamedList();
+            ListNBT tag = petData.getTamedList();
             for (int i = 0; i < tag.tagCount(); i++) {
-                NBTTagCompound nbt = tag.getCompoundTagAt(i);
+                CompoundNBT nbt = tag.getCompoundTagAt(i);
                 if (nbt.getInteger("PetId") == pet.getOwnerPetId()) {
                     // found existing pet
                     return true;
@@ -117,9 +117,9 @@ public class MoCPetMapData extends WorldSavedData {
             ISaveHandler saveHandler = DimensionManager.getWorld(0).getSaveHandler();
             try {
                 File file1 = saveHandler.getMapFileFromName(MoCConstants.MOD_ID);
-                NBTTagCompound nbttagcompound = new NBTTagCompound();
+                CompoundNBT nbttagcompound = new CompoundNBT();
                 this.writeToNBT(nbttagcompound);
-                NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                CompoundNBT nbttagcompound1 = new CompoundNBT();
                 nbttagcompound1.setTag("data", nbttagcompound);
                 FileOutputStream fileoutputstream = new FileOutputStream(file1);
                 CompressedStreamTools.writeCompressed(nbttagcompound1, fileoutputstream);
@@ -131,12 +131,12 @@ public class MoCPetMapData extends WorldSavedData {
     }
 
     /**
-     * reads in data from the NBTTagCompound into this MapDataBase
+     * reads in data from the CompoundNBT into this MapDataBase
      */
     @Override
-    public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
+    public void readFromNBT(CompoundNBT par1NBTTagCompound) {
         for (String s : par1NBTTagCompound.getKeySet()) {
-            NBTTagCompound nbt = (NBTTagCompound) par1NBTTagCompound.getTag(s);
+            CompoundNBT nbt = (CompoundNBT) par1NBTTagCompound.getTag(s);
             UUID ownerUniqueId = UUID.fromString(s);
             if (!this.petMap.containsKey(ownerUniqueId)) {
                 this.petMap.put(ownerUniqueId, new MoCPetData(nbt, ownerUniqueId));
@@ -145,11 +145,11 @@ public class MoCPetMapData extends WorldSavedData {
     }
 
     /**
-     * write data to NBTTagCompound from this MapDataBase, similar to Entities
+     * write data to CompoundNBT from this MapDataBase, similar to Entities
      * and TileEntities
      */
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound par1NBTTagCompound) {
+    public CompoundNBT writeToNBT(CompoundNBT par1NBTTagCompound) {
         for (Map.Entry<UUID, MoCPetData> ownerEntry : this.petMap.entrySet()) {
             try {
                 if (ownerEntry.getKey() != null) {

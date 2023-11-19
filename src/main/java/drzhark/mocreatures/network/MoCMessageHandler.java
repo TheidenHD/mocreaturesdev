@@ -3,16 +3,16 @@
  */
 package drzhark.mocreatures.network;
 
-import drzhark.mocreatures.network.message.*;
-import drzhark.mocreatures.proxy.MoCProxyClient;
 import drzhark.mocreatures.client.gui.MoCGUIEntityNamer;
 import drzhark.mocreatures.entity.IMoCEntity;
-import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
 import drzhark.mocreatures.entity.hostile.MoCEntityOgre;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
+import drzhark.mocreatures.entity.tameable.IMoCTameable;
+import drzhark.mocreatures.network.message.*;
+import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.LivingEntity;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -107,8 +107,8 @@ public class MoCMessageHandler {
                 MoCMessageHealth message = (MoCMessageHealth) this.message;
                 List<Entity> entList = MoCProxyClient.mc.player.world.loadedEntityList;
                 for (Entity ent : entList) {
-                    if (ent.getEntityId() == message.entityId && ent instanceof EntityLiving) {
-                        ((EntityLiving) ent).setHealth(message.health);
+                    if (ent.getEntityId() == message.entityId && ent instanceof LivingEntity) {
+                        ((LivingEntity) ent).setHealth(message.health);
                         break;
                     }
                 }

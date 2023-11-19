@@ -9,7 +9,7 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -17,8 +17,6 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -98,7 +96,7 @@ public class MoCItemArmor extends ItemArmor {
      * Called to tick armor in the armor slot. Override to do something
      */
     @Override
-    public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack) {
+    public void onArmorTick(World world, PlayerEntity player, ItemStack itemStack) {
         if (player.ticksExisted % 40 == 0) {
             player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
             ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
@@ -109,7 +107,7 @@ public class MoCItemArmor extends ItemArmor {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         if ((this == MoCItems.scorpHelmetDirt) || (this == MoCItems.scorpPlateDirt) || (this == MoCItems.scorpLegsDirt) || (this == MoCItems.scorpBootsDirt)) {
             tooltip.add(new TextComponentTranslation("info.mocreatures.setbonus").setStyle(new Style().setColor(TextFormatting.GRAY)).getFormattedText());

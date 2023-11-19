@@ -3,9 +3,8 @@
  */
 package drzhark.mocreatures.compat.jer;
 
-import drzhark.mocreatures.entity.MoCEntityData;
-import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.MoCreatures;
+import drzhark.mocreatures.entity.MoCEntityData;
 import drzhark.mocreatures.entity.ambient.*;
 import drzhark.mocreatures.entity.aquatic.*;
 import drzhark.mocreatures.entity.hostile.*;
@@ -13,6 +12,7 @@ import drzhark.mocreatures.entity.hunter.*;
 import drzhark.mocreatures.entity.neutral.MoCEntityBoar;
 import drzhark.mocreatures.entity.neutral.*;
 import drzhark.mocreatures.entity.passive.*;
+import drzhark.mocreatures.init.MoCLootTables;
 import jeresources.api.IJERAPI;
 import jeresources.api.IMobRegistry;
 import jeresources.api.conditionals.LightLevel;

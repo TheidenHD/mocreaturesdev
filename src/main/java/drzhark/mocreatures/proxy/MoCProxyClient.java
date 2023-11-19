@@ -3,10 +3,6 @@
  */
 package drzhark.mocreatures.proxy;
 
-import drzhark.mocreatures.client.renderer.fx.MoCEntityFXStar;
-import drzhark.mocreatures.client.renderer.fx.MoCEntityFXUndead;
-import drzhark.mocreatures.client.renderer.fx.MoCEntityFXVacuum;
-import drzhark.mocreatures.client.renderer.fx.MoCEntityFXVanish;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.client.gui.MoCGUIEntityNamer;
@@ -15,6 +11,10 @@ import drzhark.mocreatures.client.model.legacy.MoCLegacyModelBigCat1;
 import drzhark.mocreatures.client.model.legacy.MoCLegacyModelBigCat2;
 import drzhark.mocreatures.client.renderer.entity.*;
 import drzhark.mocreatures.client.renderer.entity.legacy.MoCLegacyRenderBigCat;
+import drzhark.mocreatures.client.renderer.fx.MoCEntityFXStar;
+import drzhark.mocreatures.client.renderer.fx.MoCEntityFXUndead;
+import drzhark.mocreatures.client.renderer.fx.MoCEntityFXVacuum;
+import drzhark.mocreatures.client.renderer.fx.MoCEntityFXVanish;
 import drzhark.mocreatures.client.renderer.texture.MoCTextures;
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.ambient.*;
@@ -31,7 +31,7 @@ import drzhark.mocreatures.entity.neutral.*;
 import drzhark.mocreatures.entity.passive.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -197,7 +197,7 @@ public class MoCProxyClient extends MoCProxy {
     }
 
     @Override
-    public EntityPlayer getPlayer() {
+    public PlayerEntity getPlayer() {
         return MoCProxyClient.mc.player;
     }
 
@@ -205,7 +205,7 @@ public class MoCProxyClient extends MoCProxy {
      * Sets the name client side. Name is synchronized with data watchers
      */
     @Override
-    public void setName(EntityPlayer player, IMoCEntity mocanimal) {
+    public void setName(PlayerEntity player, IMoCEntity mocanimal) {
         mc.displayGuiScreen(new MoCGUIEntityNamer(mocanimal, mocanimal.getPetName()));
     }
 
@@ -334,7 +334,7 @@ public class MoCProxyClient extends MoCProxy {
 
     @SuppressWarnings("unused")
     @Override
-    public void hammerFX(EntityPlayer entity) {
+    public void hammerFX(PlayerEntity entity) {
         int densityInt = (MoCreatures.proxy.getParticleFX());
         if (densityInt == 0) {
             return;
@@ -359,7 +359,7 @@ public class MoCProxyClient extends MoCProxy {
     }
 
     @Override
-    public void teleportFX(EntityPlayer entity) {
+    public void teleportFX(PlayerEntity entity) {
         int densityInt = (MoCreatures.proxy.getParticleFX());
         if (densityInt == 0) {
             return;

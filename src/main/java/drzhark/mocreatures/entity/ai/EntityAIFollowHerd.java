@@ -4,7 +4,7 @@
 package drzhark.mocreatures.entity.ai;
 
 import drzhark.mocreatures.entity.IMoCEntity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.EntityAIBase;
 
 import java.util.List;
@@ -14,15 +14,15 @@ public class EntityAIFollowHerd extends EntityAIBase {
     /**
      * The child that is following its parent.
      */
-    EntityLiving theAnimal;
-    EntityLiving herdAnimal;
+    LivingEntity theAnimal;
+    LivingEntity herdAnimal;
     double moveSpeed;
     double maxRange;
     double minRange;
     private int delayCounter;
     private int executionChance;
 
-    public EntityAIFollowHerd(EntityLiving animal, double speed, double minRangeIn, double maxRangeIn, int chance) {
+    public EntityAIFollowHerd(LivingEntity animal, double speed, double minRangeIn, double maxRangeIn, int chance) {
         this.theAnimal = animal;
         this.moveSpeed = speed;
         this.minRange = minRangeIn; //4D;
@@ -30,7 +30,7 @@ public class EntityAIFollowHerd extends EntityAIBase {
         this.executionChance = chance;
     }
 
-    public EntityAIFollowHerd(EntityLiving animal, double speed) {
+    public EntityAIFollowHerd(LivingEntity animal, double speed) {
         this(animal, speed, 4D, 20D, 120);
     }
 
@@ -44,13 +44,13 @@ public class EntityAIFollowHerd extends EntityAIBase {
             return false;
         }
 
-        List<EntityLiving> list =
+        List<LivingEntity> list =
                 this.theAnimal.world.getEntitiesWithinAABB(this.theAnimal.getClass(),
                         this.theAnimal.getEntityBoundingBox().grow(this.maxRange, 4.0D, this.maxRange));
-        EntityLiving entityliving = null;
+        LivingEntity entityliving = null;
         double d0 = Double.MAX_VALUE;
 
-        for (EntityLiving entityliving1 : list) {
+        for (LivingEntity entityliving1 : list) {
             double d1 = this.theAnimal.getDistanceSq(entityliving1);
             if (d1 >= this.minRange && this.theAnimal != entityliving1) {
                 d0 = d1;

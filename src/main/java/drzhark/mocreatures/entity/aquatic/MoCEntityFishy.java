@@ -16,7 +16,7 @@ import drzhark.mocreatures.network.message.MoCMessageHeart;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
@@ -187,7 +187,7 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
                     this.gestationtime = 0;
                     entityfishy.gestationtime = 0;
 
-                    EntityPlayer entityplayer = this.world.getClosestPlayerToEntity(this, 24D);
+                    PlayerEntity entityplayer = this.world.getClosestPlayerToEntity(this, 24D);
                     if (entityplayer != null) {
                         MoCTools.tameWithName(entityplayer, entityfishy1);
                     }

@@ -4,25 +4,23 @@
 package drzhark.mocreatures.client.gui;
 
 import drzhark.mocreatures.MoCreatures;
-import drzhark.mocreatures.proxy.MoCProxyClient;
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageUpdatePetName;
+import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MoCGUIEntityNamer extends GuiScreen {
 
     private static final TextureManager textureManager = MoCProxyClient.mc.getTextureManager();
@@ -52,7 +50,7 @@ public class MoCGUIEntityNamer extends GuiScreen {
 
     public void updateName() {
         this.namedEntity.setPetName(this.nameToSet);
-        MoCMessageHandler.INSTANCE.sendToServer(new MoCMessageUpdatePetName(((EntityLiving) this.namedEntity).getEntityId(), this.nameToSet));
+        MoCMessageHandler.INSTANCE.sendToServer(new MoCMessageUpdatePetName(((LivingEntity) this.namedEntity).getEntityId(), this.nameToSet));
         this.mc.displayGuiScreen(null);
     }
 

@@ -3,19 +3,17 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
-import drzhark.mocreatures.proxy.MoCProxyClient;
 import drzhark.mocreatures.client.model.MoCModelCrocodile;
 import drzhark.mocreatures.entity.hunter.MoCEntityCrocodile;
+import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MoCRenderCrocodile extends RenderLiving<MoCEntityCrocodile> {
 
     public MoCModelCrocodile croc;
@@ -41,7 +39,7 @@ public class MoCRenderCrocodile extends RenderLiving<MoCEntityCrocodile> {
         this.croc.swimming = entitycrocodile.isSwimming();
         this.croc.resting = entitycrocodile.getIsSitting();
         if (entitycrocodile.isSpinning()) {
-            spinCroc(entitycrocodile, (EntityLiving) entitycrocodile.getRidingEntity());
+            spinCroc(entitycrocodile, (LivingEntity) entitycrocodile.getRidingEntity());
         }
         stretch(entitycrocodile);
         if (entitycrocodile.getIsSitting()) {
@@ -67,7 +65,7 @@ public class MoCRenderCrocodile extends RenderLiving<MoCEntityCrocodile> {
         GlStateManager.translate(0.0F, FHeight, 0.0F);
     }
 
-    protected void spinCroc(MoCEntityCrocodile entitycrocodile, EntityLiving prey) {
+    protected void spinCroc(MoCEntityCrocodile entitycrocodile, LivingEntity prey) {
         int intSpin = entitycrocodile.spinInt;
         int direction = 1;
         if (intSpin > 40) {

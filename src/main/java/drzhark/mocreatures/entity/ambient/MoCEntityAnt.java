@@ -8,7 +8,7 @@ import drzhark.mocreatures.entity.MoCEntityAmbient;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -64,7 +64,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
 
         if (!this.world.isRemote) {
             if (!getHasFood()) {
-                EntityItem entityitem = MoCTools.getClosestFood(this, 8D);
+                ItemEntity entityitem = MoCTools.getClosestFood(this, 8D);
                 if (entityitem == null || entityitem.isDead) {
                     return;
                 }
@@ -91,7 +91,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
 
         if (getHasFood()) {
             if (!this.isBeingRidden()) {
-                EntityItem entityitem = MoCTools.getClosestFood(this, 2D);
+                ItemEntity entityitem = MoCTools.getClosestFood(this, 2D);
                 if (entityitem != null && entityitem.getRidingEntity() == null) {
                     entityitem.startRiding(this);
                     return;
@@ -105,8 +105,8 @@ public class MoCEntityAnt extends MoCEntityAmbient {
         }
     }
 
-    private void exchangeItem(EntityItem entityitem) {
-        EntityItem cargo = new EntityItem(this.world, this.posX, this.posY + 0.2D, this.posZ, entityitem.getItem());
+    private void exchangeItem(ItemEntity entityitem) {
+        ItemEntity cargo = new ItemEntity(this.world, this.posX, this.posY + 0.2D, this.posZ, entityitem.getItem());
         entityitem.setDead();
         if (!this.world.isRemote) {
             this.world.spawnEntity(cargo);

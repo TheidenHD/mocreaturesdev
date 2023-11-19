@@ -5,15 +5,15 @@ package drzhark.mocreatures.item;
 
 import com.google.common.collect.Multimap;
 import drzhark.mocreatures.MoCreatures;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWeb;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
@@ -27,8 +27,6 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nullable;
@@ -57,7 +55,7 @@ public class MoCItemWeapon extends MoCItem {
         return this.material.getAttackDamage();
     }
 
-    public float getStrVsBlock(ItemStack stack, IBlockState state) {
+    public float getStrVsBlock(ItemStack stack, BlockState state) {
         if (state.getBlock() instanceof BlockWeb) {
             return 15.0F;
         } else {
@@ -81,10 +79,10 @@ public class MoCItemWeapon extends MoCItem {
                     target.setFire(timer);
                     break;
                 case 4: // Weakness (Nausea for players)
-                    target.addPotionEffect(new PotionEffect(target instanceof EntityPlayer ? MobEffects.NAUSEA : MobEffects.WEAKNESS, timer * 20, 0));
+                    target.addPotionEffect(new PotionEffect(target instanceof PlayerEntity ? MobEffects.NAUSEA : MobEffects.WEAKNESS, timer * 20, 0));
                     break;
                 case 5: // Wither (Blindness for players)
-                    target.addPotionEffect(new PotionEffect(target instanceof EntityPlayer ? MobEffects.BLINDNESS : MobEffects.WITHER, timer * 20, 0));
+                    target.addPotionEffect(new PotionEffect(target instanceof PlayerEntity ? MobEffects.BLINDNESS : MobEffects.WITHER, timer * 20, 0));
                     break;
                 default:
                     break;
@@ -95,7 +93,7 @@ public class MoCItemWeapon extends MoCItem {
         return true;
     }
 
-    public boolean onBlockDestroyed(ItemStack par1ItemStack, int par2, int par3, int par4, int par5, EntityLiving par6EntityLiving) {
+    public boolean onBlockDestroyed(ItemStack par1ItemStack, int par2, int par3, int par4, int par5, LivingEntity par6EntityLiving) {
         par1ItemStack.damageItem(2, par6EntityLiving);
         return true;
     }
@@ -105,7 +103,7 @@ public class MoCItemWeapon extends MoCItem {
      * pressed. Args: itemStack, world, entityPlayer
      */
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, EnumHand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         player.setActiveHand(hand);
         return new ActionResult<>(EnumActionResult.SUCCESS, stack);
@@ -115,7 +113,7 @@ public class MoCItemWeapon extends MoCItem {
      * Returns if the item (tool) can harvest results from the block type.
      */
     @Override
-    public boolean canHarvestBlock(IBlockState state) {
+    public boolean canHarvestBlock(BlockState state) {
         return state.getBlock() instanceof BlockWeb;
     }
 
@@ -131,7 +129,7 @@ public class MoCItemWeapon extends MoCItem {
     /**
      * Called when a Block is destroyed using this Item. Return true to trigger the "Use Item" statistic.
      */
-    public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, EntityLivingBase playerIn) {
+    public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, EntityLivingBase playerIn) {
         if ((double) state.getBlockHardness(worldIn, pos) != 0.0D) {
             stack.damageItem(2, playerIn);
         }
@@ -170,7 +168,7 @@ public class MoCItemWeapon extends MoCItem {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         if (MoCreatures.proxy.weaponEffects) {
             switch (this.specialWeaponType) {

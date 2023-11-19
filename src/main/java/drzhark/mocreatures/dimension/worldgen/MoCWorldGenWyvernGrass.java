@@ -5,10 +5,7 @@ package drzhark.mocreatures.dimension.worldgen;
 
 import drzhark.mocreatures.init.MoCBlocks;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDirt;
-import net.minecraft.block.BlockFarmland;
-import net.minecraft.block.BlockGrass;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
@@ -20,15 +17,15 @@ public class MoCWorldGenWyvernGrass extends WorldGenerator {
     /**
      * Stores ID for WorldGenTallGrass
      */
-    private final IBlockState blockStateGrass;
+    private final BlockState blockStateGrass;
 
-    public MoCWorldGenWyvernGrass(IBlockState iblockstategrass) {
+    public MoCWorldGenWyvernGrass(BlockState iblockstategrass) {
         this.blockStateGrass = iblockstategrass;
     }
 
     @Override
     public boolean generate(World worldIn, Random rand, BlockPos position) {
-        IBlockState blockstate;
+        BlockState blockstate;
         do {
             blockstate = worldIn.getBlockState(position);
             Block block = blockstate.getBlock();

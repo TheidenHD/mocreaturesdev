@@ -4,7 +4,7 @@
 package drzhark.mocreatures.compat.datafixes;
 
 import drzhark.mocreatures.MoCConstants;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.datafix.IFixableData;
 import net.minecraftforge.common.MinecraftForge;
@@ -23,7 +23,7 @@ public class EntityIDFixer implements IFixableData {
     }
 
     @Override
-    public NBTTagCompound fixTagCompound(NBTTagCompound compound) {
+    public CompoundNBT fixTagCompound(CompoundNBT compound) {
         String entityId = compound.getString("id");
         if (entityId.equals(MoCConstants.MOD_PREFIX + "scorpion")) {
             int entityType = compound.getInteger("TypeInt");

@@ -7,13 +7,13 @@ import drzhark.mocreatures.init.MoCBlocks;
 import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.BlockPlanks.EnumType;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -26,8 +26,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -47,18 +45,18 @@ public class MoCBlockLeaf extends BlockLeaves {
     }
 
     @Override
-    public boolean isOpaqueCube(IBlockState state) {
+    public boolean isOpaqueCube(BlockState state) {
         return Blocks.LEAVES.getDefaultState().isOpaqueCube();
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public BlockRenderLayer getRenderLayer() {
         return Blocks.LEAVES.getRenderLayer();
     }
 
-    @SideOnly(Side.CLIENT)
-    public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
+    @OnlyIn(Dist.CLIENT)
+    public boolean shouldSideBeRendered(BlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
         if (!Minecraft.getMinecraft().gameSettings.fancyGraphics) {
             return !(blockAccess.getBlockState(pos.offset(side)).getBlock() instanceof BlockLeaves);
         }
@@ -66,7 +64,7 @@ public class MoCBlockLeaf extends BlockLeaves {
     }
 
     @Override
-    public MapColor getMapColor(IBlockState state, IBlockAccess world, BlockPos pos) {
+    public MapColor getMapColor(BlockState state, IBlockAccess world, BlockPos pos) {
         return mapColor;
     }
 
@@ -93,7 +91,7 @@ public class MoCBlockLeaf extends BlockLeaves {
     }
 
     @Override
-    public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, ItemStack stack) {
+    public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack) {
         if (!worldIn.isRemote && stack.getItem() == Items.SHEARS) {
             player.addStat(StatList.getBlockStats(this));
             spawnAsEntity(worldIn, pos, new ItemStack(this));
@@ -120,7 +118,7 @@ public class MoCBlockLeaf extends BlockLeaves {
     }
 
     @Override
-    public Item getItemDropped(final IBlockState state, final Random rand, final int fortune) {
+    public Item getItemDropped(final BlockState state, final Random rand, final int fortune) {
         if (this == MoCBlocks.wyvwoodLeaves) {
             return Item.getItemFromBlock(MoCBlocks.wyvwoodSapling);
         } else {
@@ -129,13 +127,13 @@ public class MoCBlockLeaf extends BlockLeaves {
     }
 
     @Override
-    public IBlockState getStateFromMeta(int meta) {
+    public BlockState getStateFromMeta(int meta) {
         return this.getDefaultState().withProperty(DECAYABLE, (meta & 1) == 0)
                 .withProperty(CHECK_DECAY, (meta & 2) > 0);
     }
 
     @Override
-    public int getMetaFromState(IBlockState state) {
+    public int getMetaFromState(BlockState state) {
         int meta = 0;
 
         if (!state.getValue(DECAYABLE)) {
@@ -149,17 +147,17 @@ public class MoCBlockLeaf extends BlockLeaves {
     }
 
     @Override
-    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
+    public BlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
         return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand).withProperty(DECAYABLE, false);
     }
 
     @Override
-    protected int getSaplingDropChance(IBlockState state) {
+    protected int getSaplingDropChance(BlockState state) {
         return saplingDropChance;
     }
 
     @Override
-    protected void dropApple(final World world, final BlockPos pos, final IBlockState state, final int chance) {
+    protected void dropApple(final World world, final BlockPos pos, final BlockState state, final int chance) {
         if (world.rand.nextInt(chance) == 0) {
             if (this == MoCBlocks.wyvwoodLeaves) {
                 spawnAsEntity(world, pos, new ItemStack(MoCItems.mysticPear));
