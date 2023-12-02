@@ -15,10 +15,10 @@ public class MoCEntityFXUndead extends Particle {
 
     public MoCEntityFXUndead(World par1World, double par2, double par4, double par6) {
         super(par1World, par2, par4, par6, 0.0D, 0.0D, 0.0D);
-        this.motionX *= 0.8D;
-        this.motionY *= 0.8D;
-        this.motionZ *= 0.8D;
-        this.motionY = this.rand.nextFloat() * 0.4F + 0.05F;
+        this.getMotion().getX() *= 0.8D;
+        this.getMotion().getY() *= 0.8D;
+        this.getMotion().getZ() *= 0.8D;
+        this.getMotion().getY() = this.rand.nextFloat() * 0.4F + 0.05F;
 
         this.setSize(0.01F, 0.01F);
         this.particleGravity = 0.06F;
@@ -41,21 +41,21 @@ public class MoCEntityFXUndead extends Particle {
      * Called to update the entity's position/logic.
      */
     @Override
-    public void onUpdate() {
+    public void tick() {
         this.prevPosX = this.getPosX();
         this.prevPosY = this.getPosY();
         this.prevPosZ = this.getPosZ();
 
-        this.motionY -= 0.03D;
-        this.move(this.motionX, this.motionY, this.motionZ);
+        this.getMotion().getY() -= 0.03D;
+        this.move(this.getMotion().getX(), this.getMotion().getY(), this.getMotion().getZ());
 
-        this.motionX *= 0.8D;
-        this.motionY *= 0.5D;
-        this.motionZ *= 0.8D;
+        this.getMotion().getX() *= 0.8D;
+        this.getMotion().getY() *= 0.5D;
+        this.getMotion().getZ() *= 0.8D;
 
         if (this.onGround) {
-            this.motionX *= 0.7D;
-            this.motionZ *= 0.7D;
+            this.getMotion().getX() *= 0.7D;
+            this.getMotion().getZ() *= 0.7D;
         }
 
         if (this.particleMaxAge-- <= 0) {

@@ -47,14 +47,14 @@ public class MoCEntityDragonfly extends MoCEntityInsect {
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(this.rand.nextInt(4) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(4) + 1);
         }
     }
 
     @Override
     public ResourceLocation getTexture() {
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 1:
                 return MoCreatures.proxy.getModelTexture("dragonfly_green.png");
             case 2:
@@ -71,7 +71,7 @@ public class MoCEntityDragonfly extends MoCEntityInsect {
         super.onLivingUpdate();
 
         if (!this.world.isRemote) {
-            PlayerEntity ep = this.world.getClosestPlayerToEntity(this, 5D);
+            PlayerEntity ep = this.world.getClosestPlayer(this, 5D);
             if (ep != null && getIsFlying() && --this.soundCount == -1) {
                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_DRAGONFLY_AMBIENT);
                 this.soundCount = 20;

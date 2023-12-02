@@ -11,7 +11,7 @@ import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -19,7 +19,7 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -66,8 +66,8 @@ public class MoCEntityFox extends MoCEntityTameableAnimal {
     public void selectType() {
         checkSpawningBiome();
 
-        if (getType() == 0) {
-            setType(1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(1);
         }
     }
 
@@ -75,12 +75,12 @@ public class MoCEntityFox extends MoCEntityTameableAnimal {
     public ResourceLocation getTexture() {
 
         if (!getIsAdult()) {
-            if (getType() == 2) {
+            if (getTypeMoC() == 2) {
                 return MoCreatures.proxy.getModelTexture("fox_snow.png");
             }
             return MoCreatures.proxy.getModelTexture("fox_cub.png");
         }
-        if (getType() == 2) {
+        if (getTypeMoC() == 2) {
             return MoCreatures.proxy.getModelTexture("fox_snow.png");
         }
         return MoCreatures.proxy.getModelTexture("fox.png");
@@ -93,9 +93,9 @@ public class MoCEntityFox extends MoCEntityTameableAnimal {
             if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
-            if (entity != this && this.isNotScared() && entity instanceof EntityLivingBase && super.shouldAttackPlayers()) {
-                setAttackTarget((EntityLivingBase) entity);
-                setRevengeTarget((EntityLivingBase) entity);
+            if (entity != this && this.isNotScared() && entity instanceof LivingEntity && super.shouldAttackPlayers()) {
+                setAttackTarget((LivingEntity) entity);
+                setRevengeTarget((LivingEntity) entity);
                 return true;
             }
 
@@ -104,7 +104,7 @@ public class MoCEntityFox extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -137,12 +137,12 @@ public class MoCEntityFox extends MoCEntityTameableAnimal {
     @Override
     public boolean checkSpawningBiome() {
         BlockPos pos =
-                new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(getEntityBoundingBox().minY),
-                        MathHelper.floor(this.posZ));
+                new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getEntityBoundingBox().minY),
+                        MathHelper.floor(this.getPosZ()));
         Biome currentbiome = MoCTools.biomeKind(this.world, pos);
         try {
             if (BiomeDictionary.hasType(currentbiome, Type.SNOWY)) {
-                setType(2);
+                setTypeMoC(2);
             }
         } catch (Exception ignored) {
         }
@@ -189,7 +189,7 @@ public class MoCEntityFox extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(EntityLivingBase entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return !(entity instanceof MoCEntityFox) && entity.height <= 0.7D && entity.width <= 0.7D;
     }
 

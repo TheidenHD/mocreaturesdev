@@ -3,7 +3,7 @@
  */
 package drzhark.mocreatures.client.model;
 
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -46,21 +46,21 @@ public class MoCModelMaggot<T extends Entity> extends EntityModel<T> {
         //f2 = timer!
         //System.out.println("f2 = " + f2);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.enableBlend();
+        matrixStackIn.push();
+        matrixStackIn.enableBlend();
         //float transparency = 0.9F;
-        GlStateManager.blendFunc(770, 771);
-        //GlStateManager.color(1.2F, 1.2F, 1.2F, transparency);
+        matrixStackIn.blendFunc(770, 771);
+        //matrixStackIn.color(1.2F, 1.2F, 1.2F, transparency);
         float f9 = -(MathHelper.cos(f * 3F)) * f1 * 2F;
-        //GlStateManager.scale(1.0F, 1.0F, 1.0F + (f1 * 3F));
-        GlStateManager.scale(1.0F, 1.0F, 1.0F + (f9));
+        //matrixStackIn.scale(1.0F, 1.0F, 1.0F + (f1 * 3F));
+        matrixStackIn.scale(1.0F, 1.0F, 1.0F + (f9));
 
         this.Head.render(f5);
         this.Body.render(f5);
         this.Tail.render(f5);
         this.Tailtip.render(f5);
-        GlStateManager.disableBlend();
-        GlStateManager.popMatrix();
+        matrixStackIn.disableBlend();
+        matrixStackIn.pop();
 
     }
 

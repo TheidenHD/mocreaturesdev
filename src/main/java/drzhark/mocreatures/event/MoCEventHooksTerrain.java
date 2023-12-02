@@ -7,7 +7,7 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.init.MoCEntities;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.init.Biomes;
 import net.minecraft.util.ResourceLocation;
@@ -25,18 +25,18 @@ import java.util.Random;
 
 public class MoCEventHooksTerrain {
 
-    public static List<Biome.SpawnListEntry> creatureList = new ArrayList<>();
-    public static List<Biome.SpawnListEntry> waterCreatureList = new ArrayList<>();
-    public static Object2ObjectOpenHashMap<Biome, List<Biome.SpawnListEntry>> creatureSpawnMap = new Object2ObjectOpenHashMap<>();
-    public static Object2ObjectOpenHashMap<Biome, List<Biome.SpawnListEntry>> waterCreatureSpawnMap = new Object2ObjectOpenHashMap<>();
+    public static List<Biome.MobSpawnInfo.Spawners> creatureList = new ArrayList<>();
+    public static List<Biome.MobSpawnInfo.Spawners> waterCreatureList = new ArrayList<>();
+    public static Object2ObjectOpenHashMap<Biome, List<Biome.MobSpawnInfo.Spawners>> creatureSpawnMap = new Object2ObjectOpenHashMap<>();
+    public static Object2ObjectOpenHashMap<Biome, List<Biome.MobSpawnInfo.Spawners>> waterCreatureSpawnMap = new Object2ObjectOpenHashMap<>();
 
     public static void buildWorldGenSpawnLists() {
         for (Biome biome : ForgeRegistries.BIOMES.getValuesCollection()) {
-            creatureList = new ArrayList<>(biome.getSpawnableList(EnumCreatureType.CREATURE));
+            creatureList = new ArrayList<>(biome.getSpawnableList(EntityClassification.CREATURE));
             creatureList.removeIf(entry -> entry.itemWeight == 0 || !IMoCEntity.class.isAssignableFrom(entry.entityClass));
             creatureSpawnMap.put(biome, creatureList);
 
-            waterCreatureList = new ArrayList<>(biome.getSpawnableList(EnumCreatureType.WATER_CREATURE));
+            waterCreatureList = new ArrayList<>(biome.getSpawnableList(EntityClassification.WATER_CREATURE));
             waterCreatureList.removeIf(entry -> entry.itemWeight == 0 || !IMoCEntity.class.isAssignableFrom(entry.entityClass));
             waterCreatureSpawnMap.put(biome, waterCreatureList);
         }
@@ -69,7 +69,7 @@ public class MoCEventHooksTerrain {
     @SubscribeEvent
     public void onPopulateChunk(PopulateChunkEvent.Populate event) {
         // Regular spawning
-        if (event.getType() == PopulateChunkEvent.Populate.EventType.ANIMALS) {
+        if (event.getTypeMoC() == PopulateChunkEvent.Populate.EventType.ANIMALS) {
             int chunkX = event.getChunkX() * 16;
             int chunkZ = event.getChunkZ() * 16;
             int centerX = chunkX + 8;

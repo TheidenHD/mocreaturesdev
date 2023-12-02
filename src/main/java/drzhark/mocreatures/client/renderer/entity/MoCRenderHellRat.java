@@ -5,7 +5,7 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.hostile.MoCEntityHellRat;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 
 @OnlyIn(Dist.CLIENT)
@@ -18,7 +18,7 @@ public class MoCRenderHellRat extends MoCRenderRat<MoCEntityHellRat> {
     @Override
     protected void stretch(MoCEntityHellRat entityhellrat) {
         float f = 1.3F;
-        GlStateManager.scale(f, f, f);
+        matrixStackIn.scale(f, f, f);
     }
 
     @Override

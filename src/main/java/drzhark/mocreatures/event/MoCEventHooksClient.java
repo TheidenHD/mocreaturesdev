@@ -22,45 +22,45 @@ public class MoCEventHooksClient {
 
     /* TODO: Fix rider rotation
     @SubscribeEvent
-    public void renderClimbingRiderPre(RenderLivingEvent.Pre<EntityLivingBase> event) {
-        EntityLivingBase rider = event.getEntity();
+    public void renderClimbingRiderPre(RenderLivingEvent.Pre<LivingEntity> event) {
+        LivingEntity rider = event.getEntity();
         Entity mount = rider.getRidingEntity();
         if (mount instanceof MoCEntityScorpion || mount instanceof MoCEntityPetScorpion) {
-            if (((EntityLivingBase) rider.getRidingEntity()).isOnLadder()) {
-                EnumFacing facing = rider.getHorizontalFacing();
-                GlStateManager.pushMatrix();
-                if (facing == EnumFacing.NORTH) {
-                    GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-                } else if (facing == EnumFacing.WEST) {
-                    GlStateManager.rotate(90.0F, 0.0F, 0.0F, -1.0F);
-                } else if (facing == EnumFacing.SOUTH) {
-                    GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
-                } else if (facing == EnumFacing.EAST) {
-                    GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
+            if (((LivingEntity) rider.getRidingEntity()).isOnLadder()) {
+                Direction facing = rider.getHorizontalFacing();
+                matrixStackIn.push();
+                if (facing == Direction.NORTH) {
+                    matrixStackIn.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+                } else if (facing == Direction.WEST) {
+                    matrixStackIn.rotate(90.0F, 0.0F, 0.0F, -1.0F);
+                } else if (facing == Direction.SOUTH) {
+                    matrixStackIn.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+                } else if (facing == Direction.EAST) {
+                    matrixStackIn.rotate(90.0F, 0.0F, 0.0F, 1.0F);
                 }
-                GlStateManager.translate(0.0F, -1.0F, 0.0F);
+                matrixStackIn.translate(0.0F, -1.0F, 0.0F);
             }
         }
     }
 
     @SubscribeEvent
-    public void renderClimbingRiderPost(RenderLivingEvent.Post<EntityLivingBase> event) {
-        EntityLivingBase rider = event.getEntity();
+    public void renderClimbingRiderPost(RenderLivingEvent.Post<LivingEntity> event) {
+        LivingEntity rider = event.getEntity();
         Entity mount = rider.getRidingEntity();
         if (mount instanceof MoCEntityScorpion || mount instanceof MoCEntityPetScorpion) {
-            if (((EntityLivingBase) rider.getRidingEntity()).isOnLadder()) {
-                EnumFacing facing = rider.getHorizontalFacing();
-                GlStateManager.translate(0.0F, 1.0F, 0.0F);
-                if (facing == EnumFacing.NORTH) {
-                    GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
-                } else if (facing == EnumFacing.WEST) {
-                    GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
-                } else if (facing == EnumFacing.SOUTH) {
-                    GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-                } else if (facing == EnumFacing.EAST) {
-                    GlStateManager.rotate(90.0F, 0.0F, 0.0F, -1.0F);
+            if (((LivingEntity) rider.getRidingEntity()).isOnLadder()) {
+                Direction facing = rider.getHorizontalFacing();
+                matrixStackIn.translate(0.0F, 1.0F, 0.0F);
+                if (facing == Direction.NORTH) {
+                    matrixStackIn.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+                } else if (facing == Direction.WEST) {
+                    matrixStackIn.rotate(90.0F, 0.0F, 0.0F, 1.0F);
+                } else if (facing == Direction.SOUTH) {
+                    matrixStackIn.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+                } else if (facing == Direction.EAST) {
+                    matrixStackIn.rotate(90.0F, 0.0F, 0.0F, -1.0F);
                 }
-                GlStateManager.popMatrix();
+                matrixStackIn.pop();
             }
         }
     }

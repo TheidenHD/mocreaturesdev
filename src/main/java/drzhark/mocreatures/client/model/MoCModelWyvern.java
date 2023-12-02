@@ -5,8 +5,8 @@ package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.neutral.MoCEntityWyvern;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -796,15 +796,15 @@ public class MoCModelWyvern<T extends Entity> extends EntityModel<T> {
 
         setRotationAngles(f, f1, f2, f3, f4, f5);//, onAir, flapwings, isRidden, openMouth, diving, isSitting);
         float yOffset = wyvern.getAdjustedYOffset();
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0F, yOffset, 0F);
+        matrixStackIn.push();
+        matrixStackIn.translate(0F, yOffset, 0F);
 
         if (isGhost) {
             float transparency = wyvern.tFloat();
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(770, 771);
-            GlStateManager.color(0.8F, 0.8F, 0.8F, transparency);
-            //GlStateManager.scale(1.3F, 1.0F, 1.3F);
+            matrixStackIn.enableBlend();
+            matrixStackIn.blendFunc(770, 771);
+            matrixStackIn.color(0.8F, 0.8F, 0.8F, transparency);
+            //matrixStackIn.scale(1.3F, 1.0F, 1.3F);
         }
         this.back1.render(f5);
         this.Tail.render(f5);
@@ -927,9 +927,9 @@ public class MoCModelWyvern<T extends Entity> extends EntityModel<T> {
         this.diamondrightshoulder.render(f5);
         this.diamondchestarmor.render(f5);
         if (isGhost) {
-            GlStateManager.disableBlend();
+            matrixStackIn.disableBlend();
         }
-        GlStateManager.popMatrix();
+        matrixStackIn.pop();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

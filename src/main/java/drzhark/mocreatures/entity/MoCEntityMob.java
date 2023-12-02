@@ -98,7 +98,7 @@ public abstract class MoCEntityMob extends MobEntity implements IMoCEntity {
      */
     @Override
     public void selectType() {
-        setType(1);
+        setTypeMoC(1);
     }
 
     @Override
@@ -111,12 +111,12 @@ public abstract class MoCEntityMob extends MobEntity implements IMoCEntity {
     }
 
     @Override
-    public int getType() {
+    public int getTypeMoC() {
         return this.dataManager.get(TYPE);
     }
 
     @Override
-    public void setType(int i) {
+    public void setTypeMoC(int i) {
         this.dataManager.set(TYPE, i);
     }
 
@@ -196,12 +196,12 @@ public abstract class MoCEntityMob extends MobEntity implements IMoCEntity {
     public void onLivingUpdate() {
         if (!this.world.isRemote) {
             if (getIsTamed() && this.rand.nextInt(200) == 0) {
-                MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageHealth(this.getEntityId(), this.getHealth()), new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageHealth(this.getEntityId(), this.getHealth()), new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
             }
 
             if (this.isHarmedByDaylight() && this.world.isDaytime()) {
                 float var1 = this.getBrightness();
-                if (var1 > 0.5F && this.world.canBlockSeeSky(new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.posY), MathHelper.floor(this.posZ))) && this.rand.nextFloat() * 30.0F < (var1 - 0.4F) * 2.0F) {
+                if (var1 > 0.5F && this.world.canBlockSeeSky(new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(this.getPosY()), MathHelper.floor(this.getPosZ()))) && this.rand.nextFloat() * 30.0F < (var1 - 0.4F) * 2.0F) {
                     this.setFire(8);
                 }
             }
@@ -233,7 +233,7 @@ public abstract class MoCEntityMob extends MobEntity implements IMoCEntity {
     @Override
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (!this.world.isRemote && getIsTamed()) {
-            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageHealth(this.getEntityId(), this.getHealth()), new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageHealth(this.getEntityId(), this.getHealth()), new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
         }
         return super.attackEntityFrom(damagesource, i);
     }
@@ -246,22 +246,22 @@ public abstract class MoCEntityMob extends MobEntity implements IMoCEntity {
     }
 
     @Override
-    public void writeEntityToNBT(CompoundNBT nbttagcompound) {
-        super.writeEntityToNBT(nbttagcompound);
-        nbttagcompound.setBoolean("Adult", getIsAdult());
-        nbttagcompound.setInteger("Edad", getAge());
-        nbttagcompound.setString("Name", getPetName());
-        nbttagcompound.setInteger("TypeInt", getType());
+    public void writeAdditional(CompoundNBT nbttagcompound) {
+        super.writeAdditional(nbttagcompound);
+        nbttagcompound.putBoolean("Adult", getIsAdult());
+        nbttagcompound.putInt("Edad", getAge());
+        nbttagcompound.putString("Name", getPetName());
+        nbttagcompound.putInt("TypeInt", getTypeMoC());
 
     }
 
     @Override
-    public void readEntityFromNBT(CompoundNBT nbttagcompound) {
-        super.readEntityFromNBT(nbttagcompound);
+    public void readAdditional(CompoundNBT nbttagcompound) {
+        super.readAdditional(nbttagcompound);
         setAdult(nbttagcompound.getBoolean("Adult"));
-        setAge(nbttagcompound.getInteger("Edad"));
+        setAge(nbttagcompound.getInt("Edad"));
         setPetName(nbttagcompound.getString("Name"));
-        setType(nbttagcompound.getInteger("TypeInt"));
+        setTypeMoC(nbttagcompound.getInt("TypeInt"));
 
     }
 
@@ -294,10 +294,10 @@ public abstract class MoCEntityMob extends MobEntity implements IMoCEntity {
         if (this.isServerWorld()) {
 
             this.moveRelative(strafe, vertical, forward, 0.1F);
-            this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
-            this.motionX *= 0.8999999761581421D;
-            this.motionY *= 0.8999999761581421D;
-            this.motionZ *= 0.8999999761581421D;
+            this.move(MoverType.SELF, this.getMotion().getX(), this.getMotion().getY(), this.getMotion().getZ());
+            this.getMotion().getX() *= 0.8999999761581421D;
+            this.getMotion().getY() *= 0.8999999761581421D;
+            this.getMotion().getZ() *= 0.8999999761581421D;
         } else {
             super.travel(strafe, vertical, forward);
         }
@@ -389,7 +389,7 @@ public abstract class MoCEntityMob extends MobEntity implements IMoCEntity {
     }
 
     @Override
-    public boolean canAttackTarget(EntityLivingBase entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return false;
     }
 
@@ -468,15 +468,15 @@ public abstract class MoCEntityMob extends MobEntity implements IMoCEntity {
     }
 
     /**
-     * Returns true if the entity is of the @link{EnumCreatureType} provided
+     * Returns true if the entity is of the @link{EntityClassification} provided
      *
-     * @param type          The EnumCreatureType type this entity is evaluating
+     * @param type          The EntityClassification type this entity is evaluating
      * @param forSpawnCount If this is being invoked to check spawn count caps.
      * @return If the creature is of the type provided
      */
     @Override
-    public boolean isCreatureType(EnumCreatureType type, boolean forSpawnCount) {
-        return type == EnumCreatureType.MONSTER;
+    public boolean isCreatureType(EntityClassification type, boolean forSpawnCount) {
+        return type == EntityClassification.MONSTER;
     }
 
     @Override

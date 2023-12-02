@@ -592,7 +592,7 @@ public class MoCModelOgre<T extends Entity> extends EntityModel<T> {
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         //super.render(entity, f, f1, f2, f3, f4, f5);
         MoCEntityOgre entityogre = (MoCEntityOgre) entity;
-        this.type = entityogre.getType();
+        this.type = entityogre.getTypeMoC();
         //int leftAttack = entityogre.attackCounterLeft;
         //int rightAttack = entityogre.attackCounterRight;
         this.attackCounter = entityogre.attackCounter;

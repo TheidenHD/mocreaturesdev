@@ -13,7 +13,7 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageHeart;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,7 +24,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
@@ -66,20 +66,20 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
+        if (getTypeMoC() == 0) {
             int i = this.rand.nextInt(100);
             if (i <= 35) {
-                setType(1);
+                setTypeMoC(1);
             } else if (i <= 60) {
-                setType(2);
+                setTypeMoC(2);
             } else if (i <= 85) {
-                setType(3);
+                setTypeMoC(3);
             } else if (i <= 96) {
-                setType(4);
+                setTypeMoC(4);
             } else if (i <= 98) {
-                setType(5);
+                setTypeMoC(5);
             } else {
-                setType(6);
+                setTypeMoC(6);
             }
         }
     }
@@ -87,7 +87,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     @Override
     public ResourceLocation getTexture() {
 
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return MoCreatures.proxy.getModelTexture("dolphin_green.png");
             case 3:
@@ -106,7 +106,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     @Override
     public int getMaxTemper() {
 
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 1:
                 return 50;
             case 3:
@@ -123,7 +123,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     public int getInitialTemper() {
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return 100;
             case 3:
@@ -141,7 +141,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
 
     @Override
     public double getCustomSpeed() {
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return 2.0D;
             case 3:
@@ -194,8 +194,8 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (super.attackEntityFrom(damagesource, i) && (this.world.getDifficulty().getId() > 0)) {
             Entity entity = damagesource.getTrueSource();
-            if (entity instanceof EntityLivingBase) {
-                EntityLivingBase entityliving = (EntityLivingBase) entity;
+            if (entity instanceof LivingEntity) {
+                LivingEntity entityliving = (LivingEntity) entity;
                 if (this.isRidingOrBeingRiddenBy(entity)) {
                     return true;
                 }
@@ -214,10 +214,10 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     private int Genetics(MoCEntityDolphin entitydolphin, MoCEntityDolphin entitydolphin1) {
-        if (entitydolphin.getType() == entitydolphin1.getType()) {
-            return entitydolphin.getType();
+        if (entitydolphin.getTypeMoC() == entitydolphin1.getTypeMoC()) {
+            return entitydolphin.getTypeMoC();
         }
-        int i = entitydolphin.getType() + entitydolphin1.getType();
+        int i = entitydolphin.getTypeMoC() + entitydolphin1.getTypeMoC();
         boolean flag = this.rand.nextInt(3) == 0;
         boolean flag1 = this.rand.nextInt(10) == 0;
         if ((i < 5) && flag) {
@@ -256,7 +256,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -297,7 +297,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
             if (!this.world.isRemote && player.startRiding(this)) {
                 player.rotationYaw = this.rotationYaw;
                 player.rotationPitch = this.rotationPitch;
-                player.posY = this.posY;
+                player.getPosY() = this.getPosY();
             }
 
             return true;
@@ -368,14 +368,14 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
                 }
                 if (this.gestationtime % 3 == 0) {
                     MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageHeart(this.getEntityId()),
-                            new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                            new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
                 }
                 if (this.gestationtime <= 50) {
                     continue;
                 }
                 MoCEntityDolphin babydolphin = new MoCEntityDolphin(this.world);
-                babydolphin.setPosition(this.posX, this.posY, this.posZ);
-                if (this.world.spawnEntity(babydolphin)) {
+                babydolphin.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
+                if (this.world.addEntity(babydolphin)) {
                     MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
                     setHasEaten(false);
                     entitydolphin.setHasEaten(false);
@@ -402,7 +402,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     public boolean ReadyforParenting(MoCEntityDolphin entitydolphin) {
-        EntityLivingBase passenger = (EntityLivingBase) this.getControllingPassenger();
+        LivingEntity passenger = (LivingEntity) this.getControllingPassenger();
         return (entitydolphin.getRidingEntity() == null) && (passenger == null) && entitydolphin.getIsTamed()
                 && entitydolphin.getHasEaten() && entitydolphin.getIsAdult();
     }
@@ -453,9 +453,9 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     @Override
     public void updatePassenger(Entity passenger) {
         double dist = (0.8D);
-        double newPosX = this.posX + (dist * Math.sin(this.renderYawOffset / 57.29578F));
-        double newPosZ = this.posZ - (dist * Math.cos(this.renderYawOffset / 57.29578F));
-        passenger.setPosition(newPosX, this.posY + getMountedYOffset() + passenger.getYOffset(), newPosZ);
+        double newPosX = this.getPosX() + (dist * Math.sin(this.renderYawOffset / 57.29578F));
+        double newPosZ = this.getPosZ() - (dist * Math.cos(this.renderYawOffset / 57.29578F));
+        passenger.setPosition(newPosX, this.getPosY() + getMountedYOffset() + passenger.getYOffset(), newPosZ);
     }
 
     @Override

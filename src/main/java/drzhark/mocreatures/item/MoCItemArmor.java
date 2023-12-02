@@ -10,20 +10,20 @@ import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemArmor;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class MoCItemArmor extends ItemArmor {
+public class MoCItemArmor extends ArmorItem {
 
-    public MoCItemArmor(String name, ItemArmor.ArmorMaterial materialIn, int renderIndex, EntityEquipmentSlot equipmentSlotIn) {
+    public MoCItemArmor(String name, ArmorItem.ArmorMaterial materialIn, int renderIndex, EquipmentSlotType equipmentSlotIn) {
         super(materialIn, renderIndex, equipmentSlotIn);
         this.setCreativeTab(MoCreatures.tabMoC);
         this.setRegistryName(MoCConstants.MOD_ID, name);
@@ -31,7 +31,7 @@ public class MoCItemArmor extends ItemArmor {
     }
 
     @Override
-    public String getArmorTexture(ItemStack itemstack, Entity entity, EntityEquipmentSlot slot, String type) {
+    public String getArmorTexture(ItemStack itemstack, Entity entity, EquipmentSlotType slot, String type) {
         String tempArmorTexture = "croc_1.png";
         if ((itemstack.getItem() == MoCItems.helmetCroc) || (itemstack.getItem() == MoCItems.plateCroc) || (itemstack.getItem() == MoCItems.bootsCroc)) {
             tempArmorTexture = "croc_1.png";
@@ -98,8 +98,8 @@ public class MoCItemArmor extends ItemArmor {
     @Override
     public void onArmorTick(World world, PlayerEntity player, ItemStack itemStack) {
         if (player.ticksExisted % 40 == 0) {
-            player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
-            ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
+            player.getItemStackFromSlot(EquipmentSlotType.FEET);
+            ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
             if (!stack.isEmpty() && stack.getItem() instanceof MoCItemArmor) {
                 MoCTools.updatePlayerArmorEffects(player);
             }
@@ -110,28 +110,28 @@ public class MoCItemArmor extends ItemArmor {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         if ((this == MoCItems.scorpHelmetDirt) || (this == MoCItems.scorpPlateDirt) || (this == MoCItems.scorpLegsDirt) || (this == MoCItems.scorpBootsDirt)) {
-            tooltip.add(new TextComponentTranslation("info.mocreatures.setbonus").setStyle(new Style().setColor(TextFormatting.GRAY)).getFormattedText());
-            tooltip.add(" " + new TextComponentTranslation("info.mocreatures.setbonusscorp1").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+            tooltip.add(new TranslationTextComponent("info.mocreatures.setbonus").setStyle(new Style().setColor(TextFormatting.GRAY)).getFormattedText());
+            tooltip.add(" " + new TranslationTextComponent("info.mocreatures.setbonusscorp1").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
         }
 
         if ((this == MoCItems.scorpHelmetFrost) || (this == MoCItems.scorpPlateFrost) || (this == MoCItems.scorpLegsFrost) || (this == MoCItems.scorpBootsFrost)) {
-            tooltip.add(new TextComponentTranslation("info.mocreatures.setbonus").setStyle(new Style().setColor(TextFormatting.GRAY)).getFormattedText());
-            tooltip.add(" " + new TextComponentTranslation("info.mocreatures.setbonusscorp2").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+            tooltip.add(new TranslationTextComponent("info.mocreatures.setbonus").setStyle(new Style().setColor(TextFormatting.GRAY)).getFormattedText());
+            tooltip.add(" " + new TranslationTextComponent("info.mocreatures.setbonusscorp2").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
         }
 
         if ((this == MoCItems.scorpHelmetNether) || (this == MoCItems.scorpPlateNether) || (this == MoCItems.scorpLegsNether) || (this == MoCItems.scorpBootsNether)) {
-            tooltip.add(new TextComponentTranslation("info.mocreatures.setbonus").setStyle(new Style().setColor(TextFormatting.GRAY)).getFormattedText());
-            tooltip.add(" " + new TextComponentTranslation("info.mocreatures.setbonusscorp3").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+            tooltip.add(new TranslationTextComponent("info.mocreatures.setbonus").setStyle(new Style().setColor(TextFormatting.GRAY)).getFormattedText());
+            tooltip.add(" " + new TranslationTextComponent("info.mocreatures.setbonusscorp3").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
         }
 
         if ((this == MoCItems.scorpHelmetCave) || (this == MoCItems.scorpPlateCave) || (this == MoCItems.scorpLegsCave) || (this == MoCItems.scorpBootsCave)) {
-            tooltip.add(new TextComponentTranslation("info.mocreatures.setbonus").setStyle(new Style().setColor(TextFormatting.GRAY)).getFormattedText());
-            tooltip.add(" " + new TextComponentTranslation("info.mocreatures.setbonusscorp4").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+            tooltip.add(new TranslationTextComponent("info.mocreatures.setbonus").setStyle(new Style().setColor(TextFormatting.GRAY)).getFormattedText());
+            tooltip.add(" " + new TranslationTextComponent("info.mocreatures.setbonusscorp4").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
         }
 
         if ((this == MoCItems.scorpHelmetUndead) || (this == MoCItems.scorpPlateUndead) || (this == MoCItems.scorpLegsUndead) || (this == MoCItems.scorpBootsUndead)) {
-            tooltip.add(new TextComponentTranslation("info.mocreatures.setbonus").setStyle(new Style().setColor(TextFormatting.GRAY)).getFormattedText());
-            tooltip.add(" " + new TextComponentTranslation("info.mocreatures.setbonusscorp5").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+            tooltip.add(new TranslationTextComponent("info.mocreatures.setbonus").setStyle(new Style().setColor(TextFormatting.GRAY)).getFormattedText());
+            tooltip.add(" " + new TranslationTextComponent("info.mocreatures.setbonusscorp5").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
         }
     }
 }

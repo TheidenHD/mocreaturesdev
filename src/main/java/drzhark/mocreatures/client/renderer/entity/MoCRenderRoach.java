@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 
-public class MoCRenderRoach extends MoCRenderInsect<MoCEntityRoach, MoCModelRoach>{
+public class MoCRenderRoach extends MoCRenderInsect<MoCEntityRoach, MoCModelRoach> {
     public MoCRenderRoach(EntityRendererManager manager, MoCModelRoach modelbase) {
         super(manager, modelbase);
         this.addLayer(new MoCLayerRoach(this));

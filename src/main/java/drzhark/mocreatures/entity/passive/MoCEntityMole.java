@@ -11,7 +11,7 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
@@ -66,8 +66,8 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
     public boolean isOnDirt() {
         Block block =
                 this.world.getBlockState(
-                        new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.getEntityBoundingBox().minY - 0.5D), MathHelper
-                                .floor(this.posZ))).getBlock();
+                        new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(this.getEntityBoundingBox().minY - 0.5D), MathHelper
+                                .floor(this.getPosZ()))).getBlock();
         return isDiggableBlock(Block.getIdFromBlock(block));//(j == 2 | j == 3 | j == 12);
     }
 
@@ -80,9 +80,9 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
      */
     @SuppressWarnings("unused")
     private void digForward() {
-        double coordY = this.posY;
-        double coordZ = this.posZ;
-        double coordX = this.posX;
+        double coordY = this.getPosY();
+        double coordZ = this.getPosZ();
+        double coordX = this.getPosX();
         int x = 1;
         double newPosY = coordY - Math.cos((this.rotationPitch - 90F) / 57.29578F) * x;
         double newPosX =
@@ -154,7 +154,7 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
             }
 
             if (getState() != 2 && getState() != 1 && isOnDirt()) {
-                EntityLivingBase entityliving = getBoogey(4D);
+                LivingEntity entityliving = getBoogey(4D);
                 if ((entityliving != null) && canEntityBeSeen(entityliving)) {
                     setState(1);
                     this.getNavigator().clearPath();

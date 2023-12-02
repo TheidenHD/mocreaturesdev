@@ -4,7 +4,7 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.aquatic.MoCEntityJellyFish;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
@@ -149,20 +149,20 @@ public class MoCModelJellyFish<T extends Entity> extends EntityModel<T> {
         MoCEntityJellyFish jellyfish = (MoCEntityJellyFish) entity;
         boolean glowing = jellyfish.isGlowing();
         boolean outOfWater = !jellyfish.isInWater();
-        GlStateManager.pushMatrix();
+        matrixStackIn.push();
         if (outOfWater) {
-            GlStateManager.translate(0F, 0.6F, -0.3F);
+            matrixStackIn.translate(0F, 0.6F, -0.3F);
         } else {
-            GlStateManager.translate(0F, 0.2F, 0F);
-            GlStateManager.rotate((float) (f1 * -60D), -1F, 0.0F, 0.0F);
+            matrixStackIn.translate(0F, 0.2F, 0F);
+            matrixStackIn.rotate((float) (f1 * -60D), -1F, 0.0F, 0.0F);
         }
-        GlStateManager.enableBlend();
+        matrixStackIn.enableBlend();
         if (!glowing || outOfWater) {
             float transparency = 0.7F;
-            GlStateManager.blendFunc(770, 771);
-            GlStateManager.color(0.8F, 0.8F, 0.8F, transparency);
+            matrixStackIn.blendFunc(770, 771);
+            matrixStackIn.color(0.8F, 0.8F, 0.8F, transparency);
         } else {
-            GlStateManager.blendFunc(770, 1);
+            matrixStackIn.blendFunc(770, 1);
         }
         this.Top.render(f5);
         this.Head.render(f5);
@@ -187,8 +187,8 @@ public class MoCModelJellyFish<T extends Entity> extends EntityModel<T> {
         this.Leg7.render(f5);
         this.Leg8.render(f5);
         this.Leg9.render(f5);
-        GlStateManager.disableBlend();
-        GlStateManager.popMatrix();
+        matrixStackIn.disableBlend();
+        matrixStackIn.pop();
     }
 
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {

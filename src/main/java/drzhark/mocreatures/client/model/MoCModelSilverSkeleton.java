@@ -4,7 +4,7 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.hostile.MoCEntitySilverSkeleton;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -141,23 +141,23 @@ public class MoCModelSilverSkeleton<T extends Entity> extends EntityModel<T> {
         this.rightAttack = samurai.attackCounterRight;
         this.riding = samurai.getRidingEntity() != null;
         setRotationAngles(f, f1, f2, f3, f4, f5);
-        GlStateManager.pushMatrix();
+        matrixStackIn.push();
         if (sprinting && f1 > 0.3F) {
-            //GlStateManager.pushMatrix();
-            GlStateManager.rotate((float) (f1 * -20D), -1F, 0.0F, 0.0F);
+            //matrixStackIn.push();
+            matrixStackIn.rotate((float) (f1 * -20D), -1F, 0.0F, 0.0F);
             //renderParts(f5);
-            //GlStateManager.popMatrix();
+            //matrixStackIn.pop();
         }
         if (riding) {
 
-            GlStateManager.translate(0.0F, 0.5F, 0.0F);
+            matrixStackIn.translate(0.0F, 0.5F, 0.0F);
             //renderParts(f5);
-            //GlStateManager.popMatrix();
+            //matrixStackIn.pop();
         }
         //renderParts(f5);
 
         renderParts(f5);
-        GlStateManager.popMatrix();
+        matrixStackIn.pop();
     }
 
     private void renderParts(float f5) {

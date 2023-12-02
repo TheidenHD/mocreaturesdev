@@ -5,9 +5,9 @@ package drzhark.mocreatures.entity.ai;
 
 import drzhark.mocreatures.entity.IMoCEntity;
 import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.ai.EntityAIPanic;
+import net.minecraft.entity.ai.goal.PanicGoal;
 
-public class EntityAIPanicMoC extends EntityAIPanic {
+public class EntityAIPanicMoC extends PanicGoal {
 
     private final CreatureEntity entityCreature;
 
@@ -17,7 +17,7 @@ public class EntityAIPanicMoC extends EntityAIPanic {
     }
 
     /**
-     * Returns whether the EntityAIBase should begin execution.
+     * Returns whether the Goal should begin execution.
      */
     @Override
     public boolean shouldExecute() {

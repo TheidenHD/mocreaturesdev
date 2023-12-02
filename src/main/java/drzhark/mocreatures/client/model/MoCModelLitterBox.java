@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
 
-
 public class MoCModelLitterBox<T extends Entity> extends EntityModel<T> {
 
     public boolean usedlitter;

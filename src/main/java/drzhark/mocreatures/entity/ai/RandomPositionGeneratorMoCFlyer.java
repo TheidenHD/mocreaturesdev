@@ -4,7 +4,6 @@
 package drzhark.mocreatures.entity.ai;
 
 import net.minecraft.entity.CreatureEntity;
-import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -36,7 +35,7 @@ public class RandomPositionGeneratorMoCFlyer {
      */
     @Nullable
     public static Vector3d findRandomTargetBlockTowards(CreatureEntity entitycreatureIn, int xz, int y, Vector3d targetVec3) {
-        staticVector = targetVec3.subtract(entitycreatureIn.posX, entitycreatureIn.posY, entitycreatureIn.posZ);
+        staticVector = targetVec3.subtract(entitycreatureIn.getPosX(), entitycreatureIn.getPosY(), entitycreatureIn.getPosZ());
         /*
           searches 10 blocks at random in a within par1(x,z) and par2 (y) distance, ignores those not in the direction
           of par3Vec3, then points to the tile for which creature.getBlockPathWeight returns the highest number
@@ -49,7 +48,7 @@ public class RandomPositionGeneratorMoCFlyer {
      */
     @Nullable
     public static Vector3d findRandomTargetBlockAwayFrom(CreatureEntity entitycreatureIn, int xz, int y, Vector3d targetVec3) {
-        staticVector = (new Vector3d(entitycreatureIn.posX, entitycreatureIn.posY, entitycreatureIn.posZ)).subtract(targetVec3);
+        staticVector = (new Vector3d(entitycreatureIn.getPosX(), entitycreatureIn.getPosY(), entitycreatureIn.getPosZ())).subtract(targetVec3);
         /*
           searches 10 blocks at random in a within par1(x,z) and par2 (y) distance, ignores those not in the direction
           of par3Vec3, then points to the tile for which creature.getBlockPathWeight returns the highest number
@@ -73,7 +72,7 @@ public class RandomPositionGeneratorMoCFlyer {
         boolean flag1;
 
         if (entitycreatureIn.hasHome()) {
-            double d0 = entitycreatureIn.getHomePosition().distanceSq(MathHelper.floor(entitycreatureIn.posX), MathHelper.floor(entitycreatureIn.posY), MathHelper.floor(entitycreatureIn.posZ)) + 4.0D;
+            double d0 = entitycreatureIn.getHomePosition().distanceSq(MathHelper.floor(entitycreatureIn.getPosX()), MathHelper.floor(entitycreatureIn.getPosY()), MathHelper.floor(entitycreatureIn.getPosZ())) + 4.0D;
             double d1 = entitycreatureIn.getMaximumHomeDistance() + (float) xz;
             flag1 = d0 < d1 * d1;
         } else {
@@ -89,20 +88,20 @@ public class RandomPositionGeneratorMoCFlyer {
                 if (entitycreatureIn.hasHome() && xz > 1) {
                     BlockPos blockpos = entitycreatureIn.getHomePosition();
 
-                    if (entitycreatureIn.posX > (double) blockpos.getX()) {
+                    if (entitycreatureIn.getPosX() > (double) blockpos.getX()) {
                         l -= random.nextInt(xz / 2);
                     } else {
                         l += random.nextInt(xz / 2);
                     }
 
-                    if (entitycreatureIn.posZ > (double) blockpos.getZ()) {
+                    if (entitycreatureIn.getPosZ() > (double) blockpos.getZ()) {
                         i1 -= random.nextInt(xz / 2);
                     } else {
                         i1 += random.nextInt(xz / 2);
                     }
                 }
 
-                BlockPos blockpos1 = new BlockPos((double) l + entitycreatureIn.posX, (double) k1 + entitycreatureIn.posY, (double) i1 + entitycreatureIn.posZ);
+                BlockPos blockpos1 = new BlockPos((double) l + entitycreatureIn.getPosX(), (double) k1 + entitycreatureIn.getPosY(), (double) i1 + entitycreatureIn.getPosZ());
 
                 if ((!flag1 || entitycreatureIn.isWithinHomeDistanceFromPosition(blockpos1)))// && pathnavigate.canEntityStandOnPos(blockpos1))
                 {
@@ -120,7 +119,7 @@ public class RandomPositionGeneratorMoCFlyer {
         }
 
         if (flag) {
-            return new Vector3d((double) i + entitycreatureIn.posX, (double) j + entitycreatureIn.posY, (double) k + entitycreatureIn.posZ);
+            return new Vector3d((double) i + entitycreatureIn.getPosX(), (double) j + entitycreatureIn.getPosY(), (double) k + entitycreatureIn.getPosZ());
         } else {
             return null;
         }

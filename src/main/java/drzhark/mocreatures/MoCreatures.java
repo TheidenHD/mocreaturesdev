@@ -25,26 +25,15 @@ import drzhark.mocreatures.proxy.MoCProxy;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.datafix.FixTypes;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.DimensionType;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ModFixs;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import java.util.UUID;
 
@@ -52,7 +41,7 @@ import java.util.UUID;
 public class MoCreatures {
 
     public static final Logger LOGGER = LogManager.getLogger(MoCConstants.MOD_ID);
-    public static final CreativeTabs tabMoC = new MoCCreativeTabs(CreativeTabs.CREATIVE_TAB_ARRAY.length, "MoCreaturesTab");
+    public static final ItemGroup tabMoC = new MoCCreativeTabs(ItemGroup.GROUPS.length, "MoCreaturesTab");
     public static final String MOC_LOGO = TextFormatting.WHITE + "[" + TextFormatting.AQUA + MoCConstants.MOD_NAME + TextFormatting.WHITE + "]";
     @Instance(MoCConstants.MOD_ID)
     public static MoCreatures instance;
@@ -67,7 +56,7 @@ public class MoCreatures {
     public MoCPetMapData mapData;
 
     public static boolean isServer() {
-        return (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER);
+        return (FMLCommonHandler.instance().getEffectiveSide() == MixinEnvironment.Side.SERVER);
     }
 
     @EventHandler

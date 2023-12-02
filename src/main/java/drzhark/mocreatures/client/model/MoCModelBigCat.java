@@ -4,7 +4,7 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.hunter.MoCEntityBigCat;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -565,7 +565,7 @@ public class MoCModelBigCat<T extends Entity> extends EntityModel<T> {
         this.hasChest = bigcat.getIsChested();
         this.hasStinger = bigcat.getHasStinger();
         this.isGhost = bigcat.getIsGhost();
-        this.isMovingVertically = bigcat.motionY != 0 && !bigcat.onGround;
+        this.isMovingVertically = bigcat.getMotion().getY() != 0 && !bigcat.onGround;
     }
 
     public float updateGhostTransparency(Entity entity) {
@@ -583,14 +583,14 @@ public class MoCModelBigCat<T extends Entity> extends EntityModel<T> {
         renderTeeth(this.hasSaberTeeth);
         renderChest(this.hasChest);
 
-        GlStateManager.pushMatrix();
-        //GlStateManager.translate(0F, yOffset, 0F);
+        matrixStackIn.push();
+        //matrixStackIn.translate(0F, yOffset, 0F);
 
         if (this.isGhost) {
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(770, 771);
-            GlStateManager.color(0.8F, 0.8F, 0.8F, updateGhostTransparency(entity));
-            //GlStateManager.scale(1.3F, 1.0F, 1.3F);
+            matrixStackIn.enableBlend();
+            matrixStackIn.blendFunc(770, 771);
+            matrixStackIn.color(0.8F, 0.8F, 0.8F, updateGhostTransparency(entity));
+            //matrixStackIn.scale(1.3F, 1.0F, 1.3F);
         }
 
         this.Chest.render(f5);
@@ -620,9 +620,9 @@ public class MoCModelBigCat<T extends Entity> extends EntityModel<T> {
         }
 
         if (this.isGhost) {
-            GlStateManager.disableBlend();
+            matrixStackIn.disableBlend();
         }
-        GlStateManager.popMatrix();
+        matrixStackIn.pop();
 
     }
 

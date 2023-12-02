@@ -5,7 +5,7 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.MoCEntityInsect;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 
 @OnlyIn(Dist.CLIENT)
 public class MoCRenderInsect<T extends MoCEntityInsect> extends MoCRenderMoC<T> {
@@ -25,11 +25,11 @@ public class MoCRenderInsect<T extends MoCEntityInsect> extends MoCRenderMoC<T> 
     }
 
     protected void rotateAnimal(T entityinsect) {
-        GlStateManager.rotate(90F, -1F, 0.0F, 0.0F);
+        matrixStackIn.rotate(90F, -1F, 0.0F, 0.0F);
     }
 
     protected void stretch(T entityinsect) {
         float sizeFactor = entityinsect.getSizeFactor();
-        GlStateManager.scale(sizeFactor, sizeFactor, sizeFactor);
+        matrixStackIn.scale(sizeFactor, sizeFactor, sizeFactor);
     }
 }

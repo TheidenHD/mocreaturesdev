@@ -10,7 +10,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.IPlantable;
@@ -35,15 +35,15 @@ public class MoCBlockSand extends BlockFalling {
     public int getDustColor(BlockState state) {
         return 12107978;
     }
-    
+
     @Override
-	public boolean canSustainPlant(BlockState state, IBlockAccess world, BlockPos pos, EnumFacing direction, IPlantable plantable) {
+    public boolean canSustainPlant(BlockState state, IBlockAccess world, BlockPos pos, Direction direction, IPlantable plantable) {
         BlockState plant = plantable.getPlant(world, pos.offset(direction));
-        
+
         if (plant.getBlock() == Blocks.CACTUS || plant.getBlock() == Blocks.DEADBUSH) {
             return this == MoCBlocks.silverSand;
         }
-    	
-		return super.canSustainPlant(state, world, pos, direction, plantable);
-	}
+
+        return super.canSustainPlant(state, world, pos, direction, plantable);
+    }
 }

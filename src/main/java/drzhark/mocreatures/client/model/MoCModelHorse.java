@@ -32,7 +32,7 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -356,7 +356,7 @@ public class MoCModelHorse<T extends Entity> extends EntityModel<T> {
         MoCEntityHorse entityhorse = (MoCEntityHorse) entity;
         //super.render(entity, f, f1, f2, f3, f4, f5);
 
-        int type = entityhorse.getType();
+        int type = entityhorse.getTypeMoC();
         int vanishingInt = entityhorse.getVanishC();
         int wingflapInt = entityhorse.wingFlapCounter;
         boolean flapwings = (entityhorse.wingFlapCounter != 0);
@@ -452,16 +452,16 @@ public class MoCModelHorse<T extends Entity> extends EntityModel<T> {
                 this.MidWingR.render(f5);
                 this.OuterWingR.render(f5);
             } else if (type > 44 && type < 60) { //fairys
-                GlStateManager.pushMatrix();
-                GlStateManager.enableBlend();
+                matrixStackIn.push();
+                matrixStackIn.enableBlend();
                 float transparency = 0.7F;
-                GlStateManager.blendFunc(770, 771);
-                GlStateManager.color(1.2F, 1.2F, 1.2F, transparency);
-                GlStateManager.scale(1.3F, 1.0F, 1.3F);
+                matrixStackIn.blendFunc(770, 771);
+                matrixStackIn.color(1.2F, 1.2F, 1.2F, transparency);
+                matrixStackIn.scale(1.3F, 1.0F, 1.3F);
                 this.ButterflyL.render(f5);
                 this.ButterflyR.render(f5);
-                GlStateManager.disableBlend();
-                GlStateManager.popMatrix();
+                matrixStackIn.disableBlend();
+                matrixStackIn.pop();
             }/*
              * else { ButterflyL.render(f5); ButterflyR.render(f5); }
              */
@@ -478,11 +478,11 @@ public class MoCModelHorse<T extends Entity> extends EntityModel<T> {
                 transparency = entityhorse.tFloat();
             }
 
-            GlStateManager.pushMatrix();
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(770, 771);
-            GlStateManager.color(0.8F, 0.8F, 0.8F, transparency);
-            GlStateManager.scale(1.3F, 1.0F, 1.3F);
+            matrixStackIn.push();
+            matrixStackIn.enableBlend();
+            matrixStackIn.blendFunc(770, 771);
+            matrixStackIn.color(0.8F, 0.8F, 0.8F, transparency);
+            matrixStackIn.scale(1.3F, 1.0F, 1.3F);
 
             this.Ear1.render(f5);
             this.Ear2.render(f5);
@@ -550,8 +550,8 @@ public class MoCModelHorse<T extends Entity> extends EntityModel<T> {
 
             }
 
-            GlStateManager.disableBlend();
-            GlStateManager.popMatrix();
+            matrixStackIn.disableBlend();
+            matrixStackIn.pop();
 
             if (type == 21 || type == 22)//|| (type >=50 && type <60))
             {
@@ -562,15 +562,15 @@ public class MoCModelHorse<T extends Entity> extends EntityModel<T> {
                 if (wingTransparency > transparency) {
                     wingTransparency = transparency;
                 }
-                GlStateManager.pushMatrix();
-                GlStateManager.enableBlend();
-                GlStateManager.blendFunc(770, 771);
-                GlStateManager.color(0.8F, 0.8F, 0.8F, wingTransparency);
-                GlStateManager.scale(1.3F, 1.0F, 1.3F);
+                matrixStackIn.push();
+                matrixStackIn.enableBlend();
+                matrixStackIn.blendFunc(770, 771);
+                matrixStackIn.color(0.8F, 0.8F, 0.8F, wingTransparency);
+                matrixStackIn.scale(1.3F, 1.0F, 1.3F);
                 this.ButterflyL.render(f5);
                 this.ButterflyR.render(f5);
-                GlStateManager.disableBlend();
-                GlStateManager.popMatrix();
+                matrixStackIn.disableBlend();
+                matrixStackIn.pop();
             }
         }
 

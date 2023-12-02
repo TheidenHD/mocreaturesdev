@@ -9,23 +9,22 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWeb;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.MobEffects;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.Item;
+import net.minecraft.init.Effects;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -34,11 +33,11 @@ import java.util.List;
 
 public class MoCItemWeapon extends MoCItem {
 
-    private final Item.ToolMaterial material;
+    private final IItemTier material;
     private final float attackDamage;
     private int specialWeaponType = 0;
 
-    public MoCItemWeapon(String name, Item.ToolMaterial par2ToolMaterial) {
+    public MoCItemWeapon(String name, IItemTier par2ToolMaterial) {
         super(name);
         this.material = par2ToolMaterial;
         this.maxStackSize = 1;
@@ -46,7 +45,7 @@ public class MoCItemWeapon extends MoCItem {
         this.attackDamage = 3F + par2ToolMaterial.getAttackDamage();
     }
 
-    public MoCItemWeapon(String name, ToolMaterial par2ToolMaterial, int damageType) {
+    public MoCItemWeapon(String name, IItemTier par2ToolMaterial, int damageType) {
         this(name, par2ToolMaterial);
         this.specialWeaponType = damageType;
     }
@@ -65,24 +64,24 @@ public class MoCItemWeapon extends MoCItem {
     }
 
     @Override
-    public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
+    public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (MoCreatures.proxy.weaponEffects) {
             int timer = 10; // In seconds
             switch (this.specialWeaponType) {
                 case 1: // Poison 2
-                    target.addPotionEffect(new PotionEffect(MobEffects.POISON, timer * 20, 1));
+                    target.addPotionEffect(new EffectInstance(Effects.POISON, timer * 20, 1));
                     break;
                 case 2: // Slowness
-                    target.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, timer * 20, 0));
+                    target.addPotionEffect(new EffectInstance(Effects.SLOWNESS, timer * 20, 0));
                     break;
                 case 3: // Fire
                     target.setFire(timer);
                     break;
                 case 4: // Weakness (Nausea for players)
-                    target.addPotionEffect(new PotionEffect(target instanceof PlayerEntity ? MobEffects.NAUSEA : MobEffects.WEAKNESS, timer * 20, 0));
+                    target.addPotionEffect(new EffectInstance(target instanceof PlayerEntity ? Effects.NAUSEA : Effects.WEAKNESS, timer * 20, 0));
                     break;
                 case 5: // Wither (Blindness for players)
-                    target.addPotionEffect(new PotionEffect(target instanceof PlayerEntity ? MobEffects.BLINDNESS : MobEffects.WITHER, timer * 20, 0));
+                    target.addPotionEffect(new EffectInstance(target instanceof PlayerEntity ? Effects.BLINDNESS : Effects.WITHER, timer * 20, 0));
                     break;
                 default:
                     break;
@@ -103,10 +102,10 @@ public class MoCItemWeapon extends MoCItem {
      * pressed. Args: itemStack, world, entityPlayer
      */
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, Hand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         player.setActiveHand(hand);
-        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+        return new ActionResult<>(ActionResultType.SUCCESS, stack);
     }
 
     /**
@@ -129,7 +128,7 @@ public class MoCItemWeapon extends MoCItem {
     /**
      * Called when a Block is destroyed using this Item. Return true to trigger the "Use Item" statistic.
      */
-    public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, EntityLivingBase playerIn) {
+    public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity playerIn) {
         if ((double) state.getBlockHardness(worldIn, pos) != 0.0D) {
             stack.damageItem(2, playerIn);
         }
@@ -159,9 +158,9 @@ public class MoCItemWeapon extends MoCItem {
     /**
      * Gets a map of item attribute modifiers, used by ItemSword to increase hit damage.
      */
-    public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot equipmentSlot) {
+    public Multimap<String, AttributeModifier> getItemAttributeModifiers(EquipmentSlotType equipmentSlot) {
         Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers(equipmentSlot);
-        if (equipmentSlot == EntityEquipmentSlot.MAINHAND) {
+        if (equipmentSlot == EquipmentSlotType.MAINHAND) {
             multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", this.attackDamage, 0));
         }
         return multimap;
@@ -173,19 +172,19 @@ public class MoCItemWeapon extends MoCItem {
         if (MoCreatures.proxy.weaponEffects) {
             switch (this.specialWeaponType) {
                 case 1: // Poison 2
-                    tooltip.add(new TextComponentTranslation("info.mocreatures.stingdefault1").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault1").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
                     break;
                 case 2: // Slowness
-                    tooltip.add(new TextComponentTranslation("info.mocreatures.stingdefault2").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault2").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
                     break;
                 case 3: // Fire
-                    tooltip.add(new TextComponentTranslation("info.mocreatures.stingdefault3").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault3").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
                     break;
                 case 4: // Weakness (Nausea for players)
-                    tooltip.add(new TextComponentTranslation("info.mocreatures.stingdefault4").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault4").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
                     break;
                 case 5: // Wither (Blindness for players)
-                    tooltip.add(new TextComponentTranslation("info.mocreatures.stingdefault5").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault5").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
                     break;
                 default:
                     break;

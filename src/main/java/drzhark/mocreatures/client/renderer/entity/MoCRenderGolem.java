@@ -6,8 +6,8 @@ package drzhark.mocreatures.client.renderer.entity;
 import drzhark.mocreatures.client.model.MoCModelGolem;
 import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 
 @OnlyIn(Dist.CLIENT)
@@ -36,29 +36,29 @@ public class MoCRenderGolem extends MoCRenderMoC<MoCEntityGolem> {
 
             ResourceLocation effectTexture = entity.getEffectTexture();
             if (effectTexture != null) {
-                GlStateManager.depthMask(false);
+                matrixStackIn.depthMask(false);
                 float var4 = entity.ticksExisted + f1;
                 bindTexture(effectTexture);
-                GlStateManager.matrixMode(5890);
-                GlStateManager.loadIdentity();
+                matrixStackIn.matrixMode(5890);
+                matrixStackIn.loadIdentity();
                 float var5 = var4 * 0.01F;
                 float var6 = var4 * 0.01F;
-                GlStateManager.translate(var5, var6, 0.0F);
-                GlStateManager.matrixMode(5888);
-                GlStateManager.enableBlend();
+                matrixStackIn.translate(var5, var6, 0.0F);
+                matrixStackIn.matrixMode(5888);
+                matrixStackIn.enableBlend();
                 float var7 = 0.5F;
-                GlStateManager.color(var7, var7, var7, 1.0F);
-                GlStateManager.disableLighting();
-                GlStateManager.blendFunc(1, 1);
+                matrixStackIn.color(var7, var7, var7, 1.0F);
+
+                matrixStackIn.blendFunc(1, 1);
                 this.mocModel.setModelAttributes(this.mocRenderer.getMainModel());
                 this.mocModel.setLivingAnimations(entity, f, f1, f2);
                 this.mocModel.render(entity, f, f1, f3, f4, f5, f6);
-                GlStateManager.matrixMode(5890);
-                GlStateManager.loadIdentity();
-                GlStateManager.matrixMode(5888);
-                GlStateManager.enableLighting();
-                GlStateManager.disableBlend();
-                GlStateManager.depthMask(true);
+                matrixStackIn.matrixMode(5890);
+                matrixStackIn.loadIdentity();
+                matrixStackIn.matrixMode(5888);
+
+                matrixStackIn.disableBlend();
+                matrixStackIn.depthMask(true);
             }
         }
 

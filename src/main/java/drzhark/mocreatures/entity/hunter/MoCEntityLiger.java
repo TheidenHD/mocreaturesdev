@@ -8,12 +8,12 @@ import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -36,8 +36,8 @@ public class MoCEntityLiger extends MoCEntityBigCat {
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(1);
         }
         super.selectType();
     }
@@ -49,21 +49,21 @@ public class MoCEntityLiger extends MoCEntityBigCat {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
 
         final ItemStack stack = player.getHeldItem(hand);
-        if (!stack.isEmpty() && getIsTamed() && (getType() == 1) && (stack.getItem() == MoCItems.essencelight)) {
+        if (!stack.isEmpty() && getIsTamed() && (getTypeMoC() == 1) && (stack.getItem() == MoCItems.essencelight)) {
             if (!player.capabilities.isCreativeMode) stack.shrink(1);
             if (stack.isEmpty()) {
                 player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
             } else {
                 player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
             }
-            setType(getType() + 1);
+            setTypeMoC(getTypeMoC() + 1);
             return true;
         }
 
@@ -110,7 +110,7 @@ public class MoCEntityLiger extends MoCEntityBigCat {
     }
 
     @Override
-    public boolean canAttackTarget(EntityLivingBase entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         if (!this.getIsAdult() && (this.getAge() < this.getMaxAge() * 0.8)) {
             return false;
         }
@@ -122,7 +122,7 @@ public class MoCEntityLiger extends MoCEntityBigCat {
 
     @Override
     public boolean isFlyer() {
-        return this.getType() == 2;
+        return this.getTypeMoC() == 2;
     }
 
     public float getEyeHeight() {

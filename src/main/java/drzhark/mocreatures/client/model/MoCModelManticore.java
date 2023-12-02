@@ -22,7 +22,7 @@ public class MoCModelManticore extends MoCModelBigCat {
         this.hasSaberTeeth = true;
         this.onAir = manticore.isOnAir();
         this.hasStinger = true;
-        this.isMovingVertically = manticore.motionY != 0 && !manticore.onGround;
+        this.isMovingVertically = manticore.getMotion().getY() != 0 && !manticore.onGround;
         this.hasChest = false;
         this.isTamed = false;
     }

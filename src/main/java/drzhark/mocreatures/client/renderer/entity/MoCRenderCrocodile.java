@@ -7,8 +7,8 @@ import drzhark.mocreatures.client.model.MoCModelCrocodile;
 import drzhark.mocreatures.entity.hunter.MoCEntityCrocodile;
 import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -57,12 +57,12 @@ public class MoCRenderCrocodile extends RenderLiving<MoCEntityCrocodile> {
 
         //float f = entitycrocodile.swingProgress *10F *entitycrocodile.getFlipDirection();
         //float f2 = entitycrocodile.swingProgress /30 *entitycrocodile.getFlipDirection();
-        //GlStateManager.rotate(180F + f, 0.0F, 0.0F, -1.0F);
-        //GlStateManager.translate(0.0F-f2, 0.5F, 0.0F);
+        //matrixStackIn.rotate(180F + f, 0.0F, 0.0F, -1.0F);
+        //matrixStackIn.translate(0.0F-f2, 0.5F, 0.0F);
     }
 
     protected void adjustHeight(MoCEntityCrocodile entitycrocodile, float FHeight) {
-        GlStateManager.translate(0.0F, FHeight, 0.0F);
+        matrixStackIn.translate(0.0F, FHeight, 0.0F);
     }
 
     protected void spinCroc(MoCEntityCrocodile entitycrocodile, LivingEntity prey) {
@@ -85,7 +85,7 @@ public class MoCRenderCrocodile extends RenderLiving<MoCEntityCrocodile> {
             f3 = 1.0F;
         }
         f3 *= direction;
-        GlStateManager.rotate(f3 * 90F, 0.0F, 0.0F, 1.0F);
+        matrixStackIn.rotate(f3 * 90F, 0.0F, 0.0F, 1.0F);
 
         if (prey != null) {
             prey.deathTime = intEndSpin;
@@ -96,6 +96,6 @@ public class MoCRenderCrocodile extends RenderLiving<MoCEntityCrocodile> {
         // float f = 1.3F;
         float f = entitycrocodile.getAge() * 0.01F;
         // if(!entitycrocodile.getIsAdult()) { f = entitycrocodile.age; }
-        GlStateManager.scale(f, f, f);
+        matrixStackIn.scale(f, f, f);
     }
 }

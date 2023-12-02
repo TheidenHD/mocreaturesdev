@@ -13,7 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProviderSurface;
 import net.minecraft.world.biome.Biome;
@@ -175,16 +175,16 @@ public class MoCWorldProviderWyvernSkylands extends WorldProviderSurface {
         random = message.nextInt(4);
         switch (random) {
             case 0:
-                player.sendStatusMessage(new TextComponentTranslation("msg.mocreatures.bed1"), true);
+                player.sendStatusMessage(new TranslationTextComponent("msg.mocreatures.bed1"), true);
                 break;
             case 1:
-                player.sendStatusMessage(new TextComponentTranslation("msg.mocreatures.bed2"), true);
+                player.sendStatusMessage(new TranslationTextComponent("msg.mocreatures.bed2"), true);
                 break;
             case 2:
-                player.sendStatusMessage(new TextComponentTranslation("msg.mocreatures.bed3"), true);
+                player.sendStatusMessage(new TranslationTextComponent("msg.mocreatures.bed3"), true);
                 break;
             case 3:
-                player.sendStatusMessage(new TextComponentTranslation("msg.mocreatures.bed4"), true);
+                player.sendStatusMessage(new TranslationTextComponent("msg.mocreatures.bed4"), true);
                 break;
         }
 

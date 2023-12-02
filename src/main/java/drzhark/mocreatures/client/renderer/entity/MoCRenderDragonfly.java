@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 
-public class MoCRenderDragonfly extends MoCRenderInsect<MoCEntityDragonfly, MoCModelDragonfly>{
+public class MoCRenderDragonfly extends MoCRenderInsect<MoCEntityDragonfly, MoCModelDragonfly> {
     public MoCRenderDragonfly(EntityRendererManager manager, MoCModelDragonfly modelbase) {
         super(manager, modelbase);
         this.addLayer(new MoCLayerDragonfly(this));

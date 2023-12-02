@@ -10,7 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public class EntityAITools {
 
     protected static boolean IsNearPlayer(LivingEntity entityliving, double d) {
-        PlayerEntity entityplayer1 = entityliving.world.getClosestPlayerToEntity(entityliving, d);
+        PlayerEntity entityplayer1 = entityliving.world.getClosestPlayer(entityliving, d);
         return entityplayer1 != null;
     }
 

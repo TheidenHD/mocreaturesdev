@@ -25,9 +25,9 @@ public class MoCEntityFXVanish extends Particle {
         this.particleRed = red;
         this.particleGreen = green;
         this.particleBlue = blue;
-        this.motionX = par8;
-        this.motionY = par10 * 5D;
-        this.motionZ = par12;
+        this.getMotion().getX() = par8;
+        this.getMotion().getY() = par10 * 5D;
+        this.getMotion().getZ() = par12;
         this.portalPosX = this.getPosX() = par2;
         this.portalPosY = this.getPosY() = par4;// + 0.7D;
         this.portalPosZ = this.getPosZ() = par6;
@@ -47,7 +47,7 @@ public class MoCEntityFXVanish extends Particle {
      * Called to update the entity's position/logic.
      */
     @Override
-    public void onUpdate() {
+    public void tick() {
         this.prevPosX = this.getPosX();
         this.prevPosY = this.getPosY();
         this.prevPosZ = this.getPosZ();
@@ -63,9 +63,9 @@ public class MoCEntityFXVanish extends Particle {
         float var2 = var1;
         var1 = -var1 + var1 * var1 * sizeExp;//5 insteaf of 2 makes an explosion
         var1 = 1.0F - var1;
-        this.getPosX() = this.portalPosX + this.motionX * var1;
-        this.getPosY() = this.portalPosY + this.motionY * var1 + (1.0F - var2);
-        this.getPosZ() = this.portalPosZ + this.motionZ * var1;
+        this.getPosX() = this.portalPosX + this.getMotion().getX() * var1;
+        this.getPosY() = this.portalPosY + this.getMotion().getY() * var1 + (1.0F - var2);
+        this.getPosZ() = this.portalPosZ + this.getMotion().getZ() * var1;
 
         if (this.particleAge++ >= this.particleMaxAge) {
             this.setExpired();

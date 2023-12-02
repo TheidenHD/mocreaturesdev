@@ -150,7 +150,7 @@ public class MoCConfigCategory implements Map<String, MoCProperty> {
             }
 
             if (prop.isList()) {
-                char type = prop.getType().getID();
+                char type = prop.getTypeMoC().getID();
                 write(out, false, pad1 + type, ":", propName, " <");
                 for (int i = 0; i < prop.valueList.size(); i++) {
                     String line = prop.valueList.get(i);
@@ -162,10 +162,10 @@ public class MoCConfigCategory implements Map<String, MoCProperty> {
                     }
                 }
                 write(out, false, ">", NEW_LINE);
-            } else if (prop.getType() == null) {
+            } else if (prop.getTypeMoC() == null) {
                 write(out, false, propName, "=", prop.getString());
             } else {
-                char type = prop.getType().getID();
+                char type = prop.getTypeMoC().getID();
                 write(out, pad1, String.valueOf(type), ":", propName, "=", prop.getString());
             }
         }

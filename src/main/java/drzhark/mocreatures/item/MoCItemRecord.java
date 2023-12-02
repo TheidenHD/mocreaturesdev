@@ -8,6 +8,8 @@ import drzhark.mocreatures.MoCreatures;
 import net.minecraft.item.ItemRecord;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class MoCItemRecord extends ItemRecord {
 

@@ -3,11 +3,8 @@
  */
 package drzhark.mocreatures.compat;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +15,12 @@ public class CompatScreen extends GuiScreen {
     private int textHeight;
 
     public CompatScreen() {
-        this.messages.add(new TextComponentTranslation("msg.mocreatures.compat.cms").getFormattedText());
+        this.messages.add(new TranslationTextComponent("msg.mocreatures.compat.cms").getFormattedText());
         this.messages.add("");
         this.messages.add("");
-        this.messages.add(new TextComponentTranslation("msg.mocreatures.compat.cms1").getFormattedText());
+        this.messages.add(new TranslationTextComponent("msg.mocreatures.compat.cms1").getFormattedText());
         this.messages.add("");
-        this.messages.add(new TextComponentTranslation("msg.mocreatures.compat.cms2").getFormattedText());
+        this.messages.add(new TranslationTextComponent("msg.mocreatures.compat.cms2").getFormattedText());
         this.messages.add("");
     }
 

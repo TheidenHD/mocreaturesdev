@@ -4,7 +4,7 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.ambient.MoCEntityDragonfly;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -102,7 +102,7 @@ public class MoCModelDragonfly<T extends Entity> extends EntityModel<T> {
 
         MoCEntityDragonfly dragonfly = (MoCEntityDragonfly) entity;
         //boolean onGround = dragonfly.onGround;
-        boolean isFlying = (dragonfly.getIsFlying() || dragonfly.motionY < -0.1D);
+        boolean isFlying = (dragonfly.getIsFlying() || dragonfly.getMotion().getY() < -0.1D);
         setRotationAngles(f, f1, f2, f3, f4, f5, isFlying);
         this.Head.render(f5);
         this.Abdomen.render(f5);
@@ -114,18 +114,18 @@ public class MoCModelDragonfly<T extends Entity> extends EntityModel<T> {
         this.Mouth.render(f5);
         this.Thorax.render(f5);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.enableBlend();
+        matrixStackIn.push();
+        matrixStackIn.enableBlend();
         float transparency = 0.6F;
-        GlStateManager.blendFunc(770, 771);
-        GlStateManager.color(0.8F, 0.8F, 0.8F, transparency);
-        //GlStateManager.scale(1.3F, 1.0F, 1.3F);
+        matrixStackIn.blendFunc(770, 771);
+        matrixStackIn.color(0.8F, 0.8F, 0.8F, transparency);
+        //matrixStackIn.scale(1.3F, 1.0F, 1.3F);
         this.WingRearRight.render(f5);
         this.WingFrontRight.render(f5);
         this.WingFrontLeft.render(f5);
         this.WingRearLeft.render(f5);
-        GlStateManager.disableBlend();
-        GlStateManager.popMatrix();
+        matrixStackIn.disableBlend();
+        matrixStackIn.pop();
 
     }
 

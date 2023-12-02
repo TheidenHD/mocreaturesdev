@@ -5,7 +5,7 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.passive.MoCEntityBunny;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 
 @OnlyIn(Dist.CLIENT)
@@ -41,18 +41,18 @@ public class MoCRenderBunny extends MoCRenderMoC<MoCEntityBunny> {
 
     protected void rotBunny(MoCEntityBunny entitybunny) {
         if (!entitybunny.onGround && (entitybunny.getRidingEntity() == null)) {
-            if (entitybunny.motionY > 0.5D) {
-                GlStateManager.rotate(35F, -1F, 0.0F, 0.0F);
-            } else if (entitybunny.motionY < -0.5D) {
-                GlStateManager.rotate(-35F, -1F, 0.0F, 0.0F);
+            if (entitybunny.getMotion().getY() > 0.5D) {
+                matrixStackIn.rotate(35F, -1F, 0.0F, 0.0F);
+            } else if (entitybunny.getMotion().getY() < -0.5D) {
+                matrixStackIn.rotate(-35F, -1F, 0.0F, 0.0F);
             } else {
-                GlStateManager.rotate((float) (entitybunny.motionY * 70D), -1F, 0.0F, 0.0F);
+                matrixStackIn.rotate((float) (entitybunny.getMotion().getY() * 70D), -1F, 0.0F, 0.0F);
             }
         }
     }
 
     protected void stretch(MoCEntityBunny entitybunny) {
         float f = entitybunny.getAge() * 0.01F;
-        GlStateManager.scale(f, f, f);
+        matrixStackIn.scale(f, f, f);
     }
 }

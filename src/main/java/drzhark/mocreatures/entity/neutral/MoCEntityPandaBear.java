@@ -15,7 +15,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -38,8 +38,8 @@ public class MoCEntityPandaBear extends MoCEntityBear {
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(1);
         }
         super.selectType();
     }
@@ -76,16 +76,16 @@ public class MoCEntityPandaBear extends MoCEntityBear {
 
     @Override
     public boolean isMyFavoriteFood(ItemStack stack) {
-        return this.getType() == 3 && !stack.isEmpty() && stack.getItem() == Items.REEDS;
+        return this.getTypeMoC() == 3 && !stack.isEmpty() && stack.getItem() == Items.REEDS;
     }
 
     @Override
     public boolean isMyHealFood(ItemStack stack) {
-        return this.getType() == 3 && !stack.isEmpty() && stack.getItem() == Items.REEDS;
+        return this.getTypeMoC() == 3 && !stack.isEmpty() && stack.getItem() == Items.REEDS;
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;

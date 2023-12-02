@@ -10,7 +10,7 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.player.PlayerEntity;
@@ -114,8 +114,8 @@ public class MoCEntityMiniGolem extends MoCEntityMob {
         }
 
         //creates a dummy TRock on top of it
-        MoCEntityThrowableRock tRock = new MoCEntityThrowableRock(this.world, this, this.posX, this.posY + 1.5D, this.posZ);
-        this.world.spawnEntity(tRock);
+        MoCEntityThrowableRock tRock = new MoCEntityThrowableRock(this.world, this, this.getPosX(), this.getPosY() + 1.5D, this.getPosZ());
+        this.world.addEntity(tRock);
         tRock.setState(tRockState);
         tRock.setBehavior(1);
         this.tempRock = tRock;
@@ -130,9 +130,9 @@ public class MoCEntityMiniGolem extends MoCEntityMob {
 
         if (this.tCounter < 50) {
             //maintains position of TRock above head
-            this.tempRock.posX = this.posX;
-            this.tempRock.posY = (this.posY + 1.0D);
-            this.tempRock.posZ = this.posZ;
+            this.tempRock.getPosX() = this.getPosX();
+            this.tempRock.getPosY() = (this.getPosY() + 1.0D);
+            this.tempRock.getPosZ() = this.getPosZ();
         }
 
         if (this.tCounter >= 50) {
@@ -207,12 +207,12 @@ public class MoCEntityMiniGolem extends MoCEntityMob {
         }
 
         @Override
-        protected double getAttackReachSqr(EntityLivingBase attackTarget) {
+        protected double getAttackReachSqr(LivingEntity attackTarget) {
             return 4.0F + attackTarget.width;
         }
     }
 
-    static class AIGolemTarget<T extends EntityLivingBase> extends EntityAINearestAttackableTarget<T> {
+    static class AIGolemTarget<T extends LivingEntity> extends EntityAINearestAttackableTarget<T> {
         public AIGolemTarget(MoCEntityMiniGolem golem, Class<T> classTarget) {
             super(golem, classTarget, true);
         }

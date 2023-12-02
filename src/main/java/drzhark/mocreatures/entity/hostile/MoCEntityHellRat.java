@@ -7,10 +7,10 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
@@ -39,7 +39,7 @@ public class MoCEntityHellRat extends MoCEntityRat {
 
     @Override
     public void selectType() {
-        setType(4);
+        setTypeMoC(4);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class MoCEntityHellRat extends MoCEntityRat {
     public boolean attackEntityAsMob(Entity entityIn) {
         boolean flag = super.attackEntityAsMob(entityIn);
 
-        if (flag && entityIn instanceof EntityLivingBase) {
+        if (flag && entityIn instanceof LivingEntity) {
             entityIn.setFire(5);
         }
 
@@ -94,7 +94,7 @@ public class MoCEntityHellRat extends MoCEntityRat {
     public void onLivingUpdate() {
         if (this.world.isRemote) {
             for (int i = 0; i < 2; ++i) {
-                this.world.spawnParticle(EnumParticleTypes.FLAME, this.posX + (this.rand.nextDouble() - 0.5D) * (double) this.width, this.posY + this.rand.nextDouble() * (double) this.height, this.posZ + (this.rand.nextDouble() - 0.5D) * (double) this.width, 0.0D, 0.0D, 0.0D);
+                this.world.addParticle(ParticleTypes.FLAME, this.getPosX() + (this.rand.nextDouble() - 0.5D) * (double) this.width, this.getPosY() + this.rand.nextDouble() * (double) this.height, this.getPosZ() + (this.rand.nextDouble() - 0.5D) * (double) this.width, 0.0D, 0.0D, 0.0D);
             }
         }
         super.onLivingUpdate();

@@ -8,10 +8,7 @@ import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.MoCEntityAquatic;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.pathfinding.NodeProcessor;
-import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.math.MathHelper;
 
@@ -33,9 +30,9 @@ public class EntityAIMoverHelperMoC extends EntityMoveHelper {
      * Sets the speed and location to move to
      */
     public void setMoveTo(double x, double y, double z, double speedIn) {
-        this.posX = x;
-        this.posY = y;
-        this.posZ = z;
+        this.getPosX() = x;
+        this.getPosY() = y;
+        this.getPosZ() = z;
         this.speed = speedIn;
         this.action = EntityMoveHelper.Action.MOVE_TO;
     }
@@ -43,9 +40,9 @@ public class EntityAIMoverHelperMoC extends EntityMoveHelper {
     /*public void read(EntityMoveHelper that)
     {
         this.action = that.action;
-        this.posX = that.posX;
-        this.posY = that.posY;
-        this.posZ = that.posZ;
+        this.getPosX() = that.getPosX();
+        this.getPosY() = that.getPosY();
+        this.getPosZ() = that.getPosZ();
         this.speed = Math.max(that.speed, 1.0D);
         this.moveForward = that.moveForward;
         this.moveStrafe = that.moveStrafe;
@@ -82,7 +79,7 @@ public class EntityAIMoverHelperMoC extends EntityMoveHelper {
             if (pathnavigate != null) {
                 NodeProcessor nodeprocessor = pathnavigate.getNodeProcessor();
 
-                if (nodeprocessor != null && nodeprocessor.getPathNodeType(this.entity.world, MathHelper.floor(this.entity.posX + (double) f7), MathHelper.floor(this.entity.posY), MathHelper.floor(this.entity.posZ + (double) f8)) != PathNodeType.WALKABLE) {
+                if (nodeprocessor != null && nodeprocessor.getPathNodeType(this.entity.world, MathHelper.floor(this.entity.getPosX() + (double) f7), MathHelper.floor(this.entity.getPosY()), MathHelper.floor(this.entity.getPosZ() + (double) f8)) != PathNodeType.WALKABLE) {
                     this.moveForward = 1.0F;
                     this.moveStrafe = 0.0F;
                     f1 = f;
@@ -95,9 +92,9 @@ public class EntityAIMoverHelperMoC extends EntityMoveHelper {
             this.action = EntityMoveHelper.Action.WAIT;
         } else if (this.action == EntityMoveHelper.Action.MOVE_TO) {
             this.action = EntityMoveHelper.Action.WAIT;
-            double d0 = this.posX - this.entity.posX;
-            double d1 = this.posZ - this.entity.posZ;
-            double d2 = this.posY - this.entity.posY;
+            double d0 = this.getPosX() - this.entity.getPosX();
+            double d1 = this.getPosZ() - this.entity.getPosZ();
+            double d2 = this.getPosY() - this.entity.getPosY();
             double d3 = d0 * d0 + d2 * d2 + d1 * d1;
 
             if (d3 < 2.500000277905201E-7D) {
@@ -167,9 +164,9 @@ public class EntityAIMoverHelperMoC extends EntityMoveHelper {
             fLimitAngle = 30F;
         }
         if (this.action == EntityMoveHelper.Action.MOVE_TO && !this.theCreature.getNavigator().noPath()) {
-            double d0 = this.posX - this.theCreature.posX;
-            double d1 = this.posY - this.theCreature.posY;
-            double d2 = this.posZ - this.theCreature.posZ;
+            double d0 = this.getPosX() - this.theCreature.getPosX();
+            double d1 = this.getPosY() - this.theCreature.getPosY();
+            double d2 = this.getPosZ() - this.theCreature.getPosZ();
             double d3 = d0 * d0 + d1 * d1 + d2 * d2;
             d3 = MathHelper.sqrt(d3);
             if (d3 < 0.5) {
@@ -177,7 +174,7 @@ public class EntityAIMoverHelperMoC extends EntityMoveHelper {
                 this.theCreature.getNavigator().clearPath();
                 return;
             }
-            //System.out.println("distance to objective = " + d3 + "objective: X = " + this.posX + ", Y = " + this.posY + ", Z = " + this.posZ);
+            //System.out.println("distance to objective = " + d3 + "objective: X = " + this.getPosX() + ", Y = " + this.getPosY() + ", Z = " + this.getPosZ());
             d1 /= d3;
             float f = (float) (Math.atan2(d2, d0) * 180.0D / Math.PI) - 90.0F;
             this.theCreature.rotationYaw = this.limitAngle(this.theCreature.rotationYaw, f, fLimitAngle);
@@ -187,11 +184,11 @@ public class EntityAIMoverHelperMoC extends EntityMoveHelper {
             double d4 = Math.sin((double) (this.theCreature.ticksExisted + this.theCreature.getEntityId()) * 0.75D) * 0.01D;
             double d5 = Math.cos(this.theCreature.rotationYaw * (float) Math.PI / 180.0F);
             double d6 = Math.sin(this.theCreature.rotationYaw * (float) Math.PI / 180.0F);
-            this.theCreature.motionX += d4 * d5;
-            this.theCreature.motionZ += d4 * d6;
+            this.theCreature.getMotion().getX() += d4 * d5;
+            this.theCreature.getMotion().getZ() += d4 * d6;
             //d4 = Math.sin((double)(this.theCreature.ticksExisted + this.theCreature.getEntityId()) * 0.75D) * 0.05D;
-            this.theCreature.motionY += d4 * (d6 + d5) * 0.25D;
-            this.theCreature.motionY += (double) this.theCreature.getAIMoveSpeed() * d1 * 1.5D;
+            this.theCreature.getMotion().getY() += d4 * (d6 + d5) * 0.25D;
+            this.theCreature.getMotion().getY() += (double) this.theCreature.getAIMoveSpeed() * d1 * 1.5D;
         }
     }
 
@@ -205,15 +202,15 @@ public class EntityAIMoverHelperMoC extends EntityMoveHelper {
             int distY = MoCTools.distanceToFloor(this.theCreature);
             if (distY <= ((IMoCEntity) theCreature).minFlyingHeight()
                     && (this.theCreature.collidedHorizontally || this.theCreature.world.rand.nextInt(100) == 0)) {
-                this.theCreature.motionY += 0.02D;
+                this.theCreature.getMotion().getY() += 0.02D;
             }
             if (distY > ((IMoCEntity) theCreature).maxFlyingHeight() || this.theCreature.world.rand.nextInt(150) == 0) {
-                this.theCreature.motionY -= 0.02D;
+                this.theCreature.getMotion().getY() -= 0.02D;
             }
 
         } else {
-            if (this.theCreature.motionY < 0) {
-                this.theCreature.motionY *= 0.6D;
+            if (this.theCreature.getMotion().getY() < 0) {
+                this.theCreature.getMotion().getY() *= 0.6D;
             }
         }
 
@@ -227,27 +224,27 @@ public class EntityAIMoverHelperMoC extends EntityMoveHelper {
             return;
         }
 
-        double distToSurface = (MoCTools.waterSurfaceAtGivenEntity(theCreature) - theCreature.posY);
+        double distToSurface = (MoCTools.waterSurfaceAtGivenEntity(theCreature) - theCreature.getPosY());
         if (distToSurface > ((IMoCEntity) theCreature).getDivingDepth()) {
-            if (theCreature.motionY < 0) {
-                theCreature.motionY = 0;
+            if (theCreature.getMotion().getY() < 0) {
+                theCreature.getMotion().getY() = 0;
             }
-            theCreature.motionY += 0.001D;// 0.001
-            theCreature.motionY += (distToSurface * 0.01);
+            theCreature.getMotion().getY() += 0.001D;// 0.001
+            theCreature.getMotion().getY() += (distToSurface * 0.01);
         }
 
         if (!theCreature.getNavigator().noPath() && theCreature.collidedHorizontally) {
             if (theCreature instanceof MoCEntityAquatic) {
-                theCreature.motionY = 0.05D;
+                theCreature.getMotion().getY() = 0.05D;
             } else {
                 ((IMoCEntity) theCreature).forceEntityJump();
             }
         }
 
-        if ((this.theCreature.getAttackTarget() != null && ((this.theCreature.getAttackTarget().posY < (this.posY - 0.5D)) && this.theCreature
+        if ((this.theCreature.getAttackTarget() != null && ((this.theCreature.getAttackTarget().getPosY() < (this.getPosY() - 0.5D)) && this.theCreature
                 .getDistance(this.theCreature.getAttackTarget()) < 10F))) {
-            if (this.theCreature.motionY < -0.1) {
-                this.theCreature.motionY = -0.1;
+            if (this.theCreature.getMotion().getY() < -0.1) {
+                this.theCreature.getMotion().getY() = -0.1;
             }
         }
     }

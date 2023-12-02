@@ -13,7 +13,7 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -32,7 +32,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -169,8 +169,8 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
             if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
-            if (entity != this && entity instanceof EntityLivingBase && super.shouldAttackPlayers()) {
-                setAttackTarget((EntityLivingBase) entity);
+            if (entity != this && entity instanceof LivingEntity && super.shouldAttackPlayers()) {
+                setAttackTarget((LivingEntity) entity);
             }
             return true;
         } else {
@@ -213,14 +213,14 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
          */
         if (!this.world.isRemote && !getIsTamed() && getIsStanding()
                 && getBearState() != 2 && getIsAdult() && (this.rand.nextInt(200) == 0) && shouldAttackPlayers()) {
-            PlayerEntity entityplayer1 = this.world.getClosestPlayerToEntity(this, 4D);
+            PlayerEntity entityplayer1 = this.world.getClosestPlayer(this, 4D);
             if ((entityplayer1 != null && this.canEntityBeSeen(entityplayer1) && !entityplayer1.capabilities.disableDamage)) {
                 this.setStand();
                 setBearState(1);
             }
         }
         //TODO move to AI
-        if (!this.world.isRemote && getType() == 3 && (this.deathTime == 0) && getBearState() != 2) {
+        if (!this.world.isRemote && getTypeMoC() == 3 && (this.deathTime == 0) && getBearState() != 2) {
             ItemEntity entityitem = getClosestItem(this, 12D, Items.REEDS, Items.SUGAR);
             if (entityitem != null) {
 
@@ -239,7 +239,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(EntityLivingBase entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return !(entity instanceof MoCEntityBear) && entity.height <= 1D && entity.width <= 1D;
     }
 
@@ -259,7 +259,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
         openMouth();
         return MoCSoundEvents.ENTITY_BEAR_AMBIENT;
     }
-    
+
     // TODO: Add unique sound event
     @Override
     protected void playStepSound(BlockPos pos, Block blockIn) {
@@ -279,7 +279,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     private void startAttack() {
         if (!this.world.isRemote && this.attackCounter == 0 && getBearState() == 1) {
             MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 0),
-                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
             this.attackCounter = 1;
         }
     }
@@ -316,7 +316,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -380,9 +380,9 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     @Override
     public void updatePassenger(Entity passenger) {
         double dist = getSizeFactor() * (0.1D);
-        double newPosX = this.posX + (dist * Math.sin(this.renderYawOffset / 57.29578F));
-        double newPosZ = this.posZ - (dist * Math.cos(this.renderYawOffset / 57.29578F));
-        passenger.setPosition(newPosX, this.posY + getMountedYOffset() + passenger.getYOffset(), newPosZ);
+        double newPosX = this.getPosX() + (dist * Math.sin(this.renderYawOffset / 57.29578F));
+        double newPosZ = this.getPosZ() - (dist * Math.cos(this.renderYawOffset / 57.29578F));
+        passenger.setPosition(newPosX, this.getPosY() + getMountedYOffset() + passenger.getYOffset(), newPosZ);
     }
     
     /*@Override
@@ -408,12 +408,12 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void writeEntityToNBT(CompoundNBT nbttagcompound) {
-        super.writeEntityToNBT(nbttagcompound);
-        nbttagcompound.setBoolean("Saddle", getIsRideable());
-        nbttagcompound.setBoolean("Chested", getIsChested());
-        nbttagcompound.setBoolean("Ghost", getIsGhost());
-        nbttagcompound.setInteger("BearState", getBearState());
+    public void writeAdditional(CompoundNBT nbttagcompound) {
+        super.writeAdditional(nbttagcompound);
+        nbttagcompound.putBoolean("Saddle", getIsRideable());
+        nbttagcompound.putBoolean("Chested", getIsChested());
+        nbttagcompound.putBoolean("Ghost", getIsGhost());
+        nbttagcompound.putInt("BearState", getBearState());
         if (getIsChested() && this.localchest != null) {
             ListNBT nbttaglist = new ListNBT();
             for (int i = 0; i < this.localchest.getSizeInventory(); i++) {
@@ -421,28 +421,28 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
                 this.localstack = this.localchest.getStackInSlot(i);
                 if (!this.localstack.isEmpty()) {
                     CompoundNBT nbttagcompound1 = new CompoundNBT();
-                    nbttagcompound1.setByte("Slot", (byte) i);
+                    nbttagcompound1.putByte("Slot", (byte) i);
                     this.localstack.writeToNBT(nbttagcompound1);
-                    nbttaglist.appendTag(nbttagcompound1);
+                    nbttaglist.add(nbttagcompound1);
                 }
             }
-            nbttagcompound.setTag("Items", nbttaglist);
+            nbttagcompound.put("Items", nbttaglist);
         }
 
     }
 
     @Override
-    public void readEntityFromNBT(CompoundNBT nbttagcompound) {
-        super.readEntityFromNBT(nbttagcompound);
+    public void readAdditional(CompoundNBT nbttagcompound) {
+        super.readAdditional(nbttagcompound);
         setRideable(nbttagcompound.getBoolean("Saddle"));
         setIsChested(nbttagcompound.getBoolean("Chested"));
         setIsGhost(nbttagcompound.getBoolean("Ghost"));
-        setBearState(nbttagcompound.getInteger("BearState"));
+        setBearState(nbttagcompound.getInt("BearState"));
         if (getIsChested()) {
-            ListNBT nbttaglist = nbttagcompound.getTagList("Items", 10);
+            ListNBT nbttaglist = nbttagcompound.getList("Items", 10);
             this.localchest = new MoCAnimalChest("BigBearChest", 18);
-            for (int i = 0; i < nbttaglist.tagCount(); i++) {
-                CompoundNBT nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
+            for (int i = 0; i < nbttaglist.size(); i++) {
+                CompoundNBT nbttagcompound1 = nbttaglist.getCompound(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
                 if (j < this.localchest.getSizeInventory()) {
                     this.localchest.setInventorySlotContents(j, new ItemStack(nbttagcompound1));

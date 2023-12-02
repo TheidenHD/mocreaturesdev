@@ -13,22 +13,22 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.init.Effects;
 import net.minecraft.init.Items;
-import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -112,28 +112,28 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
          * type 1 = baby type 2 = female type 3 = female 2 type 4 = female 3
          * type 5 = male 1 type 6 = male 2 type 7 = male 3
          */
-        if (getType() == 0) {
+        if (getTypeMoC() == 0) {
             int i = this.rand.nextInt(100);
             if (i <= 15) {
-                setType(1);
+                setTypeMoC(1);
                 setAge(50);
             } else if (i <= 30) {
-                setType(2);
+                setTypeMoC(2);
                 setAge(70);
             } else if (i <= 45) {
-                setType(3);
+                setTypeMoC(3);
                 setAge(70);
             } else if (i <= 60) {
-                setType(4);
+                setTypeMoC(4);
                 setAge(70);
             } else if (i <= 75) {
-                setType(5);
+                setTypeMoC(5);
                 setAge(90);
             } else if (i <= 90) {
-                setType(6);
+                setTypeMoC(6);
                 setAge(90);
             } else {
-                setType(7);
+                setTypeMoC(7);
                 setAge(90);
             }
         }
@@ -142,7 +142,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
 
     @Override
     public ResourceLocation getTexture() {
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return MoCreatures.proxy.getModelTexture("goat_brown_light.png");
             case 3:
@@ -168,21 +168,21 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
 
     @Override
     protected void jump() {
-        if (getType() == 1) {
-            this.motionY = 0.41D;
-        } else if (getType() < 5) {
-            this.motionY = 0.45D;
+        if (getTypeMoC() == 1) {
+            this.getMotion().getY() = 0.41D;
+        } else if (getTypeMoC() < 5) {
+            this.getMotion().getY() = 0.45D;
         } else {
-            this.motionY = 0.5D;
+            this.getMotion().getY() = 0.5D;
         }
 
-        if (isPotionActive(MobEffects.JUMP_BOOST)) {
-            this.motionY += (getActivePotionEffect(MobEffects.JUMP_BOOST).getAmplifier() + 1) * 0.1F;
+        if (isPotionActive(Effects.JUMP_BOOST)) {
+            this.getMotion().getY() += (getActivePotionEffect(Effects.JUMP_BOOST).getAmplifier() + 1) * 0.1F;
         }
         if (isSprinting()) {
             float f = this.rotationYaw * 0.01745329F;
-            this.motionX -= MathHelper.sin(f) * 0.2F;
-            this.motionZ += MathHelper.cos(f) * 0.2F;
+            this.getMotion().getX() -= MathHelper.sin(f) * 0.2F;
+            this.getMotion().getZ() += MathHelper.cos(f) * 0.2F;
         }
         this.isAirBorne = true;
     }
@@ -216,11 +216,11 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
             this.hungry = false;
         }
 
-        if (!this.world.isRemote && (getAge() < 90 || getType() > 4 && getAge() < 100) && this.rand.nextInt(500) == 0) {
+        if (!this.world.isRemote && (getAge() < 90 || getTypeMoC() > 4 && getAge() < 100) && this.rand.nextInt(500) == 0) {
             setAge(getAge() + 1);
-            if (getType() == 1 && getAge() > 70) {
+            if (getTypeMoC() == 1 && getAge() > 70) {
                 int i = this.rand.nextInt(6) + 2;
-                setType(i);
+                setTypeMoC(i);
 
             }
         }
@@ -263,7 +263,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         }
 
         if (!getUpset() && !getCharging()) {
-            PlayerEntity entityplayer1 = this.world.getClosestPlayerToEntity(this, 24D);
+            PlayerEntity entityplayer1 = this.world.getClosestPlayer(this, 24D);
             if (entityplayer1 != null) {// Behaviour that happens only close to player :)
 
                 // is there food around? only check with player near
@@ -271,9 +271,9 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
                 if (entityitem != null) {
                     float f = entityitem.getDistance(this);
                     if (f > 2.0F) {
-                        int i = MathHelper.floor(entityitem.posX);
-                        int j = MathHelper.floor(entityitem.posY);
-                        int k = MathHelper.floor(entityitem.posZ);
+                        int i = MathHelper.floor(entityitem.getPosX());
+                        int j = MathHelper.floor(entityitem.getPosY());
+                        int k = MathHelper.floor(entityitem.getPosZ());
                         faceLocation(i, j, k, 30F);
 
                         setPathToEntity(entityitem, f);
@@ -289,7 +289,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
                 }
 
                 // find other goat to play!
-                if (getType() > 4 && this.rand.nextInt(200) == 0) {
+                if (getTypeMoC() > 4 && this.rand.nextInt(200) == 0) {
                     MoCEntityGoat entitytarget = (MoCEntityGoat) getClosestEntityLiving(this, 14D);
                     if (entitytarget != null) {
                         setUpset(true);
@@ -319,7 +319,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
 
     @Override
     public boolean entitiesToIgnore(Entity entity) {
-        return ((!(entity instanceof MoCEntityGoat)) || ((((MoCEntityGoat) entity).getType() < 5)));
+        return ((!(entity instanceof MoCEntityGoat)) || ((((MoCEntityGoat) entity).getTypeMoC() < 5)));
     }
 
     @Override
@@ -348,7 +348,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
 
     @Override
     public boolean isNotScared() {
-        return getType() > 4;
+        return getTypeMoC() > 4;
     }
 
     private void swingLeg() {
@@ -395,8 +395,8 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
 
-            if (entity != this && entity instanceof EntityLivingBase && super.shouldAttackPlayers() && getType() > 4) {
-                setAttackTarget((EntityLivingBase) entity);
+            if (entity != this && entity instanceof LivingEntity && super.shouldAttackPlayers() && getTypeMoC() > 4) {
+                setAttackTarget((LivingEntity) entity);
                 setUpset(true);
             }
             return true;
@@ -406,7 +406,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void onUpdate() {
+    public void tick() {
 
         if (getSwingLeg()) {
             this.movecount += 5;
@@ -439,7 +439,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         if (getEating()) {
             this.eatcount += 1;
             if (this.eatcount == 2) {
-                PlayerEntity entityplayer1 = this.world.getClosestPlayerToEntity(this, 3D);
+                PlayerEntity entityplayer1 = this.world.getClosestPlayer(this, 3D);
                 if (entityplayer1 != null) {
                     MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EATING);
                 }
@@ -450,7 +450,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
             }
         }
 
-        super.onUpdate();
+        super.tick();
     }
 
     public int legMovement() {
@@ -508,7 +508,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -516,12 +516,12 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
 
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && stack.getItem() == Items.BUCKET) {
-            if (getType() > 4) {
+            if (getTypeMoC() > 4) {
                 setUpset(true);
                 setAttackTarget(player);
                 return false;
             }
-            if (getType() == 1) {
+            if (getTypeMoC() == 1) {
                 return false;
             }
 
@@ -573,10 +573,10 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
     @Override
     protected SoundEvent getAmbientSound() {
         setBleating(true);
-        if (getType() == 1) {
+        if (getTypeMoC() == 1) {
             return MoCSoundEvents.ENTITY_GOAT_AMBIENT_BABY;
         }
-        if (getType() > 2 && getType() < 5) {
+        if (getTypeMoC() > 2 && getTypeMoC() < 5) {
             return MoCSoundEvents.ENTITY_GOAT_AMBIENT_FEMALE;
         }
 
@@ -587,7 +587,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
     protected SoundEvent getDeathSound() {
         return MoCSoundEvents.ENTITY_GOAT_DEATH;
     }
-    
+
     // TODO: Add unique step sound
     @Override
     protected void playStepSound(BlockPos pos, Block block) {

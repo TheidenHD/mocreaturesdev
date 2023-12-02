@@ -27,10 +27,10 @@ public class MoCBiomeWyvernIslesDesert extends Biome {
         this.spawnableWaterCreatureList.clear();
         this.spawnableCaveCreatureList.clear();
         this.modSpawnableLists.clear();
-        this.spawnableCreatureList.add(new SpawnListEntry(MoCEntityFilchLizard.class, 6, 2, 4));
-        this.spawnableCreatureList.add(new SpawnListEntry(MoCEntityGrasshopper.class, 6, 2, 4));
-        this.spawnableCreatureList.add(new SpawnListEntry(MoCEntitySnake.class, 6, 1, 3));
-        this.spawnableCreatureList.add(new SpawnListEntry(MoCEntityWyvern.class, 12, 2, 3));
+        this.spawnableCreatureList.add(new MobSpawnInfo.Spawners(MoCEntityFilchLizard.class, 6, 2, 4));
+        this.spawnableCreatureList.add(new MobSpawnInfo.Spawners(MoCEntityGrasshopper.class, 6, 2, 4));
+        this.spawnableCreatureList.add(new MobSpawnInfo.Spawners(MoCEntitySnake.class, 6, 1, 3));
+        this.spawnableCreatureList.add(new MobSpawnInfo.Spawners(MoCEntityWyvern.class, 12, 2, 3));
         this.topBlock = MoCBlocks.silverSand.getDefaultState();
         this.fillerBlock = MoCBlocks.silverSandstone.getDefaultState();
         this.decorator = new MoCBiomeWyvernIslesDesertDecorator();

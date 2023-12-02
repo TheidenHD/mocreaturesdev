@@ -7,7 +7,6 @@ import drzhark.mocreatures.entity.hunter.MoCEntityPetScorpion;
 import net.minecraft.entity.Entity;
 
 
-
 public class MoCModelPetScorpion extends MoCModelScorpion {
 
     @Override

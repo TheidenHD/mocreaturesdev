@@ -3,7 +3,7 @@
  */
 package drzhark.mocreatures.dimension.chunk;
 
-import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -52,7 +52,7 @@ public class MoCChunkProviderWyvernSkylands implements IChunkGenerator {
     }
 
     @Override
-    public List<Biome.SpawnListEntry> getPossibleCreatures(EnumCreatureType creatureType, BlockPos pos) {
+    public List<Biome.MobSpawnInfo.Spawners> getPossibleCreatures(EntityClassification creatureType, BlockPos pos) {
         return world.getBiome(pos).getSpawnableList(creatureType);
     }
 

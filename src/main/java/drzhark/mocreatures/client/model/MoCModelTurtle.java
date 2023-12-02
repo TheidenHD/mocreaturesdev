@@ -10,7 +10,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
 
-
 public class MoCModelTurtle<T extends Entity> extends EntityModel<T> {
 
     public boolean isHiding;

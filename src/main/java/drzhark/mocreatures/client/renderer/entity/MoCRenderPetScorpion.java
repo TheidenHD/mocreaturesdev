@@ -5,7 +5,7 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.client.model.MoCModelScorpion;
 import drzhark.mocreatures.entity.hunter.MoCEntityPetScorpion;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 
 @OnlyIn(Dist.CLIENT)
@@ -35,7 +35,7 @@ public class MoCRenderPetScorpion extends MoCRenderMoC<MoCEntityPetScorpion> {
 
         if (entityscorpion.getIsSitting()) {
             float factorY = 0.4F * (entityscorpion.getAge() / 100.0F);
-            GlStateManager.translate(0.0F, factorY, 0.0F);
+            matrixStackIn.translate(0.0F, factorY, 0.0F);
         }
 
         if (!entityscorpion.getIsAdult()) {
@@ -49,17 +49,17 @@ public class MoCRenderPetScorpion extends MoCRenderMoC<MoCEntityPetScorpion> {
     }
 
     protected void upsideDown(MoCEntityPetScorpion entityscorpion) {
-        GlStateManager.rotate(-90.0F, -1.0F, 0.0F, 0.0F);
-        GlStateManager.translate(-1.5F, -0.5F, -2.5F);
+        matrixStackIn.rotate(-90.0F, -1.0F, 0.0F, 0.0F);
+        matrixStackIn.translate(-1.5F, -0.5F, -2.5F);
     }
 
     protected void adjustHeight(MoCEntityPetScorpion entityscorpion) {
-        GlStateManager.translate(0.0F, -0.1F, 0.0F);
+        matrixStackIn.translate(0.0F, -0.1F, 0.0F);
     }
 
     protected void rotateAnimal(MoCEntityPetScorpion entityscorpion) {
-        GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
-        GlStateManager.translate(0.0F, 1.0F, 0.0F);
+        matrixStackIn.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+        matrixStackIn.translate(0.0F, 1.0F, 0.0F);
     }
 
     protected void stretch(MoCEntityPetScorpion entityscorpion) {
@@ -68,7 +68,7 @@ public class MoCRenderPetScorpion extends MoCRenderMoC<MoCEntityPetScorpion> {
         if (!entityscorpion.getIsAdult()) {
             f = entityscorpion.getAge() * 0.01F;
         }
-        GlStateManager.scale(f, f, f);
+        matrixStackIn.scale(f, f, f);
     }
 
     @Override

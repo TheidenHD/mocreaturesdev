@@ -11,10 +11,12 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class MoCItemEgg extends MoCItem {
 
@@ -25,7 +27,7 @@ public class MoCItemEgg extends MoCItem {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (!player.capabilities.isCreativeMode) stack.shrink(1);
         if (!world.isRemote && player.onGround) {
@@ -34,13 +36,13 @@ public class MoCItemEgg extends MoCItem {
                 i = 31; //for ostrich eggs. placed eggs become stolen eggs.
             }
             MoCEntityEgg entityegg = new MoCEntityEgg(world, i);
-            entityegg.setPosition(player.posX, player.posY, player.posZ);
-            player.world.spawnEntity(entityegg);
-            entityegg.motionY += world.rand.nextFloat() * 0.05F;
-            entityegg.motionX += (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F;
-            entityegg.motionZ += (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F;
+            entityegg.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
+            player.world.addEntity(entityegg);
+            entityegg.getMotion().getY() += world.rand.nextFloat() * 0.05F;
+            entityegg.getMotion().getX() += (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F;
+            entityegg.getMotion().getZ() += (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F;
         }
-        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+        return new ActionResult<>(ActionResultType.SUCCESS, stack);
     }
 
     @Override

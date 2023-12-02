@@ -14,7 +14,7 @@ public class MoCEntityHippoTang extends MoCEntitySmallFish {
 
     public MoCEntityHippoTang(World world) {
         super(world);
-        this.setType(6);
+        this.setTypeMoC(6);
     }
 
     @Override

@@ -22,9 +22,9 @@ public interface IMoCTameable extends IMoCEntity {
 
     void setDead();
 
-    void writeEntityToNBT(CompoundNBT nbttagcompound);
+    void writeAdditional(CompoundNBT nbttagcompound);
 
-    void readEntityFromNBT(CompoundNBT nbttagcompound);
+    void readAdditional(CompoundNBT nbttagcompound);
 
     void setOwnerId(@Nullable UUID uuid);
 

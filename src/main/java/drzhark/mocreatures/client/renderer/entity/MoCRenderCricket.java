@@ -5,7 +5,7 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.ambient.MoCEntityCricket;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 
 @OnlyIn(Dist.CLIENT)
@@ -22,12 +22,12 @@ public class MoCRenderCricket extends MoCRenderMoC<MoCEntityCricket> {
 
     protected void rotateCricket(MoCEntityCricket entitycricket) {
         if (!entitycricket.onGround) {
-            if (entitycricket.motionY > 0.5D) {
-                GlStateManager.rotate(35F, -1F, 0.0F, 0.0F);
-            } else if (entitycricket.motionY < -0.5D) {
-                GlStateManager.rotate(-35F, -1F, 0.0F, 0.0F);
+            if (entitycricket.getMotion().getY() > 0.5D) {
+                matrixStackIn.rotate(35F, -1F, 0.0F, 0.0F);
+            } else if (entitycricket.getMotion().getY() < -0.5D) {
+                matrixStackIn.rotate(-35F, -1F, 0.0F, 0.0F);
             } else {
-                GlStateManager.rotate((float) (entitycricket.motionY * 70D), -1F, 0.0F, 0.0F);
+                matrixStackIn.rotate((float) (entitycricket.getMotion().getY() * 70D), -1F, 0.0F, 0.0F);
             }
         }
     }

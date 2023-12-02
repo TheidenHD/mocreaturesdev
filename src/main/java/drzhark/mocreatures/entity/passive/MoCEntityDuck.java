@@ -67,7 +67,7 @@ public class MoCEntityDuck extends MoCEntityAnimal {
     protected SoundEvent getAmbientSound() {
         return MoCSoundEvents.ENTITY_DUCK_AMBIENT;
     }
-    
+
     // TODO: Add unique step sound
     @Override
     protected void playStepSound(BlockPos pos, Block blockIn) {
@@ -100,8 +100,8 @@ public class MoCEntityDuck extends MoCEntityAnimal {
 
         this.field_70889_i = (float) (this.field_70889_i * 0.9D);
 
-        if (!this.onGround && this.motionY < 0.0D) {
-            this.motionY *= 0.6D;
+        if (!this.onGround && this.getMotion().getY() < 0.0D) {
+            this.getMotion().getY() *= 0.6D;
         }
 
         this.field_70886_e += this.field_70889_i * 2.0F;

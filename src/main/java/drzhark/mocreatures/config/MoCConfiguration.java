@@ -213,7 +213,7 @@ public class MoCConfiguration {
         if (cat.containsKey(key)) {
             MoCProperty prop = cat.get(key);
 
-            if (prop.getType() == null) {
+            if (prop.getTypeMoC() == null) {
                 prop = new MoCProperty(prop.getName(), prop.value, type);
                 cat.set(key, prop);
             }
@@ -241,7 +241,7 @@ public class MoCConfiguration {
         if (cat.containsKey(key)) {
             MoCProperty prop = cat.get(key);
 
-            if (prop.getType() == null) {
+            if (prop.getTypeMoC() == null) {
                 prop = new MoCProperty(prop.getName(), prop.getString(), type);
                 cat.put(key, prop);
             }
@@ -263,7 +263,7 @@ public class MoCConfiguration {
         return this.categories.get(category) != null;
     }
 
-    public boolean hasKey(String category, String key) {
+    public boolean contains(String category, String key) {
         MoCConfigCategory cat = this.categories.get(category);
         return cat != null && cat.containsKey(key);
     }

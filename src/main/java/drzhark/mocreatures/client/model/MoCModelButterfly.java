@@ -4,7 +4,7 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.ambient.MoCEntityButterfly;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -114,7 +114,7 @@ public class MoCModelButterfly<T extends Entity> extends EntityModel<T> {
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         super.render(entity, f, f1, f2, f3, f4, f5);
         MoCEntityButterfly butterfly = (MoCEntityButterfly) entity;
-        boolean flying = (butterfly.getIsFlying() || butterfly.motionY < -0.1D);
+        boolean flying = (butterfly.getIsFlying() || butterfly.getMotion().getY() < -0.1D);
         setRotationAngles(f, f1, f2, f3, f4, f5, !flying);
         this.Abdomen.render(f5);
         this.FrontLegs.render(f5);
@@ -127,20 +127,20 @@ public class MoCModelButterfly<T extends Entity> extends EntityModel<T> {
 
         this.Mouth.render(f5);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.enableBlend();
+        matrixStackIn.push();
+        matrixStackIn.enableBlend();
         float transparency = 0.8F;
-        GlStateManager.blendFunc(770, 771);
-        GlStateManager.color(0.8F, 0.8F, 0.8F, transparency);
-        //GlStateManager.scale(1.3F, 1.0F, 1.3F);
+        matrixStackIn.blendFunc(770, 771);
+        matrixStackIn.color(0.8F, 0.8F, 0.8F, transparency);
+        //matrixStackIn.scale(1.3F, 1.0F, 1.3F);
         this.WingRight.render(f5);
         this.WingLeft.render(f5);
         this.WingRightFront.render(f5);
         this.WingLeftFront.render(f5);
         this.WingRightBack.render(f5);
         this.WingLeftBack.render(f5);
-        GlStateManager.disableBlend();
-        GlStateManager.popMatrix();
+        matrixStackIn.disableBlend();
+        matrixStackIn.pop();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

@@ -36,7 +36,7 @@ public class MoCEntityFirefly extends MoCEntityInsect {
         super.onLivingUpdate();
 
         if (!this.world.isRemote) {
-            PlayerEntity ep = this.world.getClosestPlayerToEntity(this, 5D);
+            PlayerEntity ep = this.world.getClosestPlayer(this, 5D);
             if (ep != null && getIsFlying() && --this.soundCount == -1) {
                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GRASSHOPPER_FLY);
                 this.soundCount = 20;

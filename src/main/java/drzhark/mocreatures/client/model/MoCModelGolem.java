@@ -4,7 +4,7 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -207,8 +207,8 @@ public class MoCModelGolem<T extends Entity> extends EntityModel<T> {
         }
         float yOffset = entityG.getAdjustedYOffset();
         setRotationAngles(f, f1, f2, f3, f4, f5, openChest, isSummoning, throwing);
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0F, yOffset, 0F);
+        matrixStackIn.push();
+        matrixStackIn.translate(0F, yOffset, 0F);
         for (int i = 0; i < 23; i++) {
             //blocksText[i] = entityG.getBlockText(i);
             if (this.blocksText[i] != 30) {
@@ -223,7 +223,7 @@ public class MoCModelGolem<T extends Entity> extends EntityModel<T> {
             this.head.render(f5);
             this.chest.render(f5);
         }
-        GlStateManager.popMatrix();
+        matrixStackIn.pop();
 
     }
 

@@ -51,8 +51,8 @@ public class MoCEntityMediumFish extends MoCEntityTameableAquatic {
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(this.rand.nextInt(fishNames.length) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(fishNames.length) + 1);
         }
     }
 

@@ -9,15 +9,11 @@ import drzhark.mocreatures.entity.MoCEntityMob;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.monster.EntityIronGolem;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.PathNavigate;
-import net.minecraft.pathfinding.PathNavigateClimber;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -74,21 +70,21 @@ public class MoCEntityRat extends MoCEntityMob {
     public void selectType() {
         checkSpawningBiome();
 
-        if (getType() == 0) {
+        if (getTypeMoC() == 0) {
             int i = this.rand.nextInt(100);
             if (i <= 65) {
-                setType(1);
+                setTypeMoC(1);
             } else if (i <= 98) {
-                setType(2);
+                setTypeMoC(2);
             } else {
-                setType(3);
+                setTypeMoC(3);
             }
         }
     }
 
     @Override
     public ResourceLocation getTexture() {
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return MoCreatures.proxy.getModelTexture("rat_black.png");
             case 3:
@@ -100,16 +96,16 @@ public class MoCEntityRat extends MoCEntityMob {
 
     @Override
     public boolean checkSpawningBiome() {
-        BlockPos pos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(getEntityBoundingBox().minY), this.posZ);
+        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getEntityBoundingBox().minY), this.getPosZ());
         Biome currentbiome = MoCTools.biomeKind(this.world, pos);
 
         try {
             if (BiomeDictionary.hasType(currentbiome, BiomeDictionary.Type.MESA)) {
-                setType(1); // only brown rats
+                setTypeMoC(1); // only brown rats
             }
 
             if (BiomeDictionary.hasType(currentbiome, BiomeDictionary.Type.SNOWY)) {
-                setType(3); // only white rats
+                setTypeMoC(3); // only white rats
             }
         } catch (Exception ignored) {
         }
@@ -128,13 +124,13 @@ public class MoCEntityRat extends MoCEntityMob {
     @Override
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         Entity entity = damagesource.getTrueSource();
-        if (entity instanceof EntityLivingBase) {
-            setAttackTarget((EntityLivingBase) entity);
+        if (entity instanceof LivingEntity) {
+            setAttackTarget((LivingEntity) entity);
             if (!this.world.isRemote) {
-                List<MoCEntityRat> list = this.world.getEntitiesWithinAABB(MoCEntityRat.class, new AxisAlignedBB(this.posX, this.posY, this.posZ, this.posX + 1.0D, this.posY + 1.0D, this.posZ + 1.0D).grow(16D, 4D, 16D));
+                List<MoCEntityRat> list = this.world.getEntitiesWithinAABB(MoCEntityRat.class, new AxisAlignedBB(this.getPosX(), this.getPosY(), this.getPosZ(), this.getPosX() + 1.0D, this.getPosY() + 1.0D, this.getPosZ() + 1.0D).grow(16D, 4D, 16D));
                 for (MoCEntityRat entityrat : list) {
                     if ((entityrat != null) && (entityrat.getAttackTarget() == null)) {
-                        entityrat.setAttackTarget((EntityLivingBase) entity);
+                        entityrat.setAttackTarget((LivingEntity) entity);
                     }
                 }
             }
@@ -185,8 +181,8 @@ public class MoCEntityRat extends MoCEntityMob {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
 
         if (!this.world.isRemote) {
             this.setBesideClimbableBlock(this.collidedHorizontally);
@@ -215,12 +211,12 @@ public class MoCEntityRat extends MoCEntityMob {
         }
 
         @Override
-        protected double getAttackReachSqr(EntityLivingBase attackTarget) {
+        protected double getAttackReachSqr(LivingEntity attackTarget) {
             return 4.0F + attackTarget.width;
         }
     }
 
-    static class AIRatTarget<T extends EntityLivingBase> extends EntityAINearestAttackableTarget<T> {
+    static class AIRatTarget<T extends LivingEntity> extends EntityAINearestAttackableTarget<T> {
         public AIRatTarget(MoCEntityRat rat, Class<T> classTarget) {
             super(rat, classTarget, true);
         }

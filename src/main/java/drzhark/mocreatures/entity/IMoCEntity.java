@@ -38,7 +38,11 @@ public interface IMoCEntity {
 
     boolean checkSpawningBiome();
 
-    static boolean canAnimalSpawn(EntityType<? extends AnimalEntity> animal, IWorld worldIn, SpawnReason reason, BlockPos pos, Random random){return true;}; //TODO TheidenHD ?
+    static boolean canAnimalSpawn(EntityType<? extends AnimalEntity> animal, IWorld worldIn, SpawnReason reason, BlockPos pos, Random random) {
+        return true;
+    }
+
+    ; //TODO TheidenHD ?
 
     void performAnimation(int i);
 

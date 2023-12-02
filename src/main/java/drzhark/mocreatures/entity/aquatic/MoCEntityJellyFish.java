@@ -48,8 +48,8 @@ public class MoCEntityJellyFish extends MoCEntityTameableAquatic {
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(this.rand.nextInt(5) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(5) + 1);
         }
     }
 
@@ -74,7 +74,7 @@ public class MoCEntityJellyFish extends MoCEntityTameableAquatic {
 
     @Override
     public ResourceLocation getTexture() {
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return MoCreatures.proxy.getModelTexture("jellyfish_purple_gray.png");
             case 3:

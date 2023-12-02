@@ -13,7 +13,7 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.item.ItemEntity;
@@ -27,7 +27,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
@@ -132,7 +132,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -159,11 +159,11 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
     @Override
     protected void jump() {
         if (isInsideOfMaterial(Material.WATER)) {
-            this.motionY = 0.3D;
+            this.getMotion().getY() = 0.3D;
             if (isSprinting()) {
                 float f = this.rotationYaw * 0.01745329F;
-                this.motionX -= MathHelper.sin(f) * 0.2F;
-                this.motionZ += MathHelper.cos(f) * 0.2F;
+                this.getMotion().getX() -= MathHelper.sin(f) * 0.2F;
+                this.getMotion().getZ() += MathHelper.cos(f) * 0.2F;
             }
             this.isAirBorne = true;
         }
@@ -179,7 +179,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
         super.onLivingUpdate();
         if (!this.world.isRemote) {
             if (!getIsUpsideDown() && !getIsTamed()) {
-                EntityLivingBase entityliving = getBoogey(4D);
+                LivingEntity entityliving = getBoogey(4D);
                 if ((entityliving != null) && canEntityBeSeen(entityliving)) {
                     if (!getIsHiding() && !isInWater()) {
                         MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_TURTLE_ANGRY);
@@ -200,7 +200,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
                             if (f < 2.0F && this.deathTime == 0) {
                                 entityitem.setDead();
                                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_TURTLE_EATING);
-                                PlayerEntity entityplayer = this.world.getClosestPlayerToEntity(this, 24D);
+                                PlayerEntity entityplayer = this.world.getClosestPlayer(this, 24D);
                                 if (entityplayer != null) {
                                     MoCTools.tameWithName(entityplayer, this);
                                 }
@@ -253,8 +253,8 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
 
         if ((this.getRidingEntity() != null) && (this.getRidingEntity() instanceof PlayerEntity)) {
             PlayerEntity entityplayer = (PlayerEntity) this.getRidingEntity();
@@ -315,15 +315,15 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void readEntityFromNBT(CompoundNBT nbttagcompound) {
-        super.readEntityFromNBT(nbttagcompound);
+    public void readAdditional(CompoundNBT nbttagcompound) {
+        super.readAdditional(nbttagcompound);
         setIsUpsideDown(nbttagcompound.getBoolean("UpsideDown"));
     }
 
     @Override
-    public void writeEntityToNBT(CompoundNBT nbttagcompound) {
-        super.writeEntityToNBT(nbttagcompound);
-        nbttagcompound.setBoolean("UpsideDown", getIsUpsideDown());
+    public void writeAdditional(CompoundNBT nbttagcompound) {
+        super.writeAdditional(nbttagcompound);
+        nbttagcompound.putBoolean("UpsideDown", getIsUpsideDown());
     }
 
     @Override

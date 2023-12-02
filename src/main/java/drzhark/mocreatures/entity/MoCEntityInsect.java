@@ -60,15 +60,15 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
 
     @Override
     public boolean getIsFlying() {
-        return (isOnAir() || !onGround) && (motionX != 0 || motionY != 0 || motionZ != 0);
+        return (isOnAir() || !onGround) && (getMotion().getX() != 0 || getMotion().getY() != 0 || getMotion().getZ() != 0);
     }
 
     @Override
     public void onLivingUpdate() {
         super.onLivingUpdate();
 
-        if (!this.onGround && this.motionY < 0.0D) {
-            this.motionY *= 0.6D;
+        if (!this.onGround && this.getMotion().getY() < 0.0D) {
+            this.getMotion().getY() *= 0.6D;
         }
 
         if (!this.world.isRemote) {

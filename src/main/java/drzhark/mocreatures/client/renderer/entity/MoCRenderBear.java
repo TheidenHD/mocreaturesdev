@@ -5,7 +5,7 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.client.model.MoCModelBear;
 import drzhark.mocreatures.entity.hunter.MoCEntityBear;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 
 @OnlyIn(Dist.CLIENT)
@@ -28,7 +28,7 @@ public class MoCRenderBear extends MoCRenderMoC<MoCEntityBear> {
             sizeFactor = 1.0F;
         }
         sizeFactor *= entitybear.getBearSize();
-        GlStateManager.scale(sizeFactor, sizeFactor, sizeFactor);
+        matrixStackIn.scale(sizeFactor, sizeFactor, sizeFactor);
     }
 
     @Override

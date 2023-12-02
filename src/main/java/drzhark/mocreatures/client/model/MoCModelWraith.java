@@ -5,7 +5,7 @@ package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.hostile.MoCEntityWraith;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -36,18 +36,18 @@ public class MoCModelWraith extends ModelBiped {
     @Override
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
-        GlStateManager.pushMatrix();
+        matrixStackIn.push();
         if (this.isChild) {
-            GlStateManager.scale(0.75F, 0.75F, 0.75F);
-            GlStateManager.translate(0.0F, 16.0F * scale, 0.0F);
+            matrixStackIn.scale(0.75F, 0.75F, 0.75F);
+            matrixStackIn.translate(0.0F, 16.0F * scale, 0.0F);
             this.bipedHead.render(scale);
-            GlStateManager.popMatrix();
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(0.5F, 0.5F, 0.5F);
-            GlStateManager.translate(0.0F, 24.0F * scale, 0.0F);
+            matrixStackIn.pop();
+            matrixStackIn.push();
+            matrixStackIn.scale(0.5F, 0.5F, 0.5F);
+            matrixStackIn.translate(0.0F, 24.0F * scale, 0.0F);
         } else {
             if (entityIn.isSneaking()) {
-                GlStateManager.translate(0.0F, 0.2F, 0.0F);
+                matrixStackIn.translate(0.0F, 0.2F, 0.0F);
             }
             this.bipedHead.render(scale);
         }
@@ -56,7 +56,7 @@ public class MoCModelWraith extends ModelBiped {
         this.bipedLeftArm.render(scale);
         this.bipedRightLeg.render(scale);
         this.bipedLeftLeg.render(scale);
-        GlStateManager.popMatrix();
+        matrixStackIn.pop();
     }
 
     @Override

@@ -5,7 +5,7 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.passive.MoCEntityMouse;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 
 @OnlyIn(Dist.CLIENT)
@@ -39,18 +39,18 @@ public class MoCRenderMouse extends MoCRenderMoC<MoCEntityMouse> {
     }
 
     protected void rotateAnimal(MoCEntityMouse entitymouse) {
-        GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
-        GlStateManager.translate(0.0F, 0.4F, 0.0F);
+        matrixStackIn.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+        matrixStackIn.translate(0.0F, 0.4F, 0.0F);
     }
 
     protected void stretch(MoCEntityMouse entitymouse) {
         float f = 0.6F;
-        GlStateManager.scale(f, f, f);
+        matrixStackIn.scale(f, f, f);
     }
 
     protected void upsideDown(MoCEntityMouse entitymouse) {
-        GlStateManager.rotate(-90.0F, -1.0F, 0.0F, 0.0F);
-        GlStateManager.translate(-0.55F, 0.0F, 0.0F);
+        matrixStackIn.rotate(-90.0F, -1.0F, 0.0F, 0.0F);
+        matrixStackIn.translate(-0.55F, 0.0F, 0.0F);
     }
 
     @Override

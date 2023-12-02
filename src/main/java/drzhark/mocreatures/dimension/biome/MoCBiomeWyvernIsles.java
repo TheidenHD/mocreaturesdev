@@ -34,10 +34,10 @@ public class MoCBiomeWyvernIsles extends Biome {
         this.spawnableWaterCreatureList.clear();
         this.spawnableCaveCreatureList.clear();
         this.modSpawnableLists.clear();
-        this.spawnableCreatureList.add(new SpawnListEntry(MoCEntityBunny.class, 6, 2, 4));
-        this.spawnableCreatureList.add(new SpawnListEntry(MoCEntityDragonfly.class, 6, 2, 4));
-        this.spawnableCreatureList.add(new SpawnListEntry(MoCEntitySnake.class, 6, 1, 3));
-        this.spawnableCreatureList.add(new SpawnListEntry(MoCEntityWyvern.class, 12, 2, 3));
+        this.spawnableCreatureList.add(new MobSpawnInfo.Spawners(MoCEntityBunny.class, 6, 2, 4));
+        this.spawnableCreatureList.add(new MobSpawnInfo.Spawners(MoCEntityDragonfly.class, 6, 2, 4));
+        this.spawnableCreatureList.add(new MobSpawnInfo.Spawners(MoCEntitySnake.class, 6, 1, 3));
+        this.spawnableCreatureList.add(new MobSpawnInfo.Spawners(MoCEntityWyvern.class, 12, 2, 3));
         this.topBlock = MoCBlocks.wyvgrass.getDefaultState();
         this.fillerBlock = MoCBlocks.wyvdirt.getDefaultState();
         this.wyvernGenBigTree = new MoCWorldGenBigTree(false, MoCBlocks.wyvwoodLog.getDefaultState(), MoCBlocks.wyvwoodLeaves.getStateFromMeta(0), 2, 30, 10);

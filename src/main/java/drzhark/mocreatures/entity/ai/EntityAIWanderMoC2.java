@@ -8,11 +8,11 @@ import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.MoCEntityMob;
 import drzhark.mocreatures.entity.ambient.MoCEntityAnt;
 import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 
-public class EntityAIWanderMoC2 extends EntityAIBase {
+public class EntityAIWanderMoC2 extends Goal {
 
     private final CreatureEntity entity;
     private final double speed;
@@ -34,7 +34,7 @@ public class EntityAIWanderMoC2 extends EntityAIBase {
     }
 
     /**
-     * Returns whether the EntityAIBase should begin execution.
+     * Returns whether the Goal should begin execution.
      */
     @Override
     public boolean shouldExecute() {
@@ -61,7 +61,7 @@ public class EntityAIWanderMoC2 extends EntityAIBase {
 
         if (vec3 != null && this.entity instanceof IMoCEntity && this.entity.getNavigator() instanceof PathNavigateFlyer) {
             int distToFloor = MoCTools.distanceToFloor(this.entity);
-            int finalYHeight = distToFloor + MathHelper.floor(vec3.y - this.entity.posY);
+            int finalYHeight = distToFloor + MathHelper.floor(vec3.y - this.entity.getPosY());
             if ((finalYHeight < ((IMoCEntity) this.entity).minFlyingHeight())) {
                 //System.out.println("vector height " + finalYHeight + " smaller than min flying height " + ((IMoCEntity) this.entity).minFlyingHeight());
                 return false;
@@ -87,7 +87,7 @@ public class EntityAIWanderMoC2 extends EntityAIBase {
     }
 
     /**
-     * Returns whether an in-progress EntityAIBase should continue executing
+     * Returns whether an in-progress Goal should continue executing
      */
     @Override
     public boolean shouldContinueExecuting() {

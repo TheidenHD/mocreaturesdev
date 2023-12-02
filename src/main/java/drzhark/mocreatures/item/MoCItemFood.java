@@ -7,10 +7,10 @@ import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.MobEffects;
+import net.minecraft.init.Effects;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.world.World;
 
 public class MoCItemFood extends ItemFood {
@@ -51,12 +51,12 @@ public class MoCItemFood extends ItemFood {
     @Override
     protected void onFoodEaten(ItemStack stack, World world, PlayerEntity player) {
         if (this == MoCItems.mysticPear) {
-            player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 10 * 20, 1));
-            player.addPotionEffect(new PotionEffect(MobEffects.SPEED, 10 * 20, 1));
+            player.addPotionEffect(new EffectInstance(Effects.RESISTANCE, 10 * 20, 1));
+            player.addPotionEffect(new EffectInstance(Effects.SPEED, 10 * 20, 1));
         }
-        
+
         if (this == MoCItems.sugarlump) {
-            player.addPotionEffect(new PotionEffect(MobEffects.SPEED, 4 * 20, 0));
+            player.addPotionEffect(new EffectInstance(Effects.SPEED, 4 * 20, 0));
         }
 
         super.onFoodEaten(stack, world, player);

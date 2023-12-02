@@ -3,7 +3,7 @@
  */
 package drzhark.mocreatures.client.model;
 
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -169,11 +169,11 @@ public class MoCModelGoat<T extends Entity> extends EntityModel<T> {
         if (this.typeInt > 1 && this.typeInt < 5) {
             this.Tits.render(f5);
         }
-        GlStateManager.pushMatrix();
+        matrixStackIn.push();
         if (this.attacking != 0) {
             float yOff = (this.attacking / 150F) - (1F / 5F);
             float zOff = (this.attacking / 450F) - (1F / 15F);
-            GlStateManager.translate(0.0F, yOff, -zOff);
+            matrixStackIn.translate(0.0F, yOff, -zOff);
         }
         this.LEar.render(f5);
         this.REar.render(f5);
@@ -204,14 +204,14 @@ public class MoCModelGoat<T extends Entity> extends EntityModel<T> {
             }
         }
         if (this.eatMov != 0 && !this.bleat) {
-            GlStateManager.translate(this.eatMov / 100F, 0.0F, 0.0F);
+            matrixStackIn.translate(this.eatMov / 100F, 0.0F, 0.0F);
         }
         if (this.typeInt > 4 && this.age > 0.9) {
             this.Goatie.render(f5);
         }
         this.Tongue.render(f5);
         this.Mouth.render(f5);
-        GlStateManager.popMatrix();
+        matrixStackIn.pop();
     }
 
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {

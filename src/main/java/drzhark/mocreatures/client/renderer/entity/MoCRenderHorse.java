@@ -5,7 +5,7 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.client.model.MoCModelHorse;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 
 @OnlyIn(Dist.CLIENT)
@@ -21,12 +21,12 @@ public class MoCRenderHorse extends MoCRenderMoC<MoCEntityHorse> {
     }
 
     protected void adjustHeight(MoCEntityHorse entityhorse, float FHeight) {
-        GlStateManager.translate(0.0F, FHeight, 0.0F);
+        matrixStackIn.translate(0.0F, FHeight, 0.0F);
     }
 
     @Override
     protected void preRenderCallback(MoCEntityHorse entityhorse, float f) {
-        if (!entityhorse.getIsAdult() || entityhorse.getType() > 64) {
+        if (!entityhorse.getIsAdult() || entityhorse.getTypeMoC() > 64) {
             stretch(entityhorse);
         }
         if (entityhorse.getIsGhost()) {
@@ -40,10 +40,10 @@ public class MoCRenderHorse extends MoCRenderMoC<MoCEntityHorse> {
         if (entityhorse.getIsAdult()) {
             sizeFactor = 1.0F;
         }
-        if (entityhorse.getType() > 64) //donkey
+        if (entityhorse.getTypeMoC() > 64) //donkey
         {
             sizeFactor *= 0.9F;
         }
-        GlStateManager.scale(sizeFactor, sizeFactor, sizeFactor);
+        matrixStackIn.scale(sizeFactor, sizeFactor, sizeFactor);
     }
 }

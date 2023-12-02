@@ -16,7 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -49,7 +49,7 @@ public class MoCBlockTallGrass extends BlockBush implements IShearable {
     }
 
     @Override
-    public int getFlammability(IBlockAccess world, BlockPos pos, EnumFacing face) {
+    public int getFlammability(IBlockAccess world, BlockPos pos, Direction face) {
         if (isFlammable()) {
             return Blocks.TALLGRASS.getFlammability(world, pos, face);
         } else {
@@ -58,7 +58,7 @@ public class MoCBlockTallGrass extends BlockBush implements IShearable {
     }
 
     @Override
-    public int getFireSpreadSpeed(IBlockAccess world, BlockPos pos, EnumFacing face) {
+    public int getFireSpreadSpeed(IBlockAccess world, BlockPos pos, Direction face) {
         if (isFlammable()) {
             return Blocks.TALLGRASS.getFireSpreadSpeed(world, pos, face);
         } else {
@@ -124,6 +124,6 @@ public class MoCBlockTallGrass extends BlockBush implements IShearable {
         if (tempblock instanceof MoCBlockDirt || tempblock instanceof MoCBlockGrass) {
             return true;
         }
-        return super.canPlaceBlockAt(worldIn, pos) && soil.getBlock().canSustainPlant(soil, worldIn, pos.down(), EnumFacing.UP, this);
+        return super.canPlaceBlockAt(worldIn, pos) && soil.getBlock().canSustainPlant(soil, worldIn, pos.down(), Direction.UP, this);
     }
 }

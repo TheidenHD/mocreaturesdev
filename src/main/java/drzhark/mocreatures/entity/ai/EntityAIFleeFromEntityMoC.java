@@ -9,14 +9,13 @@ import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.MoCEntityAquatic;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.util.EntitySelectors;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.List;
 
-public class EntityAIFleeFromEntityMoC extends EntityAIBase {
+public class EntityAIFleeFromEntityMoC extends Goal {
 
     private final double farSpeed;
     private final double nearSpeed;
@@ -52,7 +51,7 @@ public class EntityAIFleeFromEntityMoC extends EntityAIBase {
     }
 
     /**
-     * Returns whether the EntityAIBase should begin execution.
+     * Returns whether the Goal should begin execution.
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -75,8 +74,8 @@ public class EntityAIFleeFromEntityMoC extends EntityAIBase {
         } else {
             this.closestLivingEntity = list.get(0);
             Vector3d vec3 =
-                    RandomPositionGenerator.findRandomTargetBlockAwayFrom(this.entity, 16, 7, new Vector3d(this.closestLivingEntity.posX,
-                            this.closestLivingEntity.posY, this.closestLivingEntity.posZ));
+                    RandomPositionGenerator.findRandomTargetBlockAwayFrom(this.entity, 16, 7, new Vector3d(this.closestLivingEntity.getPosX(),
+                            this.closestLivingEntity.getPosY(), this.closestLivingEntity.getPosZ()));
 
             if (vec3 == null) {
                 return false;
@@ -101,7 +100,7 @@ public class EntityAIFleeFromEntityMoC extends EntityAIBase {
     }
 
     /**
-     * Returns whether an in-progress EntityAIBase should continue executing
+     * Returns whether an in-progress Goal should continue executing
      */
     @Override
     public boolean shouldContinueExecuting() {

@@ -191,7 +191,7 @@ public class MoCProxy implements IGuiHandler {
     public List<BiomeDictionary.Type> parseBiomeTypes(String[] biomeNames) {
         List<BiomeDictionary.Type> biomeTypes = new ArrayList<>();
         for (String biomeName : biomeNames) {
-            BiomeDictionary.Type biomeType = BiomeDictionary.Type.getType(biomeName);
+            BiomeDictionary.Type biomeType = BiomeDictionary.Type.getTypeMoC(biomeName);
             biomeTypes.add(biomeType);
         }
         return biomeTypes;

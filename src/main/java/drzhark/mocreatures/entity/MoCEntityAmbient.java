@@ -73,7 +73,7 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
      */
     @Override
     public void selectType() {
-        setType(1);
+        setTypeMoC(1);
     }
 
     @Override
@@ -86,12 +86,12 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
     }
 
     @Override
-    public int getType() {
+    public int getTypeMoC() {
         return this.dataManager.get(TYPE);
     }
 
     @Override
-    public void setType(int i) {
+    public void setTypeMoC(int i) {
         this.dataManager.set(TYPE, i);
     }
 
@@ -199,9 +199,9 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
     }
 
     public void faceLocation(int i, int j, int k, float f) {
-        double var4 = i + 0.5D - this.posX;
-        double var8 = k + 0.5D - this.posZ;
-        double var6 = j + 0.5D - this.posY;
+        double var4 = i + 0.5D - this.getPosX();
+        double var8 = k + 0.5D - this.getPosZ();
+        double var6 = j + 0.5D - this.getPosY();
         double var14 = MathHelper.sqrt(var4 * var4 + var8 * var8);
         float var12 = (float) (Math.atan2(var8, var4) * 180.0D / Math.PI) - 90.0F;
         float var13 = (float) (-(Math.atan2(var6, var14) * 180.0D / Math.PI));
@@ -251,23 +251,23 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
     }
 
     @Override
-    public void writeEntityToNBT(CompoundNBT nbttagcompound) {
-        super.writeEntityToNBT(nbttagcompound);
+    public void writeAdditional(CompoundNBT nbttagcompound) {
+        super.writeAdditional(nbttagcompound);
         nbttagcompound = MoCTools.getEntityData(this);
-        nbttagcompound.setBoolean("Adult", getIsAdult());
-        nbttagcompound.setInteger("Edad", getAge());
-        nbttagcompound.setString("Name", getPetName());
-        nbttagcompound.setInteger("TypeInt", getType());
+        nbttagcompound.putBoolean("Adult", getIsAdult());
+        nbttagcompound.putInt("Edad", getAge());
+        nbttagcompound.putString("Name", getPetName());
+        nbttagcompound.putInt("TypeInt", getTypeMoC());
     }
 
     @Override
-    public void readEntityFromNBT(CompoundNBT nbttagcompound) {
-        super.readEntityFromNBT(nbttagcompound);
+    public void readAdditional(CompoundNBT nbttagcompound) {
+        super.readAdditional(nbttagcompound);
         nbttagcompound = MoCTools.getEntityData(this);
         setAdult(nbttagcompound.getBoolean("Adult"));
-        setAge(nbttagcompound.getInteger("Edad"));
+        setAge(nbttagcompound.getInt("Edad"));
         setPetName(nbttagcompound.getString("Name"));
-        setType(nbttagcompound.getInteger("TypeInt"));
+        setTypeMoC(nbttagcompound.getInt("TypeInt"));
     }
 
     /**
@@ -310,7 +310,7 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
     }
 
     public boolean isOnAir() {
-        return (this.world.isAirBlock(new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.posY - 0.2D), MathHelper.floor(this.posZ))) && this.world.isAirBlock(new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.posY - 1.2D), MathHelper.floor(this.posZ))));
+        return (this.world.isAirBlock(new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(this.getPosY() - 0.2D), MathHelper.floor(this.getPosZ()))) && this.world.isAirBlock(new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(this.getPosY() - 1.2D), MathHelper.floor(this.getPosZ()))));
     }
 
     @Override
@@ -337,12 +337,12 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
     /**
      * Finds and entity described in entitiesToInclude at d distance
      */
-    protected EntityLivingBase getBoogey(double d) {
-        EntityLivingBase entityliving = null;
+    protected LivingEntity getBoogey(double d) {
+        LivingEntity entityliving = null;
         List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(d, 4D, d));
         for (Entity entity : list) {
             if (entitiesToInclude(entity)) {
-                entityliving = (EntityLivingBase) entity;
+                entityliving = (LivingEntity) entity;
             }
         }
         return entityliving;
@@ -352,7 +352,7 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
      * Used in getBoogey to specify what kind of entity to look for
      */
     public boolean entitiesToInclude(Entity entity) {
-        return ((entity instanceof EntityLivingBase) && ((entity.width >= 0.5D) || (entity.height >= 0.5D)));
+        return ((entity instanceof LivingEntity) && ((entity.width >= 0.5D) || (entity.height >= 0.5D)));
     }
 
     @Override
@@ -385,19 +385,19 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
     }
 
     /**
-     * Returns true if the entity is of the @link{EnumCreatureType} provided
+     * Returns true if the entity is of the @link{EntityClassification} provided
      *
-     * @param type          The EnumCreatureType type this entity is evaluating
+     * @param type          The EntityClassification type this entity is evaluating
      * @param forSpawnCount If this is being invoked to check spawn count caps.
      * @return If the creature is of the type provided
      */
     @Override
-    public boolean isCreatureType(EnumCreatureType type, boolean forSpawnCount) {
-        return type == EnumCreatureType.AMBIENT;
+    public boolean isCreatureType(EntityClassification type, boolean forSpawnCount) {
+        return type == EntityClassification.AMBIENT;
     }
 
     @Override
-    public boolean canAttackTarget(EntityLivingBase entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return false;
     }
 
@@ -481,10 +481,10 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
         if (this.isServerWorld()) {
 
             this.moveRelative(strafe, vertical, forward, 0.1F);
-            this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
-            this.motionX *= 0.8999999761581421D;
-            this.motionY *= 0.8999999761581421D;
-            this.motionZ *= 0.8999999761581421D;
+            this.move(MoverType.SELF, this.getMotion().getX(), this.getMotion().getY(), this.getMotion().getZ());
+            this.getMotion().getX() *= 0.8999999761581421D;
+            this.getMotion().getY() *= 0.8999999761581421D;
+            this.getMotion().getZ() *= 0.8999999761581421D;
         } else {
             super.travel(strafe, vertical, forward);
         }

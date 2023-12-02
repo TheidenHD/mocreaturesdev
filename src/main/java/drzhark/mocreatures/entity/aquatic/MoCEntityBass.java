@@ -14,7 +14,7 @@ public class MoCEntityBass extends MoCEntityMediumFish {
 
     public MoCEntityBass(World world) {
         super(world);
-        this.setType(3);
+        this.setTypeMoC(3);
     }
 
     @Override

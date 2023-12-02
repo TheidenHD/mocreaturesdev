@@ -34,7 +34,7 @@ public class MoCMessageHeart {
         ctx.get().setPacketHandled(true);
         Entity ent = Minecraft.getInstance().player.world.getEntityByID(message.entityId);
         if (ent instanceof IMoCTameable) {
-            ((IMoCTameable)ent).spawnHeart();
+            ((IMoCTameable) ent).spawnHeart();
         }
         return true;
     }

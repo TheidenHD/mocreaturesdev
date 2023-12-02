@@ -4,7 +4,7 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.neutral.MoCEntityKitty;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -97,10 +97,10 @@ public class MoCModelKitty<T extends Entity> extends EntityModel<T> {
         this.isSwinging = kitty.getIsSwinging();
         this.swingProgress = kitty.swingProgress;
         this.kittystate = kitty.getKittyState();
-        GlStateManager.pushMatrix();
+        matrixStackIn.push();
         setRotationAngles(f, f1, f2, f3, f4, f5);
         if (this.isSitting) {
-            GlStateManager.translate(0.0F, 0.25F, 0.0F);
+            matrixStackIn.translate(0.0F, 0.25F, 0.0F);
             this.tail.rotateAngleZ = 0.0F;
             this.tail.rotateAngleX = -2.3F;
         }
@@ -117,7 +117,7 @@ public class MoCModelKitty<T extends Entity> extends EntityModel<T> {
         this.body.render(f5);
         this.tail.render(f5);
         if (this.isSitting) {
-            GlStateManager.translate(0.0F, 0.0625F, 0.0625F);
+            matrixStackIn.translate(0.0F, 0.0625F, 0.0625F);
             float f6 = -1.570796F;
             this.rightArm.rotateAngleX = f6;
             this.leftArm.rotateAngleX = f6;
@@ -130,7 +130,7 @@ public class MoCModelKitty<T extends Entity> extends EntityModel<T> {
         this.leftArm.render(f5);
         this.rightLeg.render(f5);
         this.leftLeg.render(f5);
-        GlStateManager.popMatrix();
+        matrixStackIn.pop();
     }
 
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {

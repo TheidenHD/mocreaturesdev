@@ -10,7 +10,7 @@ import net.minecraft.util.datafix.IFixableData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent.MissingMappings;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.fml.common.registry.EntityType;
 
 public class EntityIDFixer implements IFixableData {
     public EntityIDFixer() {
@@ -26,47 +26,47 @@ public class EntityIDFixer implements IFixableData {
     public CompoundNBT fixTagCompound(CompoundNBT compound) {
         String entityId = compound.getString("id");
         if (entityId.equals(MoCConstants.MOD_PREFIX + "scorpion")) {
-            int entityType = compound.getInteger("TypeInt");
+            int entityType = compound.getInt("TypeInt");
             switch (entityType) {
                 case 2:
-                    compound.setString("id", MoCConstants.MOD_PREFIX + "cavescorpion");
+                    compound.putString("id", MoCConstants.MOD_PREFIX + "cavescorpion");
                     break;
                 case 3:
-                    compound.setString("id", MoCConstants.MOD_PREFIX + "firescorpion");
+                    compound.putString("id", MoCConstants.MOD_PREFIX + "firescorpion");
                     break;
                 case 4:
-                    compound.setString("id", MoCConstants.MOD_PREFIX + "frostscorpion");
+                    compound.putString("id", MoCConstants.MOD_PREFIX + "frostscorpion");
                     break;
                 default:
-                    compound.setString("id", MoCConstants.MOD_PREFIX + "dirtscorpion");
+                    compound.putString("id", MoCConstants.MOD_PREFIX + "dirtscorpion");
             }
-            compound.setInteger("TypeInt", 1);
+            compound.putInt("TypeInt", 1);
         }
         if (entityId.equals(MoCConstants.MOD_PREFIX + "manticore")) {
-            int entityType = compound.getInteger("TypeInt");
+            int entityType = compound.getInt("TypeInt");
             switch (entityType) {
                 case 2:
-                    compound.setString("id", MoCConstants.MOD_PREFIX + "darkmanticore");
+                    compound.putString("id", MoCConstants.MOD_PREFIX + "darkmanticore");
                     break;
                 case 3:
-                    compound.setString("id", MoCConstants.MOD_PREFIX + "frostmanticore");
+                    compound.putString("id", MoCConstants.MOD_PREFIX + "frostmanticore");
                     break;
                 case 4:
-                    compound.setString("id", MoCConstants.MOD_PREFIX + "toxicmanticore");
+                    compound.putString("id", MoCConstants.MOD_PREFIX + "toxicmanticore");
                     break;
                 default:
-                    compound.setString("id", MoCConstants.MOD_PREFIX + "firemanticore");
+                    compound.putString("id", MoCConstants.MOD_PREFIX + "firemanticore");
             }
-            compound.setInteger("TypeInt", 1);
+            compound.putInt("TypeInt", 1);
         }
         return compound;
     }
 
     @SubscribeEvent
-    public void missingEntityMapping(MissingMappings<EntityEntry> event) {
+    public void missingEntityMapping(MissingMappings<EntityType> event) {
         ResourceLocation scorpion = new ResourceLocation(MoCConstants.MOD_ID, "scorpion");
         ResourceLocation manticore = new ResourceLocation(MoCConstants.MOD_ID, "manticore");
-        for (MissingMappings.Mapping<EntityEntry> entry : event.getAllMappings()) {
+        for (MissingMappings.Mapping<EntityType> entry : event.getAllMappings()) {
             if (entry.key.equals(scorpion) || entry.key.equals(manticore)) {
                 entry.ignore();
             }

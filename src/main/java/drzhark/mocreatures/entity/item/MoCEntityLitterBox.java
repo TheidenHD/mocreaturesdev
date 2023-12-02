@@ -22,8 +22,8 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.Hand;
+import net.minecraft.util.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -112,7 +112,7 @@ public class MoCEntityLitterBox extends LivingEntity {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, Hand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && stack.getItem() == Item.getItemFromBlock(Blocks.SAND)) {
             MoCTools.playCustomSound(this, SoundEvents.BLOCK_SAND_PLACE);
@@ -143,8 +143,8 @@ public class MoCEntityLitterBox extends LivingEntity {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
         if (this.onGround) {
             setPickedUp(false);
         }
@@ -166,7 +166,7 @@ public class MoCEntityLitterBox extends LivingEntity {
                     }
                 }
             } else {
-                this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
+                this.world.addParticle(ParticleTypes.SMOKE, this.getPosX(), this.getPosY(), this.getPosZ(), 0.0D, 0.0D, 0.0D);
             }
         }
         if (this.litterTime > 5000 && !this.world.isRemote) {
@@ -177,13 +177,13 @@ public class MoCEntityLitterBox extends LivingEntity {
     }
 
     @Override
-    public void writeEntityToNBT(CompoundNBT compound) {
+    public void writeAdditional(CompoundNBT compound) {
         compound = MoCTools.getEntityData(this);
-        compound.setBoolean("UsedLitter", getUsedLitter());
+        compound.putBoolean("UsedLitter", getUsedLitter());
     }
 
     @Override
-    public void readEntityFromNBT(CompoundNBT compound) {
+    public void readAdditional(CompoundNBT compound) {
         compound = MoCTools.getEntityData(this);
         setUsedLitter(compound.getBoolean("UsedLitter"));
     }

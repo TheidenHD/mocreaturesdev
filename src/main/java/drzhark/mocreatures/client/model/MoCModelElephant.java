@@ -580,7 +580,7 @@ public class MoCModelElephant<T extends Entity> extends EntityModel<T> {
         //super.render(entity, f, f1, f2, f3, f4, f5);
         MoCEntityElephant elephant = (MoCEntityElephant) entity;
         this.tusks = elephant.getTusks();
-        int type = elephant.getType();
+        int type = elephant.getTypeMoC();
         this.tailCounter = elephant.tailCounter;
         this.earCounter = elephant.earCounter;
         this.trunkCounter = elephant.trunkCounter;

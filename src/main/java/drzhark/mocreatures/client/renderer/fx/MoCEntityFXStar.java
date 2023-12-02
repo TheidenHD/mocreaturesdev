@@ -13,12 +13,20 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 @OnlyIn(Dist.CLIENT)
 public class MoCEntityFXStar extends Particle {
 
-    public MoCEntityFXStar(World world, double posX, double posY, double posZ, float red, float green, float blue) {
-        super(world, posX, posY, posZ, 0.0D, 0.0D, 0.0D);
-        this.motionX *= 0.8D;
-        this.motionY *= 0.8D;
-        this.motionZ *= 0.8D;
-        this.motionY = this.rand.nextFloat() * 0.4F + 0.05F;
+    public MoCEntityFXStar(World world, double getPosX(),
+
+    double getPosY(),
+
+    double getPosZ(),
+
+    float red, float green, float blue)
+
+    {
+        super(world, getPosX(), getPosY(), getPosZ(), 0.0D, 0.0D, 0.0D);
+        this.getMotion().getX() *= 0.8D;
+        this.getMotion().getY() *= 0.8D;
+        this.getMotion().getZ() *= 0.8D;
+        this.getMotion().getY() = this.rand.nextFloat() * 0.4F + 0.05F;
 
         this.particleRed = red;
         this.particleGreen = green;
@@ -42,21 +50,21 @@ public class MoCEntityFXStar extends Particle {
      * Called to update the entity's position/logic.
      */
     @Override
-    public void onUpdate() {
+    public void tick() {
         this.prevPosX = this.getPosX();
         this.prevPosY = this.getPosY();
         this.prevPosZ = this.getPosZ();
         this.particleScale *= 0.995F; //slowly shrinks it
 
-        this.motionY -= 0.03D;
-        this.move(this.motionX, this.motionY, this.motionZ);
-        this.motionX *= 0.9D;
-        this.motionY *= 0.2D;
-        this.motionZ *= 0.9D;
+        this.getMotion().getY() -= 0.03D;
+        this.move(this.getMotion().getX(), this.getMotion().getY(), this.getMotion().getZ());
+        this.getMotion().getX() *= 0.9D;
+        this.getMotion().getY() *= 0.2D;
+        this.getMotion().getZ() *= 0.9D;
 
         if (this.onGround) {
-            this.motionX *= 0.7D;
-            this.motionZ *= 0.7D;
+            this.getMotion().getX() *= 0.7D;
+            this.getMotion().getZ() *= 0.7D;
         }
 
         if (this.particleMaxAge-- <= 0) {

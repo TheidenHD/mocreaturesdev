@@ -8,7 +8,7 @@ import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -33,15 +33,15 @@ public class MoCEntityManticorePet extends MoCEntityBigCat {
     @Override
     public void selectType() {
 
-        if (getType() == 0) {
-            setType(this.rand.nextInt(4) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(4) + 1);
         }
         super.selectType();
     }
 
     @Override
     public ResourceLocation getTexture() {
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return MoCreatures.proxy.getModelTexture("manticore_dark.png");
             case 3:
@@ -66,7 +66,7 @@ public class MoCEntityManticorePet extends MoCEntityBigCat {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -116,7 +116,7 @@ public class MoCEntityManticorePet extends MoCEntityBigCat {
             return null;
         }
 
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return MoCLootTables.DARK_MANTICORE;
             case 3:

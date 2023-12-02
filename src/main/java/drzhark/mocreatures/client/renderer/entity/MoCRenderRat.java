@@ -6,8 +6,8 @@ package drzhark.mocreatures.client.renderer.entity;
 import drzhark.mocreatures.entity.hostile.MoCEntityRat;
 import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 
 @OnlyIn(Dist.CLIENT)
@@ -36,13 +36,13 @@ public class MoCRenderRat<T extends MoCEntityRat> extends RenderLiving<T> {
     }
 
     protected void rotateAnimal(T entityrat) {
-        GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
-        GlStateManager.translate(0.0F, 0.4F, 0.0F);
+        matrixStackIn.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+        matrixStackIn.translate(0.0F, 0.4F, 0.0F);
     }
 
     protected void stretch(T entityrat) {
         float f = 0.8F;
-        GlStateManager.scale(f, f, f);
+        matrixStackIn.scale(f, f, f);
     }
 
     @Override

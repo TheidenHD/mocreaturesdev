@@ -8,7 +8,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
@@ -31,7 +31,7 @@ public class MoCBlockPlanks extends Block {
     }
 
     @Override
-    public int getFlammability(IBlockAccess world, BlockPos pos, EnumFacing face) {
+    public int getFlammability(IBlockAccess world, BlockPos pos, Direction face) {
         if (isFlammable()) {
             return Blocks.PLANKS.getFlammability(world, pos, face);
         } else {
@@ -40,7 +40,7 @@ public class MoCBlockPlanks extends Block {
     }
 
     @Override
-    public int getFireSpreadSpeed(IBlockAccess world, BlockPos pos, EnumFacing face) {
+    public int getFireSpreadSpeed(IBlockAccess world, BlockPos pos, Direction face) {
         if (isFlammable()) {
             return Blocks.PLANKS.getFireSpreadSpeed(world, pos, face);
         } else {

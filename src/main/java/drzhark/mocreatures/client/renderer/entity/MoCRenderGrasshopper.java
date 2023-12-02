@@ -5,7 +5,7 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.ambient.MoCEntityGrasshopper;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 
 @OnlyIn(Dist.CLIENT)
@@ -22,12 +22,12 @@ public class MoCRenderGrasshopper extends MoCRenderMoC<MoCEntityGrasshopper> {
 
     protected void rotateGrasshopper(MoCEntityGrasshopper entity) {
         if (!entity.onGround) {
-            if (entity.motionY > 0.5D) {
-                GlStateManager.rotate(35F, -1F, 0.0F, 0.0F);
-            } else if (entity.motionY < -0.5D) {
-                GlStateManager.rotate(-35F, -1F, 0.0F, 0.0F);
+            if (entity.getMotion().getY() > 0.5D) {
+                matrixStackIn.rotate(35F, -1F, 0.0F, 0.0F);
+            } else if (entity.getMotion().getY() < -0.5D) {
+                matrixStackIn.rotate(-35F, -1F, 0.0F, 0.0F);
             } else {
-                GlStateManager.rotate((float) (entity.motionY * 70D), -1F, 0.0F, 0.0F);
+                matrixStackIn.rotate((float) (entity.getMotion().getY() * 70D), -1F, 0.0F, 0.0F);
             }
         }
     }

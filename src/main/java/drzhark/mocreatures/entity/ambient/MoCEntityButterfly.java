@@ -32,14 +32,14 @@ public class MoCEntityButterfly extends MoCEntityInsect {
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(this.rand.nextInt(10) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(10) + 1);
         }
     }
 
     @Override
     public ResourceLocation getTexture() {
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 1:
                 return MoCreatures.proxy.getModelTexture("butterfly_agalais_urticae.png");
             case 2:
@@ -76,7 +76,7 @@ public class MoCEntityButterfly extends MoCEntityInsect {
 
     @Override
     public float getSizeFactor() {
-        if (getType() < 8) {
+        if (getTypeMoC() < 8) {
             return 0.7F;
         }
         return 1.0F;
@@ -89,7 +89,7 @@ public class MoCEntityButterfly extends MoCEntityInsect {
 
     @Override
     public boolean isAttractedToLight() {
-        return getType() > 7;
+        return getTypeMoC() > 7;
     }
 
     @Override

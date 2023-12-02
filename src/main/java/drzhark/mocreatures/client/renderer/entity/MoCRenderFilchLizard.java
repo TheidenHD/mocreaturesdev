@@ -7,12 +7,12 @@ import drzhark.mocreatures.entity.passive.MoCEntityFilchLizard;
 import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.renderer.matrixStackIn;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -39,31 +39,31 @@ public class MoCRenderFilchLizard extends RenderLiving<MoCEntityFilchLizard> {
         public void doRenderLayer(MoCEntityFilchLizard entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
             ItemStack itemStack = entity.getHeldItemMainhand();
             if (!itemStack.isEmpty()) {
-                GlStateManager.pushMatrix();
+                matrixStackIn.push();
                 if (this.livingEntityRenderer.getMainModel().isChild) {
-                    GlStateManager.translate(0.0F, 0.625F, 0.0F);
-                    GlStateManager.rotate(-20.0F, -1.0F, 0.0F, 0.0F);
-                    GlStateManager.scale(0.5F, 0.5F, 0.5F);
+                    matrixStackIn.translate(0.0F, 0.625F, 0.0F);
+                    matrixStackIn.rotate(-20.0F, -1.0F, 0.0F, 0.0F);
+                    matrixStackIn.scale(0.5F, 0.5F, 0.5F);
                 }
                 if (!entity.getHeldItemMainhand().isEmpty()) {
                     this.renderHeldItemLizard(entity, itemStack, ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND);
                 }
-                GlStateManager.popMatrix();
+                matrixStackIn.pop();
             }
         }
 
-        public void renderHeldItemLizard(EntityLivingBase entity, ItemStack itemStack, ItemCameraTransforms.TransformType transformType) {
+        public void renderHeldItemLizard(LivingEntity entity, ItemStack itemStack, ItemCameraTransforms.TransformType transformType) {
             if (!itemStack.isEmpty()) {
-                GlStateManager.pushMatrix();
+                matrixStackIn.push();
                 if (entity.isSneaking()) {
-                    GlStateManager.translate(0.0F, 0.2F, 0.0F);
+                    matrixStackIn.translate(0.0F, 0.2F, 0.0F);
                 }
-                GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
-                GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
-                GlStateManager.rotate(20.0F, 0.0F, 0.0F, 1.0F);
-                GlStateManager.translate(-0.55F, -1.0F, -0.05F);
+                matrixStackIn.rotate(90.0F, 0.0F, 1.0F, 0.0F);
+                matrixStackIn.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+                matrixStackIn.rotate(20.0F, 0.0F, 0.0F, 1.0F);
+                matrixStackIn.translate(-0.55F, -1.0F, -0.05F);
                 Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, itemStack, transformType, true);
-                GlStateManager.popMatrix();
+                matrixStackIn.pop();
             }
         }
 

@@ -17,12 +17,12 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.init.Effects;
 import net.minecraft.init.Items;
-import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemSaddle;
 import net.minecraft.item.ItemStack;
@@ -30,9 +30,9 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -90,8 +90,8 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(1);
         }
     }
 
@@ -120,7 +120,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
             }
         }
 
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 1:
                 if (!saddle) {
                     return MoCreatures.proxy.getModelTexture("scorpion_dirt.png");
@@ -194,7 +194,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     public void setPoisoning(boolean flag) {
         if (flag && !this.world.isRemote) {
             MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 0),
-                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
         }
         this.isPoisoning = flag;
     }
@@ -277,7 +277,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
                 this.transformCounter = 0;
 
                 if (this.transformType != 0) {
-                    setType(this.transformType);
+                    setTypeMoC(this.transformType);
                 }
             }
         }
@@ -289,11 +289,11 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
-            if (!(entity instanceof EntityLivingBase) || entity instanceof PlayerEntity && getIsTamed()) {
+            if (!(entity instanceof LivingEntity) || entity instanceof PlayerEntity && getIsTamed()) {
                 return false;
             }
             if (entity != this && super.shouldAttackPlayers() && getIsAdult()) {
-                setAttackTarget((EntityLivingBase) entity);
+                setAttackTarget((LivingEntity) entity);
             }
             return true;
         } else {
@@ -302,26 +302,26 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void applyEnchantments(EntityLivingBase entityLivingBaseIn, Entity entityIn) {
-        if (!getIsPoisoning() && this.rand.nextInt(5) == 0 && entityIn instanceof EntityLivingBase) {
+    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
+        if (!getIsPoisoning() && this.rand.nextInt(5) == 0 && entityIn instanceof LivingEntity) {
             setPoisoning(true);
-            if (getType() <= 1) // Dirt Scorpion
+            if (getTypeMoC() <= 1) // Dirt Scorpion
             {
-                ((EntityLivingBase) entityIn).addPotionEffect(new PotionEffect(MobEffects.POISON, 15 * 20, 1)); // 15 seconds
-            } else if (getType() == 2) // Cave Scorpion
+                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 15 * 20, 1)); // 15 seconds
+            } else if (getTypeMoC() == 2) // Cave Scorpion
             {
-                ((EntityLivingBase) entityIn).addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 15 * 20, 0)); // 15 seconds
-                ((EntityLivingBase) entityIn).addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 15 * 20, 0));
-            } else if (getType() == 3) // Fire Scorpion
+                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.NAUSEA, 15 * 20, 0)); // 15 seconds
+                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.WEAKNESS, 15 * 20, 0));
+            } else if (getTypeMoC() == 3) // Fire Scorpion
             {
                 entityIn.setFire(15);
-            } else if (getType() == 4) // Frost Scorpion
+            } else if (getTypeMoC() == 4) // Frost Scorpion
             {
-                ((EntityLivingBase) entityIn).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 25 * 20, 0)); // 25 seconds
-            } else if (getType() == 5) // Undead Scorpion
+                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 25 * 20, 0)); // 25 seconds
+            } else if (getTypeMoC() == 5) // Undead Scorpion
             {
-                ((EntityLivingBase) entityIn).addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 15 * 20, 0)); // 15 seconds
-                ((EntityLivingBase) entityIn).addPotionEffect(new PotionEffect(MobEffects.WITHER, 15 * 20, 0));
+                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.BLINDNESS, 15 * 20, 0)); // 15 seconds
+                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.WITHER, 15 * 20, 0));
             }
         } else {
             swingArm();
@@ -332,13 +332,13 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     public void swingArm() {
         if (!this.world.isRemote) {
             MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 1),
-                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
         }
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
 
         if (!this.world.isRemote) {
             this.setBesideClimbableBlock(this.collidedHorizontally);
@@ -364,7 +364,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
         // Mouth Movement Animation
         if (!this.world.isRemote) {
             MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 3),
-                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
         }
         return MoCSoundEvents.ENTITY_SCORPION_AMBIENT;
     }
@@ -380,7 +380,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
             return null;
         }
 
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 1:
                 return MoCLootTables.DIRT_SCORPION;
             case 2:
@@ -398,7 +398,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
 
     // TODO: Make it not give items in creative
     @Override
-    public boolean processInteract(PlayerEntity player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -421,7 +421,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
         if (!stack.isEmpty() && this.getIsTamed() && !this.isBeingRidden() && !this.isRiding() && this.transformCounter < 1) {
 
             // Fire Scorpion (Essence of Fire)
-            if (stack.getItem() == MoCItems.essencefire && this.getType() != 3) {
+            if (stack.getItem() == MoCItems.essencefire && this.getTypeMoC() != 3) {
                 if (!player.capabilities.isCreativeMode) stack.shrink(1);
                 if (stack.isEmpty()) {
                     player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
@@ -434,7 +434,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
             }
 
             // Undead Scorpion (Essence of Undead)
-            if (!stack.isEmpty() && this.getIsTamed() && !this.isBeingRidden() && !this.isRiding() && this.transformCounter < 1 && stack.getItem() == MoCItems.essenceundead && this.getType() != 5) {
+            if (!stack.isEmpty() && this.getIsTamed() && !this.isBeingRidden() && !this.isRiding() && this.transformCounter < 1 && stack.getItem() == MoCItems.essenceundead && this.getTypeMoC() != 5) {
                 if (!player.capabilities.isCreativeMode) stack.shrink(1);
                 if (stack.isEmpty()) {
                     player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
@@ -456,13 +456,13 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
             }
             this.setHealth(getMaxHealth());
             if (!this.world.isRemote) {
-                int i = getType() + 40;
+                int i = getTypeMoC() + 40;
                 MoCEntityEgg entityegg = new MoCEntityEgg(this.world, i);
-                entityegg.setPosition(player.posX, player.posY, player.posZ);
-                player.world.spawnEntity(entityegg);
-                entityegg.motionY += this.world.rand.nextFloat() * 0.05F;
-                entityegg.motionX += (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.3F;
-                entityegg.motionZ += (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.3F;
+                entityegg.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
+                player.world.addEntity(entityegg);
+                entityegg.getMotion().getY() += this.world.rand.nextFloat() * 0.05F;
+                entityegg.getMotion().getX() += (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.3F;
+                entityegg.getMotion().getZ() += (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.3F;
             }
             return true;
         }
@@ -479,9 +479,9 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
         } else if (this.getRidingEntity() != null) {
             MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
             this.dismountRidingEntity();
-            this.motionX = player.motionX * 5D;
-            this.motionY = (player.motionY / 2D) + 0.5D;
-            this.motionZ = player.motionZ * 5D;
+            this.getMotion().getX() = player.getMotion().getX() * 5D;
+            this.getMotion().getY() = (player.getMotion().getY() / 2D) + 0.5D;
+            this.getMotion().getZ() = player.getMotion().getZ() * 5D;
             return true;
         }
 
@@ -499,17 +499,17 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void readEntityFromNBT(CompoundNBT nbttagcompound) {
-        super.readEntityFromNBT(nbttagcompound);
+    public void readAdditional(CompoundNBT nbttagcompound) {
+        super.readAdditional(nbttagcompound);
         setHasBabies(nbttagcompound.getBoolean("Babies"));
         setRideable(nbttagcompound.getBoolean("Saddled"));
     }
 
     @Override
-    public void writeEntityToNBT(CompoundNBT nbttagcompound) {
-        super.writeEntityToNBT(nbttagcompound);
-        nbttagcompound.setBoolean("Babies", getHasBabies());
-        nbttagcompound.setBoolean("Saddled", getIsRideable());
+    public void writeAdditional(CompoundNBT nbttagcompound) {
+        super.writeAdditional(nbttagcompound);
+        nbttagcompound.putBoolean("Babies", getHasBabies());
+        nbttagcompound.putBoolean("Saddled", getIsRideable());
     }
 
     @Override
@@ -598,9 +598,9 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     @Override
     public void updatePassenger(Entity passenger) {
         double dist = (0.2D);
-        double newPosX = this.posX + (dist * Math.sin(this.renderYawOffset / 57.29578F));
-        double newPosZ = this.posZ - (dist * Math.cos(this.renderYawOffset / 57.29578F));
-        passenger.setPosition(newPosX, this.posY + getMountedYOffset() + passenger.getYOffset(), newPosZ);
+        double newPosX = this.getPosX() + (dist * Math.sin(this.renderYawOffset / 57.29578F));
+        double newPosZ = this.getPosZ() - (dist * Math.cos(this.renderYawOffset / 57.29578F));
+        passenger.setPosition(newPosX, this.getPosY() + getMountedYOffset() + passenger.getYOffset(), newPosZ);
     }
 
     @Override
@@ -611,7 +611,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     public void transform(int tType) {
         if (!this.world.isRemote) {
             MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), tType),
-                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
         }
 
         // Set what type to transform to based on type integer
@@ -627,7 +627,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(EntityLivingBase entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return !(entity instanceof MoCEntityFox) && entity.height <= 1D && entity.width <= 1D;
     }
 
@@ -649,7 +649,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
         }
 
         @Override
-        protected double getAttackReachSqr(EntityLivingBase attackTarget) {
+        protected double getAttackReachSqr(LivingEntity attackTarget) {
             return 4.0F + attackTarget.width;
         }
     }

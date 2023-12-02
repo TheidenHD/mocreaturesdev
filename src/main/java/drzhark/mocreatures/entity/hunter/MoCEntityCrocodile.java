@@ -12,7 +12,6 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
@@ -118,7 +117,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
                 return;
             }
 
-            this.motionY = 0.3D;
+            this.getMotion().getY() = 0.3D;
             this.isAirBorne = true;
 
         } else if (this.getAttackTarget() != null || getHasCaughtPrey()) {
@@ -181,8 +180,8 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
 
                 if (!isInsideOfMaterial(Material.WATER)) {
                     this.waterbound = true;
-                    if (this.getRidingEntity() instanceof LivingEntity && ((EntityLivingBase) this.getRidingEntity()).getHealth() > 0) {
-                        ((EntityLivingBase) this.getRidingEntity()).deathTime = 0;
+                    if (this.getRidingEntity() instanceof LivingEntity && ((LivingEntity) this.getRidingEntity()).getHealth() > 0) {
+                        ((LivingEntity) this.getRidingEntity()).deathTime = 0;
                     }
 
                     if (!this.world.isRemote && this.rand.nextInt(50) == 0) {
@@ -229,7 +228,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void onUpdate() {
+    public void tick() {
         if (getIsBiting() && !getHasCaughtPrey())// && biteProgress <0.3)
         {
             this.biteProgress += 0.1F;
@@ -243,7 +242,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
             }
         }
 
-        super.onUpdate();
+        super.tick();
     }
 
     @Override
@@ -282,8 +281,8 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
             Entity entity = damagesource.getTrueSource();
 
             if (this.isBeingRidden() && this.getRidingEntity() == entity) {
-                if ((entity != this) && entity instanceof EntityLivingBase && super.shouldAttackPlayers()) {
-                    setAttackTarget((EntityLivingBase) entity);
+                if ((entity != this) && entity instanceof LivingEntity && super.shouldAttackPlayers()) {
+                    setAttackTarget((LivingEntity) entity);
                 }
             }
             return true;
@@ -293,7 +292,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(EntityLivingBase entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return !(entity instanceof MoCEntityCrocodile);
     }
 
@@ -305,9 +304,9 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
         int direction;
 
         double dist = getAge() * 0.01F + passenger.width - 0.4D;
-        double newPosX = this.posX - (dist * Math.cos((MoCTools.realAngle(this.rotationYaw - 90F)) / 57.29578F));
-        double newPosZ = this.posZ - (dist * Math.sin((MoCTools.realAngle(this.rotationYaw - 90F)) / 57.29578F));
-        passenger.setPosition(newPosX, this.posY + getMountedYOffset() + passenger.getYOffset(), newPosZ);
+        double newPosX = this.getPosX() - (dist * Math.cos((MoCTools.realAngle(this.rotationYaw - 90F)) / 57.29578F));
+        double newPosZ = this.getPosZ() - (dist * Math.sin((MoCTools.realAngle(this.rotationYaw - 90F)) / 57.29578F));
+        passenger.setPosition(newPosX, this.getPosY() + getMountedYOffset() + passenger.getYOffset(), newPosZ);
 
         if (this.spinInt > 40) {
             direction = -1;
@@ -315,8 +314,8 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
             direction = 1;
         }
 
-        ((EntityLivingBase) passenger).renderYawOffset = this.rotationYaw * direction;
-        ((EntityLivingBase) passenger).prevRenderYawOffset = this.rotationYaw * direction;
+        ((LivingEntity) passenger).renderYawOffset = this.rotationYaw * direction;
+        ((LivingEntity) passenger).prevRenderYawOffset = this.rotationYaw * direction;
     }
 
     @Override
@@ -366,8 +365,8 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     public void unMount() {
 
         if (this.isBeingRidden()) {
-            if (this.getRidingEntity() instanceof LivingEntity && ((EntityLivingBase) this.getRidingEntity()).getHealth() > 0) {
-                ((EntityLivingBase) this.getRidingEntity()).deathTime = 0;
+            if (this.getRidingEntity() instanceof LivingEntity && ((LivingEntity) this.getRidingEntity()).getHealth() > 0) {
+                ((LivingEntity) this.getRidingEntity()).deathTime = 0;
             }
 
             this.dismountRidingEntity();

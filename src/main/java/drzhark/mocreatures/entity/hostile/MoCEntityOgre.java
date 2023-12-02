@@ -11,7 +11,7 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import drzhark.mocreatures.network.message.MoCMessageExplode;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.player.PlayerEntity;
@@ -54,8 +54,8 @@ public class MoCEntityOgre extends MoCEntityMob {
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(this.rand.nextInt(2) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(2) + 1);
         }
     }
 
@@ -66,8 +66,8 @@ public class MoCEntityOgre extends MoCEntityMob {
             if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
-            if ((entity != this) && (this.world.getDifficulty().getId() > 0) && entity instanceof EntityLivingBase) {
-                setAttackTarget((EntityLivingBase) entity);
+            if ((entity != this) && (this.world.getDifficulty().getId() > 0) && entity instanceof LivingEntity) {
+                setAttackTarget((LivingEntity) entity);
                 return true;
             } else {
                 return false;
@@ -119,7 +119,7 @@ public class MoCEntityOgre extends MoCEntityMob {
                 this.smashCounter = 0;
                 performDestroyBlastAttack();
                 MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageExplode(this.getEntityId()),
-                        new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                        new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
             }
 
             if ((this.getAttackTarget() != null) && (this.rand.nextInt(40) == 0) && this.smashCounter == 0 && this.attackCounter == 0) {
@@ -148,7 +148,7 @@ public class MoCEntityOgre extends MoCEntityMob {
     protected void startDestroyBlast() {
         this.smashCounter = 1;
         MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 3),
-                new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
     }
 
     /**
@@ -158,7 +158,7 @@ public class MoCEntityOgre extends MoCEntityMob {
         if (this.deathTime > 0) {
             return;
         }
-        MoCTools.destroyBlast(this, this.posX, this.posY + 1.0D, this.posZ, getDestroyForce(), isFireStarter());
+        MoCTools.destroyBlast(this, this.getPosX(), this.getPosY() + 1.0D, this.getPosZ(), getDestroyForce(), isFireStarter());
     }
 
     /**
@@ -169,17 +169,17 @@ public class MoCEntityOgre extends MoCEntityMob {
             if (this.smashCounter != 0)
                 return;
 
-            boolean leftArmW = (getType() == 2 || getType() == 4 || getType() == 6) && this.rand.nextInt(2) == 0;
+            boolean leftArmW = (getTypeMoC() == 2 || getTypeMoC() == 4 || getTypeMoC() == 6) && this.rand.nextInt(2) == 0;
 
             this.attackCounter = 1;
             if (leftArmW) {
                 this.armToAnimate = 1;
                 MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 1),
-                        new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                        new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
             } else {
                 this.armToAnimate = 2;
                 MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 2),
-                        new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                        new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
             }
         }
     }
@@ -194,7 +194,7 @@ public class MoCEntityOgre extends MoCEntityMob {
     }
 
     public int getMovingHead() {
-        if (getType() == 1) //single headed ogre
+        if (getTypeMoC() == 1) //single headed ogre
         {
             return 1;
         }
@@ -233,12 +233,12 @@ public class MoCEntityOgre extends MoCEntityMob {
         }
 
         @Override
-        protected double getAttackReachSqr(EntityLivingBase attackTarget) {
+        protected double getAttackReachSqr(LivingEntity attackTarget) {
             return 4.0F + attackTarget.width;
         }
     }
 
-    static class AIOgreTarget<T extends EntityLivingBase> extends EntityAINearestAttackableTarget<T> {
+    static class AIOgreTarget<T extends LivingEntity> extends EntityAINearestAttackableTarget<T> {
         public AIOgreTarget(MoCEntityOgre ogre, Class<T> classTarget) {
             super(ogre, classTarget, true);
         }

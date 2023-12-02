@@ -22,7 +22,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -104,23 +104,23 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     public void selectType() {
         checkSpawningBiome();
 
-        if (getType() == 0) {
-            setType(this.rand.nextInt(5) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(5) + 1);
         }
 
     }
 
     @Override
     public boolean checkSpawningBiome() {
-        int i = MathHelper.floor(this.posX);
+        int i = MathHelper.floor(this.getPosX());
         int j = MathHelper.floor(getEntityBoundingBox().minY);
-        int k = MathHelper.floor(this.posZ);
+        int k = MathHelper.floor(this.getPosZ());
         BlockPos pos = new BlockPos(i, j, k);
 
         Biome currentbiome = MoCTools.biomeKind(this.world, pos);
         try {
             if (BiomeDictionary.hasType(currentbiome, Type.SNOWY)) {
-                setType(3); //snow-white bunnies!
+                setTypeMoC(3); //snow-white bunnies!
                 return true;
             }
         } catch (Exception ignored) {
@@ -130,7 +130,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
 
     @Override
     public ResourceLocation getTexture() {
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return MoCreatures.proxy.legacyBunnyTextures ? MoCreatures.proxy.getModelTexture("bunny_beige.png") : MoCreatures.proxy.getModelTexture("bunny_beige_detailed.png");
             case 3:
@@ -173,7 +173,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -201,16 +201,16 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
 
         if (this.getRidingEntity() != null) {
             this.rotationYaw = this.getRidingEntity().rotationYaw;
         }
         if (!this.world.isRemote) {
 
-            if (--this.jumpTimer <= 0 && this.onGround && ((this.motionX > 0.05D) || (this.motionZ > 0.05D) || (this.motionX < -0.05D) || (this.motionZ < -0.05D))) {
-                this.motionY = 0.3D;
+            if (--this.jumpTimer <= 0 && this.onGround && ((this.getMotion().getX() > 0.05D) || (this.getMotion().getZ() > 0.05D) || (this.getMotion().getX() < -0.05D) || (this.getMotion().getZ() < -0.05D))) {
+                this.getMotion().getY() = 0.3D;
                 this.jumpTimer = 15;
             }
 
@@ -232,14 +232,14 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
                         continue;
                     }
                     MoCEntityBunny entitybunny1 = new MoCEntityBunny(this.world);
-                    entitybunny1.setPosition(this.posX, this.posY, this.posZ);
+                    entitybunny1.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
                     entitybunny1.setAdult(false);
-                    int babytype = this.getType();
+                    int babytype = this.getTypeMoC();
                     if (this.rand.nextInt(2) == 0) {
-                        babytype = entitybunny.getType();
+                        babytype = entitybunny.getTypeMoC();
                     }
-                    entitybunny1.setType(babytype);
-                    this.world.spawnEntity(entitybunny1);
+                    entitybunny1.setTypeMoC(babytype);
+                    this.world.addEntity(entitybunny1);
                     MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
                     proceed();
                     entitybunny.proceed();

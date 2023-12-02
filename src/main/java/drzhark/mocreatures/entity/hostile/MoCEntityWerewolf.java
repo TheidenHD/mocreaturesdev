@@ -10,8 +10,8 @@ import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
@@ -22,7 +22,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -84,16 +84,16 @@ public class MoCEntityWerewolf extends MoCEntityMob {
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
+        if (getTypeMoC() == 0) {
             int k = this.rand.nextInt(100);
             if (k <= 28) {
-                setType(1);
+                setTypeMoC(1);
             } else if (k <= 56) {
-                setType(2);
+                setTypeMoC(2);
             } else if (k <= 85) {
-                setType(3);
+                setTypeMoC(3);
             } else {
-                setType(4);
+                setTypeMoC(4);
                 this.isImmuneToFire = true;
             }
         }
@@ -105,7 +105,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
             return MoCreatures.proxy.getModelTexture("wereblank.png");
         }
 
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 1:
                 return MoCreatures.proxy.getModelTexture("werewolf_black.png");
             case 3:
@@ -154,7 +154,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
             setAttackTarget(null);
             return false;
         }
-        if (this.getType() == 4 && entityIn instanceof EntityLivingBase) {
+        if (this.getTypeMoC() == 4 && entityIn instanceof LivingEntity) {
             entityIn.setFire(10);
         }
         return super.attackEntityAsMob(entityIn);
@@ -253,12 +253,12 @@ public class MoCEntityWerewolf extends MoCEntityMob {
             if (this.transforming && (this.rand.nextInt(3) == 0)) {
                 this.tcounter++;
                 if ((this.tcounter % 2) == 0) {
-                    this.posX += 0.3D;
-                    this.posY += (double) this.tcounter / 30;
+                    this.getPosX() += 0.3D;
+                    this.getPosY() += (double) this.tcounter / 30;
                     attackEntityFrom(DamageSource.causeMobDamage(this), 1);
                 }
                 if ((this.tcounter % 2) != 0) {
-                    this.posX -= 0.3D;
+                    this.getPosX() -= 0.3D;
                 }
                 if (this.tcounter == 10) {
                     MoCTools.playCustomSound(this, MoCreatures.proxy.legacyWerehumanSounds ? MoCSoundEvents.ENTITY_WEREWOLF_TRANSFORM_HUMAN : MoCSoundEvents.ENTITY_WEREWOLF_TRANSFORM);
@@ -288,9 +288,9 @@ public class MoCEntityWerewolf extends MoCEntityMob {
         if (this.deathTime > 0) {
             return;
         }
-        int i = MathHelper.floor(this.posX);
+        int i = MathHelper.floor(this.getPosX());
         int j = MathHelper.floor(getEntityBoundingBox().minY) + 1;
-        int k = MathHelper.floor(this.posZ);
+        int k = MathHelper.floor(this.getPosZ());
         float f = 0.1F;
         for (int l = 0; l < 30; l++) {
             double d = i + this.world.rand.nextFloat();
@@ -308,7 +308,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
             d3 *= d7;
             d4 *= d7;
             d5 *= d7;
-            this.world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, (d + (i * 1.0D)) / 2D, (d1 + (j * 1.0D)) / 2D, (d2 + (k * 1.0D)) / 2D, d3, d4, d5);
+            this.world.addParticle(ParticleTypes.EXPLOSION_NORMAL, (d + (i * 1.0D)) / 2D, (d1 + (j * 1.0D)) / 2D, (d2 + (k * 1.0D)) / 2D, d3, d4, d5);
         }
 
         if (getIsHumanForm()) {
@@ -327,15 +327,15 @@ public class MoCEntityWerewolf extends MoCEntityMob {
     }
 
     @Override
-    public void readEntityFromNBT(CompoundNBT nbttagcompound) {
-        super.readEntityFromNBT(nbttagcompound);
+    public void readAdditional(CompoundNBT nbttagcompound) {
+        super.readAdditional(nbttagcompound);
         setHumanForm(nbttagcompound.getBoolean("HumanForm"));
     }
 
     @Override
-    public void writeEntityToNBT(CompoundNBT nbttagcompound) {
-        super.writeEntityToNBT(nbttagcompound);
-        nbttagcompound.setBoolean("HumanForm", getIsHumanForm());
+    public void writeAdditional(CompoundNBT nbttagcompound) {
+        super.writeAdditional(nbttagcompound);
+        nbttagcompound.putBoolean("HumanForm", getIsHumanForm());
     }
 
     @Override
@@ -351,7 +351,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
 
     @Override
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData livingdata) {
-        if (getType() == 4) {
+        if (getTypeMoC() == 4) {
             this.isImmuneToFire = true;
         }
         return super.onInitialSpawn(difficulty, livingdata);

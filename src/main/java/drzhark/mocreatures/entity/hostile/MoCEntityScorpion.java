@@ -12,8 +12,8 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
@@ -36,7 +36,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
     private static final DataParameter<Boolean> HAS_BABIES = EntityDataManager.createKey(MoCEntityScorpion.class, DataSerializers.BOOLEAN);
     public int mouthCounter;
     public int armCounter;
-    public int getType; // Baby Type
+    public int getTypeMoC; // Baby Type
     private boolean isPoisoning;
     private int poisontimer;
 
@@ -46,10 +46,10 @@ public class MoCEntityScorpion extends MoCEntityMob {
         setAdult(true);
         setAge(20);
         this.poisontimer = 0;
-        this.getType = type;
+        this.getTypeMoC = type;
 
         // Fire and Undead Scorpions won't spawn with babies
-        if (!this.world.isRemote && getType != 3 && getType != 5) {
+        if (!this.world.isRemote && getTypeMoC != 3 && getTypeMoC != 5) {
             setHasBabies(this.getIsAdult() && this.rand.nextInt(4) == 0);
         }
         experienceValue = 5;
@@ -99,7 +99,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
 
     public void setPoisoning(boolean flag) {
         if (flag && !this.world.isRemote) {
-            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 0), new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 0), new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
         }
         this.isPoisoning = flag;
     }
@@ -192,8 +192,8 @@ public class MoCEntityScorpion extends MoCEntityMob {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
 
-            if (entity != this && entity instanceof EntityLivingBase && this.shouldAttackPlayers()) {
-                setAttackTarget((EntityLivingBase) entity);
+            if (entity != this && entity instanceof LivingEntity && this.shouldAttackPlayers()) {
+                setAttackTarget((LivingEntity) entity);
             }
             return true;
         } else {
@@ -208,13 +208,13 @@ public class MoCEntityScorpion extends MoCEntityMob {
 
     public void swingArm() {
         if (!this.world.isRemote) {
-            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 1), new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 1), new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
         }
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
 
         if (!this.world.isRemote) {
             this.setBesideClimbableBlock(this.collidedHorizontally);
@@ -233,11 +233,11 @@ public class MoCEntityScorpion extends MoCEntityMob {
             int k = this.rand.nextInt(5);
             for (int i = 0; i < k; i++) {
                 MoCEntityPetScorpion entityscorpy = new MoCEntityPetScorpion(this.world);
-                entityscorpy.setPosition(this.posX, this.posY, this.posZ);
+                entityscorpy.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
                 entityscorpy.setAdult(false);
                 entityscorpy.setAge(20);
-                entityscorpy.setType(getType);
-                this.world.spawnEntity(entityscorpy);
+                entityscorpy.setTypeMoC(getTypeMoC);
+                this.world.addEntity(entityscorpy);
                 MoCTools.playCustomSound(entityscorpy, SoundEvents.ENTITY_SLIME_SQUISH);
             }
         }
@@ -257,7 +257,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
     protected SoundEvent getAmbientSound() {
         // Mouth Movement Animation
         if (!this.world.isRemote) {
-            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 3), new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 3), new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
         }
         return MoCSoundEvents.ENTITY_SCORPION_AMBIENT;
     }
@@ -268,15 +268,15 @@ public class MoCEntityScorpion extends MoCEntityMob {
     }
 
     @Override
-    public void readEntityFromNBT(CompoundNBT nbttagcompound) {
-        super.readEntityFromNBT(nbttagcompound);
+    public void readAdditional(CompoundNBT nbttagcompound) {
+        super.readAdditional(nbttagcompound);
         setHasBabies(nbttagcompound.getBoolean("Babies"));
     }
 
     @Override
-    public void writeEntityToNBT(CompoundNBT nbttagcompound) {
-        super.writeEntityToNBT(nbttagcompound);
-        nbttagcompound.setBoolean("Babies", getHasBabies());
+    public void writeAdditional(CompoundNBT nbttagcompound) {
+        super.writeAdditional(nbttagcompound);
+        nbttagcompound.putBoolean("Babies", getHasBabies());
     }
 
     @Override
@@ -307,9 +307,9 @@ public class MoCEntityScorpion extends MoCEntityMob {
     @Override
     public void updatePassenger(Entity passenger) {
         double dist = (0.2D);
-        double newPosX = this.posX + (dist * Math.sin(this.renderYawOffset / 57.29578F));
-        double newPosZ = this.posZ - (dist * Math.cos(this.renderYawOffset / 57.29578F));
-        passenger.setPosition(newPosX, this.posY + getMountedYOffset() + passenger.getYOffset(), newPosZ);
+        double newPosX = this.getPosX() + (dist * Math.sin(this.renderYawOffset / 57.29578F));
+        double newPosZ = this.getPosZ() - (dist * Math.cos(this.renderYawOffset / 57.29578F));
+        passenger.setPosition(newPosX, this.getPosY() + getMountedYOffset() + passenger.getYOffset(), newPosZ);
         passenger.rotationYaw = this.rotationYaw;
     }
 
@@ -331,12 +331,12 @@ public class MoCEntityScorpion extends MoCEntityMob {
         }
 
         @Override
-        protected double getAttackReachSqr(EntityLivingBase attackTarget) {
+        protected double getAttackReachSqr(LivingEntity attackTarget) {
             return 4.0F + attackTarget.width;
         }
     }
 
-    static class AIScorpionTarget<T extends EntityLivingBase> extends EntityAINearestAttackableTarget<T> {
+    static class AIScorpionTarget<T extends LivingEntity> extends EntityAINearestAttackableTarget<T> {
         public AIScorpionTarget(MoCEntityScorpion scorpion, Class<T> classTarget) {
             super(scorpion, classTarget, true);
         }

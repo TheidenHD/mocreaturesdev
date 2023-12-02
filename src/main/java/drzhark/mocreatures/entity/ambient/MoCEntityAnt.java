@@ -71,9 +71,9 @@ public class MoCEntityAnt extends MoCEntityAmbient {
                 if (entityitem.getRidingEntity() == null) {
                     float f = entityitem.getDistance(this);
                     if (f > 1.0F) {
-                        int i = MathHelper.floor(entityitem.posX);
-                        int j = MathHelper.floor(entityitem.posY);
-                        int k = MathHelper.floor(entityitem.posZ);
+                        int i = MathHelper.floor(entityitem.getPosX());
+                        int j = MathHelper.floor(entityitem.getPosY());
+                        int k = MathHelper.floor(entityitem.getPosZ());
                         faceLocation(i, j, k, 30F);
 
                         getMyOwnPath(entityitem, f);
@@ -106,10 +106,10 @@ public class MoCEntityAnt extends MoCEntityAmbient {
     }
 
     private void exchangeItem(ItemEntity entityitem) {
-        ItemEntity cargo = new ItemEntity(this.world, this.posX, this.posY + 0.2D, this.posZ, entityitem.getItem());
+        ItemEntity cargo = new ItemEntity(this.world, this.getPosX(), this.getPosY() + 0.2D, this.getPosZ(), entityitem.getItem());
         entityitem.setDead();
         if (!this.world.isRemote) {
-            this.world.spawnEntity(cargo);
+            this.world.addEntity(cargo);
         }
     }
 

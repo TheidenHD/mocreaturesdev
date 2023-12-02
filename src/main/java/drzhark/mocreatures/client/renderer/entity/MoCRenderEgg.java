@@ -6,8 +6,8 @@ package drzhark.mocreatures.client.renderer.entity;
 import drzhark.mocreatures.entity.item.MoCEntityEgg;
 import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 
 @OnlyIn(Dist.CLIENT)
@@ -26,7 +26,7 @@ public class MoCRenderEgg extends RenderLiving<MoCEntityEgg> {
 
     protected void stretch(MoCEntityEgg entityegg) {
         float f = entityegg.getSize() * 0.01F;
-        GlStateManager.scale(f, f, f);
+        matrixStackIn.scale(f, f, f);
     }
 
     @Override

@@ -13,8 +13,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -49,15 +48,15 @@ public class ItemStaffTeleport extends MoCItem {
      * pressed. Args: itemStack, world, entityPlayer
      */
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, Hand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (player.getRidingEntity() != null || player.isBeingRidden()) {
-            return ActionResult.newResult(EnumActionResult.PASS, stack);
+            return ActionResult.resultPass(stack);
         }
 
-        double coordY = player.posY + player.getEyeHeight();
-        double coordZ = player.posZ;
-        double coordX = player.posX;
+        double coordY = player.getPosY() + player.getEyeHeight();
+        double coordZ = player.getPosZ();
+        double coordX = player.getPosX();
         for (int x = 4; x < 128; x++) {
             double newPosY = coordY - Math.cos((player.rotationPitch - 90F) / 57.29578F) * x;
             double newPosX = coordX + Math.cos((MoCTools.realAngle(player.rotationYaw - 90F) / 57.29578F)) * (Math.sin((player.rotationPitch - 90F) / 57.29578F) * x);
@@ -78,12 +77,12 @@ public class ItemStaffTeleport extends MoCItem {
                 // player.setItemInUse(stack, 200);
                 stack.damageItem(1, player);
 
-                return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+                return ActionResult.resultSuccess(stack);
             }
         }
 
         //player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
-        return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+        return ActionResult.resultSuccess(stack);
     }
 
     public int getMaxItemUseDuration(ItemStack stack) {

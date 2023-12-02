@@ -11,7 +11,7 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -47,7 +47,7 @@ public class MoCBlockSapling extends BlockBush implements IGrowable {
     }
 
     @Override
-    public int getFlammability(IBlockAccess world, BlockPos pos, EnumFacing face) {
+    public int getFlammability(IBlockAccess world, BlockPos pos, Direction face) {
         if (isFlammable()) {
             return Blocks.SAPLING.getFlammability(world, pos, face);
         } else {
@@ -56,7 +56,7 @@ public class MoCBlockSapling extends BlockBush implements IGrowable {
     }
 
     @Override
-    public int getFireSpreadSpeed(IBlockAccess world, BlockPos pos, EnumFacing face) {
+    public int getFireSpreadSpeed(IBlockAccess world, BlockPos pos, Direction face) {
         if (isFlammable()) {
             return Blocks.SAPLING.getFireSpreadSpeed(world, pos, face);
         } else {
@@ -201,7 +201,7 @@ public class MoCBlockSapling extends BlockBush implements IGrowable {
         if (tempblock instanceof MoCBlockDirt || tempblock instanceof MoCBlockGrass) {
             return true;
         }
-        return super.canPlaceBlockAt(world, pos) && soil.getBlock().canSustainPlant(soil, world, pos.down(), EnumFacing.UP, this);
+        return super.canPlaceBlockAt(world, pos) && soil.getBlock().canSustainPlant(soil, world, pos.down(), Direction.UP, this);
     }
 
     public enum EnumWoodType implements IStringSerializable {

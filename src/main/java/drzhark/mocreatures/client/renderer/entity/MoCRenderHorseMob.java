@@ -6,8 +6,8 @@ package drzhark.mocreatures.client.renderer.entity;
 import drzhark.mocreatures.client.model.MoCModelHorseMob;
 import drzhark.mocreatures.entity.hostile.MoCEntityHorseMob;
 import drzhark.mocreatures.proxy.MoCProxyClient;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 
 @OnlyIn(Dist.CLIENT)
@@ -19,7 +19,7 @@ public class MoCRenderHorseMob extends RenderLiving<MoCEntityHorseMob> {
     }
 
     protected void adjustHeight(MoCEntityHorseMob entityhorsemob, float FHeight) {
-        GlStateManager.translate(0.0F, FHeight, 0.0F);
+        matrixStackIn.translate(0.0F, FHeight, 0.0F);
     }
 
     @Override

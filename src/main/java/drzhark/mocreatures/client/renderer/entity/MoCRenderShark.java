@@ -8,9 +8,9 @@ import drzhark.mocreatures.entity.aquatic.MoCEntityShark;
 import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 
@@ -35,16 +35,16 @@ public class MoCRenderShark extends RenderLiving<MoCEntityShark> {
                 s = s + entityshark.getPetName();
                 float f5 = 0.1F;
                 FontRenderer fontrenderer = getFontRendererFromRenderManager();
-                GlStateManager.pushMatrix();
-                GlStateManager.translate((float) d + 0.0F, (float) d1 + f5, (float) d2);
-                GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
-                GlStateManager.rotate(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-                GlStateManager.scale(-f3, -f3, f3);
-                GlStateManager.disableLighting();
+                matrixStackIn.push();
+                matrixStackIn.translate((float) d + 0.0F, (float) d1 + f5, (float) d2);
+                matrixStackIn.glNormal3f(0.0F, 1.0F, 0.0F);
+                matrixStackIn.rotate(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+                matrixStackIn.scale(-f3, -f3, f3);
+
                 Tessellator tessellator = Tessellator.getInstance();
                 byte byte0 = -50;
                 if (flag1) {
-                    GlStateManager.disableTexture2D();
+
                     if (!flag) {
                         byte0 += 8;
                     }
@@ -63,14 +63,14 @@ public class MoCRenderShark extends RenderLiving<MoCEntityShark> {
                     tessellator.getBuffer().pos(f9 - 20F, -6 + byte0, 0.0D).color(0.0F, 0.7F, 0.0F, 1.0F).endVertex();
                     tessellator.getBuffer().pos(f9 - 20F, -10 + byte0, 0.0D).color(0.0F, 0.7F, 0.0F, 1.0F).endVertex();
                     tessellator.draw();
-                    GlStateManager.enableTexture2D();
+
                 }
                 if (flag) {
-                    GlStateManager.depthMask(false);
-                    GlStateManager.disableDepth();
-                    GlStateManager.enableBlend();
-                    GlStateManager.blendFunc(770, 771);
-                    GlStateManager.disableTexture2D();
+                    matrixStackIn.depthMask(false);
+                    matrixStackIn.disableDepth();
+                    matrixStackIn.enableBlend();
+                    matrixStackIn.blendFunc(770, 771);
+
                     tessellator.getBuffer().begin(7, DefaultVertexFormats.POSITION_COLOR);
                     int i = fontrenderer.getStringWidth(s) / 2;
                     tessellator.getBuffer().pos(-i - 1, -1 + byte0, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
@@ -78,16 +78,16 @@ public class MoCRenderShark extends RenderLiving<MoCEntityShark> {
                     tessellator.getBuffer().pos(i + 1, 8 + byte0, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
                     tessellator.getBuffer().pos(i + 1, -1 + byte0, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
                     tessellator.draw();
-                    GlStateManager.enableTexture2D();
+
                     fontrenderer.drawString(s, -fontrenderer.getStringWidth(s) / 2, byte0, 0x20ffffff);
-                    GlStateManager.enableDepth();
-                    GlStateManager.depthMask(true);
+                    matrixStackIn.enableDepth();
+                    matrixStackIn.depthMask(true);
                     fontrenderer.drawString(s, -fontrenderer.getStringWidth(s) / 2, byte0, -1);
-                    GlStateManager.disableBlend();
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                    matrixStackIn.disableBlend();
+                    matrixStackIn.color(1.0F, 1.0F, 1.0F, 1.0F);
                 }
-                GlStateManager.enableLighting();
-                GlStateManager.popMatrix();
+
+                matrixStackIn.pop();
             }
         }
     }
@@ -99,7 +99,7 @@ public class MoCRenderShark extends RenderLiving<MoCEntityShark> {
     }
 
     protected void stretch(MoCEntityShark entityshark) {
-        GlStateManager.scale((entityshark.getAge() * 0.01F) / 2, (entityshark.getAge() * 0.01F) / 2, (entityshark.getAge() * 0.01F) / 2);
+        matrixStackIn.scale((entityshark.getAge() * 0.01F) / 2, (entityshark.getAge() * 0.01F) / 2, (entityshark.getAge() * 0.01F) / 2);
     }
 
     @Override

@@ -5,11 +5,11 @@ package drzhark.mocreatures.entity.ai;
 
 import drzhark.mocreatures.entity.IMoCEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.goal.Goal;
 
 import java.util.List;
 
-public class EntityAIFollowAdult extends EntityAIBase {
+public class EntityAIFollowAdult extends Goal {
 
     /**
      * The child that is following its parent.
@@ -25,7 +25,7 @@ public class EntityAIFollowAdult extends EntityAIBase {
     }
 
     /**
-     * Returns whether the EntityAIBase should begin execution.
+     * Returns whether the Goal should begin execution.
      */
     @Override
     public boolean shouldExecute() {
@@ -61,7 +61,7 @@ public class EntityAIFollowAdult extends EntityAIBase {
     }
 
     /**
-     * Returns whether an in-progress EntityAIBase should continue executing
+     * Returns whether an in-progress Goal should continue executing
      */
     @Override
     public boolean shouldContinueExecuting() {

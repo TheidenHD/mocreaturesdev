@@ -4,7 +4,7 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.hunter.MoCEntitySnake;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -168,7 +168,7 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         //super.render(entity, f, f1, f2, f3, f4, f5);
         MoCEntitySnake entitysnake = (MoCEntitySnake) entity;
-        int typeI = entitysnake.getType();
+        int typeI = entitysnake.getTypeMoC();
         float tongueOff = entitysnake.getfTongue();
         float mouthOff = entitysnake.getfMouth();
         float rattleOff = entitysnake.getfRattle();
@@ -199,7 +199,7 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
             float yOff;
             //sideperf = 1F;
 
-            GlStateManager.pushMatrix();
+            matrixStackIn.push();
             if (isresting) {
                 //this part doesn't work at all
                 /* if (i > (bodyparts/3) && (i <2*bodyparts/3)) {
@@ -210,13 +210,13 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
 
                 //this shortens the snake while resting
                 //TODO reactivate ?
-                //GlStateManager.translate(0.0F, 0.0F, -0.05F*i);
+                //matrixStackIn.translate(0.0F, 0.0F, -0.05F*i);
             } else
 
                 //climbing animation
                 if (climbing && i < this.bodyparts / 2) {
                     yOff = (i - ((float) this.bodyparts / 2)) * 0.08F;
-                    GlStateManager.translate(0.0F, yOff / 3.0F, -yOff * 1.2F);
+                    matrixStackIn.translate(0.0F, yOff / 3.0F, -yOff * 1.2F);
                 } else
 
                     //raises head of snakes near player
@@ -226,7 +226,7 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
                             yOff = (i - ((float) this.bodyparts / 3)) * 0.09F;
                             float zOff = (i - ((float) this.bodyparts / 3)) * 0.065F;
                             // if (picked) { yOff = yOff*-1F; //zOff = zOff*-1F; }
-                            GlStateManager.translate(0.0F, yOff / 1.5F, -zOff * f6);
+                            matrixStackIn.translate(0.0F, yOff / 1.5F, -zOff * f6);
                         }
 
                         if (i < this.bodyparts / 6) {
@@ -244,7 +244,7 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
             if (typeI == 7 && nearplayer && i > (5 * this.bodyparts / 6) && !picked)//&& not picked
             {
                 yOff = 0.55F + ((i - this.bodyparts)) * 0.08F;
-                GlStateManager.translate(0.0F, -yOff / 1.5F, 0.0F);
+                matrixStackIn.translate(0.0F, -yOff / 1.5F, 0.0F);
             }
 
             //TODO reactivate once strangling is working
@@ -252,22 +252,22 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
             if (picked && i > this.bodyparts / 2)//&& big to bring down the tail
             {
                 yOff = ((i - ((float) this.bodyparts / 2))) * 0.08F;
-                GlStateManager.translate(0.0F, yOff / 1.5F, -yOff);
+                matrixStackIn.translate(0.0F, yOff / 1.5F, -yOff);
 
             }
 
             //not working strangling
             /*
              * if (picked && i > bodyparts/3)//&& big to bring down the tail {
-             * yOff =((i-(bodyparts/3)))*0.08F; GlStateManager.translate(0.0F,
+             * yOff =((i-(bodyparts/3)))*0.08F; matrixStackIn.translate(0.0F,
              * yOff/1.5F, 0.0F); anglef = (10) * (i+1) ;//works well for small
              * snakes //anglef = (6) * (i+1) ; //this may work!!
-             * //GlStateManager.translate(0.0F, 0.0F, -0.05F*i); GlStateManager.rotate(anglef,
+             * //matrixStackIn.translate(0.0F, 0.0F, -0.05F*i); matrixStackIn.rotate(anglef,
              * 0.0F, 1.0F, 0.0F); }
              */
 
             /*
-             * if (picked) //&& first persons pesrpective { GlStateManager.scale(fsize,
+             * if (picked) //&& first persons pesrpective { matrixStackIn.scale(fsize,
              * fsize, fsize); }
              */
             /*
@@ -278,25 +278,25 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
              * //sidef = 0.5F * MathHelper.sin(2F * (f)- 0.25F * (float)j) -
              * 0.2F * MathHelper.cos(1.2F *f - 0.15F *(float)j); //sidef =
              * MathHelper.sqrt(i/10F); //sidef = sidef * sideperf;
-             * //GlStateManager.translate(sidef, 0.0F, 0.0F); anglef = (8) * (i+1)
+             * //matrixStackIn.translate(sidef, 0.0F, 0.0F); anglef = (8) * (i+1)
              * ;//works well for small snakes //anglef = (6) * (i+1) ; //this
-             * may work!! GlStateManager.translate(0.0F, 0.0F, -0.05F*i);
-             * GlStateManager.rotate(anglef, 0.0F, 1.0F, 0.0F); }else
+             * may work!! matrixStackIn.translate(0.0F, 0.0F, -0.05F*i);
+             * matrixStackIn.rotate(anglef, 0.0F, 1.0F, 0.0F); }else
              */
             {
 
                 sidef = 0.5F * MathHelper.sin(w * t - 0.3F * i) - (movInt / 20F) * MathHelper.sin(0.8F * t - 0.2F * i);
                 sidef = sidef * sideperf;
-                //GlStateManager.translate(0.0F, 0.0F, -0.05F*i);
+                //matrixStackIn.translate(0.0F, 0.0F, -0.05F*i);
 
-                GlStateManager.translate(sidef, 0.0F, 0.0F);
+                matrixStackIn.translate(sidef, 0.0F, 0.0F);
             }
 
             //this one works as well
             //sidef = 0.5F * MathHelper.sin(w * t - 0.3F * (float)j)- 0.1F * MathHelper.sin(+0.8F * t - 0.2F * (float)j);
             //sidef = sidef * sideperf;
 
-            //GlStateManager.translate(sidef, 0.0F, sidef/5);
+            //matrixStackIn.translate(sidef, 0.0F, sidef/5);
             //sidef = (0.4F * MathHelper.sin(-3.7F * t - 0.2F * (float)i)) + (0.3F * MathHelper.sin(-2F * t - 0.2F * (float)i));
             //sidef = 1.1F * MathHelper.sin(-2F * t - 0.2F * (float)i);
 
@@ -353,7 +353,7 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
                 this.Tail.render(f5);
             }
 
-            GlStateManager.popMatrix();
+            matrixStackIn.pop();
         }
     }
 

@@ -12,7 +12,7 @@ import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -39,7 +39,7 @@ public class MoCEntityBee extends MoCEntityInsect {
 
         if (!this.world.isRemote) {
             if (getIsFlying() && --this.soundCount == -1) {
-                PlayerEntity ep = this.world.getClosestPlayerToEntity(this, 5D);
+                PlayerEntity ep = this.world.getClosestPlayer(this, 5D);
                 if (ep != null) {
                     MoCTools.playCustomSound(this, getMySound());
                     this.soundCount = 20;
@@ -79,8 +79,8 @@ public class MoCEntityBee extends MoCEntityInsect {
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
-            if (entity instanceof EntityLivingBase) {
-                EntityLivingBase entityliving = (EntityLivingBase) entity;
+            if (entity instanceof LivingEntity) {
+                LivingEntity entityliving = (LivingEntity) entity;
                 if ((entity != this) && (this.world.getDifficulty().getId() > 0)) {
                     setAttackTarget(entityliving);
                 }

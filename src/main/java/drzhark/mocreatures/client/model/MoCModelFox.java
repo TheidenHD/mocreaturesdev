@@ -9,7 +9,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
 
-
 public class MoCModelFox<T extends Entity> extends EntityModel<T> {
 
     public ModelRenderer Body;

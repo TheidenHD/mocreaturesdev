@@ -4,7 +4,7 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.ambient.MoCEntityFirefly;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -109,7 +109,7 @@ public class MoCModelFirefly<T extends Entity> extends EntityModel<T> {
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         MoCEntityFirefly entityfirefly = (MoCEntityFirefly) entity;
-        boolean isFlying = (entityfirefly.getIsFlying() || entityfirefly.motionY < -0.1D);
+        boolean isFlying = (entityfirefly.getIsFlying() || entityfirefly.getMotion().getY() < -0.1D);
 
         setRotationAngles(f, f1, f2, f3, f4, f5, isFlying);
         this.Antenna.render(f5);
@@ -129,29 +129,29 @@ public class MoCModelFirefly<T extends Entity> extends EntityModel<T> {
             this.RightShellOpen.render(f5);
             this.LeftShellOpen.render(f5);
 
-            GlStateManager.pushMatrix();
-            GlStateManager.enableBlend();
+            matrixStackIn.push();
+            matrixStackIn.enableBlend();
             float transparency = 0.6F;
-            GlStateManager.blendFunc(770, 771);
-            GlStateManager.color(0.8F, 0.8F, 0.8F, transparency);
+            matrixStackIn.blendFunc(770, 771);
+            matrixStackIn.color(0.8F, 0.8F, 0.8F, transparency);
             this.LeftWing.render(f5);
             this.RightWing.render(f5);
-            GlStateManager.disableBlend();
-            GlStateManager.popMatrix();
+            matrixStackIn.disableBlend();
+            matrixStackIn.pop();
         }
 
         boolean flag = !entityfirefly.getEntityWorld().isDaytime();
-        GlStateManager.pushMatrix();
-        GlStateManager.enableBlend();
+        matrixStackIn.push();
+        matrixStackIn.enableBlend();
         if (!flag) {
             float transparency = 0.4F;
-            GlStateManager.blendFunc(770, 771);
-            GlStateManager.color(0.8F, 0.8F, 0.8F, transparency);
+            matrixStackIn.blendFunc(770, 771);
+            matrixStackIn.color(0.8F, 0.8F, 0.8F, transparency);
         } else {
-            GlStateManager.blendFunc(770, 1);
+            matrixStackIn.blendFunc(770, 1);
         }
-        GlStateManager.disableBlend();
-        GlStateManager.popMatrix();
+        matrixStackIn.disableBlend();
+        matrixStackIn.pop();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

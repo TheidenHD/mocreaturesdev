@@ -3,12 +3,14 @@
  */
 package drzhark.mocreatures.init;
 
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class MoCCreativeTabs extends CreativeTabs {
+public class MoCCreativeTabs extends ItemGroup {
 
     public MoCCreativeTabs(int length, String name) {
         super(length, name);

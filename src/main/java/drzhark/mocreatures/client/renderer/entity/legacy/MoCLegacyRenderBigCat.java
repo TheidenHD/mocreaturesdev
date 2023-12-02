@@ -10,10 +10,10 @@ import drzhark.mocreatures.entity.hunter.MoCEntityBigCat;
 import drzhark.mocreatures.entity.hunter.MoCEntityLion;
 import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 
@@ -48,16 +48,16 @@ public class MoCLegacyRenderBigCat extends RenderLiving<MoCEntityBigCat> {
                 s = s + entitybigcat.getPetName();
                 float f7 = 0.1F;
                 FontRenderer fontrenderer = getFontRendererFromRenderManager();
-                GlStateManager.pushMatrix();
-                GlStateManager.translate((float) d + 0.0F, (float) d1 + f7, (float) d2);
-                GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
-                GlStateManager.rotate(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-                GlStateManager.scale(-f3, -f3, f3);
-                GlStateManager.disableLighting();
+                matrixStackIn.push();
+                matrixStackIn.translate((float) d + 0.0F, (float) d1 + f7, (float) d2);
+                matrixStackIn.glNormal3f(0.0F, 1.0F, 0.0F);
+                matrixStackIn.rotate(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+                matrixStackIn.scale(-f3, -f3, f3);
+
                 Tessellator tessellator1 = Tessellator.getInstance();
                 byte byte0 = -60;
                 if (flag1) {
-                    GlStateManager.disableTexture2D();
+
                     if (!flag) {
                         byte0 += 8;
                     }
@@ -84,14 +84,14 @@ public class MoCLegacyRenderBigCat extends RenderLiving<MoCEntityBigCat> {
                     tessellator1.getBuffer().pos(f11 - 20F, -6 + byte0, 0.0D).color(0.0F, 0.7F, 0.0F, 1.0F).endVertex();
                     tessellator1.getBuffer().pos(f11 - 20F, -10 + byte0, 0.0D).color(0.0F, 0.7F, 0.0F, 1.0F).endVertex();
                     tessellator1.draw();
-                    GlStateManager.enableTexture2D();
+
                 }
                 if (flag) {
-                    GlStateManager.depthMask(false);
-                    GlStateManager.disableDepth();
-                    GlStateManager.enableBlend();
-                    GlStateManager.blendFunc(770, 771);
-                    GlStateManager.disableTexture2D();
+                    matrixStackIn.depthMask(false);
+                    matrixStackIn.disableDepth();
+                    matrixStackIn.enableBlend();
+                    matrixStackIn.blendFunc(770, 771);
+
                     tessellator1.getBuffer().begin(7, DefaultVertexFormats.POSITION_COLOR);
                     int i = fontrenderer.getStringWidth(s) / 2;
                     tessellator1.getBuffer().pos(-i - 1, -1 + byte0, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
@@ -99,16 +99,16 @@ public class MoCLegacyRenderBigCat extends RenderLiving<MoCEntityBigCat> {
                     tessellator1.getBuffer().pos(i + 1, 8 + byte0, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
                     tessellator1.getBuffer().pos(i + 1, -1 + byte0, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
                     tessellator1.draw();
-                    GlStateManager.enableTexture2D();
+
                     fontrenderer.drawString(s, -fontrenderer.getStringWidth(s) / 2, byte0, 0x20ffffff);
-                    GlStateManager.enableDepth();
-                    GlStateManager.depthMask(true);
+                    matrixStackIn.enableDepth();
+                    matrixStackIn.depthMask(true);
                     fontrenderer.drawString(s, -fontrenderer.getStringWidth(s) / 2, byte0, -1);
-                    GlStateManager.disableBlend();
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                    matrixStackIn.disableBlend();
+                    matrixStackIn.color(1.0F, 1.0F, 1.0F, 1.0F);
                 }
-                GlStateManager.enableLighting();
-                GlStateManager.popMatrix();
+
+                matrixStackIn.pop();
             }
         }
 
@@ -131,7 +131,7 @@ public class MoCLegacyRenderBigCat extends RenderLiving<MoCEntityBigCat> {
         if (entitybigcat.getIsAdult()) {
             f = 1.0F;
         }
-        GlStateManager.scale(f, f, f);
+        matrixStackIn.scale(f, f, f);
     }
 
     // Render mane
@@ -146,7 +146,7 @@ public class MoCLegacyRenderBigCat extends RenderLiving<MoCEntityBigCat> {
 
         public void doRenderLayer(MoCEntityBigCat entitybigcat, float f, float f1, float f2, float f3, float f4, float f5, float f6) {
             if (entitybigcat instanceof MoCEntityLion && entitybigcat.hasMane()) {
-                if (entitybigcat.getType() == 7) {
+                if (entitybigcat.getTypeMoC() == 7) {
                     bindTexture(MoCreatures.proxy.getModelTexture("big_cat_white_lion_legacy_layer.png"));
                 } else {
                     bindTexture(MoCreatures.proxy.getModelTexture("big_cat_lion_legacy_layer_male.png"));

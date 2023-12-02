@@ -4,7 +4,7 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.passive.MoCEntityTurkey;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -96,16 +96,16 @@ public class MoCModelTurkey<T extends Entity> extends EntityModel<T> {
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         super.render(entity, f, f1, f2, f3, f4, f5);
-        this.male = ((MoCEntityTurkey) entity).getType() == 1;
+        this.male = ((MoCEntityTurkey) entity).getTypeMoC() == 1;
         setRotationAngles(f, f1, f2, f3, f4, f5);
         if (this.isChild) {
             // All children rendered as Female
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(0.0F, 5.0F * f5, 2.0F * f5);
-            GlStateManager.popMatrix();
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(0.5F, 0.5F, 0.5F);
-            GlStateManager.translate(0.0F, 24.0F * f5, 0.0F);
+            matrixStackIn.push();
+            matrixStackIn.translate(0.0F, 5.0F * f5, 2.0F * f5);
+            matrixStackIn.pop();
+            matrixStackIn.push();
+            matrixStackIn.scale(0.5F, 0.5F, 0.5F);
+            matrixStackIn.translate(0.0F, 24.0F * f5, 0.0F);
             this.Beak.render(f5);
             this.Head.render(f5);
             this.Neck.render(f5);
@@ -116,12 +116,12 @@ public class MoCModelTurkey<T extends Entity> extends EntityModel<T> {
             this.RFoot.render(f5);
             this.LLeg.render(f5);
             this.LFoot.render(f5);
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(0.8F, 0.8F, 1F);
+            matrixStackIn.push();
+            matrixStackIn.scale(0.8F, 0.8F, 1F);
             this.Body.render(f5);
             this.Chest.render(f5);
-            GlStateManager.popMatrix();
-            GlStateManager.popMatrix();
+            matrixStackIn.pop();
+            matrixStackIn.pop();
         } else {
             this.Beak.render(f5);
             this.Head.render(f5);
@@ -139,11 +139,11 @@ public class MoCModelTurkey<T extends Entity> extends EntityModel<T> {
                 this.Chest.render(f5);
 
             } else {
-                GlStateManager.pushMatrix();
-                GlStateManager.scale(0.8F, 0.8F, 1F);
+                matrixStackIn.push();
+                matrixStackIn.scale(0.8F, 0.8F, 1F);
                 this.Body.render(f5);
                 this.Chest.render(f5);
-                GlStateManager.popMatrix();
+                matrixStackIn.pop();
             }
         }
     }

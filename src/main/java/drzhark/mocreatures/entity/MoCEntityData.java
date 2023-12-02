@@ -4,9 +4,9 @@
 package drzhark.mocreatures.entity;
 
 import drzhark.mocreatures.MoCreatures;
-import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.world.biome.Biome.SpawnListEntry;
+import net.minecraft.world.biome.Biome.MobSpawnInfo.Spawners;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
 
@@ -15,10 +15,10 @@ import java.util.List;
 
 public class MoCEntityData {
 
-    private final SpawnListEntry spawnListEntry;
+    private final MobSpawnInfo.Spawners spawnListEntry;
     private List<Type> biomeTypes;
     private List<Type> blockedBiomeTypes = new ArrayList<>();
-    private EnumCreatureType typeOfCreature;
+    private EntityClassification typeOfCreature;
     private String entityName;
     private boolean canSpawn = true;
     private int entityId;
@@ -28,7 +28,7 @@ public class MoCEntityData {
     private int maxSpawnInChunk;
     private int[] dimensions;
 
-    public MoCEntityData(String name, int maxchunk, int[] dimensions, EnumCreatureType type, SpawnListEntry spawnListEntry, List<Type> biomeTypes) {
+    public MoCEntityData(String name, int maxchunk, int[] dimensions, EntityClassification type, MobSpawnInfo.Spawners spawnListEntry, List<Type> biomeTypes) {
         this.entityName = name;
         this.typeOfCreature = type;
         this.dimensions = dimensions;
@@ -41,7 +41,7 @@ public class MoCEntityData {
         MoCreatures.entityMap.put(spawnListEntry.entityClass, this);
     }
 
-    public MoCEntityData(String name, int maxchunk, int[] dimensions, EnumCreatureType type, SpawnListEntry spawnListEntry, List<Type> biomeTypes, List<Type> blockedBiomeTypes) {
+    public MoCEntityData(String name, int maxchunk, int[] dimensions, EntityClassification type, MobSpawnInfo.Spawners spawnListEntry, List<Type> biomeTypes, List<Type> blockedBiomeTypes) {
         this.entityName = name;
         this.typeOfCreature = type;
         this.dimensions = dimensions;
@@ -59,14 +59,14 @@ public class MoCEntityData {
         return this.spawnListEntry.entityClass;
     }
 
-    public EnumCreatureType getType() {
+    public EntityClassification getTypeMoC() {
         if (this.typeOfCreature != null) {
             return this.typeOfCreature;
         }
         return null;
     }
 
-    public void setType(EnumCreatureType type) {
+    public void setTypeMoC(EntityClassification type) {
         this.typeOfCreature = type;
     }
 
@@ -150,7 +150,7 @@ public class MoCEntityData {
         this.canSpawn = flag;
     }
 
-    public SpawnListEntry getSpawnListEntry() {
+    public MobSpawnInfo.Spawners getSpawnListEntry() {
         return this.spawnListEntry;
     }
 }

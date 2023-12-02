@@ -15,8 +15,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
@@ -63,7 +63,7 @@ public class CommandMoCTP extends CommandBase {
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
         int petId;
         if (args.length == 0) {
-            sender.sendMessage(new TextComponentTranslation(TextFormatting.RED + "Error" + TextFormatting.WHITE
+            sender.sendMessage(new TranslationTextComponent(TextFormatting.RED + "Error" + TextFormatting.WHITE
                     + ": You must enter a valid entity ID."));
             return;
         }
@@ -80,26 +80,26 @@ public class CommandMoCTP extends CommandBase {
         // search for tamed entity in mocreatures.dat
         MoCPetData ownerPetData = MoCreatures.instance.mapData.getPetData(player.getUniqueID());
         if (ownerPetData != null) {
-            for (int i = 0; i < ownerPetData.getTamedList().tagCount(); i++) {
-                CompoundNBT nbt = ownerPetData.getTamedList().getCompoundTagAt(i);
-                if (nbt.hasKey("PetId") && nbt.getInteger("PetId") == petId) {
+            for (int i = 0; i < ownerPetData.getTamedList().size(); i++) {
+                CompoundNBT nbt = ownerPetData.getTamedList().getCompound(i);
+                if (nbt.contains("PetId") && nbt.getInt("PetId") == petId) {
                     String petName = nbt.getString("Name");
-                    WorldServer world = DimensionManager.getWorld(nbt.getInteger("Dimension"));
+                    WorldServer world = DimensionManager.getWorld(nbt.getInt("Dimension"));
                     if (!teleportLoadedPet(world, player, petId, petName, sender)) {
-                        double posX = nbt.getTagList("Pos", 6).getDoubleAt(0);
-                        double posY = nbt.getTagList("Pos", 6).getDoubleAt(1);
-                        double posZ = nbt.getTagList("Pos", 6).getDoubleAt(2);
-                        int x = MathHelper.floor(posX);
-                        int y = MathHelper.floor(posY);
-                        int z = MathHelper.floor(posZ);
-                        sender.sendMessage(new TextComponentTranslation("Found unloaded pet " + TextFormatting.GREEN
+                        double getPosX () = nbt.getList("Pos", 6).getDouble(0);
+                        double getPosY () = nbt.getList("Pos", 6).getDouble(1);
+                        double getPosZ () = nbt.getList("Pos", 6).getDouble(2);
+                        int x = MathHelper.floor(getPosX());
+                        int y = MathHelper.floor(getPosY());
+                        int z = MathHelper.floor(getPosZ());
+                        sender.sendMessage(new TranslationTextComponent("Found unloaded pet " + TextFormatting.GREEN
                                 + nbt.getString("id") + TextFormatting.WHITE + " with name " + TextFormatting.AQUA + nbt.getString("Name")
                                 + TextFormatting.WHITE + " at location " + TextFormatting.LIGHT_PURPLE + x + TextFormatting.WHITE + ", "
                                 + TextFormatting.LIGHT_PURPLE + y + TextFormatting.WHITE + ", " + TextFormatting.LIGHT_PURPLE + z
-                                + TextFormatting.WHITE + " with Pet ID " + TextFormatting.BLUE + nbt.getInteger("PetId")));
+                                + TextFormatting.WHITE + " with Pet ID " + TextFormatting.BLUE + nbt.getInt("PetId")));
                         boolean result = teleportLoadedPet(world, player, petId, petName, sender); // attempt to TP again
                         if (!result) {
-                            sender.sendMessage(new TextComponentTranslation("Unable to transfer entity ID " + TextFormatting.GREEN
+                            sender.sendMessage(new TranslationTextComponent("Unable to transfer entity ID " + TextFormatting.GREEN
                                     + petId + TextFormatting.WHITE + ". It may only be transferred to " + TextFormatting.AQUA
                                     + player.getName()));
                         }
@@ -108,7 +108,7 @@ public class CommandMoCTP extends CommandBase {
                 }
             }
         } else {
-            sender.sendMessage(new TextComponentTranslation("Tamed entity could not be located."));
+            sender.sendMessage(new TranslationTextComponent("Tamed entity could not be located."));
         }
     }
 
@@ -152,7 +152,7 @@ public class CommandMoCTP extends CommandBase {
                             world.resetUpdateEntityTick();
                             DimensionManager.getWorld(player.dimension).resetUpdateEntityTick();
                         }
-                        par1ICommandSender.sendMessage(new TextComponentTranslation(TextFormatting.GREEN + name + TextFormatting.WHITE
+                        par1ICommandSender.sendMessage(new TranslationTextComponent(TextFormatting.GREEN + name + TextFormatting.WHITE
                                 + " has been tp'd to location " + Math.round(player.getPosX()) + ", " + Math.round(player.getPosY()) + ", "
                                 + Math.round(player.getPosZ()) + " in dimension " + player.dimension));
                         return true;
@@ -164,9 +164,9 @@ public class CommandMoCTP extends CommandBase {
     }
 
     public void sendCommandHelp(ICommandSender sender) {
-        sender.sendMessage(new TextComponentTranslation("§2Listing MoCreatures commands"));
+        sender.sendMessage(new TranslationTextComponent("§2Listing MoCreatures commands"));
         for (String command : commands) {
-            sender.sendMessage(new TextComponentTranslation(command));
+            sender.sendMessage(new TranslationTextComponent(command));
         }
     }
 }

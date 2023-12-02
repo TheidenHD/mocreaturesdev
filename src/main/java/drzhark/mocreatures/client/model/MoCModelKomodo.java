@@ -214,7 +214,7 @@ public class MoCModelKomodo<T extends Entity> extends EntityModel<T> {
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         MoCEntityKomodo komodo = (MoCEntityKomodo) entity;
-        //int type = komodo.getType();
+        //int type = komodo.getTypeMoC();
         //byte harness = komodo.getHarness();
         //byte storage = komodo.getStorage();
         boolean mouth = (komodo.mouthCounter != 0);

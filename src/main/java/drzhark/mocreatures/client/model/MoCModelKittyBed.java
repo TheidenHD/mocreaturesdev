@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
 
-
 public class MoCModelKittyBed<T extends Entity> extends EntityModel<T> {
 
     public boolean hasMilk;

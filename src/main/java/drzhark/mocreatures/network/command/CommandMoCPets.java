@@ -17,8 +17,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
@@ -89,9 +89,9 @@ public class CommandMoCPets extends CommandBase {
                                 + mocreature.getOwnerId() + TextFormatting.DARK_AQUA + ", PetId" + TextFormatting.WHITE + ":"
                                 + TextFormatting.GREEN + mocreature.getOwnerPetId() + TextFormatting.DARK_AQUA + ", Dimension"
                                 + TextFormatting.WHITE + ":" + TextFormatting.GREEN + entity.dimension + TextFormatting.DARK_AQUA
-                                + ", Pos" + TextFormatting.WHITE + ":" + TextFormatting.LIGHT_PURPLE + Math.round(entity.posX)
-                                + TextFormatting.WHITE + ", " + TextFormatting.LIGHT_PURPLE + Math.round(entity.posY)
-                                + TextFormatting.WHITE + ", " + TextFormatting.LIGHT_PURPLE + Math.round(entity.posZ));
+                                + ", Pos" + TextFormatting.WHITE + ":" + TextFormatting.LIGHT_PURPLE + Math.round(entity.getPosX())
+                                + TextFormatting.WHITE + ", " + TextFormatting.LIGHT_PURPLE + Math.round(entity.getPosY())
+                                + TextFormatting.WHITE + ", " + TextFormatting.LIGHT_PURPLE + Math.round(entity.getPosZ()));
                     }
                 }
             }
@@ -99,13 +99,13 @@ public class CommandMoCPets extends CommandBase {
         MoCPetData ownerPetData = MoCreatures.instance.mapData.getPetData(player.getUniqueID());
         if (ownerPetData != null) {
             MoCreatures.instance.mapData.forceSave(); // force save so we get correct information
-            for (int i = 0; i < ownerPetData.getTamedList().tagCount(); i++) {
-                CompoundNBT nbt = ownerPetData.getTamedList().getCompoundTagAt(i);
-                if (nbt.hasKey("PetId") && !foundIds.contains(nbt.getInteger("PetId"))) {
+            for (int i = 0; i < ownerPetData.getTamedList().size(); i++) {
+                CompoundNBT nbt = ownerPetData.getTamedList().getCompound(i);
+                if (nbt.contains("PetId") && !foundIds.contains(nbt.getInt("PetId"))) {
                     unloadedCount++;
-                    double posX = nbt.getTagList("Pos", 6).getDoubleAt(0);
-                    double posY = nbt.getTagList("Pos", 6).getDoubleAt(1);
-                    double posZ = nbt.getTagList("Pos", 6).getDoubleAt(2);
+                    double getPosX () = nbt.getList("Pos", 6).getDouble(0);
+                    double getPosY () = nbt.getList("Pos", 6).getDouble(1);
+                    double getPosZ () = nbt.getList("Pos", 6).getDouble(2);
                     if (nbt.getBoolean("InAmulet")) {
                         tamedlist.add(TextFormatting.WHITE + "Found unloaded pet in " + TextFormatting.DARK_PURPLE + "AMULET"
                                 + TextFormatting.WHITE + " with " + TextFormatting.DARK_AQUA + "Type" + TextFormatting.WHITE + ":"
@@ -113,18 +113,18 @@ public class CommandMoCPets extends CommandBase {
                                 + ", Name" + TextFormatting.WHITE + ":" + TextFormatting.GREEN + nbt.getString("Name")
                                 + TextFormatting.DARK_AQUA + ", Owner" + TextFormatting.WHITE + ":" + TextFormatting.GREEN
                                 + nbt.getString("Owner") + TextFormatting.DARK_AQUA + ", PetId" + TextFormatting.WHITE + ":"
-                                + TextFormatting.GREEN + nbt.getInteger("PetId") + TextFormatting.WHITE + ".");
+                                + TextFormatting.GREEN + nbt.getInt("PetId") + TextFormatting.WHITE + ".");
                     } else {
                         tamedlist.add(TextFormatting.WHITE + "Found unloaded pet with " + TextFormatting.DARK_AQUA + "Type"
                                 + TextFormatting.WHITE + ":" + TextFormatting.GREEN + (nbt.getString("id")).replace("MoCreatures.", "")
                                 + TextFormatting.DARK_AQUA + ", Name" + TextFormatting.WHITE + ":" + TextFormatting.GREEN
                                 + nbt.getString("Name") + TextFormatting.DARK_AQUA + ", Owner" + TextFormatting.WHITE + ":"
                                 + TextFormatting.GREEN + nbt.getString("Owner") + TextFormatting.DARK_AQUA + ", PetId"
-                                + TextFormatting.WHITE + ":" + TextFormatting.GREEN + nbt.getInteger("PetId") + TextFormatting.DARK_AQUA
-                                + ", Dimension" + TextFormatting.WHITE + ":" + TextFormatting.GREEN + nbt.getInteger("Dimension")
+                                + TextFormatting.WHITE + ":" + TextFormatting.GREEN + nbt.getInt("PetId") + TextFormatting.DARK_AQUA
+                                + ", Dimension" + TextFormatting.WHITE + ":" + TextFormatting.GREEN + nbt.getInt("Dimension")
                                 + TextFormatting.DARK_AQUA + ", Pos" + TextFormatting.WHITE + ":" + TextFormatting.LIGHT_PURPLE
-                                + Math.round(posX) + TextFormatting.WHITE + ", " + TextFormatting.LIGHT_PURPLE + Math.round(posY)
-                                + TextFormatting.WHITE + ", " + TextFormatting.LIGHT_PURPLE + Math.round(posZ));
+                                + Math.round(getPosX()) + TextFormatting.WHITE + ", " + TextFormatting.LIGHT_PURPLE + Math.round(getPosY())
+                                + TextFormatting.WHITE + ", " + TextFormatting.LIGHT_PURPLE + Math.round(getPosZ()));
                     }
                 }
             }
@@ -132,11 +132,11 @@ public class CommandMoCPets extends CommandBase {
 
         if (tamedlist.size() > 0) {
             sendPageHelp(sender, (byte) 10, tamedlist, args);
-            sender.sendMessage(new TextComponentTranslation("Loaded tamed count : " + TextFormatting.AQUA + loadedCount
+            sender.sendMessage(new TranslationTextComponent("Loaded tamed count : " + TextFormatting.AQUA + loadedCount
                     + TextFormatting.WHITE + ", Unloaded count : " + TextFormatting.AQUA + unloadedCount + TextFormatting.WHITE
-                    + ", Total count : " + TextFormatting.AQUA + (ownerPetData != null ? ownerPetData.getTamedList().tagCount() : 0)));
+                    + ", Total count : " + TextFormatting.AQUA + (ownerPetData != null ? ownerPetData.getTamedList().size() : 0)));
         } else {
-            sender.sendMessage(new TextComponentTranslation("Loaded tamed count : "
+            sender.sendMessage(new TranslationTextComponent("Loaded tamed count : "
                     + TextFormatting.AQUA
                     + loadedCount
                     + TextFormatting.WHITE
@@ -169,14 +169,14 @@ public class CommandMoCPets extends CommandBase {
                     if (!owner.isEmpty() && owner.equalsIgnoreCase(player.getName())) {
                         // check if in same dimension
                         if (entity.dimension == player.dimension) {
-                            entity.setPosition(player.posX, player.posY, player.posZ);
+                            entity.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
                         } else if (!player.world.isRemote)// transfer entity to player dimension
                         {
                             Entity newEntity = EntityList.newEntity(entity.getClass(), player.world);
                             if (newEntity != null) {
                                 MoCTools.copyDataFromOld(newEntity, entity); // transfer all existing data to our new entity
-                                newEntity.setPosition(player.posX, player.posY, player.posZ);
-                                DimensionManager.getWorld(player.dimension).spawnEntity(newEntity);
+                                newEntity.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
+                                DimensionManager.getWorld(player.dimension).addEntity(newEntity);
                             }
                             if (entity.getRidingEntity() != null) {
                                 entity.getRidingEntity().dismountRidingEntity();
@@ -185,9 +185,9 @@ public class CommandMoCPets extends CommandBase {
                             world.resetUpdateEntityTick();
                             DimensionManager.getWorld(player.dimension).resetUpdateEntityTick();
                         }
-                        par1ICommandSender.sendMessage(new TextComponentTranslation(TextFormatting.GREEN + name + TextFormatting.WHITE
-                                + " has been tp'd to location " + Math.round(player.posX) + ", " + Math.round(player.posY) + ", "
-                                + Math.round(player.posZ) + " in dimension " + player.dimension));
+                        par1ICommandSender.sendMessage(new TranslationTextComponent(TextFormatting.GREEN + name + TextFormatting.WHITE
+                                + " has been tp'd to location " + Math.round(player.getPosX()) + ", " + Math.round(player.getPosY()) + ", "
+                                + Math.round(player.getPosZ()) + " in dimension " + player.dimension));
                         return true;
                     }
                 }
@@ -197,9 +197,9 @@ public class CommandMoCPets extends CommandBase {
     }
 
     public void sendCommandHelp(ICommandSender sender) {
-        sender.sendMessage(new TextComponentTranslation("§2Listing MoCreatures commands"));
+        sender.sendMessage(new TranslationTextComponent("§2Listing MoCreatures commands"));
         for (String command : commands) {
-            sender.sendMessage(new TextComponentTranslation(command));
+            sender.sendMessage(new TranslationTextComponent(command));
         }
     }
 
@@ -216,13 +216,13 @@ public class CommandMoCPets extends CommandBase {
         }
         int k = Math.min((j + 1) * pagelimit, list.size());
 
-        sender.sendMessage(new TextComponentTranslation(TextFormatting.DARK_GREEN + "--- Showing MoCreatures Help Info "
+        sender.sendMessage(new TranslationTextComponent(TextFormatting.DARK_GREEN + "--- Showing MoCreatures Help Info "
                 + TextFormatting.AQUA + (j + 1) + TextFormatting.WHITE + " of " + TextFormatting.AQUA
                 + (x + 1) + TextFormatting.GRAY + " (/mocpets <page>)" + TextFormatting.DARK_GREEN + "---"));
 
         for (int l = j * pagelimit; l < k; ++l) {
             String tamedInfo = list.get(l);
-            sender.sendMessage(new TextComponentTranslation(tamedInfo));
+            sender.sendMessage(new TranslationTextComponent(tamedInfo));
         }
     }
 }

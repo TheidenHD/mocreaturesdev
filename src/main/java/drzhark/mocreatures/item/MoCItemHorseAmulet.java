@@ -21,8 +21,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -56,10 +56,10 @@ public class MoCItemHorseAmulet extends MoCItem {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, Hand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (++this.ageCounter < 2) {
-            return new ActionResult<>(EnumActionResult.PASS, stack);
+            return new ActionResult<>(ActionResultType.PASS, stack);
         }
 
         if (!worldIn.isRemote) {
@@ -67,9 +67,9 @@ public class MoCItemHorseAmulet extends MoCItem {
         }
 
         double dist = 3D;
-        double newPosY = player.posY;
-        double newPosX = player.posX - (dist * Math.cos((MoCTools.realAngle(player.rotationYaw - 90F)) / 57.29578F));
-        double newPosZ = player.posZ - (dist * Math.sin((MoCTools.realAngle(player.rotationYaw - 90F)) / 57.29578F));
+        double newPosY = player.getPosY();
+        double newPosX = player.getPosX() - (dist * Math.cos((MoCTools.realAngle(player.rotationYaw - 90F)) / 57.29578F));
+        double newPosZ = player.getPosZ() - (dist * Math.sin((MoCTools.realAngle(player.rotationYaw - 90F)) / 57.29578F));
 
         if (!player.world.isRemote) {
             try {
@@ -90,7 +90,7 @@ public class MoCItemHorseAmulet extends MoCItem {
                 }
 
                 storedCreature.setPosition(newPosX, newPosY, newPosZ);
-                storedCreature.setType(this.creatureType);
+                storedCreature.setTypeMoC(this.creatureType);
                 storedCreature.setTamed(true);
                 storedCreature.setRideable(this.rideable);
                 storedCreature.setAge(this.age);
@@ -100,7 +100,7 @@ public class MoCItemHorseAmulet extends MoCItem {
                 storedCreature.setArmorType(this.armor);
                 storedCreature.setOwnerPetId(this.PetId);
                 storedCreature.setOwnerId(player.getUniqueID());
-                this.ownerName = player.getName();
+                this.ownerName = player.getName().getString();
 
                 if (this.ownerUniqueId == null) {
                     this.ownerUniqueId = player.getUniqueID();
@@ -117,7 +117,7 @@ public class MoCItemHorseAmulet extends MoCItem {
                             }
                         } else // add pet to existing pet data
                         {
-                            if (newOwner.getTamedList().tagCount() < maxCount || !MoCreatures.proxy.enableOwnership) {
+                            if (newOwner.getTamedList().size() < maxCount || !MoCreatures.proxy.enableOwnership) {
                                 MoCreatures.instance.mapData.updateOwnerPet(storedCreature);
                             }
                         }
@@ -138,25 +138,25 @@ public class MoCItemHorseAmulet extends MoCItem {
                             }
                         } else // add pet to existing pet data
                         {
-                            if (newOwner.getTamedList().tagCount() < maxCount || !MoCreatures.proxy.enableOwnership) {
+                            if (newOwner.getTamedList().size() < maxCount || !MoCreatures.proxy.enableOwnership) {
                                 MoCreatures.instance.mapData.updateOwnerPet(storedCreature);
                             }
                         }
                         // remove pet entry from old owner
                         if (oldOwner != null) {
-                            for (int j = 0; j < oldOwner.getTamedList().tagCount(); j++) {
-                                CompoundNBT petEntry = oldOwner.getTamedList().getCompoundTagAt(j);
-                                if (petEntry.getInteger("PetId") == this.PetId) {
+                            for (int j = 0; j < oldOwner.getTamedList().size(); j++) {
+                                CompoundNBT petEntry = oldOwner.getTamedList().getCompound(j);
+                                if (petEntry.getInt("PetId") == this.PetId) {
                                     // found match, remove
-                                    oldOwner.getTamedList().removeTag(j);
+                                    oldOwner.getTamedList().remove(j);
                                 }
                             }
                         }
                     }
                 }
 
-                if (player.world.spawnEntity(storedCreature)) {
-                    MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAppear(storedCreature.getEntityId()), new TargetPoint(player.world.provider.getDimensionType().getId(), player.posX, player.posY, player.posZ, 64));
+                if (player.world.addEntity(storedCreature)) {
+                    MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAppear(storedCreature.getEntityId()), new TargetPoint(player.world.provider.getDimensionType().getId(), player.getPosX(), player.getPosY(), player.getPosZ(), 64));
                     MoCTools.playCustomSound(storedCreature, MoCSoundEvents.ENTITY_GENERIC_MAGIC_APPEAR);
                     //gives an empty amulet
                     if (storedCreature instanceof MoCEntityBigCat || storedCreature instanceof MoCEntityWyvern || this.creatureType == 21 || this.creatureType == 22) {
@@ -180,16 +180,16 @@ public class MoCItemHorseAmulet extends MoCItem {
         }
         this.ageCounter = 0;
 
-        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+        return new ActionResult<>(ActionResultType.SUCCESS, stack);
     }
 
     public void readFromNBT(CompoundNBT nbt) {
-        this.PetId = nbt.getInteger("PetId");
-        this.creatureType = nbt.getInteger("CreatureType");
+        this.PetId = nbt.getInt("PetId");
+        this.creatureType = nbt.getInt("CreatureType");
         this.health = nbt.getFloat("Health");
-        this.age = nbt.getInteger("Edad");
+        this.age = nbt.getInt("Edad");
         this.name = nbt.getString("Name");
-        int spawnClassOld = nbt.getInteger("SpawnClass");
+        int spawnClassOld = nbt.getInt("SpawnClass");
         if (spawnClassOld > 0) {
             if (spawnClassOld == 100) {
                 this.spawnClass = "Wyvern";
@@ -197,7 +197,7 @@ public class MoCItemHorseAmulet extends MoCItem {
             } else {
                 this.spawnClass = "WildHorse";
             }
-            nbt.removeTag("SpawnClass");
+            nbt.remove("SpawnClass");
         } else {
             this.spawnClass = nbt.getString("SpawnClass");
         }
@@ -211,18 +211,18 @@ public class MoCItemHorseAmulet extends MoCItem {
     }
 
     public void writeToNBT(CompoundNBT nbt) {
-        nbt.setInteger("PetId", this.PetId);
-        nbt.setInteger("CreatureType", this.creatureType);
-        nbt.setFloat("Health", this.health);
-        nbt.setInteger("Edad", this.age);
-        nbt.setString("Name", this.name);
-        nbt.setString("SpawnClass", this.spawnClass);
-        nbt.setBoolean("Rideable", this.rideable);
-        nbt.setByte("Armor", this.armor);
-        nbt.setBoolean("Adult", this.adult);
-        nbt.setString("OwnerName", this.ownerName);
+        nbt.putInt("PetId", this.PetId);
+        nbt.putInt("CreatureType", this.creatureType);
+        nbt.putFloat("Health", this.health);
+        nbt.putInt("Edad", this.age);
+        nbt.putString("Name", this.name);
+        nbt.putString("SpawnClass", this.spawnClass);
+        nbt.putBoolean("Rideable", this.rideable);
+        nbt.putByte("Armor", this.armor);
+        nbt.putBoolean("Adult", this.adult);
+        nbt.putString("OwnerName", this.ownerName);
         if (this.ownerUniqueId != null) {
-            nbt.setUniqueId("OwnerUUID", ownerUniqueId);
+            nbt.putUniqueId("OwnerUUID", ownerUniqueId);
         }
     }
 
@@ -243,10 +243,10 @@ public class MoCItemHorseAmulet extends MoCItem {
     }
 
     private void initAndReadNBT(ItemStack itemstack) {
-        if (itemstack.getTagCompound() == null) {
-            itemstack.setTagCompound(new CompoundNBT());
+        if (itemstack.getTag() == null) {
+            itemstack.put(new CompoundNBT());
         }
-        CompoundNBT nbtcompound = itemstack.getTagCompound();
+        CompoundNBT nbtcompound = itemstack.getTag();
         readFromNBT(nbtcompound);
     }
 }

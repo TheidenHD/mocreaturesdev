@@ -28,7 +28,7 @@ public class PathNavigateFlyer extends PathNavigate {
     }
 
     protected Vector3d getEntityPosition() {
-        return new Vector3d(this.entity.posX, this.entity.posY + (double) this.entity.height * 0.5D, this.entity.posZ);
+        return new Vector3d(this.entity.getPosX(), this.entity.getPosY() + (double) this.entity.height * 0.5D, this.entity.getPosZ());
     }
 
     protected void pathFollow() {

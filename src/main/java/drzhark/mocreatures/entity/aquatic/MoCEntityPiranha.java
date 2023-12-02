@@ -7,7 +7,7 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.ai.EntityAIFollowHerd;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
@@ -42,7 +42,7 @@ public class MoCEntityPiranha extends MoCEntitySmallFish {
 
     @Override
     public void selectType() {
-        setType(1);
+        setTypeMoC(1);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class MoCEntityPiranha extends MoCEntitySmallFish {
 
     protected Entity findPlayerToAttack() {
         if ((this.world.getDifficulty().getId() > 0)) {
-            PlayerEntity entityplayer = this.world.getClosestPlayerToEntity(this, 12D);
+            PlayerEntity entityplayer = this.world.getClosestPlayer(this, 12D);
             if ((entityplayer != null) && entityplayer.isInWater() && !getIsTamed()) {
                 return entityplayer;
             }
@@ -69,12 +69,12 @@ public class MoCEntityPiranha extends MoCEntitySmallFish {
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (super.attackEntityFrom(damagesource, i) && (this.world.getDifficulty().getId() > 0)) {
             Entity entity = damagesource.getTrueSource();
-            if (entity instanceof EntityLivingBase) {
+            if (entity instanceof LivingEntity) {
                 if (this.isRidingOrBeingRiddenBy(entity)) {
                     return true;
                 }
                 if (entity != this) {
-                    this.setAttackTarget((EntityLivingBase) entity);
+                    this.setAttackTarget((LivingEntity) entity);
                 }
                 return true;
             }

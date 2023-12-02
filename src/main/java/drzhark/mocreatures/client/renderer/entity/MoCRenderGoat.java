@@ -9,9 +9,9 @@ import drzhark.mocreatures.entity.neutral.MoCEntityGoat;
 import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 
@@ -33,13 +33,13 @@ public class MoCRenderGoat extends RenderLiving<MoCEntityGoat> {
 
     @Override
     protected void preRenderCallback(MoCEntityGoat entitygoat, float f) {
-        GlStateManager.translate(0.0F, this.depth, 0.0F);
+        matrixStackIn.translate(0.0F, this.depth, 0.0F);
         stretch(entitygoat);
     }
 
     @Override
     public void doRender(MoCEntityGoat entitygoat, double d, double d1, double d2, float f, float f1) {
-        this.tempGoat.typeInt = entitygoat.getType();
+        this.tempGoat.typeInt = entitygoat.getTypeMoC();
         this.tempGoat.age = entitygoat.getAge() * 0.01F;
         this.tempGoat.bleat = entitygoat.getBleating();
         this.tempGoat.attacking = entitygoat.getAttacking();
@@ -59,16 +59,16 @@ public class MoCRenderGoat extends RenderLiving<MoCEntityGoat> {
                 s = s + entitygoat.getPetName();
                 float f5 = 0.1F;
                 FontRenderer fontrenderer = getFontRendererFromRenderManager();
-                GlStateManager.pushMatrix();
-                GlStateManager.translate((float) d + 0.0F, (float) d1 + f5, (float) d2);
-                GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
-                GlStateManager.rotate(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-                GlStateManager.scale(-f3, -f3, f3);
-                GlStateManager.disableLighting();
+                matrixStackIn.push();
+                matrixStackIn.translate((float) d + 0.0F, (float) d1 + f5, (float) d2);
+                matrixStackIn.glNormal3f(0.0F, 1.0F, 0.0F);
+                matrixStackIn.rotate(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+                matrixStackIn.scale(-f3, -f3, f3);
+
                 Tessellator tessellator = Tessellator.getInstance();
                 byte byte0 = (byte) (-15 + (-40 * entitygoat.getAge() * 0.01F));
                 if (flag1) {
-                    GlStateManager.disableTexture2D();
+
                     if (!flag) {
                         byte0 += 8;
                     }
@@ -88,14 +88,14 @@ public class MoCRenderGoat extends RenderLiving<MoCEntityGoat> {
                     tessellator.getBuffer().pos(f9 - 20F, -6 + byte0, 0.0D).color(0.0F, 0.7F, 0.0F, 1.0F).endVertex();
                     tessellator.getBuffer().pos(f9 - 20F, -10 + byte0, 0.0D).color(0.0F, 0.7F, 0.0F, 1.0F).endVertex();
                     tessellator.draw();
-                    GlStateManager.enableTexture2D();
+
                 }
                 if (flag) {
-                    GlStateManager.depthMask(false);
-                    GlStateManager.disableDepth();
-                    GlStateManager.enableBlend();
-                    GlStateManager.blendFunc(770, 771);
-                    GlStateManager.disableTexture2D();
+                    matrixStackIn.depthMask(false);
+                    matrixStackIn.disableDepth();
+                    matrixStackIn.enableBlend();
+                    matrixStackIn.blendFunc(770, 771);
+
                     tessellator.getBuffer().begin(7, DefaultVertexFormats.POSITION_COLOR);
                     int i = fontrenderer.getStringWidth(s) / 2;
                     tessellator.getBuffer().pos(-i - 1, -1 + byte0, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
@@ -103,21 +103,21 @@ public class MoCRenderGoat extends RenderLiving<MoCEntityGoat> {
                     tessellator.getBuffer().pos(i + 1, 8 + byte0, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
                     tessellator.getBuffer().pos(i + 1, -1 + byte0, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
                     tessellator.draw();
-                    GlStateManager.enableTexture2D();
+
                     fontrenderer.drawString(s, -fontrenderer.getStringWidth(s) / 2, byte0, 0x20ffffff);
-                    GlStateManager.enableDepth();
-                    GlStateManager.depthMask(true);
+                    matrixStackIn.enableDepth();
+                    matrixStackIn.depthMask(true);
                     fontrenderer.drawString(s, -fontrenderer.getStringWidth(s) / 2, byte0, -1);
-                    GlStateManager.disableBlend();
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                    matrixStackIn.disableBlend();
+                    matrixStackIn.color(1.0F, 1.0F, 1.0F, 1.0F);
                 }
-                GlStateManager.enableLighting();
-                GlStateManager.popMatrix();
+
+                matrixStackIn.pop();
             }
         }
     }
 
     protected void stretch(MoCEntityGoat entitygoat) {
-        GlStateManager.scale(entitygoat.getAge() * 0.01F, entitygoat.getAge() * 0.01F, entitygoat.getAge() * 0.01F);
+        matrixStackIn.scale(entitygoat.getAge() * 0.01F, entitygoat.getAge() * 0.01F, entitygoat.getAge() * 0.01F);
     }
 }

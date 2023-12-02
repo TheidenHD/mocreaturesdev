@@ -9,7 +9,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
 
-
 public class MoCModelMouse<T extends Entity> extends EntityModel<T> {
 
     public ModelRenderer Head;

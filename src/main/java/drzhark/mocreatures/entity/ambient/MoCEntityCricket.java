@@ -35,19 +35,19 @@ public class MoCEntityCricket extends MoCEntityAmbient {
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
+        if (getTypeMoC() == 0) {
             int i = this.rand.nextInt(100);
             if (i <= 50) {
-                setType(1);
+                setTypeMoC(1);
             } else {
-                setType(2);
+                setTypeMoC(2);
             }
         }
     }
 
     @Override
     public ResourceLocation getTexture() {
-        if (getType() == 1) {
+        if (getTypeMoC() == 1) {
             return MoCreatures.proxy.getModelTexture("cricket_light_brown.png");
         } else {
             return MoCreatures.proxy.getModelTexture("cricket_brown.png");
@@ -89,14 +89,14 @@ public class MoCEntityCricket extends MoCEntityAmbient {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
         if (!this.world.isRemote) {
-            if (onGround && ((motionX > 0.05D) || (motionZ > 0.05D) || (motionX < -0.05D) || (motionZ < -0.05D)))
+            if (onGround && ((getMotion().getX() > 0.05D) || (getMotion().getZ() > 0.05D) || (getMotion().getX() < -0.05D) || (getMotion().getZ() < -0.05D)))
                 if (this.jumpCounter == 0) {
-                    this.motionY = 0.45D;
-                    this.motionX *= 5D;
-                    this.motionZ *= 5D;
+                    this.getMotion().getY() = 0.45D;
+                    this.getMotion().getX() *= 5D;
+                    this.getMotion().getZ() *= 5D;
                     this.jumpCounter = 1;
                 }
         }

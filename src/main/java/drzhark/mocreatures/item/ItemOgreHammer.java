@@ -57,11 +57,11 @@ public class ItemOgreHammer extends MoCItem {
      * pressed. Args: itemStack, world, entityPlayer
      */
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         final ItemStack stack = player.getHeldItem(hand);
-        double coordY = player.posY + player.getEyeHeight();
-        double coordZ = player.posZ;
-        double coordX = player.posX;
+        double coordY = player.getPosY() + player.getEyeHeight();
+        double coordZ = player.getPosZ();
+        double coordX = player.getPosX();
 
         for (int x = 3; x < 128; x++) {
             double newPosY = coordY - Math.cos((player.rotationPitch - 90F) / 57.29578F) * x;
@@ -76,7 +76,7 @@ public class ItemOgreHammer extends MoCItem {
                 newPosZ = coordZ + Math.sin((MoCTools.realAngle(player.rotationYaw - 90F) / 57.29578F)) * (Math.sin((player.rotationPitch - 90F) / 57.29578F) * (x - 1));
                 pos = new BlockPos(MathHelper.floor(newPosX), MathHelper.floor(newPosY), MathHelper.floor(newPosZ));
                 if (player.world.getBlockState(pos).getBlock() != Blocks.AIR) {
-                    return new ActionResult<>(EnumActionResult.PASS, stack);
+                    return new ActionResult<>(ActionResultType.PASS, stack);
                 }
 
                 int[] blockInfo = obtainBlockAndMetadataFromBelt(player, true);
@@ -89,10 +89,10 @@ public class ItemOgreHammer extends MoCItem {
                     MoCreatures.proxy.hammerFX(player);
                     //entityplayer.setItemInUse(itemstack, 200);
                 }
-                return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+                return new ActionResult<>(ActionResultType.SUCCESS, stack);
             }
         }
-        return new ActionResult<>(EnumActionResult.PASS, stack);
+        return new ActionResult<>(ActionResultType.PASS, stack);
     }
 
     /**
@@ -123,7 +123,7 @@ public class ItemOgreHammer extends MoCItem {
     }
 
     @Override
-    public EnumActionResult onItemUse(PlayerEntity playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        return EnumActionResult.FAIL;
+    public ActionResultType onItemUse(PlayerEntity playerIn, World worldIn, BlockPos pos, Hand hand, Direction facing, float hitX, float hitY, float hitZ) {
+        return ActionResultType.FAIL;
     }
 }

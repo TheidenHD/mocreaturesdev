@@ -21,7 +21,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -121,7 +121,7 @@ public class MoCEntityKittyBed extends LivingEntity {
 
     @Override
     public boolean canEntityBeSeen(Entity entity) {
-        return this.world.rayTraceBlocks(new Vector3d(this.posX, this.posY + getEyeHeight(), this.posZ), new Vector3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ)) == null;
+        return this.world.rayTraceBlocks(new Vector3d(this.getPosX(), this.getPosY() + getEyeHeight(), this.getPosZ()), new Vector3d(entity.getPosX(), entity.getPosY() + entity.getEyeHeight(), entity.getPosZ())) == null;
     }
 
     @Override
@@ -143,7 +143,7 @@ public class MoCEntityKittyBed extends LivingEntity {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, Hand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && !getHasFood() && !getHasMilk()) {
             if (stack.getItem() == MoCItems.petfood) {
@@ -184,8 +184,8 @@ public class MoCEntityKittyBed extends LivingEntity {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
         if (this.onGround) {
             setPickedUp(false);
         }
@@ -204,19 +204,19 @@ public class MoCEntityKittyBed extends LivingEntity {
     }
 
     @Override
-    public void readEntityFromNBT(CompoundNBT compound) {
+    public void readAdditional(CompoundNBT compound) {
         setHasMilk(compound.getBoolean("HasMilk"));
-        setSheetColor(compound.getInteger("SheetColour"));
+        setSheetColor(compound.getInt("SheetColour"));
         setHasFood(compound.getBoolean("HasFood"));
         this.milkLevel = compound.getFloat("MilkLevel");
     }
 
     @Override
-    public void writeEntityToNBT(CompoundNBT compound) {
-        compound.setBoolean("HasMilk", getHasMilk());
-        compound.setInteger("SheetColour", getSheetColor());
-        compound.setBoolean("HasFood", getHasFood());
-        compound.setFloat("MilkLevel", this.milkLevel);
+    public void writeAdditional(CompoundNBT compound) {
+        compound.putBoolean("HasMilk", getHasMilk());
+        compound.putInt("SheetColour", getSheetColor());
+        compound.putBoolean("HasFood", getHasFood());
+        compound.putFloat("MilkLevel", this.milkLevel);
     }
 
     @Override

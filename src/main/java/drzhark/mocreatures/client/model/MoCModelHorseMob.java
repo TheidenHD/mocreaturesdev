@@ -13,7 +13,7 @@ public class MoCModelHorseMob extends MoCModelHorse {
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         MoCEntityHorseMob entityhorse = (MoCEntityHorseMob) entity;
 
-        int type = entityhorse.getType();
+        int type = entityhorse.getTypeMoC();
         boolean wings = (entityhorse.isFlyer());
         boolean eating = (entityhorse.eatingCounter != 0);//entityhorse.getEating();
         boolean standing = (entityhorse.standCounter != 0 && entityhorse.getRidingEntity() == null);

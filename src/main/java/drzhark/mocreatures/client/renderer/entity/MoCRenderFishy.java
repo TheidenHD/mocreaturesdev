@@ -6,8 +6,8 @@ package drzhark.mocreatures.client.renderer.entity;
 import drzhark.mocreatures.entity.aquatic.MoCEntityFishy;
 import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 
 @OnlyIn(Dist.CLIENT)
@@ -19,7 +19,7 @@ public class MoCRenderFishy extends RenderLiving<MoCEntityFishy> {
 
     @Override
     public void doRender(MoCEntityFishy entityfishy, double d, double d1, double d2, float f, float f1) {
-        if (entityfishy.getType() == 0) { // && !MoCreatures.mc.isMultiplayerWorld())
+        if (entityfishy.getTypeMoC() == 0) { // && !MoCreatures.mc.isMultiplayerWorld())
             entityfishy.selectType();
         }
         super.doRender(entityfishy, d, d1, d2, f, f1);
@@ -27,7 +27,7 @@ public class MoCRenderFishy extends RenderLiving<MoCEntityFishy> {
 
     @Override
     protected void preRenderCallback(MoCEntityFishy entityfishy, float f) {
-        GlStateManager.translate(0.0F, 0.3F, 0.0F);
+        matrixStackIn.translate(0.0F, 0.3F, 0.0F);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class MoCRenderFishy extends RenderLiving<MoCEntityFishy> {
     }
 
     protected void stretch(MoCEntityFishy entityfishy) {
-        GlStateManager.scale(entityfishy.getAge() * 0.01F, entityfishy.getAge() * 0.01F, entityfishy.getAge() * 0.01F);
+        matrixStackIn.scale(entityfishy.getAge() * 0.01F, entityfishy.getAge() * 0.01F, entityfishy.getAge() * 0.01F);
     }
 
     @Override

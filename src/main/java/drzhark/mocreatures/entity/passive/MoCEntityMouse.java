@@ -21,7 +21,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNavigateClimber;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -72,14 +72,14 @@ public class MoCEntityMouse extends MoCEntityAnimal {
     public void selectType() {
         checkSpawningBiome();
 
-        if (getType() == 0) {
-            setType(this.rand.nextInt(3) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(3) + 1);
         }
     }
 
     @Override
     public ResourceLocation getTexture() {
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return MoCreatures.proxy.getModelTexture("mouse_brown.png");
             case 3:
@@ -91,16 +91,16 @@ public class MoCEntityMouse extends MoCEntityAnimal {
 
     @Override
     public boolean checkSpawningBiome() {
-        BlockPos pos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(getEntityBoundingBox().minY), this.posZ);
+        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getEntityBoundingBox().minY), this.getPosZ());
         Biome currentbiome = MoCTools.biomeKind(this.world, pos);
 
         try {
             if (BiomeDictionary.hasType(currentbiome, Type.MESA)) {
-                setType(2); // only brown mice
+                setTypeMoC(2); // only brown mice
             }
 
             if (BiomeDictionary.hasType(currentbiome, Type.SNOWY)) {
-                setType(3); // only white mice
+                setTypeMoC(3); // only white mice
             }
         } catch (Exception ignored) {
         }
@@ -154,7 +154,7 @@ public class MoCEntityMouse extends MoCEntityAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, Hand hand) {
         if (this.getRidingEntity() == null) {
             if (this.startRiding(player)) {
                 this.rotationYaw = player.rotationYaw;
@@ -180,8 +180,8 @@ public class MoCEntityMouse extends MoCEntityAnimal {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
 
         if (!this.world.isRemote) {
             this.setBesideClimbableBlock(this.collidedHorizontally);

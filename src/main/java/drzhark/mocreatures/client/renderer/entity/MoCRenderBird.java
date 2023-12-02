@@ -5,7 +5,7 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.passive.MoCEntityBird;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -37,7 +37,7 @@ public class MoCRenderBird extends MoCRenderMoC<MoCEntityBird> {
     @Override
     protected void preRenderCallback(MoCEntityBird entitybird, float f) {
         if (!entitybird.world.isRemote && (entitybird.getRidingEntity() != null)) {
-            GlStateManager.translate(0.0F, 1.3F, 0.0F);
+            matrixStackIn.translate(0.0F, 1.3F, 0.0F);
         }
     }
 }

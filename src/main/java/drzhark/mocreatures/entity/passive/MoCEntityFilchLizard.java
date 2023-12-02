@@ -17,7 +17,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.util.DamageSource;
@@ -69,7 +69,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
 
     @Override
     public ResourceLocation getTexture() {
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return MoCreatures.proxy.getModelTexture("lizard_filch_sand.png");
             case 3:
@@ -83,16 +83,16 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
 
     @Override
     public boolean checkSpawningBiome() {
-        BlockPos pos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(getEntityBoundingBox().minY), this.posZ);
+        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getEntityBoundingBox().minY), this.getPosZ());
         Biome biome = MoCTools.biomeKind(this.world, pos);
         if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.SANDY)) {
-            setType(2);
+            setTypeMoC(2);
         } else if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.MESA)) {
-            setType(3);
+            setTypeMoC(3);
         } else if (this.dimension == MoCreatures.proxy.wyvernDimension) {
-            setType(4);
+            setTypeMoC(4);
         } else {
-            setType(1);
+            setTypeMoC(1);
         }
         return true;
     }
@@ -139,7 +139,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata) {
         if (rand.nextInt(100 / MoCreatures.proxy.filchLizardSpawnItemChance) == 0) {
             while (this.getHeldItemMainhand().isEmpty() && !getEntityWorld().isRemote) {
-                this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, getCustomLootItem(this, this.getSpawnLootTable(), new ItemStack(Items.IRON_INGOT)));
+                this.setItemStackToSlot(EquipmentSlotType.MAINHAND, getCustomLootItem(this, this.getSpawnLootTable(), new ItemStack(Items.IRON_INGOT)));
             }
         }
         return super.onInitialSpawn(difficulty, livingdata);
@@ -158,7 +158,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         if (!stack.isEmpty() && !getEntityWorld().isRemote) {
             ItemStack newStack = new ItemStack(stack.getItem(), 1, stack.getMetadata());
             this.dropItemStack(newStack, 1);
-            this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY);
+            this.setItemStackToSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
         }
         return super.attackEntityFrom(par1DamageSource, par2);
     }
@@ -211,14 +211,14 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         }
 
         /**
-         * Returns whether the EntityAIBase should begin execution.
+         * Returns whether the Goal should begin execution.
          */
         public boolean shouldExecute() {
             return !entity.getHeldItemMainhand().isEmpty() && super.shouldExecute();
         }
     }
 
-    static class EntityAIGrabItemFromFloor extends EntityAIBase {
+    static class EntityAIGrabItemFromFloor extends Goal {
         /**
          * The entity using this AI that is tempted by the player.
          */
@@ -264,7 +264,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         }
 
         /**
-         * Returns whether the EntityAIBase should begin execution.
+         * Returns whether the Goal should begin execution.
          */
         public boolean shouldExecute() {
             if (temptedEntity.getLastAttackedEntity() != null && canGetScared && stealDelay <= 0) {
@@ -308,7 +308,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         }
 
         /**
-         * Returns whether an in-progress EntityAIBase should continue executing
+         * Returns whether an in-progress Goal should continue executing
          */
         public boolean shouldContinueExecuting() {
             return this.shouldExecute();
@@ -318,9 +318,9 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
          * Execute a one shot task or start executing a continuous task
          */
         public void startExecuting() {
-            this.targetX = this.temptingItem.posX;
-            this.targetY = this.temptingItem.posY;
-            this.targetZ = this.temptingItem.posZ;
+            this.targetX = this.temptingItem.getPosX();
+            this.targetY = this.temptingItem.getPosY();
+            this.targetZ = this.temptingItem.getPosZ();
             this.isRunning = true;
         }
 
@@ -345,7 +345,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
                 this.temptedEntity.getNavigator().clearPath();
                 ItemStack loot = temptingItem.getItem().copy();
                 temptingItem.setDead();
-                this.temptedEntity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, loot);
+                this.temptedEntity.setItemStackToSlot(EquipmentSlotType.MAINHAND, loot);
             } else {
                 this.temptedEntity.getNavigator().tryMoveToEntityLiving(this.temptingItem, this.speed);
             }
@@ -359,7 +359,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         }
     }
 
-    public class EntityAIStealFromPlayer extends EntityAIBase {
+    public class EntityAIStealFromPlayer extends Goal {
         /**
          * The entity using this AI that is tempted by the player.
          */
@@ -405,7 +405,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         }
 
         /**
-         * Returns whether the EntityAIBase should begin execution.
+         * Returns whether the Goal should begin execution.
          */
         public boolean shouldExecute() {
             if (temptedEntity.getLastAttackedEntity() != null && canGetScared && stealDelay <= 0) {
@@ -415,7 +415,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
             if (!this.temptedEntity.getHeldItemMainhand().isEmpty()) {
                 return false;
             }
-            this.temptingPlayer = this.temptedEntity.getEntityWorld().getClosestPlayerToEntity(this.temptedEntity, 10.0D);
+            this.temptingPlayer = this.temptedEntity.getEntityWorld().getClosestPlayer(this.temptedEntity, 10.0D);
             if (this.stealDelay > 0) {
                 --this.stealDelay;
                 if (stealDelay == 0) {
@@ -445,7 +445,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         }
 
         /**
-         * Returns whether an in-progress EntityAIBase should continue executing
+         * Returns whether an in-progress Goal should continue executing
          */
         public boolean shouldContinueExecuting() {
             return this.shouldExecute();
@@ -455,9 +455,9 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
          * Execute a one shot task or start executing a continuous task
          */
         public void startExecuting() {
-            this.targetX = this.temptingPlayer.posX;
-            this.targetY = this.temptingPlayer.posY;
-            this.targetZ = this.temptingPlayer.posZ;
+            this.targetX = this.temptingPlayer.getPosX();
+            this.targetY = this.temptingPlayer.getPosY();
+            this.targetZ = this.temptingPlayer.getPosZ();
             this.isRunning = true;
         }
 
@@ -488,7 +488,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
                             if (itemstack != null && !itemstack.isEmpty() && itemstack.getItem() == item.getItem() && itemstack.getMetadata() == item.getMetadata()) {
                                 MoCTools.playCustomSound(this.temptedEntity, SoundEvents.ENTITY_ITEM_PICKUP);
                                 ItemStack loot = item.copy();
-                                this.temptedEntity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, loot);
+                                this.temptedEntity.setItemStackToSlot(EquipmentSlotType.MAINHAND, loot);
                                 item.shrink(1);
                                 return;
                             }

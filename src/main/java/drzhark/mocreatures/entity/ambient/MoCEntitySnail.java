@@ -7,7 +7,7 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityAmbient;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.network.datasync.DataParameter;
@@ -55,14 +55,14 @@ public class MoCEntitySnail extends MoCEntityAmbient {
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(this.rand.nextInt(6) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(6) + 1);
         }
     }
 
     @Override
     public ResourceLocation getTexture() {
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return MoCreatures.proxy.getModelTexture("snail_green.png");
             case 3:
@@ -91,7 +91,7 @@ public class MoCEntitySnail extends MoCEntityAmbient {
         super.onLivingUpdate();
 
         if (!this.world.isRemote) {
-            EntityLivingBase entityliving = getBoogey(3D);
+            LivingEntity entityliving = getBoogey(3D);
             if ((entityliving != null) && entityliving.height > 0.5F && entityliving.width > 0.5F && canEntityBeSeen(entityliving)) {
                 if (!getIsHiding()) {
                     setIsHiding(true);
@@ -101,15 +101,15 @@ public class MoCEntitySnail extends MoCEntityAmbient {
                 setIsHiding(false);
             }
             // Slugs won't hide
-            if (getIsHiding() && this.getType() > 4) {
+            if (getIsHiding() && this.getTypeMoC() > 4) {
                 setIsHiding(false);
             }
         }
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
 
         if (getIsHiding()) {
             this.prevRenderYawOffset = this.renderYawOffset = this.rotationYaw = this.prevRotationYaw;

@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
 
 
-
 public class MoCModelSnail extends EntityModel<MoCEntitySnail> {
 
     ModelRenderer Head;

@@ -583,7 +583,7 @@ public class MoCModelOstrich<T extends Entity> extends EntityModel<T> {
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
 
         MoCEntityOstrich entityostrich = (MoCEntityOstrich) entity;
-        this.typeI = (byte) entityostrich.getType();
+        this.typeI = (byte) entityostrich.getTypeMoC();
         boolean openMouth = (entityostrich.mouthCounter != 0);
         boolean isSaddled = entityostrich.getIsRideable();
         boolean isHiding = entityostrich.getHiding();

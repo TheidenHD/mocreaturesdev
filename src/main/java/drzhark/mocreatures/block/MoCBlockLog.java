@@ -8,7 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
@@ -53,7 +53,7 @@ public class MoCBlockLog extends BlockLog {
     }
 
     @Override
-    public int getFlammability(IBlockAccess world, BlockPos pos, EnumFacing face) {
+    public int getFlammability(IBlockAccess world, BlockPos pos, Direction face) {
         if (isFlammable()) {
             return Blocks.LOG.getFlammability(world, pos, face);
         } else {
@@ -62,7 +62,7 @@ public class MoCBlockLog extends BlockLog {
     }
 
     @Override
-    public int getFireSpreadSpeed(IBlockAccess world, BlockPos pos, EnumFacing face) {
+    public int getFireSpreadSpeed(IBlockAccess world, BlockPos pos, Direction face) {
         if (isFlammable()) {
             return Blocks.LOG.getFireSpreadSpeed(world, pos, face);
         } else {

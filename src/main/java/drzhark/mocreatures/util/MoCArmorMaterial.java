@@ -14,16 +14,30 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.function.Supplier;
 
 public enum MoCArmorMaterial implements IArmorMaterial {
-    crocARMOR("croc", 15, new int[] {2, 6, 5, 2}, 12, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0, 0.0F, () -> {return Ingredient.fromItems(MoCItems.hideCroc.get());}),
-    furARMOR("fur", 15, new int[] {2, 6, 5, 2}, 12, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0, 0.0F, () -> {return Ingredient.fromItems(MoCItems.fur.get());}),
-    hideARMOR("hide", 15, new int[] {2, 6, 5, 2}, 12, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0, 0.0F, () -> {return Ingredient.fromItems(MoCItems.animalHide.get());}),
-    scorpdARMOR("scorpd", 15, new int[] {2, 6, 5, 2}, 12, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0, 0.0F, () -> {return Ingredient.fromItems(MoCItems.chitin.get());}),
-    scorpfARMOR("scorpf", 18, new int[] {2, 7, 6, 2}, 12, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0, 0.0F, () -> {return Ingredient.fromItems(MoCItems.chitinFrost.get());}),
-    scorpnARMOR("scorpn", 20, new int[] {3, 7, 6, 3}, 15, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0, 0.0F, () -> {return Ingredient.fromItems(MoCItems.chitinNether.get());}),
-    scorpcARMOR("scorpc", 15, new int[] {2, 6, 5, 2}, 12, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0, 0.0F, () -> {return Ingredient.fromItems(MoCItems.chitinCave.get());}),
-    silverARMOR("silver", 15, new int[] {2, 6, 5, 2}, 15, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0, 0.0F, () -> {return Ingredient.EMPTY;})
-
-    ;
+    crocARMOR("croc", 15, new int[]{2, 6, 5, 2}, 12, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0, 0.0F, () -> {
+        return Ingredient.fromItems(MoCItems.hideCroc);
+    }),
+    furARMOR("fur", 15, new int[]{2, 6, 5, 2}, 12, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0, 0.0F, () -> {
+        return Ingredient.fromItems(MoCItems.fur);
+    }),
+    hideARMOR("hide", 15, new int[]{2, 6, 5, 2}, 12, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0, 0.0F, () -> {
+        return Ingredient.fromItems(MoCItems.animalHide);
+    }),
+    scorpdARMOR("scorpd", 15, new int[]{2, 6, 5, 2}, 12, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0, 0.0F, () -> {
+        return Ingredient.fromItems(MoCItems.chitin);
+    }),
+    scorpfARMOR("scorpf", 18, new int[]{2, 7, 6, 2}, 12, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0, 0.0F, () -> {
+        return Ingredient.fromItems(MoCItems.chitinFrost);
+    }),
+    scorpnARMOR("scorpn", 20, new int[]{3, 7, 6, 3}, 15, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0, 0.0F, () -> {
+        return Ingredient.fromItems(MoCItems.chitinNether);
+    }),
+    scorpcARMOR("scorpc", 15, new int[]{2, 6, 5, 2}, 12, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0, 0.0F, () -> {
+        return Ingredient.fromItems(MoCItems.chitinCave);
+    }),
+    silverARMOR("silver", 15, new int[]{2, 6, 5, 2}, 15, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0, 0.0F, () -> {
+        return Ingredient.EMPTY;
+    });
     private static final int[] MAX_DAMAGE_ARRAY = new int[]{13, 15, 16, 11};
     private final String name;
     private final int maxDamageFactor;

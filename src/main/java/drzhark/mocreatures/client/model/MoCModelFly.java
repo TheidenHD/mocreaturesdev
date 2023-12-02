@@ -4,7 +4,7 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.ambient.MoCEntityFly;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -90,7 +90,7 @@ public class MoCModelFly<T extends Entity> extends EntityModel<T> {
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         super.render(entity, f, f1, f2, f3, f4, f5);
         MoCEntityFly fly = (MoCEntityFly) entity;
-        boolean isFlying = (fly.getIsFlying() || fly.motionY < -0.1D);
+        boolean isFlying = (fly.getIsFlying() || fly.getMotion().getY() < -0.1D);
         setRotationAngles(f, f1, f2, f3, f4, f5, !isFlying);
         this.FrontLegs.render(f5);
         this.RearLegs.render(f5);
@@ -103,15 +103,15 @@ public class MoCModelFly<T extends Entity> extends EntityModel<T> {
         if (!isFlying) {
             this.FoldedWings.render(f5);
         } else {
-            GlStateManager.pushMatrix();
-            GlStateManager.enableBlend();
+            matrixStackIn.push();
+            matrixStackIn.enableBlend();
             float transparency = 0.6F;
-            GlStateManager.blendFunc(770, 771);
-            GlStateManager.color(0.8F, 0.8F, 0.8F, transparency);
+            matrixStackIn.blendFunc(770, 771);
+            matrixStackIn.color(0.8F, 0.8F, 0.8F, transparency);
             this.LeftWing.render(f5);
             this.RightWing.render(f5);
-            GlStateManager.disableBlend();
-            GlStateManager.popMatrix();
+            matrixStackIn.disableBlend();
+            matrixStackIn.pop();
         }
     }
 

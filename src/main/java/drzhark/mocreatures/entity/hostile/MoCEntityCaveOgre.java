@@ -46,7 +46,7 @@ public class MoCEntityCaveOgre extends MoCEntityOgre {
 
     @Override
     public boolean getCanSpawnHere() {
-        return super.getCanSpawnHere() && !this.world.canSeeSky(new BlockPos(this)) && (this.posY < 50.0D);
+        return super.getCanSpawnHere() && !this.world.canSeeSky(new BlockPos(this)) && (this.getPosY() < 50.0D);
     }
 
     @Nullable

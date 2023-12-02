@@ -36,7 +36,8 @@ public class MoCMessageUpdatePetName {
 
     public void encode(ByteBuf buffer) {
         buffer.writeInt(name.length());
-        buffer.writeCharSequence(this.name, StandardCharsets.UTF_8);;
+        buffer.writeCharSequence(this.name, StandardCharsets.UTF_8);
+        ;
         buffer.writeInt(this.entityId);
     }
 

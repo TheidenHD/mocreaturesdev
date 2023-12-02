@@ -196,10 +196,10 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
     @Override
     public boolean checkSpawningBiome() {
-        BlockPos pos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(getEntityBoundingBox().minY), this.posZ);
+        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getEntityBoundingBox().minY), this.getPosZ());
         Biome currentbiome = MoCTools.biomeKind(this.world, pos);
         try {
-            if (BiomeDictionary.hasType(currentbiome, Type.SAVANNA)) setType(60); // zebra
+            if (BiomeDictionary.hasType(currentbiome, Type.SAVANNA)) setTypeMoC(60); // zebra
         } catch (Exception ignored) {
         }
         return true;
@@ -366,9 +366,9 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             default:
                 return; // No armor to drop
         }
-        ItemEntity entityItem = new ItemEntity(this.world, this.posX, this.posY, this.posZ, armorStack);
+        ItemEntity entityItem = new ItemEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), armorStack);
         entityItem.setDefaultPickupDelay();
-        this.world.spawnEntity(entityItem);
+        this.world.addEntity(entityItem);
         setArmorType((byte) 0);
     }
 
@@ -380,12 +380,12 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             return;
         }
 
-        ItemEntity entityitem = new ItemEntity(this.world, this.posX, this.posY, this.posZ, new ItemStack(Blocks.CHEST, 1));
+        ItemEntity entityitem = new ItemEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), new ItemStack(Blocks.CHEST, 1));
         float f3 = 0.05F;
-        entityitem.motionX = (float) this.world.rand.nextGaussian() * f3;
-        entityitem.motionY = ((float) this.world.rand.nextGaussian() * f3) + 0.2F;
-        entityitem.motionZ = (float) this.world.rand.nextGaussian() * f3;
-        this.world.spawnEntity(entityitem);
+        entityitem.getMotion().getX() = (float) this.world.rand.nextGaussian() * f3;
+        entityitem.getMotion().getY() = ((float) this.world.rand.nextGaussian() * f3) + 0.2F;
+        entityitem.getMotion().getZ() = (float) this.world.rand.nextGaussian() * f3;
+        this.world.addEntity(entityitem);
         setIsChested(false);
     }
 
@@ -399,54 +399,54 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         if (isFlyer() || isFloater()) return;
         float i = (float) (Math.ceil(f - 3F) / 2F);
         if (!this.world.isRemote && (i > 0)) {
-            if (getType() >= 10) i /= 2;
+            if (getTypeMoC() >= 10) i /= 2;
             if (i > 1F) attackEntityFrom(DamageSource.FALL, i);
             if ((this.isBeingRidden()) && (i > 1F)) {
                 for (Entity entity : this.getRecursivePassengers()) entity.attackEntityFrom(DamageSource.FALL, i);
             }
-            BlockState iblockstate = this.world.getBlockState(new BlockPos(this.posX, this.posY - 0.2D - (double) this.prevRotationYaw, this.posZ));
+            BlockState iblockstate = this.world.getBlockState(new BlockPos(this.getPosX(), this.getPosY() - 0.2D - (double) this.prevRotationYaw, this.getPosZ()));
             Block block = iblockstate.getBlock();
             if (iblockstate.getMaterial() != Material.AIR && !this.isSilent()) {
-                SoundType soundtype = block.getSoundType(iblockstate, world, new BlockPos(this.posX, this.posY - 0.2D - (double) this.prevRotationYaw, this.posZ), this);
-                this.world.playSound(null, this.posX, this.posY, this.posZ, soundtype.getStepSound(), this.getSoundCategory(), soundtype.getVolume() * 0.5F, soundtype.getPitch() * 0.75F);
+                SoundType soundtype = block.getSoundType(iblockstate, world, new BlockPos(this.getPosX(), this.getPosY() - 0.2D - (double) this.prevRotationYaw, this.getPosZ()), this);
+                this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), soundtype.getStepSound(), this.getSoundCategory(), soundtype.getVolume() * 0.5F, soundtype.getPitch() * 0.75F);
             }
         }
     }
 
     public int getInventorySize() {
-        if (getType() == 40) return 18;
-        if (getType() > 64) return 27;
+        if (getTypeMoC() == 40) return 18;
+        if (getTypeMoC() > 64) return 27;
         return 9;
     }
 
     @Override
     public double getCustomJump() {
         double horseJump = 0.35D;
-        if (getType() < 6) // tier 1
+        if (getTypeMoC() < 6) // tier 1
         {
             horseJump = 0.35;
-        } else if (getType() > 5 && getType() < 11) // tier 2
+        } else if (getTypeMoC() > 5 && getTypeMoC() < 11) // tier 2
         {
             horseJump = 0.40D;
-        } else if (getType() > 10 && getType() < 16) // tier 3
+        } else if (getTypeMoC() > 10 && getTypeMoC() < 16) // tier 3
         {
             horseJump = 0.45D;
-        } else if (getType() > 15 && getType() < 21) // tier 4
+        } else if (getTypeMoC() > 15 && getTypeMoC() < 21) // tier 4
         {
             horseJump = 0.50D;
-        } else if (getType() > 20 && getType() < 26) // ghost and undead
+        } else if (getTypeMoC() > 20 && getTypeMoC() < 26) // ghost and undead
         {
             horseJump = 0.45D;
-        } else if (getType() > 25 && getType() < 30) // skelly
+        } else if (getTypeMoC() > 25 && getTypeMoC() < 30) // skelly
         {
             horseJump = 0.5D;
-        } else if (getType() >= 30 && getType() < 40) // magics
+        } else if (getTypeMoC() >= 30 && getTypeMoC() < 40) // magics
         {
             horseJump = 0.55D;
-        } else if (getType() >= 40 && getType() < 60) // black pegasus and fairies
+        } else if (getTypeMoC() >= 40 && getTypeMoC() < 60) // black pegasus and fairies
         {
             horseJump = 0.6D;
-        } else if (getType() >= 60) // donkeys - zebras and the like
+        } else if (getTypeMoC() >= 60) // donkeys - zebras and the like
         {
             horseJump = 0.4D;
         }
@@ -456,37 +456,37 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     @Override
     public double getCustomSpeed() {
         double horseSpeed = 0.8D;
-        if (getType() < 6) // tier 1
+        if (getTypeMoC() < 6) // tier 1
         {
             horseSpeed = 0.9;
-        } else if (getType() > 5 && getType() < 11) // tier 2
+        } else if (getTypeMoC() > 5 && getTypeMoC() < 11) // tier 2
         {
             horseSpeed = 1.0D;
-        } else if (getType() > 10 && getType() < 16) // tier 3
+        } else if (getTypeMoC() > 10 && getTypeMoC() < 16) // tier 3
         {
             horseSpeed = 1.1D;
-        } else if (getType() > 15 && getType() < 21) // tier 4
+        } else if (getTypeMoC() > 15 && getTypeMoC() < 21) // tier 4
         {
             horseSpeed = 1.2D;
-        } else if (getType() > 20 && getType() < 26) // ghost and undead
+        } else if (getTypeMoC() > 20 && getTypeMoC() < 26) // ghost and undead
         {
             horseSpeed = 0.8D;
-        } else if (getType() > 25 && getType() < 30) // skelly
+        } else if (getTypeMoC() > 25 && getTypeMoC() < 30) // skelly
         {
             horseSpeed = 1.0D;
-        } else if (getType() > 30 && getType() < 40) // magics
+        } else if (getTypeMoC() > 30 && getTypeMoC() < 40) // magics
         {
             horseSpeed = 1.2D;
-        } else if (getType() >= 40 && getType() < 60) // black pegasus and fairies
+        } else if (getTypeMoC() >= 40 && getTypeMoC() < 60) // black pegasus and fairies
         {
             horseSpeed = 1.3D;
-        } else if (getType() == 60 || getType() == 61) // zebras and zorse
+        } else if (getTypeMoC() == 60 || getTypeMoC() == 61) // zebras and zorse
         {
             horseSpeed = 1.1D;
-        } else if (getType() == 65) // donkeys
+        } else if (getTypeMoC() == 65) // donkeys
         {
             horseSpeed = 0.7D;
-        } else if (getType() > 65) // mule and zorky
+        } else if (getTypeMoC() > 65) // mule and zorky
         {
             horseSpeed = 0.9D;
         }
@@ -504,13 +504,13 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         openMouth();
         if (this.isUndead()) return MoCSoundEvents.ENTITY_HORSE_DEATH_UNDEAD;
         if (this.getIsGhost()) return MoCSoundEvents.ENTITY_HORSE_DEATH_GHOST;
-        if (this.getType() == 60 || this.getType() == 61) return MoCSoundEvents.ENTITY_HORSE_HURT_ZEBRA;
-        if (this.getType() > 64 && this.getType() < 68) return MoCSoundEvents.ENTITY_HORSE_DEATH_DONKEY;
+        if (this.getTypeMoC() == 60 || this.getTypeMoC() == 61) return MoCSoundEvents.ENTITY_HORSE_HURT_ZEBRA;
+        if (this.getTypeMoC() > 64 && this.getTypeMoC() < 68) return MoCSoundEvents.ENTITY_HORSE_DEATH_DONKEY;
         return MoCSoundEvents.ENTITY_HORSE_DEATH;
     }
-    
+
     @Override
-	protected void playStepSound(BlockPos pos, Block blockIn) {
+    protected void playStepSound(BlockPos pos, Block blockIn) {
         if (!blockIn.getDefaultState().getMaterial().isLiquid()) {
             SoundType soundtype = blockIn.getSoundType();
 
@@ -530,8 +530,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             }*/
             else if (soundtype == SoundType.WOOD) {
                 this.playSound(SoundEvents.ENTITY_HORSE_STEP_WOOD, soundtype.getVolume() * 0.15F, soundtype.getPitch());
-            }
-            else {
+            } else {
                 this.playSound(SoundEvents.ENTITY_HORSE_STEP, soundtype.getVolume() * 0.15F, soundtype.getPitch());
             }
         }
@@ -547,33 +546,33 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     protected Item getDropItem() {
         boolean flag = (this.rand.nextInt(100) < MoCreatures.proxy.rareItemDropChance);
 
-        if (flag && (this.getType() == 36 || (this.getType() > 49 && this.getType() < 60))) // unicorn
+        if (flag && (this.getTypeMoC() == 36 || (this.getTypeMoC() > 49 && this.getTypeMoC() < 60))) // unicorn
         {
             return MoCItems.unicornhorn;
         }
-        if (this.getType() == 39 || this.getType() == 40) // (dark) pegasus
+        if (this.getTypeMoC() == 39 || this.getTypeMoC() == 40) // (dark) pegasus
         {
             return Items.FEATHER;
         }
-        if (this.getType() == 38 && flag && this.world.provider.doesWaterVaporize()) // nightmare
+        if (this.getTypeMoC() == 38 && flag && this.world.provider.doesWaterVaporize()) // nightmare
         {
             return MoCItems.heartfire;
         }
-        if (this.getType() == 32 && flag) // bat horse
+        if (this.getTypeMoC() == 32 && flag) // bat horse
         {
             return MoCItems.heartdarkness;
         }
-        if (this.getType() == 26)// skelly
+        if (this.getTypeMoC() == 26)// skelly
         {
             return Items.BONE;
         }
-        if ((this.getType() == 23 || this.getType() == 24 || this.getType() == 25)) {
+        if ((this.getTypeMoC() == 23 || this.getTypeMoC() == 24 || this.getTypeMoC() == 25)) {
             if (flag) {
                 return MoCItems.heartundead;
             }
             return Items.ROTTEN_FLESH;
         }
-        if (this.getType() == 21 || this.getType() == 22) {
+        if (this.getTypeMoC() == 21 || this.getTypeMoC() == 22) {
             return Items.GHAST_TEAR;
         }
 
@@ -592,8 +591,8 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
         if (this.isUndead()) return MoCSoundEvents.ENTITY_HORSE_HURT_UNDEAD;
         if (this.getIsGhost()) return MoCSoundEvents.ENTITY_HORSE_HURT_GHOST;
-        if (this.getType() == 60 || this.getType() == 61) return MoCSoundEvents.ENTITY_HORSE_HURT_ZEBRA;
-        if (this.getType() > 64 && this.getType() < 68) return MoCSoundEvents.ENTITY_HORSE_HURT_DONKEY;
+        if (this.getTypeMoC() == 60 || this.getTypeMoC() == 61) return MoCSoundEvents.ENTITY_HORSE_HURT_ZEBRA;
+        if (this.getTypeMoC() > 64 && this.getTypeMoC() < 68) return MoCSoundEvents.ENTITY_HORSE_HURT_DONKEY;
 
         return MoCSoundEvents.ENTITY_HORSE_HURT;
     }
@@ -605,8 +604,8 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
         if (this.isUndead()) return MoCSoundEvents.ENTITY_HORSE_AMBIENT_UNDEAD;
         if (this.getIsGhost()) return MoCSoundEvents.ENTITY_HORSE_AMBIENT_GHOST;
-        if (this.getType() == 60 || this.getType() == 61) return MoCSoundEvents.ENTITY_HORSE_AMBIENT_ZEBRA;
-        if (this.getType() > 64 && this.getType() < 68) return MoCSoundEvents.ENTITY_HORSE_HURT_DONKEY;
+        if (this.getTypeMoC() == 60 || this.getTypeMoC() == 61) return MoCSoundEvents.ENTITY_HORSE_AMBIENT_ZEBRA;
+        if (this.getTypeMoC() > 64 && this.getTypeMoC() < 68) return MoCSoundEvents.ENTITY_HORSE_HURT_DONKEY;
 
         return MoCSoundEvents.ENTITY_HORSE_AMBIENT;
     }
@@ -620,41 +619,41 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         stand();
         if (this.isUndead()) return MoCSoundEvents.ENTITY_HORSE_ANGRY_UNDEAD;
         if (this.getIsGhost()) return MoCSoundEvents.ENTITY_HORSE_ANGRY_GHOST;
-        if (this.getType() == 60 || this.getType() == 61) return MoCSoundEvents.ENTITY_HORSE_HURT_ZEBRA;
-        if (this.getType() > 64 && this.getType() < 68) return MoCSoundEvents.ENTITY_HORSE_HURT_DONKEY;
+        if (this.getTypeMoC() == 60 || this.getTypeMoC() == 61) return MoCSoundEvents.ENTITY_HORSE_HURT_ZEBRA;
+        if (this.getTypeMoC() > 64 && this.getTypeMoC() < 68) return MoCSoundEvents.ENTITY_HORSE_HURT_DONKEY;
         return MoCSoundEvents.ENTITY_HORSE_MAD;
     }
 
     public float calculateMaxHealth() {
         int maximumHealth = 30;
-        if (getType() < 6) // tier 1
+        if (getTypeMoC() < 6) // tier 1
         {
             maximumHealth = 25;
-        } else if (getType() > 5 && getType() < 11) // tier 2
+        } else if (getTypeMoC() > 5 && getTypeMoC() < 11) // tier 2
         {
             maximumHealth = 30;
-        } else if (getType() > 10 && getType() < 16) // tier 3
+        } else if (getTypeMoC() > 10 && getTypeMoC() < 16) // tier 3
         {
             maximumHealth = 35;
-        } else if (getType() > 15 && getType() < 21) // tier 4
+        } else if (getTypeMoC() > 15 && getTypeMoC() < 21) // tier 4
         {
             maximumHealth = 40;
-        } else if (getType() > 20 && getType() < 26) // ghost and undead
+        } else if (getTypeMoC() > 20 && getTypeMoC() < 26) // ghost and undead
         {
             maximumHealth = 35;
-        } else if (getType() > 25 && getType() < 30) // skelly
+        } else if (getTypeMoC() > 25 && getTypeMoC() < 30) // skelly
         {
             maximumHealth = 35;
-        } else if (getType() >= 30 && getType() < 40) // magics
+        } else if (getTypeMoC() >= 30 && getTypeMoC() < 40) // magics
         {
             maximumHealth = 50;
-        } else if (getType() == 40) // black pegasus
+        } else if (getTypeMoC() == 40) // black pegasus
         {
             maximumHealth = 50;
-        } else if (getType() > 40 && getType() < 60) // fairies
+        } else if (getTypeMoC() > 40 && getTypeMoC() < 60) // fairies
         {
             maximumHealth = 40;
-        } else if (getType() >= 60) // donkeys - zebras and the like
+        } else if (getTypeMoC() >= 60) // donkeys - zebras and the like
         {
             maximumHealth = 30;
         }
@@ -668,7 +667,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
      */
     @Override
     public int getMaxTemper() {
-        if (getType() == 60) return 200; // zebras are harder to tame
+        if (getTypeMoC() == 60) return 200; // zebras are harder to tame
         return 100;
     }
 
@@ -697,7 +696,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     public ResourceLocation getTexture() {
         String tempTexture;
 
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 1:
                 tempTexture = "horsewhite.png";
                 break;
@@ -851,16 +850,16 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             return MoCreatures.proxy.getModelTexture(tempTexture.replace(".png", armorTex));
         }
 
-        if (this.isUndead() && this.getType() < 26) {
+        if (this.isUndead() && this.getTypeMoC() < 26) {
             String baseTex = "horseundead";
             int max = 79;
-            if (this.getType() == 25) // undead pegasus
+            if (this.getTypeMoC() == 25) // undead pegasus
             {
                 baseTex = "horseundeadpegasus";
                 // max = 79; //undead pegasus have an extra animation
 
             }
-            if (this.getType() == 24)// undead unicorn
+            if (this.getTypeMoC() == 24)// undead unicorn
             {
                 baseTex = "horseundeadunicorn";
                 max = 69; // undead unicorn have an animation less
@@ -990,8 +989,8 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     //private int horseGenetics(MoCEntityHorse entityhorse, MoCEntityHorse entityhorse1)
     private int horseGenetics(int typeA, int typeB) {
         boolean flag = MoCreatures.proxy.easyHorseBreeding;
-        //int typeA = entityhorse.getType();
-        //int typeB = entityhorse1.getType();
+        //int typeA = entityhorse.getTypeMoC();
+        //int typeB = entityhorse1.getTypeMoC();
 
         // identical horses have so spring
         if (typeA == typeB) {
@@ -1258,12 +1257,12 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
 
         if (tameResult != null) return tameResult;
 
-        if (this.getType() == 60 && !getIsTamed() && isZebraRunning()) return false;
+        if (this.getTypeMoC() == 60 && !getIsTamed() && isZebraRunning()) return false;
 
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && !getIsRideable() && (stack.getItem() instanceof ItemSaddle || stack.getItem() == MoCItems.horsesaddle)) {
@@ -1313,15 +1312,15 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             if (this.isUndead() || getIsGhost()) this.setHealth(getMaxHealth());
 
             // pegasus, dark pegasus, or bat horse
-            if (this.getType() == 39 || this.getType() == 32 || this.getType() == 40) {
+            if (this.getTypeMoC() == 39 || this.getTypeMoC() == 32 || this.getTypeMoC() == 40) {
                 // transformType = 25; //undead pegasus
                 transform(25);
 
-            } else if (this.getType() == 36 || (this.getType() > 47 && this.getType() < 60)) // unicorn or fairies
+            } else if (this.getTypeMoC() == 36 || (this.getTypeMoC() > 47 && this.getTypeMoC() < 60)) // unicorn or fairies
             {
                 // transformType = 24; //undead unicorn
                 transform(24);
-            } else if (this.getType() < 21 || this.getType() == 60 || this.getType() == 61) // regular horses or zebras
+            } else if (this.getTypeMoC() < 21 || this.getTypeMoC() == 60 || this.getTypeMoC() == 61) // regular horses or zebras
             {
                 // transformType = 23; //undead
                 transform(23);
@@ -1340,7 +1339,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 if (getIsAdult() && getHealth() == getMaxHealth()) this.eatenPumpkin = true;
                 this.setHealth(getMaxHealth());
             }
-            if (this.getType() == 61) {
+            if (this.getTypeMoC() == 61) {
                 //nightmare
                 transform(38);
             }
@@ -1354,14 +1353,14 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             if (stack.isEmpty()) player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
             else player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
 
-            if (this.getType() == 32) {
+            if (this.getTypeMoC() == 32) {
                 if (getIsAdult() && getHealth() == getMaxHealth()) this.eatenPumpkin = true;
                 this.setHealth(getMaxHealth());
             }
-            if (this.getType() == 61) {
+            if (this.getTypeMoC() == 61) {
                 transform(32); //horsezorse to bat horse
             }
-            if (this.getType() == 39) // pegasus to darkpegasus
+            if (this.getTypeMoC() == 39) // pegasus to darkpegasus
             {
                 //darkpegasus
                 transform(40);
@@ -1387,7 +1386,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 // unicorn
                 transform(36);
             }
-            if (this.getType() == 32 && this.posY > 128D) // bathorse to pegasus
+            if (this.getTypeMoC() == 32 && this.getPosY() > 128D) // bathorse to pegasus
             {
                 // pegasus
                 transform(39);
@@ -1395,36 +1394,36 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             // to return undead horses to pristine conditions
             if (this.isUndead() && this.getIsAdult() && !this.world.isRemote) {
                 setAge(10);
-                if (this.getType() >= 26) setType(getType() - 3);
+                if (this.getTypeMoC() >= 26) setTypeMoC(getTypeMoC() - 3);
             }
             drinkingHorse();
             return true;
         }
 
         if (!stack.isEmpty() && this.isAmuletHorse() && getIsTamed()) {
-            if ((this.getType() == 26 || this.getType() == 27 || this.getType() == 28) && stack.getItem() == MoCItems.amuletbone) {
+            if ((this.getTypeMoC() == 26 || this.getTypeMoC() == 27 || this.getTypeMoC() == 28) && stack.getItem() == MoCItems.amuletbone) {
                 player.setHeldItem(hand, ItemStack.EMPTY);
                 vanishHorse();
                 return true;
             }
-            if ((this.getType() > 47 && this.getType() < 60) && stack.getItem() == MoCItems.amuletfairy) {
+            if ((this.getTypeMoC() > 47 && this.getTypeMoC() < 60) && stack.getItem() == MoCItems.amuletfairy) {
                 player.setHeldItem(hand, ItemStack.EMPTY);
                 vanishHorse();
                 return true;
             }
-            if ((this.getType() == 39 || this.getType() == 40) && (stack.getItem() == MoCItems.amuletpegasus)) {
+            if ((this.getTypeMoC() == 39 || this.getTypeMoC() == 40) && (stack.getItem() == MoCItems.amuletpegasus)) {
                 player.setHeldItem(hand, ItemStack.EMPTY);
                 vanishHorse();
                 return true;
             }
-            if ((this.getType() == 21 || this.getType() == 22) && (stack.getItem() == MoCItems.amuletghost)) {
+            if ((this.getTypeMoC() == 21 || this.getTypeMoC() == 22) && (stack.getItem() == MoCItems.amuletghost)) {
                 player.setHeldItem(hand, ItemStack.EMPTY);
                 vanishHorse();
                 return true;
             }
         }
 
-        if (!stack.isEmpty() && (stack.getItem() == Items.DYE) && this.getType() == 50) {
+        if (!stack.isEmpty() && (stack.getItem() == Items.DYE) && this.getTypeMoC() == 50) {
 
             int colorInt = stack.getItemDamage();
             switch (colorInt) {
@@ -1481,12 +1480,12 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         }
 
         // zebra easter egg
-        if (!stack.isEmpty() && (this.getType() == 60) && stack.getItem() instanceof ItemRecord && MoCreatures.proxy.easterEggs) {
+        if (!stack.isEmpty() && (this.getTypeMoC() == 60) && stack.getItem() instanceof ItemRecord && MoCreatures.proxy.easterEggs) {
             player.setHeldItem(hand, ItemStack.EMPTY);
             if (!this.world.isRemote) {
-                ItemEntity entityitem1 = new ItemEntity(this.world, this.posX, this.posY, this.posZ, new ItemStack(MoCItems.recordshuffle, 1));
+                ItemEntity entityitem1 = new ItemEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), new ItemStack(MoCItems.recordshuffle, 1));
                 entityitem1.setPickupDelay(20);
-                this.world.spawnEntity(entityitem1);
+                this.world.addEntity(entityitem1);
             }
             eatingHorse();
             return true;
@@ -1597,35 +1596,35 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
      * Can this horse be trapped in a special amulet?
      */
     public boolean isAmuletHorse() {
-        return this.getType() == 21
-                || this.getType() == 22
-                || this.getType() == 26
-                || this.getType() == 27
-                || this.getType() == 28
-                || this.getType() == 39
-                || this.getType() == 40
-                || (this.getType() > 47 && this.getType() < 60);
+        return this.getTypeMoC() == 21
+                || this.getTypeMoC() == 22
+                || this.getTypeMoC() == 26
+                || this.getTypeMoC() == 27
+                || this.getTypeMoC() == 28
+                || this.getTypeMoC() == 39
+                || this.getTypeMoC() == 40
+                || (this.getTypeMoC() > 47 && this.getTypeMoC() < 60);
     }
 
     /**
      * Can wear regular armor
      */
     public boolean isArmored() {
-        return (this.getType() < 21);
+        return (this.getTypeMoC() < 21);
     }
 
     /**
      * able to carry bags
      */
     public boolean isBagger() {
-        return (this.getType() == 66) // mule
-                || (this.getType() == 65) // donkey
-                || (this.getType() == 67) // zonkey
-                || (this.getType() == 39) // pegasi
-                || (this.getType() == 40) // black pegasi
-                || (this.getType() == 25) // undead pegasi
-                || (this.getType() == 28) // skelly pegasi
-                || (this.getType() > 44 && this.getType() < 60) // fairy
+        return (this.getTypeMoC() == 66) // mule
+                || (this.getTypeMoC() == 65) // donkey
+                || (this.getTypeMoC() == 67) // zonkey
+                || (this.getTypeMoC() == 39) // pegasi
+                || (this.getTypeMoC() == 40) // black pegasi
+                || (this.getTypeMoC() == 25) // undead pegasi
+                || (this.getTypeMoC() == 28) // skelly pegasi
+                || (this.getTypeMoC() > 44 && this.getTypeMoC() < 60) // fairy
                 ;
     }
 
@@ -1633,22 +1632,22 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
      * Falls slowly
      */
     public boolean isFloater() {
-        return this.getType() == 36 // unicorn
-                || this.getType() == 27 // skelly unicorn
-                || this.getType() == 24 // undead unicorn
-                || this.getType() == 22; // not winged ghost
+        return this.getTypeMoC() == 36 // unicorn
+                || this.getTypeMoC() == 27 // skelly unicorn
+                || this.getTypeMoC() == 24 // undead unicorn
+                || this.getTypeMoC() == 22; // not winged ghost
 
     }
 
     @Override
     public boolean isFlyer() {
-        return this.getType() == 39 // pegasus
-                || this.getType() == 40 // dark pegasus
-                || (this.getType() > 44 && this.getType() < 60) //fairy
-                || this.getType() == 32 // bat horse
-                || this.getType() == 21 // ghost winged
-                || this.getType() == 25 // undead pegasus
-                || this.getType() == 28;// skelly pegasus
+        return this.getTypeMoC() == 39 // pegasus
+                || this.getTypeMoC() == 40 // dark pegasus
+                || (this.getTypeMoC() > 44 && this.getTypeMoC() < 60) //fairy
+                || this.getTypeMoC() == 32 // bat horse
+                || this.getTypeMoC() == 21 // ghost winged
+                || this.getTypeMoC() == 25 // undead pegasus
+                || this.getTypeMoC() == 28;// skelly pegasus
     }
 
     /**
@@ -1656,20 +1655,20 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
      */
     @Override
     public boolean getIsGhost() {
-        return this.getType() == 21 || this.getType() == 22;
+        return this.getTypeMoC() == 21 || this.getTypeMoC() == 22;
     }
 
     /**
      * Can wear magic armor
      */
     public boolean isMagicHorse() {
-        return this.getType() == 39
-                || this.getType() == 36
-                || this.getType() == 32
-                || this.getType() == 40
-                || (this.getType() > 44 && this.getType() < 60) //fairy
-                || this.getType() == 21
-                || this.getType() == 22;
+        return this.getTypeMoC() == 39
+                || this.getTypeMoC() == 36
+                || this.getTypeMoC() == 32
+                || this.getTypeMoC() == 40
+                || (this.getTypeMoC() > 44 && this.getTypeMoC() < 60) //fairy
+                || this.getTypeMoC() == 21
+                || this.getTypeMoC() == 22;
     }
 
     @Override
@@ -1681,7 +1680,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
      * Is this a Nightmare horse?
      */
     public boolean isNightmare() {
-        return this.getType() == 38;
+        return this.getTypeMoC() == 38;
     }
 
     /**
@@ -1689,7 +1688,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
      * ghost horses on dead
      */
     public boolean isPureBreed() {
-        return (this.getType() > 10 && this.getType() < 21);
+        return (this.getTypeMoC() > 10 && this.getTypeMoC() < 21);
     }
 
     /**
@@ -1697,24 +1696,24 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
      * either
      */
     public boolean isUndead() {
-        return (this.getType() > 22 && this.getType() < 29);
+        return (this.getTypeMoC() > 22 && this.getTypeMoC() < 29);
     }
 
     /**
      * Has a unicorn? to render it and buckle entities!
      */
     public boolean isUnicorned() {
-        return this.getType() == 36 || (this.getType() >= 45 && this.getType() < 60) || this.getType() == 27 || this.getType() == 24;
+        return this.getTypeMoC() == 36 || (this.getTypeMoC() >= 45 && this.getTypeMoC() < 60) || this.getTypeMoC() == 27 || this.getTypeMoC() == 24;
     }
 
     public boolean isZebraRunning() {
         boolean flag = false;
-        PlayerEntity ep1 = this.world.getClosestPlayerToEntity(this, 8D);
+        PlayerEntity ep1 = this.world.getClosestPlayer(this, 8D);
         if (ep1 != null) {
             flag = true;
             if (ep1.getRidingEntity() instanceof MoCEntityHorse) {
                 MoCEntityHorse playerHorse = (MoCEntityHorse) ep1.getRidingEntity();
-                if (playerHorse.getType() == 16 || playerHorse.getType() == 17 || playerHorse.getType() == 60 || playerHorse.getType() == 61) {
+                if (playerHorse.getTypeMoC() == 16 || playerHorse.getTypeMoC() == 17 || playerHorse.getTypeMoC() == 60 || playerHorse.getTypeMoC() == 61) {
                     flag = false;
                 }
             }
@@ -1756,7 +1755,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 if (this.shuffleCounter > 1000) {
                     this.shuffleCounter = 0;
                     MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 102), new TargetPoint(
-                            this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                            this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
                     flag = false;
                 }
             }
@@ -1770,9 +1769,9 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             setNightmareInt(getNightmareInt() - 1);
             return;
         }
-        int i = MathHelper.floor(this.posX);
+        int i = MathHelper.floor(this.getPosX());
         int j = MathHelper.floor(getEntityBoundingBox().minY);
-        int k = MathHelper.floor(this.posZ);
+        int k = MathHelper.floor(this.getPosZ());
         BlockPos pos = new BlockPos(i, j, k);
         BlockState blockstate = this.world.getBlockState(pos.add(-1, 0, -1));
         BlockEvent.BreakEvent event = null;
@@ -1795,25 +1794,25 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     public void onDeath(DamageSource damagesource) {
         super.onDeath(damagesource);
         if (!this.world.isRemote) {
-            if ((this.rand.nextInt(10) == 0) && (this.getType() == 23) || (this.getType() == 24) || (this.getType() == 25))
+            if ((this.rand.nextInt(10) == 0) && (this.getTypeMoC() == 23) || (this.getTypeMoC() == 24) || (this.getTypeMoC() == 25))
                 MoCTools.spawnMaggots(this.world, this);
 
             if (getIsTamed() && (isMagicHorse() || isPureBreed()) && !getIsGhost() && this.rand.nextInt(4) == 0) {
                 MoCEntityHorse entityhorse1 = new MoCEntityHorse(this.world);
-                entityhorse1.setPosition(this.posX, this.posY, this.posZ);
-                this.world.spawnEntity(entityhorse1);
+                entityhorse1.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
+                this.world.addEntity(entityhorse1);
                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_MAGIC_APPEAR);
 
                 entityhorse1.setOwnerId(this.getOwnerId());
                 entityhorse1.setTamed(true);
-                PlayerEntity entityplayer = this.world.getClosestPlayerToEntity(this, 24D);
+                PlayerEntity entityplayer = this.world.getClosestPlayer(this, 24D);
                 if (entityplayer != null) MoCTools.tameWithName(entityplayer, entityhorse1);
 
                 entityhorse1.setAdult(false);
                 entityhorse1.setAge(1);
                 int l = 22;
                 if (this.isFlyer()) l = 21;
-                entityhorse1.setType(l);
+                entityhorse1.setTypeMoC(l);
             }
         }
     }
@@ -1823,13 +1822,14 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         /*
          * slow falling
          */
-        if (!this.onGround && this.motionY < 0.0D && (isFlyer() || isFloater())) this.motionY *= 0.6D;
+        if (!this.onGround && this.getMotion().getY() < 0.0D && (isFlyer() || isFloater()))
+            this.getMotion().getY() *= 0.6D;
 
         if (this.rand.nextInt(200) == 0) moveTail();
 
-        if ((getType() == 38) && (this.rand.nextInt(50) == 0) && this.world.isRemote) LavaFX();
+        if ((getTypeMoC() == 38) && (this.rand.nextInt(50) == 0) && this.world.isRemote) LavaFX();
 
-        if ((getType() == 36) && isOnAir() && this.world.isRemote) StarFX();
+        if ((getTypeMoC() == 36) && isOnAir() && this.world.isRemote) StarFX();
 
         if (!this.world.isRemote && isFlyer() && isOnAir()) {
             float myFlyingSpeed = MoCTools.getMyMovementSpeed(this);
@@ -1845,10 +1845,10 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_WINGFLAP);
         }
 
-        if (isUndead() && (this.getType() < 26) && getIsAdult() && (this.rand.nextInt(20) == 0)) {
+        if (isUndead() && (this.getTypeMoC() < 26) && getIsAdult() && (this.rand.nextInt(20) == 0)) {
             if (!this.world.isRemote) {
                 if (this.rand.nextInt(16) == 0) setAge(getAge() + 1);
-                if (getAge() >= 399) setType(this.getType() + 3);
+                if (getAge() >= 399) setTypeMoC(this.getTypeMoC() + 3);
             } else UndeadFX();
         }
 
@@ -1858,10 +1858,10 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             /*
              * Shuffling LMFAO!
              */
-            if (this.getType() == 60 && getIsTamed() && this.rand.nextInt(50) == 0 && nearMusicBox() && shuffleCounter == 0) {
+            if (this.getTypeMoC() == 60 && getIsTamed() && this.rand.nextInt(50) == 0 && nearMusicBox() && shuffleCounter == 0) {
                 shuffleCounter = 1;
                 MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 101),
-                        new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                        new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
             }
 
             if ((this.rand.nextInt(300) == 0) && (this.deathTime == 0)) {
@@ -1876,14 +1876,14 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 setSitting(false);
             }
 
-            if ((getType() == 38) && (this.isBeingRidden()) && (getNightmareInt() > 0) && (this.rand.nextInt(2) == 0))
+            if ((getTypeMoC() == 38) && (this.isBeingRidden()) && (getNightmareInt() > 0) && (this.rand.nextInt(2) == 0))
                 nightmareEffect();
 
             /*
              * zebras on the run!
              */
             /*
-            if (this.getType() == 60 && !getIsTamed()) {
+            if (this.getTypeMoC() == 60 && !getIsTamed()) {
                 boolean flag = isZebraRunning();
             }*/
 
@@ -1935,14 +1935,14 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
                 if (this.gestationTime % 3 == 0) {
                     MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageHeart(this.getEntityId()),
-                            new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                            new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
                 }
 
                 if (this.gestationTime <= 50) continue;
 
                 MoCEntityHorse baby = new MoCEntityHorse(this.world);
-                baby.setPosition(this.posX, this.posY, this.posZ);
-                this.world.spawnEntity(baby);
+                baby.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
+                this.world.addEntity(baby);
                 MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
                 this.eatenPumpkin = false;
                 this.gestationTime = 0;
@@ -1953,11 +1953,11 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                     horsemateType = translateVanillaHorseType((EntityHorse) horsemate);
                     if (horsemateType == -1) return;
                 } else {
-                    horsemateType = ((MoCEntityHorse) horsemate).getType();
+                    horsemateType = ((MoCEntityHorse) horsemate).getTypeMoC();
                     ((MoCEntityHorse) horsemate).eatenPumpkin = false;
                     ((MoCEntityHorse) horsemate).gestationTime = 0;
                 }
-                int l = horseGenetics(this.getType(), horsemateType);
+                int l = horseGenetics(this.getTypeMoC(), horsemateType);
 
                 if (l == 50 || l == 54) // fairy horse!
                 {
@@ -1973,7 +1973,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 PlayerEntity entityplayer = null;
                 if (ownerId != null) entityplayer = this.world.getPlayerEntityByUUID(this.getOwnerId());
                 if (entityplayer != null) MoCTools.tameWithName(entityplayer, baby);
-                baby.setType(l);
+                baby.setTypeMoC(l);
                 break;
             }
         }
@@ -2006,8 +2006,8 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
 
         if (this.shuffleCounter > 0) {
             ++this.shuffleCounter;
@@ -2015,14 +2015,14 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 double var2 = this.rand.nextGaussian() * 0.5D;
                 double var4 = this.rand.nextGaussian() * -0.1D;
                 double var6 = this.rand.nextGaussian() * 0.02D;
-                this.world.spawnParticle(EnumParticleTypes.NOTE, this.posX + this.rand.nextFloat() * this.width * 2.0F - this.width, this.posY
-                        + 0.5D + this.rand.nextFloat() * this.height, this.posZ + this.rand.nextFloat() * this.width * 2.0F - this.width, var2, var4, var6);
+                this.world.addParticle(ParticleTypes.NOTE, this.getPosX() + this.rand.nextFloat() * this.width * 2.0F - this.width, this.getPosY()
+                        + 0.5D + this.rand.nextFloat() * this.height, this.getPosZ() + this.rand.nextFloat() * this.width * 2.0F - this.width, var2, var4, var6);
             }
 
             if (!this.world.isRemote && !nearMusicBox()) {
                 this.shuffleCounter = 0;
                 MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 102),
-                        new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                        new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
             }
         }
 
@@ -2073,7 +2073,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 this.transformCounter = 0;
                 if (this.transformType != 0) {
                     dropArmor();
-                    setType(this.transformType);
+                    setTypeMoC(this.transformType);
                 }
             }
         }
@@ -2091,7 +2091,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     }
 
     public boolean readyForParenting(MoCEntityHorse entityhorse) {
-        int i = entityhorse.getType();
+        int i = entityhorse.getTypeMoC();
         return (!entityhorse.isBeingRidden()) && (entityhorse.getRidingEntity() == null) && entityhorse.getIsTamed() && entityhorse.eatenPumpkin
                 && entityhorse.getIsAdult() && !entityhorse.isUndead() && !entityhorse.getIsGhost() && (i != 61) && (i < 66);
     }
@@ -2138,13 +2138,13 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     @Override
     public void selectType() {
         checkSpawningBiome();
-        if (getType() == 0) {
+        if (getTypeMoC() == 0) {
             if (this.rand.nextInt(5) == 0) setAdult(false);
             int j = this.rand.nextInt(100);
-            if (j <= (33)) setType(6);
-            else if (j <= (66)) setType(7);
-            else if (j <= (99)) setType(8);
-            else setType(60);// zebra
+            if (j <= (33)) setTypeMoC(6);
+            else if (j <= (66)) setTypeMoC(7);
+            else if (j <= (99)) setTypeMoC(8);
+            else setTypeMoC(60);// zebra
         }
     }
 
@@ -2177,7 +2177,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     public void transform(int tType) {
         if (!this.world.isRemote) {
             MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), tType),
-                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
         }
 
         this.transformType = tType;
@@ -2201,8 +2201,8 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
     public void vanishHorse() {
         this.getNavigator().clearPath();
-        this.motionX = 0D;
-        this.motionZ = 0D;
+        this.getMotion().getX() = 0D;
+        this.getMotion().getZ() = 0D;
 
         if (this.isBagger()) {
             MoCTools.dropInventory(this, this.localChest);
@@ -2210,7 +2210,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         }
         if (!this.world.isRemote) {
             MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageVanish(this.getEntityId()),
-                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
             setVanishC((byte) 1);
         }
         MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_VANISH);
@@ -2231,20 +2231,20 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             this.wingFlapCounter = 1;
             if (!this.world.isRemote) {
                 MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 3),
-                        new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                        new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
             }
         }
     }
 
     @Override
-    public void writeEntityToNBT(CompoundNBT nbttagcompound) {
-        super.writeEntityToNBT(nbttagcompound);
-        nbttagcompound.setBoolean("Saddle", getIsRideable());
-        nbttagcompound.setBoolean("EatingHaystack", getIsSitting());
-        nbttagcompound.setBoolean("ChestedHorse", getIsChested());
-        nbttagcompound.setBoolean("HasReproduced", getHasReproduced());
-        nbttagcompound.setBoolean("Bred", getHasBred());
-        nbttagcompound.setInteger("ArmorType", getArmorType());
+    public void writeAdditional(CompoundNBT nbttagcompound) {
+        super.writeAdditional(nbttagcompound);
+        nbttagcompound.putBoolean("Saddle", getIsRideable());
+        nbttagcompound.putBoolean("EatingHaystack", getIsSitting());
+        nbttagcompound.putBoolean("ChestedHorse", getIsChested());
+        nbttagcompound.putBoolean("HasReproduced", getHasReproduced());
+        nbttagcompound.putBoolean("Bred", getHasBred());
+        nbttagcompound.putInt("ArmorType", getArmorType());
 
         if (getIsChested() && this.localChest != null) {
             ListNBT nbttaglist = new ListNBT();
@@ -2253,29 +2253,29 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 this.localStack = this.localChest.getStackInSlot(i);
                 if (!this.localStack.isEmpty()) {
                     CompoundNBT nbttagcompound1 = new CompoundNBT();
-                    nbttagcompound1.setByte("Slot", (byte) i);
+                    nbttagcompound1.putByte("Slot", (byte) i);
                     this.localStack.writeToNBT(nbttagcompound1);
-                    nbttaglist.appendTag(nbttagcompound1);
+                    nbttaglist.add(nbttagcompound1);
                 }
             }
-            nbttagcompound.setTag("Items", nbttaglist);
+            nbttagcompound.put("Items", nbttaglist);
         }
     }
 
     @Override
-    public void readEntityFromNBT(CompoundNBT nbttagcompound) {
-        super.readEntityFromNBT(nbttagcompound);
+    public void readAdditional(CompoundNBT nbttagcompound) {
+        super.readAdditional(nbttagcompound);
         setRideable(nbttagcompound.getBoolean("Saddle"));
         setSitting(nbttagcompound.getBoolean("EatingHaystack"));
         setBred(nbttagcompound.getBoolean("Bred"));
         setIsChested(nbttagcompound.getBoolean("ChestedHorse"));
         setReproduced(nbttagcompound.getBoolean("HasReproduced"));
-        setArmorType((byte) nbttagcompound.getInteger("ArmorType"));
+        setArmorType((byte) nbttagcompound.getInt("ArmorType"));
         if (getIsChested()) {
-            ListNBT nbttaglist = nbttagcompound.getTagList("Items", 10);
+            ListNBT nbttaglist = nbttagcompound.getList("Items", 10);
             this.localChest = new MoCAnimalChest("HorseChest", getInventorySize());
-            for (int i = 0; i < nbttaglist.tagCount(); i++) {
-                CompoundNBT nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
+            for (int i = 0; i < nbttaglist.size(); i++) {
+                CompoundNBT nbttagcompound1 = nbttaglist.getCompound(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
                 if (j < this.localChest.getSizeInventory()) {
                     this.localChest.setInventorySlotContents(j, new ItemStack(nbttagcompound1));
@@ -2318,25 +2318,25 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void setType(int i) {
+    public void setTypeMoC(int i) {
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(calculateMaxHealth());
         this.setHealth(getMaxHealth());
-        if (getType() == 38 || getType() == 40) this.isImmuneToFire = true;
-        super.setType(i);
+        if (getTypeMoC() == 38 || getTypeMoC() == 40) this.isImmuneToFire = true;
+        super.setTypeMoC(i);
     }
 
     @Override
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData livingdata) {
-        if (getType() == 38 || getType() == 40) this.isImmuneToFire = true;
+        if (getTypeMoC() == 38 || getTypeMoC() == 40) this.isImmuneToFire = true;
         return super.onInitialSpawn(difficulty, livingdata);
     }
 
     @Override
     public void updatePassenger(Entity passenger) {
         double dist = getSizeFactor() * (0.25D);
-        double newPosX = this.posX + (dist * Math.sin(this.renderYawOffset / 57.29578F));
-        double newPosZ = this.posZ - (dist * Math.cos(this.renderYawOffset / 57.29578F));
-        passenger.setPosition(newPosX, this.posY + getMountedYOffset() + passenger.getYOffset(), newPosZ);
+        double newPosX = this.getPosX() + (dist * Math.sin(this.renderYawOffset / 57.29578F));
+        double newPosZ = this.getPosZ() - (dist * Math.cos(this.renderYawOffset / 57.29578F));
+        passenger.setPosition(newPosX, this.getPosY() + getMountedYOffset() + passenger.getYOffset(), newPosZ);
     }
 
     @Override

@@ -66,8 +66,8 @@ public class MoCEntitySmallFish extends MoCEntityTameableAquatic {
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(this.rand.nextInt(fishNames.length) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(fishNames.length) + 1);
         }
 
     }
@@ -75,7 +75,7 @@ public class MoCEntitySmallFish extends MoCEntityTameableAquatic {
     @Override
     public ResourceLocation getTexture() {
 
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 1:
                 return MoCreatures.proxy.getModelTexture("smallfish_anchovy.png");
             case 2:

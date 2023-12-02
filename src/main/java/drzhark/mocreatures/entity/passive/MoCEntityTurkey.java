@@ -71,14 +71,14 @@ public class MoCEntityTurkey extends MoCEntityTameableAnimal {
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(this.rand.nextInt(2) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(2) + 1);
         }
     }
 
     @Override
     public ResourceLocation getTexture() {
-        if (getType() == 1 && !this.isChild()) {
+        if (getTypeMoC() == 1 && !this.isChild()) {
             return MoCreatures.proxy.getModelTexture("turkey_male.png");
         } else {
             return MoCreatures.proxy.getModelTexture("turkey_female.png");
@@ -99,7 +99,7 @@ public class MoCEntityTurkey extends MoCEntityTameableAnimal {
     protected SoundEvent getAmbientSound() {
         return MoCSoundEvents.ENTITY_TURKEY_AMBIENT;
     }
-    
+
     // TODO: Add unique sound event
     @Override
     protected void playStepSound(BlockPos pos, Block blockIn) {
@@ -129,7 +129,7 @@ public class MoCEntityTurkey extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, Hand hand) {
         ItemStack itemstack = player.getHeldItem(hand);
 
         if (!itemstack.isEmpty()) {
@@ -138,7 +138,7 @@ public class MoCEntityTurkey extends MoCEntityTameableAnimal {
                 this.setInLove(player);
 
                 // Extend mating period for Males
-                if (this.getType() == 1) {
+                if (this.getTypeMoC() == 1) {
                     this.inLove = 1800;
                 }
                 return true;
@@ -172,8 +172,8 @@ public class MoCEntityTurkey extends MoCEntityTameableAnimal {
     public void onLivingUpdate() {
         super.onLivingUpdate();
 
-        if (!this.onGround && this.motionY < 0.0D) {
-            this.motionY *= 0.8D;
+        if (!this.onGround && this.getMotion().getY() < 0.0D) {
+            this.getMotion().getY() *= 0.8D;
         }
         if (this.getGrowingAge() != 0) {
             this.inLove = 0;
@@ -186,7 +186,7 @@ public class MoCEntityTurkey extends MoCEntityTameableAnimal {
                 double d0 = this.rand.nextGaussian() * 0.02D;
                 double d1 = this.rand.nextGaussian() * 0.02D;
                 double d2 = this.rand.nextGaussian() * 0.02D;
-                this.world.spawnParticle(EnumParticleTypes.HEART, this.posX + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, this.posY + 0.5D + (double) (this.rand.nextFloat() * this.height), this.posZ + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, d0, d1, d2);
+                this.world.addParticle(ParticleTypes.HEART, this.getPosX() + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, this.getPosY() + 0.5D + (double) (this.rand.nextFloat() * this.height), this.getPosZ() + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, d0, d1, d2);
             }
         }
     }
@@ -219,7 +219,7 @@ public class MoCEntityTurkey extends MoCEntityTameableAnimal {
                 double d0 = this.rand.nextGaussian() * 0.02D;
                 double d1 = this.rand.nextGaussian() * 0.02D;
                 double d2 = this.rand.nextGaussian() * 0.02D;
-                this.world.spawnParticle(EnumParticleTypes.HEART, this.posX + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, this.posY + 0.5D + (double) (this.rand.nextFloat() * this.height), this.posZ + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, d0, d1, d2);
+                this.world.addParticle(ParticleTypes.HEART, this.getPosX() + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, this.getPosY() + 0.5D + (double) (this.rand.nextFloat() * this.height), this.getPosZ() + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, d0, d1, d2);
             }
         } else {
             super.handleStatusUpdate(id);

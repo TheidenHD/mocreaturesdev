@@ -14,7 +14,7 @@ public class MoCEntityAngelFish extends MoCEntitySmallFish {
 
     public MoCEntityAngelFish(World world) {
         super(world);
-        this.setType(2);
+        this.setTypeMoC(2);
     }
 
     @Override

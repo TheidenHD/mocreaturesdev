@@ -59,14 +59,14 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(this.rand.nextInt(fishNames.length) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(fishNames.length) + 1);
         }
     }
 
     @Override
     public ResourceLocation getTexture() {
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return MoCreatures.proxy.getModelTexture("fishy_orange.png");
             case 3:
@@ -112,7 +112,7 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
         } else {
             int j = this.rand.nextInt(2);
             for (int k = 0; k < j; k++) {
-                entityDropItem(new ItemStack(MoCItems.mocegg, 1, getType()), 0.0F);
+                entityDropItem(new ItemStack(MoCItems.mocegg, 1, getTypeMoC()), 0.0F);
             }
 
         }
@@ -163,7 +163,7 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
                     continue;
                 }
                 MoCEntityFishy entityfishy = (MoCEntityFishy) entity1;
-                if (!ReadyforParenting(this) || !ReadyforParenting(entityfishy) || (this.getType() != entityfishy.getType())) {
+                if (!ReadyforParenting(this) || !ReadyforParenting(entityfishy) || (this.getTypeMoC() != entityfishy.getTypeMoC())) {
                     continue;
                 }
                 if (this.rand.nextInt(100) == 0) {
@@ -171,7 +171,7 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
                 }
                 if (this.gestationtime % 3 == 0) {
                     MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageHeart(this.getEntityId()),
-                            new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                            new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
                 }
                 if (this.gestationtime <= 50) {
                     continue;
@@ -179,22 +179,22 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
                 int l = this.rand.nextInt(3) + 1;
                 for (int i1 = 0; i1 < l; i1++) {
                     MoCEntityFishy entityfishy1 = new MoCEntityFishy(this.world);
-                    entityfishy1.setPosition(this.posX, this.posY, this.posZ);
-                    this.world.spawnEntity(entityfishy1);
+                    entityfishy1.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
+                    this.world.addEntity(entityfishy1);
                     MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
                     setHasEaten(false);
                     entityfishy.setHasEaten(false);
                     this.gestationtime = 0;
                     entityfishy.gestationtime = 0;
 
-                    PlayerEntity entityplayer = this.world.getClosestPlayerToEntity(this, 24D);
+                    PlayerEntity entityplayer = this.world.getClosestPlayer(this, 24D);
                     if (entityplayer != null) {
                         MoCTools.tameWithName(entityplayer, entityfishy1);
                     }
 
                     entityfishy1.setAge(20);
                     entityfishy1.setAdult(false);
-                    entityfishy1.setTypeInt(getType());
+                    entityfishy1.setTypeInt(getTypeMoC());
                 }
 
                 break;

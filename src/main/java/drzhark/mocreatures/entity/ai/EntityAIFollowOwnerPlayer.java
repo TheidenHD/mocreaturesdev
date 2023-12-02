@@ -8,17 +8,16 @@ import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.pathfinding.PathNavigate;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.UUID;
 
-public class EntityAIFollowOwnerPlayer extends EntityAIBase {
+public class EntityAIFollowOwnerPlayer extends Goal {
 
     private final LivingEntity thePet;
     private final double speed;
@@ -45,7 +44,7 @@ public class EntityAIFollowOwnerPlayer extends EntityAIBase {
     }
 
     /**
-     * Returns whether the EntityAIBase should begin execution.
+     * Returns whether the Goal should begin execution.
      */
     @Override
     public boolean shouldExecute() {
@@ -72,7 +71,7 @@ public class EntityAIFollowOwnerPlayer extends EntityAIBase {
     }
 
     /**
-     * Returns whether an in-progress EntityAIBase should continue executing
+     * Returns whether an in-progress Goal should continue executing
      */
     @Override
     public boolean shouldContinueExecuting() {
@@ -115,14 +114,14 @@ public class EntityAIFollowOwnerPlayer extends EntityAIBase {
                 if (!this.petPathfinder.tryMoveToEntityLiving(this.theOwner, this.speed)) {
                     if (!this.thePet.getLeashed()) {
                         if (this.thePet.getDistanceSq(this.theOwner) >= 144.0D) {
-                            int i = MathHelper.floor(this.theOwner.posX) - 2;
-                            int j = MathHelper.floor(this.theOwner.posZ) - 2;
+                            int i = MathHelper.floor(this.theOwner.getPosX()) - 2;
+                            int j = MathHelper.floor(this.theOwner.getPosZ()) - 2;
                             int k = MathHelper.floor(this.theOwner.getEntityBoundingBox().minY);
 
                             for (int l = 0; l <= 4; ++l) {
                                 for (int i1 = 0; i1 <= 4; ++i1) {
                                     final BlockPos pos = new BlockPos(i + l, k - 1, j + i1);
-                                    if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && this.world.getBlockState(pos).isSideSolid(world, pos, EnumFacing.DOWN) && this.isEmptyBlock(new BlockPos(i + l, k, j + i1)) && this.isEmptyBlock(new BlockPos(i + l, k + 1, j + i1))) {
+                                    if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && this.world.getBlockState(pos).isSideSolid(world, pos, Direction.DOWN) && this.isEmptyBlock(new BlockPos(i + l, k, j + i1)) && this.isEmptyBlock(new BlockPos(i + l, k + 1, j + i1))) {
                                         this.thePet.setLocationAndAngles((float) (i + l) + 0.5F, k, (float) (j + i1) + 0.5F, this.thePet.rotationYaw, this.thePet.rotationPitch);
                                         this.petPathfinder.clearPath();
                                         return;

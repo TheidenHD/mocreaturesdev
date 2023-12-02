@@ -9,7 +9,7 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -59,7 +59,7 @@ public class MoCEntityStingRay extends MoCEntityRay {
             if (!getIsTamed() && ++this.poisoncounter > 250 && (this.world.getDifficulty().getId() > 0) && this.rand.nextInt(30) == 0) {
                 if (MoCTools.findNearPlayerAndPoison(this, true)) {
                     MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 1),
-                            new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                            new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
                     this.poisoncounter = 0;
                 }
             }
@@ -86,9 +86,9 @@ public class MoCEntityStingRay extends MoCEntityRay {
                 return true;
             }
             Entity entity = damagesource.getTrueSource();
-            if (entity instanceof EntityLivingBase) {
+            if (entity instanceof LivingEntity) {
                 if (entity != this) {
-                    setAttackTarget((EntityLivingBase) entity);
+                    setAttackTarget((LivingEntity) entity);
                 }
                 return true;
             }

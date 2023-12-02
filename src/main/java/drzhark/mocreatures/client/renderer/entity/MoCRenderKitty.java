@@ -7,10 +7,12 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.client.model.MoCModelKitty;
 import drzhark.mocreatures.entity.neutral.MoCEntityKitty;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class MoCRenderKitty extends MoCRenderMoC<MoCEntityKitty> {
@@ -41,12 +43,12 @@ public class MoCRenderKitty extends MoCRenderMoC<MoCEntityKitty> {
                     f5 = 0.4F;
                 }
 
-                GlStateManager.pushMatrix();
-                GlStateManager.translate((float) d + 0.0F, (float) d1 - f5, (float) d2);
-                GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
-                GlStateManager.rotate(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-                GlStateManager.scale(-f3, -f3, f3);
-                GlStateManager.disableLighting();
+                matrixStackIn.push();
+                matrixStackIn.translate((float) d + 0.0F, (float) d1 - f5, (float) d2);
+                matrixStackIn.glNormal3f(0.0F, 1.0F, 0.0F);
+                matrixStackIn.rotate(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+                matrixStackIn.scale(-f3, -f3, f3);
+
                 Tessellator tessellator = Tessellator.getInstance();
 
                 if (displayPetIcons && entitykitty.getShowEmoteIcon()) {
@@ -65,8 +67,8 @@ public class MoCRenderKitty extends MoCRenderMoC<MoCEntityKitty> {
                     tessellator.draw();
                 }
 
-                GlStateManager.enableLighting();
-                GlStateManager.popMatrix();
+
+                matrixStackIn.pop();
             }
         }
     }
@@ -80,18 +82,18 @@ public class MoCRenderKitty extends MoCRenderMoC<MoCEntityKitty> {
     }
 
     protected void onMaBack(MoCEntityKitty entitykitty) {
-        GlStateManager.rotate(90F, 0.0F, 0.0F, -1F);
+        matrixStackIn.rotate(90F, 0.0F, 0.0F, -1F);
         if (!entitykitty.world.isRemote && (entitykitty.getRidingEntity() != null)) {
-            GlStateManager.translate(-1.5F, 0.2F, -0.2F);
+            matrixStackIn.translate(-1.5F, 0.2F, -0.2F);
         } else {
-            GlStateManager.translate(0.1F, 0.2F, -0.2F);
+            matrixStackIn.translate(0.1F, 0.2F, -0.2F);
         }
 
     }
 
     protected void onTheSide(MoCEntityKitty entityliving) {
-        GlStateManager.rotate(90F, 0.0F, 0.0F, -1F);
-        GlStateManager.translate(0.2F, 0.0F, -0.2F);
+        matrixStackIn.rotate(90F, 0.0F, 0.0F, -1F);
+        matrixStackIn.translate(0.2F, 0.0F, -0.2F);
     }
 
     @Override
@@ -115,16 +117,16 @@ public class MoCRenderKitty extends MoCRenderMoC<MoCEntityKitty> {
     }
 
     protected void rotateAnimal(MoCEntityKitty entitykitty) {
-        GlStateManager.rotate(90F, -1.0F, 0.0F, 0.0F);
-        GlStateManager.translate(0.0F, 0.5F, 0.0F);
+        matrixStackIn.rotate(90F, -1.0F, 0.0F, 0.0F);
+        matrixStackIn.translate(0.0F, 0.5F, 0.0F);
     }
 
     protected void stretch(MoCEntityKitty entitykitty) {
-        GlStateManager.scale(entitykitty.getAge() * 0.01F, entitykitty.getAge() * 0.01F, entitykitty.getAge() * 0.01F);
+        matrixStackIn.scale(entitykitty.getAge() * 0.01F, entitykitty.getAge() * 0.01F, entitykitty.getAge() * 0.01F);
     }
 
     protected void upsideDown(MoCEntityKitty entitykitty) {
-        GlStateManager.rotate(180F, 0.0F, 0.0F, -1F);
-        GlStateManager.translate(-0.35F, 0F, -0.55F);
+        matrixStackIn.rotate(180F, 0.0F, 0.0F, -1F);
+        matrixStackIn.translate(-0.35F, 0F, -0.55F);
     }
 }

@@ -18,17 +18,17 @@ import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.MobEffects;
+import net.minecraft.init.Effects;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -114,14 +114,14 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
         // 7 rattlesnake (aggressive - venomous) desert
         // 8 python (aggressive - non-venomous) big - swamp
         // 9 sea snake (aggressive - venomous)
-        if (getType() == 0) {
-            setType(this.rand.nextInt(8) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(8) + 1);
         }
     }
 
     @Override
     public ResourceLocation getTexture() {
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return MoCreatures.proxy.getModelTexture("snake_wolf.png");
             case 3:
@@ -168,7 +168,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -191,18 +191,18 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
 
     @Override
     public boolean isNotScared() {
-        return getType() > 2 && getAge() > 50;
+        return getTypeMoC() > 2 && getAge() > 50;
     }
 
     /**
      * returns true when is climbing up
      */
     public boolean isClimbing() {
-        return isOnLadder() && this.motionY > 0.01F;
+        return isOnLadder() && this.getMotion().getY() > 0.01F;
     }
 
     public boolean isResting() {
-        return (!getNearPlayer() && this.onGround && (this.motionX < 0.01D && this.motionX > -0.01D) && (this.motionZ < 0.01D && this.motionZ > -0.01D));
+        return (!getNearPlayer() && this.onGround && (this.getMotion().getX() < 0.01D && this.getMotion().getX() > -0.01D) && (this.getMotion().getZ() < 0.01D && this.getMotion().getZ() > -0.01D));
     }
 
     public boolean getNearPlayer() {
@@ -233,22 +233,22 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
 
     public float getSizeF() {
         float factor = 1.0F;
-        if (getType() == 1 || getType() == 2)// small shy snakes
+        if (getTypeMoC() == 1 || getTypeMoC() == 2)// small shy snakes
         {
             factor = 0.8F;
-        } else if (getType() == 5)// coral
+        } else if (getTypeMoC() == 5)// coral
         {
             factor = 0.6F;
         }
-        if (getType() == 6)// cobra 1.1
+        if (getTypeMoC() == 6)// cobra 1.1
         {
             factor = 1.1F;
         }
-        if (getType() == 7)// rattlesnake
+        if (getTypeMoC() == 7)// rattlesnake
         {
             factor = 0.9F;
         }
-        if (getType() == 8)// python
+        if (getTypeMoC() == 8)// python
         {
             factor = 1.5F;
         }
@@ -256,8 +256,8 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
 
         if (this.world.isRemote) {
             if (getfTongue() != 0.0F) {
@@ -275,7 +275,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
                 }
             }
 
-            if (getType() == 7 && getfRattle() != 0.0F) // rattling
+            if (getTypeMoC() == 7 && getfRattle() != 0.0F) // rattling
             {
                 setfRattle(getfRattle() + 0.2F);
                 if (getfRattle() == 1.0F) {
@@ -300,7 +300,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
             if (this.rand.nextInt(100) == 0 && getfMouth() == 0.0F) {
                 setfMouth(0.1F);
             }
-            if (getType() == 7) {
+            if (getTypeMoC() == 7) {
                 int chance;
                 if (getNearPlayer()) {
                     chance = 30;
@@ -414,9 +414,9 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
             setAttackTarget(null);
         }
 
-        PlayerEntity entityplayer1 = this.world.getClosestPlayerToEntity(this, 12D);
+        PlayerEntity entityplayer1 = this.world.getClosestPlayer(this, 12D);
         if (entityplayer1 != null) {
-            double distP = MoCTools.getSqDistanceTo(entityplayer1, this.posX, this.posY, this.posZ);
+            double distP = MoCTools.getSqDistanceTo(entityplayer1, this.getPosX(), this.getPosY(), this.getPosZ());
             if (isNotScared()) {
                 setNearPlayer(distP < 5D);
 
@@ -438,7 +438,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
 
     @Override
     public boolean attackEntityAsMob(Entity entityIn) {
-        if ((getType() < 3 || getIsTamed()) && entityIn instanceof PlayerEntity) {
+        if ((getTypeMoC() < 3 || getIsTamed()) && entityIn instanceof PlayerEntity) {
             return false;
         }
 
@@ -461,7 +461,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     public void setBiting(boolean flag) {
         if (flag && !this.world.isRemote) {
             MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 0),
-                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
         }
         this.isBiting = flag;
     }
@@ -477,7 +477,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     @Override
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
 
-        if (getType() < 3) {
+        if (getTypeMoC() < 3) {
             return super.attackEntityFrom(damagesource, i);
         }
 
@@ -486,9 +486,9 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
             if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
-            if ((entity != this) && entity instanceof EntityLivingBase && (super.shouldAttackPlayers())) {
+            if ((entity != this) && entity instanceof LivingEntity && (super.shouldAttackPlayers())) {
                 setPissed(true);
-                setAttackTarget((EntityLivingBase) entity);
+                setAttackTarget((LivingEntity) entity);
             }
             return true;
         } else {
@@ -502,13 +502,13 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
             int j = this.rand.nextInt(3);
             for (int l = 0; l < j; l++) {
 
-                entityDropItem(new ItemStack(MoCItems.mocegg, 1, getType() + 20), 0.0F);
+                entityDropItem(new ItemStack(MoCItems.mocegg, 1, getTypeMoC() + 20), 0.0F);
             }
         }
     }
 
     @Override
-    public boolean canAttackTarget(EntityLivingBase entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return !(entity instanceof MoCEntitySnake) && entity.height < 0.5D && entity.width < 0.5D;
     }
 
@@ -541,7 +541,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
 
     @Override
     public boolean checkSpawningBiome() {
-        BlockPos pos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(getEntityBoundingBox().minY), this.posZ);
+        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getEntityBoundingBox().minY), this.getPosZ());
         /*
          * swamp: python, bright green, #1 (done) plains: coral, cobra #1, #2,
          * #3, #4 (everyone but 7) desert: rattlesnake , #2 jungle: all except
@@ -569,62 +569,62 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
             if (BiomeDictionary.hasType(currentbiome, Type.SANDY) || BiomeDictionary.hasType(currentbiome, Type.MESA)) {
                 // rattlesnake or spotted
                 if (l < 5) {
-                    setType(7);
+                    setTypeMoC(7);
                 } else {
-                    setType(2);
+                    setTypeMoC(2);
                 }
             }
 
             if (BiomeDictionary.hasType(currentbiome, Type.PLAINS) || BiomeDictionary.hasType(currentbiome, Type.FOREST)) {
                 // dark green or coral or spotted
                 if (l < 3) {
-                    setType(1);
+                    setTypeMoC(1);
                 } else if (l < 5) {
-                    setType(5);
+                    setTypeMoC(5);
                 } else {
-                    setType(2);
+                    setTypeMoC(2);
                 }
             }
 
             if (BiomeDictionary.hasType(currentbiome, Type.SWAMP)) {
                 // python or cobra or dark green
                 if (l < 5) {
-                    setType(8);
+                    setTypeMoC(8);
                 } else if (l < 7) {
-                    setType(6);
+                    setTypeMoC(6);
                 } else {
-                    setType(1);
+                    setTypeMoC(1);
                 }
             }
 
             if (BiomeDictionary.hasType(currentbiome, Type.JUNGLE)) {
                 // bright green or bright orange or cobra or dark green
                 if (l < 4) {
-                    setType(4);
+                    setTypeMoC(4);
                 } else if (l < 6) {
-                    setType(3);
+                    setTypeMoC(3);
                 } else if (l < 8) {
-                    setType(6);
+                    setTypeMoC(6);
                 } else {
-                    setType(1);
+                    setTypeMoC(1);
                 }
             }
 
             if (BiomeDictionary.hasType(currentbiome, MoCEntities.WYVERN_LAIR)) {
                 // bright green or bright orange or spotted or dark green
                 if (l < 3) {
-                    setType(4);
+                    setTypeMoC(4);
                 } else if (l < 5) {
-                    setType(3);
+                    setTypeMoC(3);
                 } else if (l < 7) {
-                    setType(2);
+                    setTypeMoC(2);
                 } else {
-                    setType(1);
+                    setTypeMoC(1);
                 }
             }
 
-            if (getType() == 7 && !(BiomeDictionary.hasType(currentbiome, Type.SANDY))) {
-                setType(2);
+            if (getTypeMoC() == 7 && !(BiomeDictionary.hasType(currentbiome, Type.SANDY))) {
+                setTypeMoC(2);
             }
         } catch (Exception ignored) {
         }
@@ -652,15 +652,15 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void applyEnchantments(EntityLivingBase entityLivingBaseIn, Entity entityIn) {
+    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
         if (isVenomous()) {
-            ((EntityLivingBase) entityIn).addPotionEffect(new PotionEffect(MobEffects.POISON, 150, 2));
+            ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 150, 2));
         }
         super.applyEnchantments(entityLivingBaseIn, entityIn);
     }
 
     private boolean isVenomous() {
-        return getType() == 3 || getType() == 4 || getType() == 5 || getType() == 6 || getType() == 7 || getType() == 9;
+        return getTypeMoC() == 3 || getTypeMoC() == 4 || getTypeMoC() == 5 || getTypeMoC() == 6 || getTypeMoC() == 7 || getTypeMoC() == 9;
     }
 
     @Override

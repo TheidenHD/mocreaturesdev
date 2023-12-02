@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 
-public class MoCRenderBee extends MoCRenderInsect<MoCEntityBee, MoCModelBee>{
+public class MoCRenderBee extends MoCRenderInsect<MoCEntityBee, MoCModelBee> {
     public MoCRenderBee(EntityRendererManager manager, MoCModelBee modelbase) {
         super(manager, modelbase);
         this.addLayer(new MoCLayerBee(this));

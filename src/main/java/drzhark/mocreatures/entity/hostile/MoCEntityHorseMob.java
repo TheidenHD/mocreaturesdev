@@ -64,17 +64,17 @@ public class MoCEntityHorseMob extends MoCEntityMob {
     @Override
     public void selectType() {
         if (this.world.provider.doesWaterVaporize()) {
-            setType(38);
+            setTypeMoC(38);
             this.isImmuneToFire = true;
         } else {
-            if (getType() == 0) {
+            if (getTypeMoC() == 0) {
                 int j = this.rand.nextInt(100);
                 if (j <= (40)) {
-                    setType(23); //undead
+                    setTypeMoC(23); //undead
                 } else if (j <= (80)) {
-                    setType(26); //skeleton horse
+                    setTypeMoC(26); //skeleton horse
                 } else {
-                    setType(32); //bat
+                    setTypeMoC(32); //bat
                 }
             }
         }
@@ -95,7 +95,7 @@ public class MoCEntityHorseMob extends MoCEntityMob {
     @Override
     public ResourceLocation getTexture() {
 
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 23://undead horse
 
                 if (!MoCreatures.proxy.getAnimateTextures()) {
@@ -170,32 +170,30 @@ public class MoCEntityHorseMob extends MoCEntityMob {
         }
         return MoCSoundEvents.ENTITY_HORSE_AMBIENT_UNDEAD;
     }
-    
+
     @Override
-	protected void playStepSound(BlockPos pos, Block blockIn) {
+    protected void playStepSound(BlockPos pos, Block blockIn) {
         if (!blockIn.getDefaultState().getMaterial().isLiquid()) {
             SoundType soundtype = blockIn.getSoundType();
 
             if (this.world.getBlockState(pos.up()).getBlock() == Blocks.SNOW_LAYER) {
                 soundtype = Blocks.SNOW_LAYER.getSoundType();
-            }
-            else if (soundtype == SoundType.WOOD) {
+            } else if (soundtype == SoundType.WOOD) {
                 this.playSound(SoundEvents.ENTITY_HORSE_STEP_WOOD, soundtype.getVolume() * 0.15F, soundtype.getPitch());
-            }
-            else {
+            } else {
                 this.playSound(SoundEvents.ENTITY_HORSE_STEP, soundtype.getVolume() * 0.15F, soundtype.getPitch());
             }
         }
     }
 
     public boolean isOnAir() {
-        return this.world.isAirBlock(new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.posY - 0.2D), MathHelper
-                .floor(this.posZ)));
+        return this.world.isAirBlock(new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(this.getPosY() - 0.2D), MathHelper
+                .floor(this.getPosZ())));
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
 
         if (this.mouthCounter > 0 && ++this.mouthCounter > 30) {
             this.mouthCounter = 0;
@@ -221,16 +219,16 @@ public class MoCEntityHorseMob extends MoCEntityMob {
 
     @Override
     public boolean isFlyer() {
-        return this.getType() == 25 //undead pegasus
-                || this.getType() == 32 // bat horse
-                || this.getType() == 28; // skeleton pegasus
+        return this.getTypeMoC() == 25 //undead pegasus
+                || this.getTypeMoC() == 32 // bat horse
+                || this.getTypeMoC() == 28; // skeleton pegasus
     }
 
     /**
      * Has a unicorn? to render it and buckle entities!
      */
     public boolean isUnicorned() {
-        return this.getType() == 24 || this.getType() == 27 || this.getType() == 32;
+        return this.getTypeMoC() == 24 || this.getTypeMoC() == 27 || this.getTypeMoC() == 32;
     }
 
     @Override
@@ -250,11 +248,11 @@ public class MoCEntityHorseMob extends MoCEntityMob {
             stand();
         }
 
-        if (this.world.isRemote && getType() == 38 && this.rand.nextInt(50) == 0) {
+        if (this.world.isRemote && getTypeMoC() == 38 && this.rand.nextInt(50) == 0) {
             LavaFX();
         }
 
-        if (this.world.isRemote && getType() == 23 && this.rand.nextInt(50) == 0) {
+        if (this.world.isRemote && getTypeMoC() == 23 && this.rand.nextInt(50) == 0) {
             UndeadFX();
         }
 
@@ -309,35 +307,35 @@ public class MoCEntityHorseMob extends MoCEntityMob {
     @Override
     protected Item getDropItem() {
         boolean flag = (this.rand.nextInt(100) < MoCreatures.proxy.rareItemDropChance);
-        if (this.getType() == 32 && MoCreatures.proxy.rareItemDropChance < 25) {
+        if (this.getTypeMoC() == 32 && MoCreatures.proxy.rareItemDropChance < 25) {
             flag = (this.rand.nextInt(100) < 25);
         }
 
-        if (flag && (this.getType() == 36 || (this.getType() >= 50 && this.getType() < 60))) //unicorn
+        if (flag && (this.getTypeMoC() == 36 || (this.getTypeMoC() >= 50 && this.getTypeMoC() < 60))) //unicorn
         {
             return MoCItems.unicornhorn;
         }
 
-        if (this.getType() == 38 && flag && this.world.provider.doesWaterVaporize()) //nightmare
+        if (this.getTypeMoC() == 38 && flag && this.world.provider.doesWaterVaporize()) //nightmare
         {
             return MoCItems.heartfire;
         }
-        if (this.getType() == 32 && flag) //bat horse
+        if (this.getTypeMoC() == 32 && flag) //bat horse
         {
             return MoCItems.heartdarkness;
         }
-        if (this.getType() == 26)//skely
+        if (this.getTypeMoC() == 26)//skely
         {
             return Items.BONE;
         }
-        if ((this.getType() == 23 || this.getType() == 24 || this.getType() == 25)) {
+        if ((this.getTypeMoC() == 23 || this.getTypeMoC() == 24 || this.getTypeMoC() == 25)) {
             if (flag) {
                 return MoCItems.heartundead;
             }
             return Items.ROTTEN_FLESH;
         }
 
-        if (this.getType() == 21 || this.getType() == 22) {
+        if (this.getTypeMoC() == 21 || this.getTypeMoC() == 22) {
             return Items.GHAST_TEAR;
         }
 
@@ -361,7 +359,7 @@ public class MoCEntityHorseMob extends MoCEntityMob {
     public void onDeath(DamageSource damagesource) {
         super.onDeath(damagesource);
 
-        if ((this.getType() == 23) || (this.getType() == 24) || (this.getType() == 25)) {
+        if ((this.getTypeMoC() == 23) || (this.getTypeMoC() == 24) || (this.getTypeMoC() == 25)) {
             MoCTools.spawnSlimes(this.world, this);
         }
     }
@@ -373,8 +371,8 @@ public class MoCEntityHorseMob extends MoCEntityMob {
 
     @Override
     public boolean getCanSpawnHere() {
-        if (this.posY < 50D && !this.world.provider.doesWaterVaporize()) {
-            setType(32);
+        if (this.getPosY() < 50D && !this.world.provider.doesWaterVaporize()) {
+            setTypeMoC(32);
         }
         return super.getCanSpawnHere();
     }
@@ -392,7 +390,7 @@ public class MoCEntityHorseMob extends MoCEntityMob {
      */
     @Override
     public EnumCreatureAttribute getCreatureAttribute() {
-        if (getType() == 23 || getType() == 24 || getType() == 25) {
+        if (getTypeMoC() == 23 || getTypeMoC() == 24 || getTypeMoC() == 25) {
             return EnumCreatureAttribute.UNDEAD;
         }
         return super.getCreatureAttribute();
@@ -411,9 +409,9 @@ public class MoCEntityHorseMob extends MoCEntityMob {
     @Override
     public void updatePassenger(Entity passenger) {
         double dist = (0.4D);
-        double newPosX = this.posX + (dist * Math.sin(this.renderYawOffset / 57.29578F));
-        double newPosZ = this.posZ - (dist * Math.cos(this.renderYawOffset / 57.29578F));
-        passenger.setPosition(newPosX, this.posY + getMountedYOffset() + passenger.getYOffset(), newPosZ);
+        double newPosX = this.getPosX() + (dist * Math.sin(this.renderYawOffset / 57.29578F));
+        double newPosZ = this.getPosZ() - (dist * Math.cos(this.renderYawOffset / 57.29578F));
+        passenger.setPosition(newPosX, this.getPosY() + getMountedYOffset() + passenger.getYOffset(), newPosZ);
         passenger.rotationYaw = this.rotationYaw;
     }
 

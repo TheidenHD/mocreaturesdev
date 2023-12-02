@@ -55,15 +55,15 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
+        if (getTypeMoC() == 0) {
             int i = this.rand.nextInt(100);
             if (i <= 20) {
-                setType(1);
+                setTypeMoC(1);
             } else if (i <= 70) {
-                setType(2);
+                setTypeMoC(2);
             } else {
                 setAdult(false);
-                setType(3);
+                setTypeMoC(3);
             }
         }
     }
@@ -71,7 +71,7 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
     @Override
     public ResourceLocation getTexture() {
 
-        switch (getType()) {
+        switch (getTypeMoC()) {
             case 2:
                 return MoCreatures.proxy.getModelTexture("deer_doe.png");
             case 3:
@@ -120,9 +120,9 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
     }
 
     public double getMyAISpeed() {
-        /*if (getType() == 1) {
+        /*if (getTypeMoC() == 1) {
             return 1.1D;
-        } else if (getType() == 2) {
+        } else if (getTypeMoC() == 2) {
             return 1.3D;
         }*/
         return 1.1D;
@@ -141,19 +141,19 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
     @Override
     public void setAdult(boolean flag) {
         if (!this.world.isRemote) {
-            setType(this.rand.nextInt(1));
+            setTypeMoC(this.rand.nextInt(1));
         }
         super.setAdult(flag);
     }
 
     @Override
     public boolean getIsAdult() {
-        return this.getType() != 3 && super.getIsAdult();
+        return this.getTypeMoC() != 3 && super.getIsAdult();
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
 
         if (!this.world.isRemote) {
 
@@ -161,9 +161,9 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
                 if (MoCTools.getMyMovementSpeed(this) > 0.17F) {
                     float velX = (float) (0.5F * Math.cos((MoCTools.realAngle(this.rotationYaw - 90F)) / 57.29578F));
                     float velZ = (float) (0.5F * Math.sin((MoCTools.realAngle(this.rotationYaw - 90F)) / 57.29578F));
-                    this.motionX -= velX;
-                    this.motionZ -= velZ;
-                    this.motionY = 0.5D;
+                    this.getMotion().getX() -= velX;
+                    this.getMotion().getZ() -= velZ;
+                    this.getMotion().getY() = 0.5D;
                     this.readyToJumpTimer = this.rand.nextInt(10) + 20;
                 }
             }
@@ -173,23 +173,23 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
     @Override
     public float pitchRotationOffset() {
         if (!this.onGround && MoCTools.getMyMovementSpeed(this) > 0.08F) {
-            if (this.motionY > 0.5D) {
+            if (this.getMotion().getY() > 0.5D) {
                 return 25F;
             }
-            if (this.motionY < -0.5D) {
+            if (this.getMotion().getY() < -0.5D) {
                 return -25F;
             }
-            return (float) (this.motionY * 70D);
+            return (float) (this.getMotion().getY() * 70D);
         }
         return 0F;
     }
 
     @Override
     public float getSizeFactor() {
-        if (getType() == 1) {
+        if (getTypeMoC() == 1) {
             return 1.6F;
         }
-        if (getType() == 2) {
+        if (getTypeMoC() == 2) {
             return 1.3F;
         }
         return getAge() * 0.01F;

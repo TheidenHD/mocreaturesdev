@@ -12,7 +12,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -66,14 +66,14 @@ public class MoCEntityEnt extends MoCEntityAnimal {
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(this.rand.nextInt(2) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(2) + 1);
         }
     }
 
     @Override
     public ResourceLocation getTexture() {
-        if (getType() == 2) {
+        if (getTypeMoC() == 2) {
             return MoCreatures.proxy.getModelTexture("ent_birch.png");
         }
         return MoCreatures.proxy.getModelTexture("ent_oak.png");
@@ -110,7 +110,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
         int i = this.rand.nextInt(3);
         int qty = this.rand.nextInt(12) + 4;
         int typ = 0;
-        if (getType() == 2) {
+        if (getTypeMoC() == 2) {
             typ = 2;
         }
         if (i == 0) {
@@ -180,7 +180,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
     }
 
     private void plantOnFertileGround() {
-        BlockPos pos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.posY), MathHelper.floor(this.posZ));
+        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(this.getPosY()), MathHelper.floor(this.getPosZ()));
         Block blockUnderFeet = this.world.getBlockState(pos.down()).getBlock();
         Block blockOnFeet = this.world.getBlockState(pos).getBlock();
 
@@ -209,7 +209,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
             // check perms first
             for (int x = -1; x < 2; x++) {
                 for (int z = -1; z < 2; z++) {
-                    BlockPos pos1 = new BlockPos(MathHelper.floor(this.posX + x), MathHelper.floor(this.posY), MathHelper.floor(this.posZ + z));
+                    BlockPos pos1 = new BlockPos(MathHelper.floor(this.getPosX() + x), MathHelper.floor(this.getPosY()), MathHelper.floor(this.getPosZ() + z));
                     //BlockEvent.BreakEvent event = null;
                     //if (!this.world.isRemote) {
                     //    event =
@@ -273,7 +273,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
                 break;
             case 19:
                 blockID = 6; //sapling
-                if (getType() == 2) {
+                if (getTypeMoC() == 2) {
                     metaData = 2; //to place the right sapling
                 }
                 break;
@@ -304,7 +304,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
     }*/
 
     @Override
-    protected void applyEnchantments(EntityLivingBase entityLivingBaseIn, Entity entityIn) {
+    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
         MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_SMACK);
         MoCTools.bigSmack(this, entityIn, 1F);
         super.applyEnchantments(entityLivingBaseIn, entityIn);

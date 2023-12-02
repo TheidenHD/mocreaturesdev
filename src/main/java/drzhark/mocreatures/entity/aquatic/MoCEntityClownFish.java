@@ -14,7 +14,7 @@ public class MoCEntityClownFish extends MoCEntitySmallFish {
 
     public MoCEntityClownFish(World world) {
         super(world);
-        this.setType(4);
+        this.setTypeMoC(4);
     }
 
     @Override

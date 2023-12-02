@@ -11,7 +11,7 @@ import drzhark.mocreatures.network.message.MoCMessageUpdatePetName;
 import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ChatAllowedCharacters;
@@ -67,7 +67,7 @@ public class MoCGUIEntityNamer extends GuiScreen {
     @Override
     public void drawScreen(int i, int j, float f) {
         drawDefaultBackground();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        matrixStackIn.color(1.0F, 1.0F, 1.0F, 1.0F);
         textureManager.bindTexture(TEXTURE_MOCNAME);
         int l = (this.width - this.xSize) / 2;
         int i1 = (this.height - (this.ySize + 16)) / 2;

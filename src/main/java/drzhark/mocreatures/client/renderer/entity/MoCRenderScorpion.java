@@ -5,7 +5,7 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.client.model.MoCModelScorpion;
 import drzhark.mocreatures.entity.hostile.MoCEntityScorpion;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 
 @OnlyIn(Dist.CLIENT)
@@ -41,12 +41,12 @@ public class MoCRenderScorpion extends MoCRenderMoC<MoCEntityScorpion> {
     }
 
     protected void adjustHeight(MoCEntityScorpion entityscorpion) {
-        GlStateManager.translate(0.0F, -0.1F, 0.0F);
+        matrixStackIn.translate(0.0F, -0.1F, 0.0F);
     }
 
     protected void rotateAnimal(MoCEntityScorpion entityscorpion) {
-        GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
-        GlStateManager.translate(0.0F, 1.0F, 0.0F);
+        matrixStackIn.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+        matrixStackIn.translate(0.0F, 1.0F, 0.0F);
     }
 
     protected void stretch(MoCEntityScorpion entityscorpion) {
@@ -55,7 +55,7 @@ public class MoCRenderScorpion extends MoCRenderMoC<MoCEntityScorpion> {
         if (!entityscorpion.getIsAdult()) {
             f = entityscorpion.getAge() * 0.01F;
         }
-        GlStateManager.scale(f, f, f);
+        matrixStackIn.scale(f, f, f);
     }
 
     @Override

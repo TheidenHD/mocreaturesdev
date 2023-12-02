@@ -13,7 +13,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -36,8 +36,8 @@ public class MoCEntityBlackBear extends MoCEntityBear {
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(1);
         }
         super.selectType();
     }
@@ -76,7 +76,7 @@ public class MoCEntityBlackBear extends MoCEntityBear {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, EnumHand hand) {
+    public boolean processInteract(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;

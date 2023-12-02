@@ -11,7 +11,7 @@ import drzhark.mocreatures.entity.neutral.MoCEntityKitty;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.entity.tameable.MoCPetMapData;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -69,15 +69,15 @@ public class MoCEventHooks {
                 if (spawnPos == null) return;
                 kitty.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(kitty)), null);
                 kitty.setPosition(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ());
-                world.spawnEntity(kitty);
+                world.addEntity(kitty);
             }
         }
     }
 
     @SubscribeEvent
     public void onLivingSpawnEvent(LivingSpawnEvent event) {
-        EntityLivingBase entity = event.getEntityLiving();
-        Class<? extends EntityLivingBase> entityClass = entity.getClass();
+        LivingEntity entity = event.getEntityLiving();
+        Class<? extends LivingEntity> entityClass = entity.getClass();
         MoCEntityData data = MoCreatures.entityMap.get(entityClass);
         if (data == null) return; // not a MoC entity
         World world = event.getWorld();
@@ -100,7 +100,7 @@ public class MoCEventHooks {
                     return;
                 }
 
-                if (mocEntity.getOwnerPetId() != -1) // required since getInteger will always return 0 if no key is found
+                if (mocEntity.getOwnerPetId() != -1) // required since getInt will always return 0 if no key is found
                 {
                     MoCreatures.instance.mapData.removeOwnerPet(mocEntity, mocEntity.getOwnerPetId());
                 }
@@ -117,7 +117,7 @@ public class MoCEventHooks {
         }
     }
 
-    private BlockPos getSafeSpawnPos(EntityLivingBase entity, BlockPos near) {
+    private BlockPos getSafeSpawnPos(LivingEntity entity, BlockPos near) {
         int radius = 6;
         int maxTries = 24;
         BlockPos testing;

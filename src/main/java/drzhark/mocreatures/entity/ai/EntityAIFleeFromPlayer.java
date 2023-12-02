@@ -5,12 +5,12 @@ package drzhark.mocreatures.entity.ai;
 
 import drzhark.mocreatures.entity.IMoCEntity;
 import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.RandomPositionGenerator;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 
-public class EntityAIFleeFromPlayer extends EntityAIBase {
+public class EntityAIFleeFromPlayer extends Goal {
 
     private final CreatureEntity entityCreature;
     protected double speed;
@@ -27,7 +27,7 @@ public class EntityAIFleeFromPlayer extends EntityAIBase {
     }
 
     /**
-     * Returns whether the EntityAIBase should begin execution.
+     * Returns whether the Goal should begin execution.
      */
     @Override
     public boolean shouldExecute() {
@@ -55,7 +55,7 @@ public class EntityAIFleeFromPlayer extends EntityAIBase {
     }
 
     protected boolean IsNearPlayer(double d) {
-        PlayerEntity entityplayer1 = this.entityCreature.world.getClosestPlayerToEntity(this.entityCreature, d);
+        PlayerEntity entityplayer1 = this.entityCreature.world.getClosestPlayer(this.entityCreature, d);
         return entityplayer1 != null;
     }
 
@@ -68,7 +68,7 @@ public class EntityAIFleeFromPlayer extends EntityAIBase {
     }
 
     /**
-     * Returns whether an in-progress EntityAIBase should continue executing
+     * Returns whether an in-progress Goal should continue executing
      */
     @Override
     public boolean shouldContinueExecuting() {

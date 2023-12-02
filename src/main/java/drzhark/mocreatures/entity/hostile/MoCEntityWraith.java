@@ -55,20 +55,20 @@ public class MoCEntityWraith extends MoCEntityMob//MoCEntityFlyerMob
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
+        if (getTypeMoC() == 0) {
             int i = this.rand.nextInt(100);
             if (i < 5 && MoCreatures.proxy.easterEggs) {
-                setType(2);
+                setTypeMoC(2);
                 setCustomNameTag("Scratch");
             } else {
-                setType(1);
+                setTypeMoC(1);
             }
         }
     }
 
     @Override
     public ResourceLocation getTexture() {
-        if (getType() == 2) {
+        if (getTypeMoC() == 2) {
             return MoCreatures.proxy.getModelTexture("wraith_scratch.png");
         } else {
             return MoCreatures.proxy.getModelTexture(MoCreatures.proxy.alphaWraithEyes ? "wraith_alpha.png" : "wraith.png");
@@ -141,7 +141,7 @@ public class MoCEntityWraith extends MoCEntityMob//MoCEntityFlyerMob
     private void startArmSwingAttack() {
         if (!this.world.isRemote) {
             this.attackCounter = 1;
-            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 1), new TargetPoint(this.world.provider.getDimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 1), new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
         }
     }
 
