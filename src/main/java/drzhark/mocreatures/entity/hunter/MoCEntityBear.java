@@ -13,7 +13,7 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -169,8 +169,8 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
             if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
-            if (entity != this && entity instanceof MobEntity && super.shouldAttackPlayers()) {
-                setAttackTarget((MobEntity) entity);
+            if (entity != this && entity instanceof LivingEntity && super.shouldAttackPlayers()) {
+                setAttackTarget((LivingEntity) entity);
             }
             return true;
         } else {
@@ -239,7 +239,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(MobEntity entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return !(entity instanceof MoCEntityBear) && entity.getHeight() <= 1D && entity.getWidth() <= 1D;
     }
 

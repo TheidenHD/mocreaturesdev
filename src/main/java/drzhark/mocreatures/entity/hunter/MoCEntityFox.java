@@ -11,7 +11,7 @@ import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -93,9 +93,9 @@ public class MoCEntityFox extends MoCEntityTameableAnimal {
             if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
-            if (entity != this && this.isNotScared() && entity instanceof MobEntity && super.shouldAttackPlayers()) {
-                setAttackTarget((MobEntity) entity);
-                setRevengeTarget((MobEntity) entity);
+            if (entity != this && this.isNotScared() && entity instanceof LivingEntity && super.shouldAttackPlayers()) {
+                setAttackTarget((LivingEntity) entity);
+                setRevengeTarget((LivingEntity) entity);
                 return true;
             }
 
@@ -189,7 +189,7 @@ public class MoCEntityFox extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(MobEntity entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return !(entity instanceof MoCEntityFox) && entity.getHeight() <= 0.7D && entity.getWidth() <= 0.7D;
     }
 

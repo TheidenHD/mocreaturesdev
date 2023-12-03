@@ -289,11 +289,11 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
-            if (!(entity instanceof MobEntity) || entity instanceof PlayerEntity && getIsTamed()) {
+            if (!(entity instanceof LivingEntity) || entity instanceof PlayerEntity && getIsTamed()) {
                 return false;
             }
             if (entity != this && super.shouldAttackPlayers() && getIsAdult()) {
-                setAttackTarget((MobEntity) entity);
+                setAttackTarget((LivingEntity) entity);
             }
             return true;
         } else {
@@ -302,26 +302,26 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void applyEnchantments(MobEntity entityLivingBaseIn, Entity entityIn) {
-        if (!getIsPoisoning() && this.rand.nextInt(5) == 0 && entityIn instanceof MobEntity) {
+    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
+        if (!getIsPoisoning() && this.rand.nextInt(5) == 0 && entityIn instanceof LivingEntity) {
             setPoisoning(true);
             if (getTypeMoC() <= 1) // Dirt Scorpion
             {
-                ((MobEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 15 * 20, 1)); // 15 seconds
+                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 15 * 20, 1)); // 15 seconds
             } else if (getTypeMoC() == 2) // Cave Scorpion
             {
-                ((MobEntity) entityIn).addPotionEffect(new EffectInstance(Effects.NAUSEA, 15 * 20, 0)); // 15 seconds
-                ((MobEntity) entityIn).addPotionEffect(new EffectInstance(Effects.WEAKNESS, 15 * 20, 0));
+                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.NAUSEA, 15 * 20, 0)); // 15 seconds
+                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.WEAKNESS, 15 * 20, 0));
             } else if (getTypeMoC() == 3) // Fire Scorpion
             {
                 entityIn.setFire(15);
             } else if (getTypeMoC() == 4) // Frost Scorpion
             {
-                ((MobEntity) entityIn).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 25 * 20, 0)); // 25 seconds
+                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 25 * 20, 0)); // 25 seconds
             } else if (getTypeMoC() == 5) // Undead Scorpion
             {
-                ((MobEntity) entityIn).addPotionEffect(new EffectInstance(Effects.BLINDNESS, 15 * 20, 0)); // 15 seconds
-                ((MobEntity) entityIn).addPotionEffect(new EffectInstance(Effects.WITHER, 15 * 20, 0));
+                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.BLINDNESS, 15 * 20, 0)); // 15 seconds
+                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.WITHER, 15 * 20, 0));
             }
         } else {
             swingArm();
@@ -627,7 +627,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(MobEntity entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return !(entity instanceof MoCEntityFox) && entity.getHeight() <= 1D && entity.getWidth() <= 1D;
     }
 
@@ -649,7 +649,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
         }
 
         @Override
-        protected double getAttackReachSqr(MobEntity attackTarget) {
+        protected double getAttackReachSqr(LivingEntity attackTarget) {
             return 4.0F + attackTarget.getWidth();
         }
     }

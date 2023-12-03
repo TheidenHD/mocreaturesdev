@@ -15,7 +15,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
@@ -372,7 +372,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
             if (!getIsFlying() && !getIsTamed() && this.rand.nextInt(10) == 0) {
                 List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(4D));
                 for (Entity entity1 : list) {
-                    if (!(entity1 instanceof MobEntity) || entity1 instanceof MoCEntityBird) {
+                    if (!(entity1 instanceof LivingEntity) || entity1 instanceof MoCEntityBird) {
                         continue;
                     }
                     if (entity1.getWidth() >= 0.4F && entity1.getHeight() >= 0.4F && canEntityBeSeen(entity1)) {

@@ -9,7 +9,8 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.*;
 import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
@@ -252,12 +253,12 @@ public class MoCEntityManticore extends MoCEntityMob {
         }
 
         @Override
-        protected double getAttackReachSqr(MobEntity attackTarget) {
+        protected double getAttackReachSqr(LivingEntity attackTarget) {
             return 4.0F + attackTarget.getWidth();
         }
     }
 
-    static class AIManticoreTarget<T extends MobEntity> extends EntityAINearestAttackableTarget<T> {
+    static class AIManticoreTarget<T extends LivingEntity> extends EntityAINearestAttackableTarget<T> {
         public AIManticoreTarget(MoCEntityManticore manticore, Class<T> classTarget) {
             super(manticore, classTarget, true);
         }

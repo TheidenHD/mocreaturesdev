@@ -13,7 +13,7 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -395,8 +395,8 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
 
-            if (entity != this && entity instanceof MobEntity && super.shouldAttackPlayers() && getTypeMoC() > 4) {
-                setAttackTarget((MobEntity) entity);
+            if (entity != this && entity instanceof LivingEntity && super.shouldAttackPlayers() && getTypeMoC() > 4) {
+                setAttackTarget((LivingEntity) entity);
                 setUpset(true);
             }
             return true;

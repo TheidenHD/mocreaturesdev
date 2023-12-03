@@ -17,7 +17,7 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -199,12 +199,12 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
 
-            if (!(entity instanceof MobEntity) || ((this.isBeingRidden()) && (entity == this.getRidingEntity())) || (entity instanceof PlayerEntity && getIsTamed())) {
+            if (!(entity instanceof LivingEntity) || ((this.isBeingRidden()) && (entity == this.getRidingEntity())) || (entity instanceof PlayerEntity && getIsTamed())) {
                 return false;
             }
 
             if ((entity != this) && (super.shouldAttackPlayers()) && getTypeMoC() > 2) {
-                setAttackTarget((MobEntity) entity);
+                setAttackTarget((LivingEntity) entity);
                 flapWings();
             }
             return true;

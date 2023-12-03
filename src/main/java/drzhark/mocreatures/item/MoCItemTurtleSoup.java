@@ -3,7 +3,7 @@
  */
 package drzhark.mocreatures.item;
 
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -24,7 +24,7 @@ public class MoCItemTurtleSoup extends MoCItemFood {
 
     @Override
     @Nullable
-    public ItemStack onItemUseFinish(ItemStack stack, World worldIn, MobEntity entityLiving) {
+    public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
         super.onItemUseFinish(stack, worldIn, entityLiving);
         return new ItemStack(Items.BOWL);
     }

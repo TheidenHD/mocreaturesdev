@@ -6,7 +6,7 @@ package drzhark.mocreatures.entity.hostile;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.util.ParticleTypes;
@@ -65,7 +65,7 @@ public class MoCEntityFlameWraith extends MoCEntityWraith implements IMob {
     }*/
 
     @Override
-    protected void applyEnchantments(MobEntity entityLivingBaseIn, Entity entityIn) {
+    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
         if (!this.world.isRemote && !this.world.provider.doesWaterVaporize()) {
             entityLivingBaseIn.setFire(this.burningTime);
         }

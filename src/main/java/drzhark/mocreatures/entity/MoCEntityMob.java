@@ -390,7 +390,7 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
     }
 
     @Override
-    public boolean canAttackTarget(MobEntity entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return false;
     }
 

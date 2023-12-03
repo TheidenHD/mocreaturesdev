@@ -13,7 +13,7 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.item.ItemEntity;
@@ -179,7 +179,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
         super.onLivingUpdate();
         if (!this.world.isRemote) {
             if (!getIsUpsideDown() && !getIsTamed()) {
-                MobEntity entityliving = getBoogey(4D);
+                LivingEntity entityliving = getBoogey(4D);
                 if ((entityliving != null) && canEntityBeSeen(entityliving)) {
                     if (!getIsHiding() && !isInWater()) {
                         MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_TURTLE_ANGRY);

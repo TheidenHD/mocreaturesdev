@@ -6,7 +6,7 @@ package drzhark.mocreatures.item;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.IItemTier;
@@ -44,7 +44,7 @@ public class MoCItemAxe extends AxeItem {
     }
 
     @Override
-    public boolean hitEntity(ItemStack stack, MobEntity target, MobEntity attacker) {
+    public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (MoCreatures.proxy.weaponEffects) {
             int timer = 15; // In seconds
             switch (this.specialWeaponType) {

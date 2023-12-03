@@ -12,6 +12,7 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.monster.EntityIronGolem;
@@ -192,8 +193,8 @@ public class MoCEntityScorpion extends MoCEntityMob {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
 
-            if (entity != this && entity instanceof MobEntity && this.shouldAttackPlayers()) {
-                setAttackTarget((MobEntity) entity);
+            if (entity != this && entity instanceof LivingEntity && this.shouldAttackPlayers()) {
+                setAttackTarget((LivingEntity) entity);
             }
             return true;
         } else {
@@ -331,12 +332,12 @@ public class MoCEntityScorpion extends MoCEntityMob {
         }
 
         @Override
-        protected double getAttackReachSqr(MobEntity attackTarget) {
+        protected double getAttackReachSqr(LivingEntity attackTarget) {
             return 4.0F + attackTarget.getWidth();
         }
     }
 
-    static class AIScorpionTarget<T extends MobEntity> extends EntityAINearestAttackableTarget<T> {
+    static class AIScorpionTarget<T extends LivingEntity> extends EntityAINearestAttackableTarget<T> {
         public AIScorpionTarget(MoCEntityScorpion scorpion, Class<T> classTarget) {
             super(scorpion, classTarget, true);
         }

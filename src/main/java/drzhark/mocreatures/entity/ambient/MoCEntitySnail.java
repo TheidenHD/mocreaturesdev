@@ -7,7 +7,7 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityAmbient;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.network.datasync.DataParameter;
@@ -91,7 +91,7 @@ public class MoCEntitySnail extends MoCEntityAmbient {
         super.onLivingUpdate();
 
         if (!this.world.isRemote) {
-            MobEntity entityliving = getBoogey(3D);
+            LivingEntity entityliving = getBoogey(3D);
             if ((entityliving != null) && entityliving.getHeight() > 0.5F && entityliving.getWidth() > 0.5F && canEntityBeSeen(entityliving)) {
                 if (!getIsHiding()) {
                     setIsHiding(true);

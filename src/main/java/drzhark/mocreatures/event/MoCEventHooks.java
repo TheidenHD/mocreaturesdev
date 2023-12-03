@@ -11,7 +11,7 @@ import drzhark.mocreatures.entity.neutral.MoCEntityKitty;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.entity.tameable.MoCPetMapData;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -76,8 +76,8 @@ public class MoCEventHooks {
 
     @SubscribeEvent
     public void onLivingSpawnEvent(LivingSpawnEvent event) {
-        MobEntity entity = event.getEntityLiving();
-        Class<? extends MobEntity> entityClass = entity.getClass();
+        LivingEntity entity = event.getEntityLiving();
+        Class<? extends LivingEntity> entityClass = entity.getClass();
         MoCEntityData data = MoCreatures.entityMap.get(entityClass);
         if (data == null) return; // not a MoC entity
         World world = event.getWorld();
@@ -117,7 +117,7 @@ public class MoCEventHooks {
         }
     }
 
-    private BlockPos getSafeSpawnPos(MobEntity entity, BlockPos near) {
+    private BlockPos getSafeSpawnPos(LivingEntity entity, BlockPos near) {
         int radius = 6;
         int maxTries = 24;
         BlockPos testing;

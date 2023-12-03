@@ -337,12 +337,12 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
     /**
      * Finds and entity described in entitiesToInclude at d distance
      */
-    protected MobEntity getBoogey(double d) {
-        MobEntity entityliving = null;
+    protected LivingEntity getBoogey(double d) {
+        LivingEntity entityliving = null;
         List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(d, 4D, d));
         for (Entity entity : list) {
             if (entitiesToInclude(entity)) {
-                entityliving = (MobEntity) entity;
+                entityliving = (LivingEntity) entity;
             }
         }
         return entityliving;
@@ -352,7 +352,7 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
      * Used in getBoogey to specify what kind of entity to look for
      */
     public boolean entitiesToInclude(Entity entity) {
-        return ((entity instanceof MobEntity) && ((entity.getWidth() >= 0.5D) || (entity.getHeight() >= 0.5D)));
+        return ((entity instanceof LivingEntity) && ((entity.getWidth() >= 0.5D) || (entity.getHeight() >= 0.5D)));
     }
 
     @Override
@@ -397,7 +397,7 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
     }
 
     @Override
-    public boolean canAttackTarget(MobEntity entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return false;
     }
 

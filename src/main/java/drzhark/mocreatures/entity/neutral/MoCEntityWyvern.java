@@ -669,9 +669,9 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void applyEnchantments(MobEntity entityLivingBaseIn, Entity entityIn) {
+    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
         if (entityIn instanceof PlayerEntity && this.rand.nextInt(3) == 0) {
-            ((MobEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 200, 0));
+            ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 200, 0));
         }
 
         super.applyEnchantments(entityLivingBaseIn, entityIn);
@@ -689,7 +689,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             }
 
             if ((entity != this) && (super.shouldAttackPlayers())) {
-                setAttackTarget((MobEntity) entity);
+                setAttackTarget((LivingEntity) entity);
             }
             return true;
         }
@@ -868,7 +868,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(MobEntity entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return !(entity instanceof MoCEntityWyvern) && entity.getHeight() <= 1D && entity.getWidth() <= 1D;
     }
 

@@ -18,7 +18,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.DoubleSidedInventory;
@@ -913,14 +913,14 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
-            if ((entity != null && getIsTamed() && entity instanceof PlayerEntity) || !(entity instanceof MobEntity)) {
+            if ((entity != null && getIsTamed() && entity instanceof PlayerEntity) || !(entity instanceof LivingEntity)) {
                 return false;
             }
             if (this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
             if (entity != this && super.shouldAttackPlayers()) {
-                setAttackTarget((MobEntity) entity);
+                setAttackTarget((LivingEntity) entity);
             }
             return true;
         }

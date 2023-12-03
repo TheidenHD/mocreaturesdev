@@ -15,7 +15,7 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
@@ -279,7 +279,7 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
 
-            if ((entity != null && getIsTamed() && entity instanceof PlayerEntity) || !(entity instanceof MobEntity)) {
+            if ((entity != null && getIsTamed() && entity instanceof PlayerEntity) || !(entity instanceof LivingEntity)) {
                 return false;
             }
 
@@ -288,7 +288,7 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
             }
 
             if ((entity != this) && (super.shouldAttackPlayers())) {
-                setAttackTarget((MobEntity) entity);
+                setAttackTarget((LivingEntity) entity);
             }
             return true;
         }
@@ -319,7 +319,7 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(MobEntity entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return !(entity instanceof MoCEntityKomodo) && super.canAttackTarget(entity);
     }
 
@@ -339,8 +339,8 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void applyEnchantments(MobEntity entityLivingBaseIn, Entity entityIn) {
-        ((MobEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 150, 0));
+    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
+        ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 150, 0));
         super.applyEnchantments(entityLivingBaseIn, entityIn);
     }
 

@@ -223,8 +223,8 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
-            if (entity != this && entity instanceof MobEntity) {
-                MobEntity entity1 = (MobEntity) entity;
+            if (entity != this && entity instanceof LivingEntity) {
+                LivingEntity entity1 = (LivingEntity) entity;
                 if (getKittyState() == 10) {
                     List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(16D, 6D, 16D));
                     for (Entity entity2 : list) {
@@ -570,7 +570,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                     }
                     break;
                 case 2: // Scared
-                    MobEntity living1 = getBoogey(6D);
+                    LivingEntity living1 = getBoogey(6D);
                     if (living1 != null) {
                         MoCTools.runLikeHell(this, living1);
                     }
@@ -745,7 +745,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                             Entity entity = list.get(j);
                             if (entity instanceof MoCEntityKitty && ((MoCEntityKitty) entity).getKittyState() == 9) {
                                 changeKittyState(18);
-                                setAttackTarget((MobEntity) entity);
+                                setAttackTarget((LivingEntity) entity);
                                 ((MoCEntityKitty) entity).changeKittyState(18);
                                 ((MoCEntityKitty) entity).setAttackTarget(this);
                                 break;
@@ -770,7 +770,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                             }
                             float f9 = getDistance(entity1);
                             if (f9 > 12F) {
-                                setAttackTarget((MobEntity) entity1);
+                                setAttackTarget((LivingEntity) entity1);
                             }
                         }
                     }

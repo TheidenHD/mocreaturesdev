@@ -11,7 +11,7 @@ import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
@@ -72,8 +72,8 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
             if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
-            if (entity != this && entity instanceof MobEntity) {
-                setAttackTarget((MobEntity) entity);
+            if (entity != this && entity instanceof LivingEntity) {
+                setAttackTarget((LivingEntity) entity);
                 return true;
             } else {
                 return false;
@@ -102,12 +102,12 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
         return null;
     }
 
-    public MobEntity FindTarget(Entity entity, double d) {
+    public LivingEntity FindTarget(Entity entity, double d) {
         double d1 = -1D;
-        MobEntity entityliving = null;
+        LivingEntity entityliving = null;
         List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(d));
         for (Entity o : list) {
-            if (!(o instanceof MobEntity) || (o instanceof MoCEntityAquatic) || (o instanceof MoCEntityEgg) || (o instanceof PlayerEntity) || ((o instanceof EntityWolf) && !(MoCreatures.proxy.attackWolves)) || ((o instanceof MoCEntityHorse) && !(MoCreatures.proxy.attackHorses))) {
+            if (!(o instanceof LivingEntity) || (o instanceof MoCEntityAquatic) || (o instanceof MoCEntityEgg) || (o instanceof PlayerEntity) || ((o instanceof EntityWolf) && !(MoCreatures.proxy.attackWolves)) || ((o instanceof MoCEntityHorse) && !(MoCreatures.proxy.attackHorses))) {
                 continue;
             } else {
                 if ((o instanceof MoCEntityDolphin)) {
@@ -115,9 +115,9 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
                 }
             }
             double d2 = o.getDistanceSq(entity.getPosX(), entity.getPosY(), entity.getPosZ());
-            if (((d < 0.0D) || (d2 < (d * d))) && ((d1 == -1D) || (d2 < d1)) && ((MobEntity) o).canEntityBeSeen(entity)) {
+            if (((d < 0.0D) || (d2 < (d * d))) && ((d1 == -1D) || (d2 < d1)) && ((LivingEntity) o).canEntityBeSeen(entity)) {
                 d1 = d2;
-                entityliving = (MobEntity) o;
+                entityliving = (LivingEntity) o;
             }
         }
         return entityliving;

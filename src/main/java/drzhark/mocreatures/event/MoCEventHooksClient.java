@@ -22,11 +22,11 @@ public class MoCEventHooksClient {
 
     /* TODO: Fix rider rotation
     @SubscribeEvent
-    public void renderClimbingRiderPre(RenderLivingEvent.Pre<MobEntity> event) {
-        MobEntity rider = event.getEntity();
+    public void renderClimbingRiderPre(RenderLivingEvent.Pre<LivingEntity> event) {
+        LivingEntity rider = event.getEntity();
         Entity mount = rider.getRidingEntity();
         if (mount instanceof MoCEntityScorpion || mount instanceof MoCEntityPetScorpion) {
-            if (((MobEntity) rider.getRidingEntity()).isOnLadder()) {
+            if (((LivingEntity) rider.getRidingEntity()).isOnLadder()) {
                 Direction facing = rider.getHorizontalFacing();
                 matrixStackIn.push();
                 if (facing == Direction.NORTH) {
@@ -44,11 +44,11 @@ public class MoCEventHooksClient {
     }
 
     @SubscribeEvent
-    public void renderClimbingRiderPost(RenderLivingEvent.Post<MobEntity> event) {
-        MobEntity rider = event.getEntity();
+    public void renderClimbingRiderPost(RenderLivingEvent.Post<LivingEntity> event) {
+        LivingEntity rider = event.getEntity();
         Entity mount = rider.getRidingEntity();
         if (mount instanceof MoCEntityScorpion || mount instanceof MoCEntityPetScorpion) {
-            if (((MobEntity) rider.getRidingEntity()).isOnLadder()) {
+            if (((LivingEntity) rider.getRidingEntity()).isOnLadder()) {
                 Direction facing = rider.getHorizontalFacing();
                 matrixStackIn.translate(0.0F, 1.0F, 0.0F);
                 if (facing == Direction.NORTH) {

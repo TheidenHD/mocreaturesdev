@@ -486,9 +486,9 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
             if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
-            if ((entity != this) && entity instanceof MobEntity && (super.shouldAttackPlayers())) {
+            if ((entity != this) && entity instanceof LivingEntity && (super.shouldAttackPlayers())) {
                 setPissed(true);
-                setAttackTarget((MobEntity) entity);
+                setAttackTarget((LivingEntity) entity);
             }
             return true;
         } else {
@@ -508,7 +508,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(MobEntity entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return !(entity instanceof MoCEntitySnake) && entity.getHeight() < 0.5D && entity.getWidth() < 0.5D;
     }
 
@@ -652,9 +652,9 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void applyEnchantments(MobEntity entityLivingBaseIn, Entity entityIn) {
+    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
         if (isVenomous()) {
-            ((MobEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 150, 2));
+            ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 150, 2));
         }
         super.applyEnchantments(entityLivingBaseIn, entityIn);
     }
