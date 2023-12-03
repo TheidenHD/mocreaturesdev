@@ -7,7 +7,7 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.ai.EntityAIFollowHerd;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
@@ -69,12 +69,12 @@ public class MoCEntityPiranha extends MoCEntitySmallFish {
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (super.attackEntityFrom(damagesource, i) && (this.world.getDifficulty().getId() > 0)) {
             Entity entity = damagesource.getTrueSource();
-            if (entity instanceof LivingEntity) {
+            if (entity instanceof MobEntity) {
                 if (this.isRidingOrBeingRiddenBy(entity)) {
                     return true;
                 }
                 if (entity != this) {
-                    this.setAttackTarget((LivingEntity) entity);
+                    this.setAttackTarget((MobEntity) entity);
                 }
                 return true;
             }

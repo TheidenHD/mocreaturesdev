@@ -11,7 +11,7 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
@@ -66,7 +66,7 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
     public boolean isOnDirt() {
         Block block =
                 this.world.getBlockState(
-                        new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(this.getEntityBoundingBox().minY - 0.5D), MathHelper
+                        new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(this.getBoundingBox().minY - 0.5D), MathHelper
                                 .floor(this.getPosZ()))).getBlock();
         return isDiggableBlock(Block.getIdFromBlock(block));//(j == 2 | j == 3 | j == 12);
     }
@@ -154,7 +154,7 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
             }
 
             if (getState() != 2 && getState() != 1 && isOnDirt()) {
-                LivingEntity entityliving = getBoogey(4D);
+                MobEntity entityliving = getBoogey(4D);
                 if ((entityliving != null) && canEntityBeSeen(entityliving)) {
                     setState(1);
                     this.getNavigator().clearPath();
@@ -258,6 +258,6 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
     }
 
     public float getEyeHeight() {
-        return this.height * 0.525F;
+        return this.getHeight() * 0.525F;
     }
 }

@@ -8,7 +8,7 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.hostile.MoCEntityOgre;
 import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.EntityCreeper;
@@ -29,7 +29,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class MoCEntityLitterBox extends LivingEntity {
+public class MoCEntityLitterBox extends MobEntity {
 
     private static final DataParameter<Boolean> PICKED_UP = EntityDataManager.createKey(MoCEntityLitterBox.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> USED_LITTER = EntityDataManager.createKey(MoCEntityLitterBox.class, DataSerializers.BOOLEAN);
@@ -151,7 +151,7 @@ public class MoCEntityLitterBox extends LivingEntity {
         if (getUsedLitter()) {
             if (!this.world.isRemote) {
                 this.litterTime++;
-                List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(12D, 4D, 12D));
+                List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(12D, 4D, 12D));
                 for (Entity entity : list) {
                     if (!(entity instanceof MobEntity)) {
                         continue;

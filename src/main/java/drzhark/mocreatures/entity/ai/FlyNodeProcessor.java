@@ -5,39 +5,40 @@ package drzhark.mocreatures.entity.ai;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.pathfinding.FlaggedPathPoint;
 import net.minecraft.pathfinding.NodeProcessor;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
 
 public class FlyNodeProcessor extends NodeProcessor {
 
     public PathPoint getStart() {
-        return this.openPoint(MathHelper.floor(this.entity.getEntityBoundingBox().minX), MathHelper.floor(this.entity.getEntityBoundingBox().minY + 0.5D), MathHelper.floor(this.entity.getEntityBoundingBox().minZ));
+        return this.openPoint(MathHelper.floor(this.entity.getBoundingBox().minX), MathHelper.floor(this.entity.getBoundingBox().minY + 0.5D), MathHelper.floor(this.entity.getBoundingBox().minZ));
     }
 
     /**
      * Returns PathPoint for given coordinates
      */
-    public PathPoint getPathPointToCoords(double x, double y, double z) {
-        return this.openPoint(MathHelper.floor(x - (double) (this.entity.width / 2.0F)), MathHelper.floor(y + 0.5D), MathHelper.floor(z - (double) (this.entity.width / 2.0F)));
+    public FlaggedPathPoint func_224768_a(double x, double y, double z) {
+        return new FlaggedPathPoint(this.openPoint(MathHelper.floor(x - (double) (this.entity.getWidth() / 2.0F)), MathHelper.floor(y + 0.5D), MathHelper.floor(z - (double) (this.entity.getWidth() / 2.0F))));
     }
 
 
-    public int findPathOptions(PathPoint[] pathOptions, PathPoint currentPoint, PathPoint targetPoint, float maxDistance) {
+    public int func_222859_a(PathPoint[] pathOptions, PathPoint currentPoint) {
         int i = 0;
 
         for (Direction enumfacing : Direction.values()) {
             // Todo: this could be wrong!
             PathPoint pathpoint = this.getSafePoint(currentPoint.x + enumfacing.getXOffset(), currentPoint.y + enumfacing.getYOffset(), currentPoint.z + enumfacing.getZOffset());
 
-            if (pathpoint != null && !pathpoint.visited && pathpoint.distanceTo(targetPoint) < maxDistance) {
+            if (pathpoint != null && !pathpoint.visited) {
                 pathOptions[i++] = pathpoint;
             }
         }
@@ -53,7 +54,7 @@ public class FlyNodeProcessor extends NodeProcessor {
 
 
     private PathNodeType isFree(int p_186327_1_, int p_186327_2_, int p_186327_3_) {
-        BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
+        BlockPos.Mutable blockpos$mutableblockpos = new BlockPos.Mutable();
 
         for (int i = p_186327_1_; i < p_186327_1_ + this.entitySizeX; ++i) {
             for (int j = p_186327_2_; j < p_186327_2_ + this.entitySizeY; ++j) {
@@ -71,12 +72,12 @@ public class FlyNodeProcessor extends NodeProcessor {
     }
 
     @Override
-    public PathNodeType getPathNodeType(IBlockAccess blockaccessIn, int x, int y, int z, LivingEntity entitylivingIn, int xSize, int ySize, int zSize, boolean canBreakDoorsIn, boolean canEnterDoorsIn) {
+    public PathNodeType determineNodeType(IBlockReader blockaccessIn, int x, int y, int z, MobEntity entitylivingIn, int xSize, int ySize, int zSize, boolean canBreakDoorsIn, boolean canEnterDoorsIn) {
         return PathNodeType.OPEN;
     }
 
     @Override
-    public PathNodeType getPathNodeType(IBlockAccess x, int y, int z, int p_186330_4_) {
+    public PathNodeType getFloorNodeType(IBlockReader x, int y, int z, int p_186330_4_) {
         return PathNodeType.OPEN;
     }
 

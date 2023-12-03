@@ -267,7 +267,7 @@ public class MoCEntityHorseMob extends MoCEntityMob {
 
             if (!this.isBeingRidden() && this.rand.nextInt(100) == 0) {
                 MoCTools.findMobRider(this);
-                /*List list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(4D));
+                /*List list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(4D));
                 for (int i = 0; i < list.size(); i++) {
                     Entity entity = (Entity) list.get(i);
                     if (!(entity instanceof MobEntity)) {
@@ -366,7 +366,7 @@ public class MoCEntityHorseMob extends MoCEntityMob {
 
     @Override
     public double getMountedYOffset() {
-        return (this.height * 0.75D) - 0.1D;
+        return (this.getHeight() * 0.75D) - 0.1D;
     }
 
     @Override
@@ -417,6 +417,6 @@ public class MoCEntityHorseMob extends MoCEntityMob {
 
     // Adjusted to avoid most of the roof suffocation for now
     public float getEyeHeight() {
-        return this.height * 0.9F;
+        return this.getHeight() * 0.9F;
     }
 }

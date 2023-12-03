@@ -11,7 +11,7 @@ import net.minecraft.block.BlockFalling;
 import net.minecraft.block.BlockFlower;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.init.Biomes;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -325,7 +325,7 @@ public class MoCTerrainGeneratorWyvernSkylands extends MoCTerrainGenerator {
 
         biome.decorate(world, random, chunkWorldPos);
 
-        MoCTools.performCustomWorldGenSpawning(world, biome, chunkWorldPos.getX(), chunkWorldPos.getZ(), 16, 16, random, biome.getSpawnableList(EntityClassification.CREATURE), LivingEntity.SpawnPlacementType.ON_GROUND);
+        MoCTools.performCustomWorldGenSpawning(world, biome, chunkWorldPos.getX(), chunkWorldPos.getZ(), 16, 16, random, biome.getSpawnableList(EntityClassification.CREATURE), MobEntity.SpawnPlacementType.ON_GROUND);
 
         BlockFalling.fallInstantly = false;
     }

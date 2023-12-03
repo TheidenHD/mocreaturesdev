@@ -11,7 +11,7 @@ import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -93,9 +93,9 @@ public class MoCEntityFox extends MoCEntityTameableAnimal {
             if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
-            if (entity != this && this.isNotScared() && entity instanceof LivingEntity && super.shouldAttackPlayers()) {
-                setAttackTarget((LivingEntity) entity);
-                setRevengeTarget((LivingEntity) entity);
+            if (entity != this && this.isNotScared() && entity instanceof MobEntity && super.shouldAttackPlayers()) {
+                setAttackTarget((MobEntity) entity);
+                setRevengeTarget((MobEntity) entity);
                 return true;
             }
 
@@ -137,7 +137,7 @@ public class MoCEntityFox extends MoCEntityTameableAnimal {
     @Override
     public boolean checkSpawningBiome() {
         BlockPos pos =
-                new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getEntityBoundingBox().minY),
+                new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getBoundingBox().minY),
                         MathHelper.floor(this.getPosZ()));
         Biome currentbiome = MoCTools.biomeKind(this.world, pos);
         try {
@@ -189,8 +189,8 @@ public class MoCEntityFox extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(LivingEntity entity) {
-        return !(entity instanceof MoCEntityFox) && entity.height <= 0.7D && entity.width <= 0.7D;
+    public boolean canAttackTarget(MobEntity entity) {
+        return !(entity instanceof MoCEntityFox) && entity.getHeight() <= 0.7D && entity.getWidth() <= 0.7D;
     }
 
     @Override
@@ -207,6 +207,6 @@ public class MoCEntityFox extends MoCEntityTameableAnimal {
     }
 
     public float getEyeHeight() {
-        return this.height * 0.86F;
+        return this.getHeight() * 0.86F;
     }
 }

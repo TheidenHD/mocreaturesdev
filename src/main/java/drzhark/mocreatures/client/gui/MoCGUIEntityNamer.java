@@ -13,7 +13,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
@@ -50,7 +50,7 @@ public class MoCGUIEntityNamer extends GuiScreen {
 
     public void updateName() {
         this.namedEntity.setPetName(this.nameToSet);
-        MoCMessageHandler.INSTANCE.sendToServer(new MoCMessageUpdatePetName(((LivingEntity) this.namedEntity).getEntityId(), this.nameToSet));
+        MoCMessageHandler.INSTANCE.sendToServer(new MoCMessageUpdatePetName(((MobEntity) this.namedEntity).getEntityId(), this.nameToSet));
         this.mc.displayGuiScreen(null);
     }
 

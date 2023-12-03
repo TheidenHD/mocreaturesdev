@@ -7,35 +7,37 @@ import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
+import java.util.EnumSet;
 import java.util.UUID;
 
 public class EntityAIFollowOwnerPlayer extends Goal {
 
-    private final LivingEntity thePet;
+    private final MobEntity thePet;
     private final double speed;
-    private final PathNavigate petPathfinder;
+    private final PathNavigator petPathfinder;
     World world;
     float maxDist;
     float minDist;
     private PlayerEntity theOwner;
     private int delayCounter;
 
-    public EntityAIFollowOwnerPlayer(LivingEntity thePetIn, double speedIn, float minDistIn, float maxDistIn) {
+    public EntityAIFollowOwnerPlayer(MobEntity thePetIn, double speedIn, float minDistIn, float maxDistIn) {
         this.thePet = thePetIn;
         this.world = thePetIn.world;
         this.speed = speedIn;
         this.petPathfinder = thePetIn.getNavigator();
         this.minDist = minDistIn;
         this.maxDist = maxDistIn;
-        this.setMutexBits(3);
+        this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 
         //if (!(thePetIn.getNavigator() instanceof PathNavigateGround)) {
         //System.out.println("exiting due to first illegal argument");
@@ -104,7 +106,7 @@ public class EntityAIFollowOwnerPlayer extends Goal {
         return iblockstate.getMaterial() == Material.AIR || !iblockstate.isFullCube();
     }
 
-    public void updateTask() {
+    public void tick() {
         this.thePet.getLookHelper().setLookPositionWithEntity(this.theOwner, 10.0F, (float) this.thePet.getVerticalFaceSpeed());
 
         if (!((IMoCEntity) this.thePet).getIsSitting()) {
@@ -116,7 +118,7 @@ public class EntityAIFollowOwnerPlayer extends Goal {
                         if (this.thePet.getDistanceSq(this.theOwner) >= 144.0D) {
                             int i = MathHelper.floor(this.theOwner.getPosX()) - 2;
                             int j = MathHelper.floor(this.theOwner.getPosZ()) - 2;
-                            int k = MathHelper.floor(this.theOwner.getEntityBoundingBox().minY);
+                            int k = MathHelper.floor(this.theOwner.getBoundingBox().minY);
 
                             for (int l = 0; l <= 4; ++l) {
                                 for (int i1 = 0; i1 <= 4; ++i1) {

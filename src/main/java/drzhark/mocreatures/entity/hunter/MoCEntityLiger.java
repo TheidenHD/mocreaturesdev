@@ -8,7 +8,7 @@ import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Items;
@@ -110,14 +110,14 @@ public class MoCEntityLiger extends MoCEntityBigCat {
     }
 
     @Override
-    public boolean canAttackTarget(LivingEntity entity) {
+    public boolean canAttackTarget(MobEntity entity) {
         if (!this.getIsAdult() && (this.getAge() < this.getMaxAge() * 0.8)) {
             return false;
         }
         if (entity instanceof MoCEntityLiger) {
             return false;
         }
-        return entity.height < 2F && entity.width < 2F;
+        return entity.getHeight() < 2F && entity.getWidth() < 2F;
     }
 
     @Override
@@ -126,6 +126,6 @@ public class MoCEntityLiger extends MoCEntityBigCat {
     }
 
     public float getEyeHeight() {
-        return this.height * 0.92F;
+        return this.getHeight() * 0.92F;
     }
 }

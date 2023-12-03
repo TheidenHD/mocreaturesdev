@@ -13,7 +13,7 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -169,8 +169,8 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
             if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
-            if (entity != this && entity instanceof LivingEntity && super.shouldAttackPlayers()) {
-                setAttackTarget((LivingEntity) entity);
+            if (entity != this && entity instanceof MobEntity && super.shouldAttackPlayers()) {
+                setAttackTarget((MobEntity) entity);
             }
             return true;
         } else {
@@ -239,8 +239,8 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(LivingEntity entity) {
-        return !(entity instanceof MoCEntityBear) && entity.height <= 1D && entity.width <= 1D;
+    public boolean canAttackTarget(MobEntity entity) {
+        return !(entity instanceof MoCEntityBear) && entity.getHeight() <= 1D && entity.getWidth() <= 1D;
     }
 
     @Override
@@ -359,7 +359,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     @Override
     public double getMountedYOffset() {
         double Yfactor = ((0.086D * this.getAge()) - 2.5D) / 10D;
-        return this.height * Yfactor;
+        return this.getHeight() * Yfactor;
     }
 
     @Override

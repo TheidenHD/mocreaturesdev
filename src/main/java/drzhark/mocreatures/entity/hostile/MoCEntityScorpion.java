@@ -13,7 +13,7 @@ import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureAttribute;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
@@ -21,8 +21,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNavigateClimber;
+import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -74,7 +74,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
     }
 
     @Override
-    protected PathNavigate createNavigator(World worldIn) {
+    protected PathNavigator createNavigator(World worldIn) {
         return new PathNavigateClimber(this, worldIn);
     }
 
@@ -158,7 +158,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
 
         if (!this.world.isRemote && !this.isBeingRidden() && this.getIsAdult() && !this.getHasBabies() && this.rand.nextInt(100) == 0) {
             MoCTools.findMobRider(this);
-            /*List list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(4D, 2D, 4D));
+            /*List list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(4D, 2D, 4D));
             for (int i = 0; i < list.size(); i++) {
                 Entity entity = (Entity) list.get(i);
                 if (!(entity instanceof MobEntity)) {
@@ -192,8 +192,8 @@ public class MoCEntityScorpion extends MoCEntityMob {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
 
-            if (entity != this && entity instanceof LivingEntity && this.shouldAttackPlayers()) {
-                setAttackTarget((LivingEntity) entity);
+            if (entity != this && entity instanceof MobEntity && this.shouldAttackPlayers()) {
+                setAttackTarget((MobEntity) entity);
             }
             return true;
         } else {
@@ -301,7 +301,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
 
     @Override
     public double getMountedYOffset() {
-        return (this.height * 0.75D) - 0.15D;
+        return (this.getHeight() * 0.75D) - 0.15D;
     }
 
     @Override
@@ -331,12 +331,12 @@ public class MoCEntityScorpion extends MoCEntityMob {
         }
 
         @Override
-        protected double getAttackReachSqr(LivingEntity attackTarget) {
-            return 4.0F + attackTarget.width;
+        protected double getAttackReachSqr(MobEntity attackTarget) {
+            return 4.0F + attackTarget.getWidth();
         }
     }
 
-    static class AIScorpionTarget<T extends LivingEntity> extends EntityAINearestAttackableTarget<T> {
+    static class AIScorpionTarget<T extends MobEntity> extends EntityAINearestAttackableTarget<T> {
         public AIScorpionTarget(MoCEntityScorpion scorpion, Class<T> classTarget) {
             super(scorpion, classTarget, true);
         }

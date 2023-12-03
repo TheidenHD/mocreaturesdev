@@ -174,8 +174,8 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
             if (entity != null && getIsTamed() && entity instanceof PlayerEntity) {
                 return false;
             }
-            if (entity != this && entity instanceof LivingEntity && (this.world.getDifficulty() != EnumDifficulty.PEACEFUL)) {
-                setAttackTarget((LivingEntity) entity);
+            if (entity != this && entity instanceof MobEntity && (this.world.getDifficulty() != EnumDifficulty.PEACEFUL)) {
+                setAttackTarget((MobEntity) entity);
             }
             return true;
         } else {
@@ -230,7 +230,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
 
     public void spawnGhost() {
         try {
-            LivingEntity templiving = (LivingEntity) EntityList.createEntityByIDFromName(new ResourceLocation(this.getClazzString().toLowerCase()), this.world);
+            MobEntity templiving = (MobEntity) EntityList.createEntityByIDFromName(new ResourceLocation(this.getClazzString().toLowerCase()), this.world);
             if (templiving instanceof MoCEntityBigCat) {
                 MoCEntityBigCat ghost = (MoCEntityBigCat) templiving;
                 ghost.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
@@ -592,7 +592,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     @Override
     public double getMountedYOffset() {
         double Yfactor = ((0.0833D * this.getAge()) - 2.5D) / 10D;
-        return this.height * Yfactor;
+        return this.getHeight() * Yfactor;
     }
 
     public float tFloat() {

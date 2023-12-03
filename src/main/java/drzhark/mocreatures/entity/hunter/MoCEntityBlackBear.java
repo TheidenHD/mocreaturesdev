@@ -144,6 +144,6 @@ public class MoCEntityBlackBear extends MoCEntityBear {
     }
 
     public float getEyeHeight() {
-        return this.height * 0.76F;
+        return this.getHeight() * 0.76F;
     }
 }

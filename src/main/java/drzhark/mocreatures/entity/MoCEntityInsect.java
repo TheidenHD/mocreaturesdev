@@ -10,8 +10,8 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIWanderAvoidWaterFlying;
 import net.minecraft.entity.ai.EntityFlyHelper;
 import net.minecraft.init.Blocks;
-import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNavigateFlying;
+import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -35,7 +35,7 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
     }
 
     @Override
-    protected PathNavigate createNavigator(World worldIn) {
+    protected PathNavigator createNavigator(World worldIn) {
         PathNavigateFlying pathNavigateFlying = new PathNavigateFlying(this, worldIn);
         pathNavigateFlying.setCanEnterDoors(true);
         pathNavigateFlying.setCanFloat(true);

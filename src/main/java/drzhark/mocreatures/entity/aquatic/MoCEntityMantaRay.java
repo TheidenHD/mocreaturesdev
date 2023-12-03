@@ -48,6 +48,6 @@ public class MoCEntityMantaRay extends MoCEntityRay {
     }
 
     public float getEyeHeight() {
-        return this.height * 0.5875F;
+        return this.getHeight() * 0.5875F;
     }
 }

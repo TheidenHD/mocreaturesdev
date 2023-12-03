@@ -9,7 +9,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWeb;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
@@ -64,7 +64,7 @@ public class MoCItemWeapon extends MoCItem {
     }
 
     @Override
-    public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public boolean hitEntity(ItemStack stack, MobEntity target, MobEntity attacker) {
         if (MoCreatures.proxy.weaponEffects) {
             int timer = 10; // In seconds
             switch (this.specialWeaponType) {
@@ -92,7 +92,7 @@ public class MoCItemWeapon extends MoCItem {
         return true;
     }
 
-    public boolean onBlockDestroyed(ItemStack par1ItemStack, int par2, int par3, int par4, int par5, LivingEntity par6EntityLiving) {
+    public boolean onBlockDestroyed(ItemStack par1ItemStack, int par2, int par3, int par4, int par5, MobEntity par6EntityLiving) {
         par1ItemStack.damageItem(2, par6EntityLiving);
         return true;
     }
@@ -128,7 +128,7 @@ public class MoCItemWeapon extends MoCItem {
     /**
      * Called when a Block is destroyed using this Item. Return true to trigger the "Use Item" statistic.
      */
-    public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity playerIn) {
+    public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, MobEntity playerIn) {
         if ((double) state.getBlockHardness(worldIn, pos) != 0.0D) {
             stack.damageItem(2, playerIn);
         }

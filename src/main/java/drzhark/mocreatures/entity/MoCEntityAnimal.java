@@ -15,8 +15,9 @@ import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -29,8 +30,8 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.Path;
-import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNavigateSwimmer;
+import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -57,8 +58,8 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
     protected boolean riderIsDisconnecting; // used to prevent dupes when a player disconnects on animal from server
     protected String texture;
     protected boolean isTameable;
-    protected PathNavigate navigatorWater;
-    protected PathNavigate navigatorFlyer;
+    protected PathNavigator navigatorWater;
+    protected PathNavigator navigatorFlyer;
     private int huntingCounter;
     private double divingDepth;
     private boolean randomAttributesUpdated; //used to update divingDepth on world load
@@ -85,7 +86,7 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
 
     @Nullable
     @Override
-    public EntityAgeable createChild(EntityAgeable ageable) {
+    public AgeableEntity createChild(AgeableEntity ageable) {
         return null;
     }
 
@@ -214,54 +215,54 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
         return true;
     }
 
-    protected LivingEntity getClosestEntityLiving(Entity entity, double d) {
+    protected MobEntity getClosestEntityLiving(Entity entity, double d) {
         double d1 = -1D;
-        LivingEntity entityliving = null;
-        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(d));
+        MobEntity entityliving = null;
+        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(d));
         for (Entity entity1 : list) {
             if (entitiesToIgnore(entity1)) {
                 continue;
             }
             double d2 = entity1.getDistanceSq(entity.getPosX(), entity.getPosY(), entity.getPosZ());
-            if (((d < 0.0D) || (d2 < (d * d))) && ((d1 == -1D) || (d2 < d1)) && ((LivingEntity) entity1).canEntityBeSeen(entity)) {
+            if (((d < 0.0D) || (d2 < (d * d))) && ((d1 == -1D) || (d2 < d1)) && ((MobEntity) entity1).canEntityBeSeen(entity)) {
                 d1 = d2;
-                entityliving = (LivingEntity) entity1;
+                entityliving = (MobEntity) entity1;
             }
         }
 
         return entityliving;
     }
 
-    public LivingEntity getClosestTarget(Entity entity, double d) {
+    public MobEntity getClosestTarget(Entity entity, double d) {
         double d1 = -1D;
-        LivingEntity entityliving = null;
-        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(d));
+        MobEntity entityliving = null;
+        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(d));
         for (Entity entity1 : list) {
-            if (!(entity1 instanceof LivingEntity) || (entity1 == entity) || (entity1 == entity.getRidingEntity()) || (entity1 instanceof PlayerEntity) || (entity1 instanceof MobEntity) || (this.height <= entity1.height) || (this.width <= entity1.width)) {
+            if (!(entity1 instanceof MobEntity) || (entity1 == entity) || (entity1 == entity.getRidingEntity()) || (entity1 instanceof PlayerEntity) || (entity1 instanceof MobEntity) || (this.getHeight() <= entity1.getHeight()) || (this.getWidth() <= entity1.getWidth())) {
                 continue;
             }
             double d2 = entity1.getDistanceSq(entity.getPosX(), entity.getPosY(), entity.getPosZ());
-            if (((d < 0.0D) || (d2 < (d * d))) && ((d1 == -1D) || (d2 < d1)) && ((LivingEntity) entity1).canEntityBeSeen(entity)) {
+            if (((d < 0.0D) || (d2 < (d * d))) && ((d1 == -1D) || (d2 < d1)) && ((MobEntity) entity1).canEntityBeSeen(entity)) {
                 d1 = d2;
-                entityliving = (LivingEntity) entity1;
+                entityliving = (MobEntity) entity1;
             }
         }
         return entityliving;
     }
 
     public boolean entitiesToIgnore(Entity entity) {
-        return !(entity instanceof LivingEntity) || entity instanceof MobEntity || entity instanceof MoCEntityKittyBed || entity instanceof MoCEntityLitterBox || this.getIsTamed() && entity instanceof IMoCEntity && ((IMoCEntity) entity).getIsTamed() || entity instanceof EntityWolf && !MoCreatures.proxy.attackWolves || entity instanceof MoCEntityHorse && !MoCreatures.proxy.attackHorses || entity.width >= this.width || entity.height >= this.height || entity instanceof MoCEntityEgg || entity instanceof IMoCEntity && !MoCreatures.proxy.enableHunters;
+        return !(entity instanceof MobEntity) || entity instanceof MobEntity || entity instanceof MoCEntityKittyBed || entity instanceof MoCEntityLitterBox || this.getIsTamed() && entity instanceof IMoCEntity && ((IMoCEntity) entity).getIsTamed() || entity instanceof EntityWolf && !MoCreatures.proxy.attackWolves || entity instanceof MoCEntityHorse && !MoCreatures.proxy.attackHorses || entity.getWidth() >= this.getWidth() || entity.getHeight() >= this.getHeight() || entity instanceof MoCEntityEgg || entity instanceof IMoCEntity && !MoCreatures.proxy.enableHunters;
     }
 
     /**
      * Finds and entity described in entitiesToInclude at d distance
      */
-    protected LivingEntity getBoogey(double d) {
-        LivingEntity entityliving = null;
-        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(d, 4D, d));
+    protected MobEntity getBoogey(double d) {
+        MobEntity entityliving = null;
+        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(d, 4D, d));
         for (Entity entity : list) {
             if (entitiesToInclude(entity)) {
-                entityliving = (LivingEntity) entity;
+                entityliving = (MobEntity) entity;
             }
         }
         return entityliving;
@@ -271,7 +272,7 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
      * Used in getBoogey to specify what kind of entity to look for
      */
     public boolean entitiesToInclude(Entity entity) {
-        return ((entity.getClass() != this.getClass()) && (entity instanceof LivingEntity) && ((entity.width >= 0.5D) || (entity.height >= 0.5D)));
+        return ((entity.getClass() != this.getClass()) && (entity instanceof MobEntity) && ((entity.getWidth() >= 0.5D) || (entity.getHeight() >= 0.5D)));
     }
 
     @Override
@@ -345,7 +346,7 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
     @Override
     public boolean isInWater() {
         if (isAmphibian()) {
-            return this.world.handleMaterialAcceleration(this.getEntityBoundingBox().grow(0.0D, -0.2D, 0.0D), Material.WATER, this);
+            return this.world.handleMaterialAcceleration(this.getBoundingBox().grow(0.0D, -0.2D, 0.0D), Material.WATER, this);
         }
         return super.isInWater();
     }
@@ -358,7 +359,7 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
     public ItemEntity getClosestItem(Entity entity, double d, Item item, Item item1) {
         double d1 = -1D;
         ItemEntity entityitem = null;
-        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(d));
+        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(d));
         for (Entity entity1 : list) {
             if (!(entity1 instanceof ItemEntity)) {
                 continue;
@@ -380,7 +381,7 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
     public ItemEntity getClosestEntityItem(Entity entity, double d) {
         double d1 = -1D;
         ItemEntity entityitem = null;
-        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(d));
+        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(d));
         for (Entity entity1 : list) {
             if (!(entity1 instanceof ItemEntity)) {
                 continue;
@@ -444,7 +445,7 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
     public void riding() {
         if ((this.isBeingRidden()) && (this.getRidingEntity() instanceof PlayerEntity)) {
             PlayerEntity entityplayer = (PlayerEntity) this.getRidingEntity();
-            List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(1.0D, 0.0D, 1.0D));
+            List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(1.0D, 0.0D, 1.0D));
             for (Entity entity : list) {
                 if (entity.isDead) {
                     continue;
@@ -455,7 +456,7 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
                 }
                 float f = getDistance(entity);
                 if (f < 2.0F && this.rand.nextInt(10) == 0) {
-                    attackEntityFrom(DamageSource.causeMobDamage((LivingEntity) entity), (float) ((MobEntity) entity).getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue());
+                    attackEntityFrom(DamageSource.causeMobDamage((MobEntity) entity), (float) ((MobEntity) entity).getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue());
                 }
             }
             if (entityplayer.isSneaking()) {
@@ -469,7 +470,7 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
         if ((pathentity == null) && (f > 8F)) {
             int i = MathHelper.floor(entity.getPosX()) - 2;
             int j = MathHelper.floor(entity.getPosZ()) - 2;
-            int k = MathHelper.floor(entity.getEntityBoundingBox().minY);
+            int k = MathHelper.floor(entity.getBoundingBox().minY);
             for (int l = 0; l <= 4; l++) {
                 for (int i1 = 0; i1 <= 4; i1++) {
                     BlockPos pos = new BlockPos(i, k, j);
@@ -489,7 +490,7 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
         boolean willSpawn;
         boolean debug = MoCreatures.proxy.debug;
         int x = MathHelper.floor(this.getPosX());
-        int y = MathHelper.floor(this.getEntityBoundingBox().minY);
+        int y = MathHelper.floor(this.getBoundingBox().minY);
         int z = MathHelper.floor(this.getPosZ());
         BlockPos blockpos = new BlockPos(x, y, z);
         BlockState iblockstate = this.world.getBlockState((new BlockPos(this)).down());
@@ -524,7 +525,7 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
     public void travel(float strafe, float vertical, float forward) {
 
         if (this.isBeingRidden()) {
-            LivingEntity passenger = (LivingEntity) this.getControllingPassenger();
+            MobEntity passenger = (MobEntity) this.getControllingPassenger();
             if (passenger != null) this.moveWithRider(strafe, vertical, forward, passenger); //riding movement
             return;
         }
@@ -547,7 +548,7 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
     /**
      * riding Code
      */
-    public void moveWithRider(float strafe, float vertical, float forward, LivingEntity passenger) {
+    public void moveWithRider(float strafe, float vertical, float forward, MobEntity passenger) {
         if (passenger == null) {
             return;
         }
@@ -608,7 +609,7 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
         }
     }
 
-    public void moveEntityWithRiderUntamed(float strafe, float forward, LivingEntity passenger) {
+    public void moveEntityWithRiderUntamed(float strafe, float forward, MobEntity passenger) {
         if (!this.world.isRemote) {
             if (this.rand.nextInt(10) == 0) {
                 this.getMotion().getX() = this.rand.nextGaussian() / 30D;
@@ -792,7 +793,7 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
     @Override
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (isNotScared()) {
-            LivingEntity tempEntity = this.getAttackTarget();
+            MobEntity tempEntity = this.getAttackTarget();
             boolean flag = super.attackEntityFrom(damagesource, i);
             setAttackTarget(tempEntity);
             return flag;
@@ -852,8 +853,8 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
     }
 
     @Override
-    public boolean canAttackTarget(LivingEntity entity) {
-        return this.height >= entity.height && this.width >= entity.width;
+    public boolean canAttackTarget(MobEntity entity) {
+        return this.getHeight() >= entity.getHeight() && this.getWidth() >= entity.getWidth();
     }
 
     @Override
@@ -906,14 +907,14 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
     }
 
     @Override
-    public void onKillEntity(LivingEntity entityLivingIn) {
+    public void onKillEntity(MobEntity entityLivingIn) {
         if (!(entityLivingIn instanceof PlayerEntity)) {
             MoCTools.destroyDrops(this, 3D);
         }
     }
 
     @Override
-    public PathNavigate getNavigator() {
+    public PathNavigator getNavigator() {
         if (this.isInWater() && this.isAmphibian()) {
             return this.navigatorWater;
         }

@@ -12,6 +12,8 @@ import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 
+import java.util.EnumSet;
+
 public class EntityAIWanderMoC2 extends Goal {
 
     private final CreatureEntity entity;
@@ -30,7 +32,7 @@ public class EntityAIWanderMoC2 extends Goal {
         this.entity = creatureIn;
         this.speed = speedIn;
         this.executionChance = chance;
-        this.setMutexBits(1);
+        this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
     }
 
     /**

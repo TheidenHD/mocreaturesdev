@@ -153,6 +153,6 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
     }
 
     public float getEyeHeight() {
-        return this.height * 0.905F;
+        return this.getHeight() * 0.905F;
     }
 }

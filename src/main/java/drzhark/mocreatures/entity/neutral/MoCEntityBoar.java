@@ -11,7 +11,7 @@ import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -73,8 +73,8 @@ public class MoCEntityBoar extends MoCEntityAnimal {
             if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
-            if (entity != this && entity instanceof LivingEntity && super.shouldAttackPlayers() && getIsAdult()) {
-                setAttackTarget((LivingEntity) entity);
+            if (entity != this && entity instanceof MobEntity && super.shouldAttackPlayers() && getIsAdult()) {
+                setAttackTarget((MobEntity) entity);
             }
             return true;
         } else {
@@ -118,7 +118,7 @@ public class MoCEntityBoar extends MoCEntityAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(LivingEntity entity) {
+    public boolean canAttackTarget(MobEntity entity) {
         return !(entity instanceof MoCEntityBoar) && super.canAttackTarget(entity);
     }
 
@@ -136,6 +136,6 @@ public class MoCEntityBoar extends MoCEntityAnimal {
     }
 
     public float getEyeHeight() {
-        return this.height * 0.75F;
+        return this.getHeight() * 0.75F;
     }
 }

@@ -19,7 +19,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
@@ -486,9 +486,9 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
             if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
-            if ((entity != this) && entity instanceof LivingEntity && (super.shouldAttackPlayers())) {
+            if ((entity != this) && entity instanceof MobEntity && (super.shouldAttackPlayers())) {
                 setPissed(true);
-                setAttackTarget((LivingEntity) entity);
+                setAttackTarget((MobEntity) entity);
             }
             return true;
         } else {
@@ -508,8 +508,8 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(LivingEntity entity) {
-        return !(entity instanceof MoCEntitySnake) && entity.height < 0.5D && entity.width < 0.5D;
+    public boolean canAttackTarget(MobEntity entity) {
+        return !(entity instanceof MoCEntitySnake) && entity.getHeight() < 0.5D && entity.getWidth() < 0.5D;
     }
 
     @Override
@@ -541,7 +541,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
 
     @Override
     public boolean checkSpawningBiome() {
-        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getEntityBoundingBox().minY), this.getPosZ());
+        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getBoundingBox().minY), this.getPosZ());
         /*
          * swamp: python, bright green, #1 (done) plains: coral, cobra #1, #2,
          * #3, #4 (everyone but 7) desert: rattlesnake , #2 jungle: all except
@@ -652,9 +652,9 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
+    protected void applyEnchantments(MobEntity entityLivingBaseIn, Entity entityIn) {
         if (isVenomous()) {
-            ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 150, 2));
+            ((MobEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 150, 2));
         }
         super.applyEnchantments(entityLivingBaseIn, entityIn);
     }

@@ -8,7 +8,7 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
@@ -49,7 +49,7 @@ public class MoCEntityLeopard extends MoCEntityBigCat {
     @Override
     public boolean checkSpawningBiome() {
         int i = MathHelper.floor(this.getPosX());
-        int j = MathHelper.floor(getEntityBoundingBox().minY);
+        int j = MathHelper.floor(getBoundingBox().minY);
         int k = MathHelper.floor(this.getPosZ());
         BlockPos pos = new BlockPos(i, j, k);
 
@@ -150,17 +150,17 @@ public class MoCEntityLeopard extends MoCEntityBigCat {
     }
 
     @Override
-    public boolean canAttackTarget(LivingEntity entity) {
+    public boolean canAttackTarget(MobEntity entity) {
         if (!this.getIsAdult() && (this.getAge() < this.getMaxAge() * 0.8)) {
             return false;
         }
         if (entity instanceof MoCEntityLeopard) {
             return false;
         }
-        return entity.height < 1.3F && entity.width < 1.3F;
+        return entity.getHeight() < 1.3F && entity.getWidth() < 1.3F;
     }
 
     public float getEyeHeight() {
-        return this.height * 0.92F;
+        return this.getHeight() * 0.92F;
     }
 }

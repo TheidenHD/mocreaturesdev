@@ -12,7 +12,7 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
@@ -180,8 +180,8 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
 
                 if (!isInsideOfMaterial(Material.WATER)) {
                     this.waterbound = true;
-                    if (this.getRidingEntity() instanceof LivingEntity && ((LivingEntity) this.getRidingEntity()).getHealth() > 0) {
-                        ((LivingEntity) this.getRidingEntity()).deathTime = 0;
+                    if (this.getRidingEntity() instanceof MobEntity && ((MobEntity) this.getRidingEntity()).getHealth() > 0) {
+                        ((MobEntity) this.getRidingEntity()).deathTime = 0;
                     }
 
                     if (!this.world.isRemote && this.rand.nextInt(50) == 0) {
@@ -281,8 +281,8 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
             Entity entity = damagesource.getTrueSource();
 
             if (this.isBeingRidden() && this.getRidingEntity() == entity) {
-                if ((entity != this) && entity instanceof LivingEntity && super.shouldAttackPlayers()) {
-                    setAttackTarget((LivingEntity) entity);
+                if ((entity != this) && entity instanceof MobEntity && super.shouldAttackPlayers()) {
+                    setAttackTarget((MobEntity) entity);
                 }
             }
             return true;
@@ -292,7 +292,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(LivingEntity entity) {
+    public boolean canAttackTarget(MobEntity entity) {
         return !(entity instanceof MoCEntityCrocodile);
     }
 
@@ -303,7 +303,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
         }
         int direction;
 
-        double dist = getAge() * 0.01F + passenger.width - 0.4D;
+        double dist = getAge() * 0.01F + passenger.getWidth() - 0.4D;
         double newPosX = this.getPosX() - (dist * Math.cos((MoCTools.realAngle(this.rotationYaw - 90F)) / 57.29578F));
         double newPosZ = this.getPosZ() - (dist * Math.sin((MoCTools.realAngle(this.rotationYaw - 90F)) / 57.29578F));
         passenger.setPosition(newPosX, this.getPosY() + getMountedYOffset() + passenger.getYOffset(), newPosZ);
@@ -314,13 +314,13 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
             direction = 1;
         }
 
-        ((LivingEntity) passenger).renderYawOffset = this.rotationYaw * direction;
-        ((LivingEntity) passenger).prevRenderYawOffset = this.rotationYaw * direction;
+        ((MobEntity) passenger).renderYawOffset = this.rotationYaw * direction;
+        ((MobEntity) passenger).prevRenderYawOffset = this.rotationYaw * direction;
     }
 
     @Override
     public double getMountedYOffset() {
-        return this.height * 0.35D;
+        return this.getHeight() * 0.35D;
     }
 
     @Override
@@ -365,8 +365,8 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     public void unMount() {
 
         if (this.isBeingRidden()) {
-            if (this.getRidingEntity() instanceof LivingEntity && ((LivingEntity) this.getRidingEntity()).getHealth() > 0) {
-                ((LivingEntity) this.getRidingEntity()).deathTime = 0;
+            if (this.getRidingEntity() instanceof MobEntity && ((MobEntity) this.getRidingEntity()).getHealth() > 0) {
+                ((MobEntity) this.getRidingEntity()).deathTime = 0;
             }
 
             this.dismountRidingEntity();
@@ -395,6 +395,6 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     }
 
     public float getEyeHeight() {
-        return !this.isMovementCeased() ? this.height * 0.7F : this.height * 0.39F;
+        return !this.isMovementCeased() ? this.getHeight() * 0.7F : this.getHeight() * 0.39F;
     }
 }

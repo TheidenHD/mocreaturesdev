@@ -6,7 +6,7 @@ package drzhark.mocreatures.network.message;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -37,8 +37,8 @@ public class MoCMessageHealth {
     public static boolean onMessage(MoCMessageHealth message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().setPacketHandled(true);
         Entity ent = Minecraft.getInstance().player.world.getEntityByID(message.entityId);
-        if (ent.getEntityId() == message.entityId && ent instanceof LivingEntity) {
-            ((LivingEntity) ent).setHealth(message.health);
+        if (ent.getEntityId() == message.entityId && ent instanceof MobEntity) {
+            ((MobEntity) ent).setHealth(message.health);
         }
         return true;
     }

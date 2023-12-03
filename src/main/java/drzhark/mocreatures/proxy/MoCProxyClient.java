@@ -225,7 +225,7 @@ public class MoCProxyClient extends MoCProxy {
             i = 10;
         }
         for (int x = 0; x < i; x++) {
-            MoCEntityFXUndead FXUndead = new MoCEntityFXUndead(entity.world, entity.getPosX(), entity.getPosY() + entity.world.rand.nextFloat() * entity.height, entity.getPosZ());
+            MoCEntityFXUndead FXUndead = new MoCEntityFXUndead(entity.world, entity.getPosX(), entity.getPosY() + entity.world.rand.nextFloat() * entity.getHeight(), entity.getPosZ());
             mc.effectRenderer.addEffect(FXUndead);
 
         }
@@ -246,7 +246,7 @@ public class MoCProxyClient extends MoCProxy {
 
             int i = densityInt * entity.world.rand.nextInt(2);// + 2;
             for (int x = 0; x < i; x++) {
-                MoCEntityFXStar FXStar = new MoCEntityFXStar(mc.world, entity.getPosX(), entity.getPosY() + entity.world.rand.nextFloat() * entity.height, entity.getPosZ(), fRed, fGreen, fBlue);
+                MoCEntityFXStar FXStar = new MoCEntityFXStar(mc.world, entity.getPosX(), entity.getPosY() + entity.world.rand.nextFloat() * entity.getHeight(), entity.getPosZ(), fRed, fGreen, fBlue);
                 mc.effectRenderer.addEffect(FXStar);
 
             }
@@ -263,7 +263,7 @@ public class MoCProxyClient extends MoCProxy {
         double var2 = entity.world.rand.nextGaussian() * 0.02D;
         double var4 = entity.world.rand.nextGaussian() * 0.02D;
         double var6 = entity.world.rand.nextGaussian() * 0.02D;
-        mc.world.addParticle(ParticleTypes.LAVA, entity.getPosX() + entity.world.rand.nextFloat() * entity.width - entity.width, entity.getPosY() + 0.5D + entity.world.rand.nextFloat() * entity.height, entity.getPosZ() + entity.world.rand.nextFloat() * entity.width - entity.width, var2, var4, var6);
+        mc.world.addParticle(ParticleTypes.LAVA, entity.getPosX() + entity.world.rand.nextFloat() * entity.getWidth() - entity.getWidth(), entity.getPosY() + 0.5D + entity.world.rand.nextFloat() * entity.getHeight(), entity.getPosZ() + entity.world.rand.nextFloat() * entity.getWidth() - entity.width, var2, var4, var6);
 
     }
 
@@ -320,7 +320,7 @@ public class MoCProxyClient extends MoCProxy {
         for (int var1 = 0; var1 < 2; ++var1) {
             double newPosX = entity.getPosX() - (1.5 * Math.cos((MoCTools.realAngle(entity.rotationYaw - 90F)) / 57.29578F));
             double newPosZ = entity.getPosZ() - (1.5 * Math.sin((MoCTools.realAngle(entity.rotationYaw - 90F)) / 57.29578F));
-            double newPosY = entity.getPosY() + (entity.height - 0.8D - entity.getAdjustedYOffset() * 1.8);// + (entity.world.rand.nextDouble() * ((double) entity.height - (double) entity.getAdjustedYOffset() * 2));
+            double newPosY = entity.getPosY() + (entity.getHeight() - 0.8D - entity.getAdjustedYOffset() * 1.8);// + (entity.world.rand.nextDouble() * ((double) entity.getHeight() - (double) entity.getAdjustedYOffset() * 2));
             //adjustedYOffset from 0 (tallest) to 1.45 (on the ground)
             //height = 4F
 

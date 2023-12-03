@@ -12,7 +12,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -159,11 +159,11 @@ public class MoCEntityEnt extends MoCEntityAnimal {
      * Makes small creatures follow the Ent
      */
     private void atractCritter() {
-        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(8D, 3D, 8D));
+        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(8D, 3D, 8D));
         int n = this.rand.nextInt(3) + 1;
         int j = 0;
         for (Entity entity : list) {
-            if (entity instanceof AnimalEntity && entity.width < 0.6F && entity.height < 0.6F) {
+            if (entity instanceof AnimalEntity && entity.getWidth() < 0.6F && entity.getHeight() < 0.6F) {
                 AnimalEntity entityanimal = (AnimalEntity) entity;
                 if (entityanimal.getAttackTarget() == null && !MoCTools.isTamed(entityanimal)) {
                     Path pathentity = entityanimal.getNavigator().getPathToEntityLiving(this);
@@ -294,8 +294,8 @@ public class MoCEntityEnt extends MoCEntityAnimal {
 
     /*@Override
     protected void attackEntity(Entity entity, float f) {
-        if (this.attackTime <= 0 && (f < 2.5D) && (entity.getEntityBoundingBox().maxY > getEntityBoundingBox().minY)
-                && (entity.getEntityBoundingBox().minY < getEntityBoundingBox().maxY)) {
+        if (this.attackTime <= 0 && (f < 2.5D) && (entity.getBoundingBox().maxY > getBoundingBox().minY)
+                && (entity.getBoundingBox().minY < getBoundingBox().maxY)) {
             attackTime = 200;
             this.world.playSoundAtEntity(this, "mocreatures:goatsmack", 1.0F, 1.0F + ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F));
             entity.attackEntityFrom(DamageSource.causeMobDamage(this), 3);
@@ -304,7 +304,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
     }*/
 
     @Override
-    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
+    protected void applyEnchantments(MobEntity entityLivingBaseIn, Entity entityIn) {
         MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_SMACK);
         MoCTools.bigSmack(this, entityIn, 1F);
         super.applyEnchantments(entityLivingBaseIn, entityIn);
@@ -321,6 +321,6 @@ public class MoCEntityEnt extends MoCEntityAnimal {
     }
 
     public float getEyeHeight() {
-        return this.height * 0.73F;
+        return this.getHeight() * 0.73F;
     }
 }

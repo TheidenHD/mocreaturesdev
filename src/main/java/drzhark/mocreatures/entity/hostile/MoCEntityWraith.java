@@ -169,6 +169,6 @@ public class MoCEntityWraith extends MoCEntityMob//MoCEntityFlyerMob
     }
 
     public float getEyeHeight() {
-        return this.height * 0.86F;
+        return this.getHeight() * 0.86F;
     }
 }

@@ -6,10 +6,16 @@ package drzhark.mocreatures.entity.ai;
 import drzhark.mocreatures.entity.passive.MoCEntityTurkey;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
@@ -36,7 +42,7 @@ public class EntityAIMateMoC extends Goal {
         this.world = p_i47306_1_.world;
         this.mateClass = p_i47306_4_;
         this.moveSpeed = p_i47306_2_;
-        this.setMutexBits(3);
+        this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }
 
     /**
@@ -55,7 +61,7 @@ public class EntityAIMateMoC extends Goal {
      * Returns whether an in-progress Goal should continue executing
      */
     public boolean shouldContinueExecuting() {
-        return this.targetMate.isEntityAlive() && this.targetMate.isInLove() && this.spawnBabyDelay < 60;
+        return this.targetMate.isAlive() && this.targetMate.isInLove() && this.spawnBabyDelay < 60;
     }
 
     /**
@@ -69,7 +75,7 @@ public class EntityAIMateMoC extends Goal {
     /**
      * Keep ticking a continuous task that has already been started
      */
-    public void updateTask() {
+    public void tick() {
         this.animal.getLookHelper().setLookPositionWithEntity(this.targetMate, 10.0F, (float) this.animal.getVerticalFaceSpeed());
         this.animal.getNavigator().tryMoveToEntityLiving(this.targetMate, this.moveSpeed);
         ++this.spawnBabyDelay;
@@ -84,7 +90,7 @@ public class EntityAIMateMoC extends Goal {
      * valid mate found.
      */
     private MoCEntityTameableAnimal getNearbyMate() {
-        List<MoCEntityTameableAnimal> list = this.world.getEntitiesWithinAABB(mateClass, this.animal.getEntityBoundingBox().grow(8.0D));
+        List<MoCEntityTameableAnimal> list = this.world.getEntitiesWithinAABB(mateClass, this.animal.getBoundingBox().grow(8.0D));
         double d0 = Double.MAX_VALUE;
         MoCEntityTameableAnimal entityanimal = null;
 
@@ -102,7 +108,7 @@ public class EntityAIMateMoC extends Goal {
      * Spawns a baby animal of the same type.
      */
     private void spawnBaby() {
-        EntityAgeable entityageable = this.animal.createChild(this.targetMate);
+        AgeableEntity entityageable = this.animal.createChild(this.targetMate);
 
         if (entityageable != null) {
             ServerPlayerEntity entityplayermp = this.animal.getLoveCause();
@@ -112,7 +118,7 @@ public class EntityAIMateMoC extends Goal {
             }
 
             if (entityplayermp != null) {
-                entityplayermp.addStat(StatList.ANIMALS_BRED);
+                entityplayermp.addStat(Stats.ANIMALS_BRED);
                 CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this.animal, this.targetMate, entityageable);
             }
 
@@ -142,14 +148,14 @@ public class EntityAIMateMoC extends Goal {
                 double d0 = random.nextGaussian() * 0.02D;
                 double d1 = random.nextGaussian() * 0.02D;
                 double d2 = random.nextGaussian() * 0.02D;
-                double d3 = random.nextDouble() * (double) this.animal.width * 2.0D - (double) this.animal.width;
-                double d4 = 0.5D + random.nextDouble() * (double) this.animal.height;
-                double d5 = random.nextDouble() * (double) this.animal.width * 2.0D - (double) this.animal.width;
+                double d3 = random.nextDouble() * (double) this.animal.getWidth() * 2.0D - (double) this.animal.getWidth();
+                double d4 = 0.5D + random.nextDouble() * (double) this.animal.getHeight();
+                double d5 = random.nextDouble() * (double) this.animal.getWidth() * 2.0D - (double) this.animal.getWidth();
                 this.world.addParticle(ParticleTypes.HEART, this.animal.getPosX() + d3, this.animal.getPosY() + d4, this.animal.getPosZ() + d5, d0, d1, d2);
             }
 
-            if (this.world.getGameRules().getBoolean("doMobLoot")) {
-                this.world.addEntity(new EntityXPOrb(this.world, this.animal.getPosX(), this.animal.getPosY(), this.animal.getPosZ(), random.nextInt(7) + 1));
+            if (this.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
+                this.world.addEntity(new ExperienceOrbEntity(this.world, this.animal.getPosX(), this.animal.getPosY(), this.animal.getPosZ(), random.nextInt(7) + 1));
             }
         }
     }

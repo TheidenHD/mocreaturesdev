@@ -83,7 +83,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
 
     @Override
     public boolean checkSpawningBiome() {
-        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getEntityBoundingBox().minY), this.getPosZ());
+        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getBoundingBox().minY), this.getPosZ());
         Biome biome = MoCTools.biomeKind(this.world, pos);
         if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.SANDY)) {
             setTypeMoC(2);
@@ -274,7 +274,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
             if (!this.temptedEntity.getHeldItemMainhand().isEmpty()) {
                 return false;
             }
-            List<Entity> list = this.temptedEntity.getEntityWorld().getEntitiesWithinAABBExcludingEntity(temptedEntity, temptedEntity.getEntityBoundingBox().expand(6D, 4D, 6D));
+            List<Entity> list = this.temptedEntity.getEntityWorld().getEntitiesWithinAABBExcludingEntity(temptedEntity, temptedEntity.getBoundingBox().expand(6D, 4D, 6D));
             if (this.stealDelay > 0) {
                 --this.stealDelay;
                 if (stealDelay == 0) {
@@ -339,7 +339,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         /**
          * Updates the task
          */
-        public void updateTask() {
+        public void tick() {
             this.temptedEntity.getLookHelper().setLookPositionWithEntity(this.temptingItem, (float) (this.temptedEntity.getHorizontalFaceSpeed() + 20), (float) this.temptedEntity.getVerticalFaceSpeed());
             if (this.temptedEntity.getDistanceSq(this.temptingItem) < 1.0D) {
                 this.temptedEntity.getNavigator().clearPath();
@@ -476,7 +476,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         /**
          * Updates the task
          */
-        public void updateTask() {
+        public void tick() {
             this.temptedEntity.getLookHelper().setLookPositionWithEntity(this.temptingPlayer, (float) (this.temptedEntity.getHorizontalFaceSpeed() + 20), (float) this.temptedEntity.getVerticalFaceSpeed());
             if (temptingPlayer.capabilities.isCreativeMode) return;
             if (this.temptedEntity.getDistanceSq(this.temptingPlayer) < 3.25D) {

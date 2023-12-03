@@ -14,7 +14,7 @@ import drzhark.mocreatures.entity.neutral.MoCEntityOstrich;
 import drzhark.mocreatures.entity.neutral.MoCEntityWyvern;
 import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -23,7 +23,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
-public class MoCEntityEgg extends LivingEntity {
+public class MoCEntityEgg extends MobEntity {
 
     public int eggType;
     private int tCounter;
@@ -71,7 +71,7 @@ public class MoCEntityEgg extends LivingEntity {
 
     @Override
     public boolean handleWaterMovement() {
-        if (this.world.handleMaterialAcceleration(this.getEntityBoundingBox(), Material.WATER, this)) {
+        if (this.world.handleMaterialAcceleration(this.getBoundingBox(), Material.WATER, this)) {
             this.inWater = true;
             return true;
         } else {

@@ -18,8 +18,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNavigateClimber;
+import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -58,7 +58,7 @@ public class MoCEntityMouse extends MoCEntityAnimal {
     }
 
     @Override
-    protected PathNavigate createNavigator(World worldIn) {
+    protected PathNavigator createNavigator(World worldIn) {
         return new PathNavigateClimber(this, worldIn);
     }
 
@@ -91,7 +91,7 @@ public class MoCEntityMouse extends MoCEntityAnimal {
 
     @Override
     public boolean checkSpawningBiome() {
-        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getEntityBoundingBox().minY), this.getPosZ());
+        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getBoundingBox().minY), this.getPosZ());
         Biome currentbiome = MoCTools.biomeKind(this.world, pos);
 
         try {
@@ -208,6 +208,6 @@ public class MoCEntityMouse extends MoCEntityAnimal {
     }
 
     public float getEyeHeight() {
-        return this.height * 0.575F;
+        return this.getHeight() * 0.575F;
     }
 }

@@ -3,17 +3,18 @@
  */
 package drzhark.mocreatures.entity.ai;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.MoCEntityAquatic;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.math.vector.Vector3d;
 
+import java.util.EnumSet;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class EntityAIFleeFromEntityMoC extends Goal {
 
@@ -28,11 +29,11 @@ public class EntityAIFleeFromEntityMoC extends Goal {
     public final Predicate<Entity> canBeSeenSelector = new Predicate<Entity>() {
 
         public boolean isApplicable(Entity entityIn) {
-            return entityIn.isEntityAlive() && EntityAIFleeFromEntityMoC.this.entity.getEntitySenses().canSee(entityIn);
+            return entityIn.isAlive() && EntityAIFleeFromEntityMoC.this.entity.getEntitySenses().canSee(entityIn);
         }
 
         @Override
-        public boolean apply(Entity p_apply_1_) {
+        public boolean test(Entity p_apply_1_) {
             return this.isApplicable(p_apply_1_);
         }
     };
@@ -47,7 +48,7 @@ public class EntityAIFleeFromEntityMoC extends Goal {
         this.avoidDistance = searchDistance;
         this.farSpeed = farSpeedIn;
         this.nearSpeed = nearSpeedIn;
-        this.setMutexBits(1);
+        this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
     }
 
     /**
@@ -66,8 +67,8 @@ public class EntityAIFleeFromEntityMoC extends Goal {
 
         List<Entity> list =
                 this.entity.world.getEntitiesInAABBexcluding(this.entity,
-                        this.entity.getEntityBoundingBox().grow(this.avoidDistance, 3.0D, this.avoidDistance),
-                        Predicates.and(EntitySelectors.NOT_SPECTATING, this.canBeSeenSelector, this.avoidTargetSelector));
+                        this.entity.getBoundingBox().grow(this.avoidDistance, 3.0D, this.avoidDistance),
+                        (EntityPredicates.NOT_SPECTATING.and(this.canBeSeenSelector).and(this.avoidTargetSelector)));
 
         if (list.isEmpty()) {
             return false;
@@ -119,7 +120,7 @@ public class EntityAIFleeFromEntityMoC extends Goal {
      * Updates the task
      */
     @Override
-    public void updateTask() {
+    public void tick() {
         if (this.entity.getDistanceSq(this.closestLivingEntity) < 8.0D) {
             this.entity.getNavigator().setSpeed(this.nearSpeed);
         } else {

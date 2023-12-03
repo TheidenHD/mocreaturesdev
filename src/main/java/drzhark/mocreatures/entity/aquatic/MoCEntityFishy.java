@@ -46,7 +46,7 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
     @Override
     protected void initEntityAI() {
         this.tasks.addTask(2, new EntityAIPanicMoC(this, 1.3D));
-        this.tasks.addTask(3, new EntityAIFleeFromEntityMoC(this, entity -> (entity.height > 0.3F || entity.width > 0.3F), 2.0F, 0.6D, 1.5D));
+        this.tasks.addTask(3, new EntityAIFleeFromEntityMoC(this, entity -> (entity.getHeight() > 0.3F || entity.getWidth() > 0.3F), 2.0F, 0.6D, 1.5D));
         this.tasks.addTask(5, new EntityAIWanderMoC2(this, 1.0D, 80));
     }
 
@@ -146,7 +146,7 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
                 return;
             }
             int i = 0;
-            List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(4D, 3D, 4D));
+            List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(4D, 3D, 4D));
             for (Entity entity : list) {
                 if (entity instanceof MoCEntityFishy) {
                     i++;
@@ -156,7 +156,7 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
             if (i > 1) {
                 return;
             }
-            List<Entity> list1 = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(4D, 2D, 4D));
+            List<Entity> list1 = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(4D, 2D, 4D));
             for (int k = 0; k < list.size(); k++) {
                 Entity entity1 = list1.get(k);
                 if (!(entity1 instanceof MoCEntityFishy) || (entity1 == this)) {
@@ -272,6 +272,6 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
     }
 
     public float getEyeHeight() {
-        return this.height * 0.65F;
+        return this.getHeight() * 0.65F;
     }
 }

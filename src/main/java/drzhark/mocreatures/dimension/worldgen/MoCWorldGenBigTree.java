@@ -31,7 +31,7 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree {
     World world;
     int[] basePos = new int[]{0, 0, 0};
     int heightLimit = 20;
-    int height;
+    int getHeight();
     double heightAttenuation = 0.618D;
     double branchDensity = 1.0D;
     double branchSlope = 0.381D;
@@ -43,7 +43,7 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree {
      */
     int trunkSize;// = 1;
     /**
-     * Sets the limit of the random value used to initialize the height limit.
+     * Sets the limit of the random value used to initialize the getHeight() limit.
      */
     int heightLimitLimit;// = 12;
     /**
@@ -80,10 +80,10 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree {
      * generateLeaves.
      */
     void generateLeafNodeList() {
-        this.height = (int) (this.heightLimit * this.heightAttenuation);
+        this.getHeight() = (int) (this.heightLimit * this.heightAttenuation);
 
-        if (this.height >= this.heightLimit) {
-            this.height = this.heightLimit - 1;
+        if (this.getHeight() >= this.heightLimit) {
+            this.getHeight() = this.heightLimit - 1;
         }
 
         int var1 = (int) (1.382D + Math.pow(this.leafDensity * this.heightLimit / 13.0D, 2.0D));
@@ -95,7 +95,7 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree {
         int[][] var2 = new int[var1 * this.heightLimit][4];
         int var3 = this.basePos[1] + this.heightLimit - this.leafDistanceLimit;
         int var4 = 1;
-        int var5 = this.basePos[1] + this.height;
+        int var5 = this.basePos[1] + this.getHeight();
         int var6 = var3 - this.basePos[1];
         var2[0][0] = this.basePos[0];
         var2[0][1] = var3;
@@ -293,7 +293,7 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree {
     void generateTrunk() {
         int var1 = this.basePos[0];
         int var2 = this.basePos[1];
-        int var3 = this.basePos[1] + this.height;
+        int var3 = this.basePos[1] + this.getHeight();
         int var4 = this.basePos[2];
         int[] var5 = new int[]{var1, var2, var4};
         int[] var6 = new int[]{var1, var3, var4};

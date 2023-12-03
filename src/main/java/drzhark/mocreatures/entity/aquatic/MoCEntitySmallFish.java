@@ -53,7 +53,7 @@ public class MoCEntitySmallFish extends MoCEntityTameableAquatic {
     @Override
     protected void initEntityAI() {
         this.tasks.addTask(1, new EntityAIPanicMoC(this, 1.3D));
-        this.tasks.addTask(2, new EntityAIFleeFromEntityMoC(this, entity -> (entity.height > 0.3F || entity.width > 0.3F), 2.0F, 0.6D, 1.5D));
+        this.tasks.addTask(2, new EntityAIFleeFromEntityMoC(this, entity -> (entity.getHeight() > 0.3F || entity.getWidth() > 0.3F), 2.0F, 0.6D, 1.5D));
         this.tasks.addTask(5, new EntityAIWanderMoC2(this, 1.0D, 80));
     }
 
@@ -193,6 +193,6 @@ public class MoCEntitySmallFish extends MoCEntityTameableAquatic {
     }
 
     public float getEyeHeight() {
-        return this.height * 0.45F;
+        return this.getHeight() * 0.45F;
     }
 }

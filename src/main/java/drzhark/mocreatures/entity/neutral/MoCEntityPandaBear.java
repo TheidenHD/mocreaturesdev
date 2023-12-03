@@ -165,6 +165,6 @@ public class MoCEntityPandaBear extends MoCEntityBear {
 
     // TODO: Change depending on whether it's sitting or not
     public float getEyeHeight() {
-        return this.height * 0.76F;
+        return this.getHeight() * 0.76F;
     }
 }

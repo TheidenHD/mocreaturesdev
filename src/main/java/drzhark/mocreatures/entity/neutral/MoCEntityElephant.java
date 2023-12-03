@@ -18,7 +18,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.DoubleSidedInventory;
@@ -218,14 +218,14 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
             }
 
             if (MoCreatures.proxy.elephantBulldozer && getIsTamed() && (this.isBeingRidden()) && (getTusks() > 0)) {
-                int height = 2;
+                int getHeight() = 2;
                 if (getTypeMoC() == 3) {
-                    height = 3;
+                    getHeight() = 3;
                 }
                 if (getTypeMoC() == 4) {
-                    height = 3;
+                    getHeight() = 3;
                 }
-                int dmg = MoCTools.destroyBlocksInFront(this, 2D, this.getTusks(), height);
+                int dmg = MoCTools.destroyBlocksInFront(this, 2D, this.getTusks(), getHeight());
                 checkTusks(dmg);
 
             }
@@ -541,7 +541,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
 
     @Override
     public boolean checkSpawningBiome() {
-        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getEntityBoundingBox().minY), this.getPosZ());
+        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getBoundingBox().minY), this.getPosZ());
         Biome currentbiome = MoCTools.biomeKind(this.world, pos);
 
         // African
@@ -717,7 +717,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     public void riding() {
         if ((this.isBeingRidden()) && (this.getRidingEntity() instanceof PlayerEntity)) {
             PlayerEntity entityplayer = (PlayerEntity) this.getRidingEntity();
-            List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(1.0D, 0.0D, 1.0D));
+            List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(1.0D, 0.0D, 1.0D));
             for (Entity entity : list) {
                 if (entity.isDead) {
                     continue;
@@ -799,7 +799,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
                 }
                 break;
         }
-        return yOff + (this.height * 0.75D);
+        return yOff + (this.getHeight() * 0.75D);
     }
 
     /**
@@ -913,14 +913,14 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
-            if ((entity != null && getIsTamed() && entity instanceof PlayerEntity) || !(entity instanceof LivingEntity)) {
+            if ((entity != null && getIsTamed() && entity instanceof PlayerEntity) || !(entity instanceof MobEntity)) {
                 return false;
             }
             if (this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
             if (entity != this && super.shouldAttackPlayers()) {
-                setAttackTarget((LivingEntity) entity);
+                setAttackTarget((MobEntity) entity);
             }
             return true;
         }

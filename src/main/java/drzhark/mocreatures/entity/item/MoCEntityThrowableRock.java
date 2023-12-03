@@ -9,7 +9,7 @@ import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
@@ -38,7 +38,7 @@ public class MoCEntityThrowableRock extends Entity {
         super(par1World);
         this.preventEntitySpawning = true;
         this.setSize(1F, 1F);
-        //this.yOffset = this.height / 2.0F;
+        //this.yOffset = this.getHeight() / 2.0F;
     }
 
     public MoCEntityThrowableRock(World par1World, Entity entitythrower, double par2, double par4, double par6) {
@@ -117,12 +117,12 @@ public class MoCEntityThrowableRock extends Entity {
 
         // rock damage code (for all rock behaviors)
         if (!this.onGround) {
-            List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().contract(this.getMotion().getX(), this.getMotion().getY(), this.getMotion().getZ()).expand(1.0D, 1.0D, 1.0D));
+            List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getBoundingBox().contract(this.getMotion().getX(), this.getMotion().getY(), this.getMotion().getZ()).expand(1.0D, 1.0D, 1.0D));
             for (Entity entity : list) {
                 if (master != null && entity.getEntityId() == master.getEntityId()) continue;
                 if (entity instanceof MoCEntityGolem) continue;
-                if (entity != null && !(entity instanceof LivingEntity)) continue;
-                if (master != null) entity.attackEntityFrom(DamageSource.causeMobDamage((LivingEntity) master), 4);
+                if (entity != null && !(entity instanceof MobEntity)) continue;
+                if (master != null) entity.attackEntityFrom(DamageSource.causeMobDamage((MobEntity) master), 4);
                 else if (entity != null) entity.attackEntityFrom(DamageSource.GENERIC, 4);
             }
         }

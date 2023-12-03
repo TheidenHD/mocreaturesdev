@@ -14,13 +14,13 @@ import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCRenderMoC<T extends LivingEntity, M extends EntityModel<T>> extends LivingRenderer<T, M> {
+public class MoCRenderMoC<T extends MobEntity, M extends EntityModel<T>> extends LivingRenderer<T, M> {
 
     private float prevPitch;
     private float prevRoll;
@@ -62,8 +62,8 @@ public class MoCRenderMoC<T extends LivingEntity, M extends EntityModel<T>> exte
                     }
                     tessellator1.getBuffer().begin(7, DefaultVertexFormats.POSITION_COLOR);
                     // might break SSP
-                    float f8 = ((LivingEntity) entityMoC).getHealth();
-                    float f9 = ((LivingEntity) entityMoC).getMaxHealth();
+                    float f8 = ((MobEntity) entityMoC).getHealth();
+                    float f9 = ((MobEntity) entityMoC).getMaxHealth();
                     float f10 = f8 / f9;
                     float f11 = 40F * f10;
                     tessellator1.getBuffer().pos(-20F + f11, -10 + yOff, 0.0D).color(0.7F, 0.0F, 0.0F, 1.0F).endVertex();
@@ -177,7 +177,7 @@ public class MoCRenderMoC<T extends LivingEntity, M extends EntityModel<T>> exte
     }
 
     @Override
-    public ResourceLocation getEntityTexture(LivingEntity entity) {
+    public ResourceLocation getEntityTexture(MobEntity entity) {
         return ((IMoCEntity) entity).getTexture();
     }
 }

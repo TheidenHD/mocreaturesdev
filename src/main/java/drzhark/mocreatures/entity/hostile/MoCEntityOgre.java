@@ -11,7 +11,7 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import drzhark.mocreatures.network.message.MoCMessageExplode;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.player.PlayerEntity;
@@ -66,8 +66,8 @@ public class MoCEntityOgre extends MoCEntityMob {
             if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
-            if ((entity != this) && (this.world.getDifficulty().getId() > 0) && entity instanceof LivingEntity) {
-                setAttackTarget((LivingEntity) entity);
+            if ((entity != this) && (this.world.getDifficulty().getId() > 0) && entity instanceof MobEntity) {
+                setAttackTarget((MobEntity) entity);
                 return true;
             } else {
                 return false;
@@ -212,7 +212,7 @@ public class MoCEntityOgre extends MoCEntityMob {
     }
 
     public float getEyeHeight() {
-        return this.height * 0.91F;
+        return this.getHeight() * 0.91F;
     }
 
     static class AIOgreAttack extends EntityAIAttackMelee {
@@ -233,12 +233,12 @@ public class MoCEntityOgre extends MoCEntityMob {
         }
 
         @Override
-        protected double getAttackReachSqr(LivingEntity attackTarget) {
-            return 4.0F + attackTarget.width;
+        protected double getAttackReachSqr(MobEntity attackTarget) {
+            return 4.0F + attackTarget.getWidth();
         }
     }
 
-    static class AIOgreTarget<T extends LivingEntity> extends EntityAINearestAttackableTarget<T> {
+    static class AIOgreTarget<T extends MobEntity> extends EntityAINearestAttackableTarget<T> {
         public AIOgreTarget(MoCEntityOgre ogre, Class<T> classTarget) {
             super(ogre, classTarget, true);
         }

@@ -14,7 +14,7 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageHeart;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.init.Items;
@@ -90,7 +90,7 @@ public class MoCEntityTameableAquatic extends MoCEntityAquatic implements IMoCTa
     }
 
     @Nullable
-    public LivingEntity getOwner() {
+    public MobEntity getOwner() {
         try {
             UUID uuid = this.getOwnerId();
             return uuid == null ? null : this.world.getPlayerEntityByUUID(uuid);
@@ -274,8 +274,8 @@ public class MoCEntityTameableAquatic extends MoCEntityAquatic implements IMoCTa
             double d0 = this.rand.nextGaussian() * 0.02D;
             double d1 = this.rand.nextGaussian() * 0.02D;
             double d2 = this.rand.nextGaussian() * 0.02D;
-            this.world.addParticle(particleType, this.getPosX() + this.rand.nextFloat() * this.width * 2.0F - this.width, this.getPosY() + 0.5D
-                    + this.rand.nextFloat() * this.height, this.getPosZ() + this.rand.nextFloat() * this.width * 2.0F - this.width, d0, d1, d2);
+            this.world.addParticle(particleType, this.getPosX() + this.rand.nextFloat() * this.getWidth() * 2.0F - this.getWidth(), this.getPosY() + 0.5D
+                    + this.rand.nextFloat() * this.getHeight(), this.getPosZ() + this.rand.nextFloat() * this.getWidth() * 2.0F - this.getWidth(), d0, d1, d2);
         }
     }
 
@@ -387,8 +387,8 @@ public class MoCEntityTameableAquatic extends MoCEntityAquatic implements IMoCTa
         double var4 = this.rand.nextGaussian() * 0.02D;
         double var6 = this.rand.nextGaussian() * 0.02D;
 
-        this.world.addParticle(ParticleTypes.HEART, this.getPosX() + this.rand.nextFloat() * this.width * 2.0F - this.width, this.getPosY() + 0.5D
-                + this.rand.nextFloat() * this.height, this.getPosZ() + this.rand.nextFloat() * this.width * 2.0F - this.width, var2, var4, var6);
+        this.world.addParticle(ParticleTypes.HEART, this.getPosX() + this.rand.nextFloat() * this.getWidth() * 2.0F - this.getWidth(), this.getPosY() + 0.5D
+                + this.rand.nextFloat() * this.getHeight(), this.getPosZ() + this.rand.nextFloat() * this.getWidth() * 2.0F - this.getWidth(), var2, var4, var6);
     }
 
     /**
@@ -441,7 +441,7 @@ public class MoCEntityTameableAquatic extends MoCEntityAquatic implements IMoCTa
     protected void doBreeding() {
         int i = 0;
 
-        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(8D, 3D, 8D));
+        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(8D, 3D, 8D));
         for (Entity entity : list) {
             if (compatibleMate(entity)) {
                 i++;
@@ -452,7 +452,7 @@ public class MoCEntityTameableAquatic extends MoCEntityAquatic implements IMoCTa
             return;
         }
 
-        List<Entity> list1 = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(4D, 2D, 4D));
+        List<Entity> list1 = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(4D, 2D, 4D));
         for (Entity mate : list1) {
             if (!(compatibleMate(mate)) || (mate == this)) {
                 continue;
@@ -480,11 +480,11 @@ public class MoCEntityTameableAquatic extends MoCEntityAquatic implements IMoCTa
 
                 String offspringName = this.getOffspringClazz((IMoCTameable) mate);
 
-                LivingEntity offspring = (LivingEntity) EntityList.createEntityByIDFromName(new ResourceLocation(MoCConstants.MOD_PREFIX + offspringName.toLowerCase()), this.world);
+                MobEntity offspring = (MobEntity) EntityList.createEntityByIDFromName(new ResourceLocation(MoCConstants.MOD_PREFIX + offspringName.toLowerCase()), this.world);
                 if (offspring instanceof IMoCTameable) {
                     IMoCTameable baby = (IMoCTameable) offspring;
-                    ((LivingEntity) baby).setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
-                    this.world.addEntity((LivingEntity) baby);
+                    ((MobEntity) baby).setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
+                    this.world.addEntity((MobEntity) baby);
                     baby.setAdult(false);
                     baby.setAge(35);
                     baby.setTamed(true);

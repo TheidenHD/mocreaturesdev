@@ -18,13 +18,14 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNavigateSwimmer;
+import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -37,7 +38,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public abstract class MoCEntityMob extends MobEntity implements IMoCEntity {
+public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
 
     protected static final DataParameter<Boolean> ADULT = EntityDataManager.createKey(MoCEntityMob.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Integer> TYPE = EntityDataManager.createKey(MoCEntityMob.class, DataSerializers.VARINT);
@@ -45,8 +46,8 @@ public abstract class MoCEntityMob extends MobEntity implements IMoCEntity {
     protected static final DataParameter<String> NAME_STR = EntityDataManager.createKey(MoCEntityMob.class, DataSerializers.STRING);
     protected boolean divePending;
     protected String texture;
-    protected PathNavigate navigatorWater;
-    protected PathNavigate navigatorFlyer;
+    protected PathNavigator navigatorWater;
+    protected PathNavigator navigatorFlyer;
     protected EntityAIWanderMoC2 wander;
 
     protected MoCEntityMob(World world) {
@@ -182,7 +183,7 @@ public abstract class MoCEntityMob extends MobEntity implements IMoCEntity {
     }
 
     public boolean entitiesToIgnore(Entity entity) {
-        if ((!(entity instanceof LivingEntity)) || (entity instanceof MobEntity) || (entity instanceof MoCEntityEgg))
+        if ((!(entity instanceof MobEntity)) || (entity instanceof MobEntity) || (entity instanceof MoCEntityEgg))
             return true;
         return entity instanceof MoCEntityKittyBed || entity instanceof MoCEntityLitterBox || this.getIsTamed() && entity instanceof MoCEntityAnimal && ((MoCEntityAnimal) entity).getIsTamed() || entity instanceof EntityWolf && !MoCreatures.proxy.attackWolves || entity instanceof MoCEntityHorse && !MoCreatures.proxy.attackHorses;
     }
@@ -389,7 +390,7 @@ public abstract class MoCEntityMob extends MobEntity implements IMoCEntity {
     }
 
     @Override
-    public boolean canAttackTarget(LivingEntity entity) {
+    public boolean canAttackTarget(MobEntity entity) {
         return false;
     }
 
@@ -448,7 +449,7 @@ public abstract class MoCEntityMob extends MobEntity implements IMoCEntity {
     }
 
     @Override
-    public PathNavigate getNavigator() {
+    public PathNavigator getNavigator() {
         if (this.isInWater() && this.isAmphibian()) {
             return this.navigatorWater;
         }

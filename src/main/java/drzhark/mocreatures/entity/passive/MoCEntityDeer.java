@@ -39,7 +39,7 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
     @Override
     protected void initEntityAI() {
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAIFleeFromEntityMoC(this, entity -> !(entity instanceof MoCEntityDeer) && (entity.height > 0.8F || entity.width > 0.8F), 6.0F, this.getMyAISpeed(), this.getMyAISpeed() * 1.2D));
+        this.tasks.addTask(1, new EntityAIFleeFromEntityMoC(this, entity -> !(entity instanceof MoCEntityDeer) && (entity.getHeight() > 0.8F || entity.getWidth() > 0.8F), 6.0F, this.getMyAISpeed(), this.getMyAISpeed() * 1.2D));
         this.tasks.addTask(2, new EntityAIPanic(this, this.getMyAISpeed() * 1.2D));
         this.tasks.addTask(4, new EntityAIFollowAdult(this, getMyAISpeed()));
         this.tasks.addTask(5, new EntityAIWanderMoC2(this, getMyAISpeed()));
@@ -196,6 +196,6 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
     }
 
     public float getEyeHeight() {
-        return this.height * 0.945F;
+        return this.getHeight() * 0.945F;
     }
 }

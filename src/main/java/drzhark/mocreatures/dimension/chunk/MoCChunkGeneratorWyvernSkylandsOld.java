@@ -8,7 +8,7 @@ import drzhark.mocreatures.init.MoCBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -196,7 +196,7 @@ public class MoCChunkGeneratorWyvernSkylandsOld implements IChunkGenerator {
             }
         }
         biome.decorate(world, rand, new BlockPos(var4, 0, var5));
-        MoCTools.performCustomWorldGenSpawning(world, biome, var4 + 8, var5 + 8, 16, 16, rand, world.getBiome(chunkWorldPos).getSpawnableList(EntityClassification.CREATURE), LivingEntity.SpawnPlacementType.ON_GROUND);
+        MoCTools.performCustomWorldGenSpawning(world, biome, var4 + 8, var5 + 8, 16, 16, rand, world.getBiome(chunkWorldPos).getSpawnableList(EntityClassification.CREATURE), MobEntity.SpawnPlacementType.ON_GROUND);
         ForgeEventFactory.onChunkPopulate(false, this, world, rand, x, z, false);
         BlockFalling.fallInstantly = false;
     }

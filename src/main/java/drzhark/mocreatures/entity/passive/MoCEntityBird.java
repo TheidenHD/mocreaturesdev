@@ -15,7 +15,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
@@ -71,7 +71,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
     @Override
     protected void initEntityAI() {
         this.tasks.addTask(1, new EntityAISwimming(this));
-        this.tasks.addTask(2, new EntityAIFleeFromEntityMoC(this, entity -> !(entity instanceof MoCEntityBird) && (entity.height > 0.4F || entity.width > 0.4F), 6.0F, 1.D, 1.3D));
+        this.tasks.addTask(2, new EntityAIFleeFromEntityMoC(this, entity -> !(entity instanceof MoCEntityBird) && (entity.getHeight() > 0.4F || entity.getWidth() > 0.4F), 6.0F, 1.D, 1.3D));
         this.tasks.addTask(3, new EntityAIFollowOwnerPlayer(this, 0.8D, 2F, 10F));
         this.tasks.addTask(4, this.wander = new EntityAIWanderMoC2(this, 1.0D, 80));
         this.tasks.addTask(7, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
@@ -114,7 +114,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
 
     @Override
     public boolean checkSpawningBiome() {
-        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getEntityBoundingBox().minY), this.getPosZ());
+        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getBoundingBox().minY), this.getPosZ());
         Biome currentbiome = MoCTools.biomeKind(this.world, pos);
 
         try {
@@ -370,12 +370,12 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
             }
 
             if (!getIsFlying() && !getIsTamed() && this.rand.nextInt(10) == 0) {
-                List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(4D));
+                List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(4D));
                 for (Entity entity1 : list) {
-                    if (!(entity1 instanceof LivingEntity) || entity1 instanceof MoCEntityBird) {
+                    if (!(entity1 instanceof MobEntity) || entity1 instanceof MoCEntityBird) {
                         continue;
                     }
-                    if (entity1.width >= 0.4F && entity1.height >= 0.4F && canEntityBeSeen(entity1)) {
+                    if (entity1.getWidth() >= 0.4F && entity1.getHeight() >= 0.4F && canEntityBeSeen(entity1)) {
                         setIsFlying(true);
                         this.fleeing = true;
                         this.wander.makeUpdate();
@@ -443,7 +443,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
     }
 
     public int[] ReturnNearestMaterialCoord(Entity entity, Material material, Double double1) {
-        AxisAlignedBB axisalignedbb = entity.getEntityBoundingBox().grow(double1);
+        AxisAlignedBB axisalignedbb = entity.getBoundingBox().grow(double1);
         int i = MathHelper.floor(axisalignedbb.minX);
         int j = MathHelper.floor(axisalignedbb.maxX + 1.0D);
         int k = MathHelper.floor(axisalignedbb.minY);
@@ -530,6 +530,6 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
     }
 
     public float getEyeHeight() {
-        return this.height * 0.75F;
+        return this.getHeight() * 0.75F;
     }
 }

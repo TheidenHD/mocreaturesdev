@@ -6,7 +6,7 @@ package drzhark.mocreatures.entity.hostile;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.util.ParticleTypes;
@@ -52,7 +52,7 @@ public class MoCEntityFlameWraith extends MoCEntityWraith implements IMob {
             }
         } else {
             for (int i = 0; i < 2; ++i) {
-                this.world.addParticle(ParticleTypes.FLAME, this.getPosX() + (this.rand.nextDouble() - 0.5D) * (double) this.width, this.getPosY() + this.rand.nextDouble() * (double) this.height, this.getPosZ() + (this.rand.nextDouble() - 0.5D) * (double) this.width, 0.0D, 0.0D, 0.0D);
+                this.world.addParticle(ParticleTypes.FLAME, this.getPosX() + (this.rand.nextDouble() - 0.5D) * (double) this.getWidth(), this.getPosY() + this.rand.nextDouble() * (double) this.getHeight(), this.getPosZ() + (this.rand.nextDouble() - 0.5D) * (double) this.getWidth(), 0.0D, 0.0D, 0.0D);
             }
         }
         super.onLivingUpdate();
@@ -65,7 +65,7 @@ public class MoCEntityFlameWraith extends MoCEntityWraith implements IMob {
     }*/
 
     @Override
-    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
+    protected void applyEnchantments(MobEntity entityLivingBaseIn, Entity entityIn) {
         if (!this.world.isRemote && !this.world.provider.doesWaterVaporize()) {
             entityLivingBaseIn.setFire(this.burningTime);
         }

@@ -9,7 +9,7 @@ import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.matrixStackIn;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
@@ -39,7 +39,7 @@ public class MoCRenderCrocodile extends RenderLiving<MoCEntityCrocodile> {
         this.croc.swimming = entitycrocodile.isSwimming();
         this.croc.resting = entitycrocodile.getIsSitting();
         if (entitycrocodile.isSpinning()) {
-            spinCroc(entitycrocodile, (LivingEntity) entitycrocodile.getRidingEntity());
+            spinCroc(entitycrocodile, (MobEntity) entitycrocodile.getRidingEntity());
         }
         stretch(entitycrocodile);
         if (entitycrocodile.getIsSitting()) {
@@ -65,7 +65,7 @@ public class MoCRenderCrocodile extends RenderLiving<MoCEntityCrocodile> {
         matrixStackIn.translate(0.0F, FHeight, 0.0F);
     }
 
-    protected void spinCroc(MoCEntityCrocodile entitycrocodile, LivingEntity prey) {
+    protected void spinCroc(MoCEntityCrocodile entitycrocodile, MobEntity prey) {
         int intSpin = entitycrocodile.spinInt;
         int direction = 1;
         if (intSpin > 40) {

@@ -64,7 +64,7 @@ public class MoCEntityRay extends MoCEntityTameableAquatic {
 
     @Override
     public double getMountedYOffset() {
-        return this.height * 0.15D * getSizeFactor();
+        return this.getHeight() * 0.15D * getSizeFactor();
     }
 
     @Override

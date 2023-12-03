@@ -8,7 +8,7 @@ import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.init.MoCEntities;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.init.Biomes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -79,8 +79,8 @@ public class MoCEventHooksTerrain {
             BlockPos blockPos = new BlockPos(chunkX, 0, chunkZ);
             Biome biome = world.getBiome(blockPos.add(16, 0, 16));
 
-            MoCTools.performCustomWorldGenSpawning(world, biome, centerX, centerZ, 16, 16, rand, creatureSpawnMap.get(biome), LivingEntity.SpawnPlacementType.ON_GROUND);
-            MoCTools.performCustomWorldGenSpawning(world, biome, centerX, centerZ, 16, 16, rand, waterCreatureSpawnMap.get(biome), LivingEntity.SpawnPlacementType.IN_WATER);
+            MoCTools.performCustomWorldGenSpawning(world, biome, centerX, centerZ, 16, 16, rand, creatureSpawnMap.get(biome), MobEntity.SpawnPlacementType.ON_GROUND);
+            MoCTools.performCustomWorldGenSpawning(world, biome, centerX, centerZ, 16, 16, rand, waterCreatureSpawnMap.get(biome), MobEntity.SpawnPlacementType.IN_WATER);
         }
     }
 }

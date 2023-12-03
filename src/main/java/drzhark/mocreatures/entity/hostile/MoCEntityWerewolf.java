@@ -11,7 +11,7 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
@@ -154,7 +154,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
             setAttackTarget(null);
             return false;
         }
-        if (this.getTypeMoC() == 4 && entityIn instanceof LivingEntity) {
+        if (this.getTypeMoC() == 4 && entityIn instanceof MobEntity) {
             entityIn.setFire(10);
         }
         return super.attackEntityAsMob(entityIn);
@@ -289,7 +289,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
             return;
         }
         int i = MathHelper.floor(this.getPosX());
-        int j = MathHelper.floor(getEntityBoundingBox().minY) + 1;
+        int j = MathHelper.floor(getBoundingBox().minY) + 1;
         int k = MathHelper.floor(this.getPosZ());
         float f = 0.1F;
         for (int l = 0; l < 30; l++) {
@@ -358,6 +358,6 @@ public class MoCEntityWerewolf extends MoCEntityMob {
     }
 
     public float getEyeHeight() {
-        return getIsHumanForm() ? this.height * 0.885F : this.height;
+        return getIsHumanForm() ? this.getHeight() * 0.885F : this.getHeight();
     }
 }

@@ -4,7 +4,7 @@
 package drzhark.mocreatures.entity.ai;
 
 import drzhark.mocreatures.entity.IMoCEntity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.Goal;
 
 import java.util.List;
@@ -14,15 +14,15 @@ public class EntityAIFollowHerd extends Goal {
     /**
      * The child that is following its parent.
      */
-    LivingEntity theAnimal;
-    LivingEntity herdAnimal;
+    MobEntity theAnimal;
+    MobEntity herdAnimal;
     double moveSpeed;
     double maxRange;
     double minRange;
     private int delayCounter;
     private int executionChance;
 
-    public EntityAIFollowHerd(LivingEntity animal, double speed, double minRangeIn, double maxRangeIn, int chance) {
+    public EntityAIFollowHerd(MobEntity animal, double speed, double minRangeIn, double maxRangeIn, int chance) {
         this.theAnimal = animal;
         this.moveSpeed = speed;
         this.minRange = minRangeIn; //4D;
@@ -30,7 +30,7 @@ public class EntityAIFollowHerd extends Goal {
         this.executionChance = chance;
     }
 
-    public EntityAIFollowHerd(LivingEntity animal, double speed) {
+    public EntityAIFollowHerd(MobEntity animal, double speed) {
         this(animal, speed, 4D, 20D, 120);
     }
 
@@ -44,13 +44,13 @@ public class EntityAIFollowHerd extends Goal {
             return false;
         }
 
-        List<LivingEntity> list =
+        List<MobEntity> list =
                 this.theAnimal.world.getEntitiesWithinAABB(this.theAnimal.getClass(),
-                        this.theAnimal.getEntityBoundingBox().grow(this.maxRange, 4.0D, this.maxRange));
-        LivingEntity entityliving = null;
+                        this.theAnimal.getBoundingBox().grow(this.maxRange, 4.0D, this.maxRange));
+        MobEntity entityliving = null;
         double d0 = Double.MAX_VALUE;
 
-        for (LivingEntity entityliving1 : list) {
+        for (MobEntity entityliving1 : list) {
             double d1 = this.theAnimal.getDistanceSq(entityliving1);
             if (d1 >= this.minRange && this.theAnimal != entityliving1) {
                 d0 = d1;
@@ -81,7 +81,7 @@ public class EntityAIFollowHerd extends Goal {
     public boolean shouldContinueExecuting() {
         if (this.theAnimal instanceof IMoCEntity && ((IMoCEntity) this.theAnimal).isMovementCeased()) { //System.out.println("returning, movement ceased");
             return false;
-        } else if (!this.herdAnimal.isEntityAlive()) {
+        } else if (!this.herdAnimal.isAlive()) {
             return false;
         } else {
             double d0 = this.theAnimal.getDistanceSq(this.herdAnimal);
@@ -109,7 +109,7 @@ public class EntityAIFollowHerd extends Goal {
      * Updates the task
      */
     @Override
-    public void updateTask() {
+    public void tick() {
         if (--this.delayCounter <= 0) {
             this.delayCounter = 20;
             //System.out.println("moving " + this + " to " + this.herdAnimal);

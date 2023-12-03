@@ -17,7 +17,7 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -199,12 +199,12 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
 
-            if (!(entity instanceof LivingEntity) || ((this.isBeingRidden()) && (entity == this.getRidingEntity())) || (entity instanceof PlayerEntity && getIsTamed())) {
+            if (!(entity instanceof MobEntity) || ((this.isBeingRidden()) && (entity == this.getRidingEntity())) || (entity instanceof PlayerEntity && getIsTamed())) {
                 return false;
             }
 
             if ((entity != this) && (super.shouldAttackPlayers()) && getTypeMoC() > 2) {
-                setAttackTarget((LivingEntity) entity);
+                setAttackTarget((MobEntity) entity);
                 flapWings();
             }
             return true;
@@ -495,7 +495,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     protected MoCEntityOstrich getClosestMaleOstrich(Entity entity, double d) {
         double d1 = -1D;
         MoCEntityOstrich entityliving = null;
-        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(entity, entity.getEntityBoundingBox().grow(d));
+        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(entity, entity.getBoundingBox().grow(d));
         for (Entity entity1 : list) {
             if (!(entity1 instanceof MoCEntityOstrich) || ((MoCEntityOstrich) entity1).getTypeMoC() < 3) {
                 continue;
@@ -943,6 +943,6 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     }
 
     public float getEyeHeight() {
-        return this.height * 0.945F;
+        return this.getHeight() * 0.945F;
     }
 }

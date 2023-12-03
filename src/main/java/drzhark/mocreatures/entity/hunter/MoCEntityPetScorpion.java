@@ -18,7 +18,7 @@ import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureAttribute;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Effects;
@@ -289,11 +289,11 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
-            if (!(entity instanceof LivingEntity) || entity instanceof PlayerEntity && getIsTamed()) {
+            if (!(entity instanceof MobEntity) || entity instanceof PlayerEntity && getIsTamed()) {
                 return false;
             }
             if (entity != this && super.shouldAttackPlayers() && getIsAdult()) {
-                setAttackTarget((LivingEntity) entity);
+                setAttackTarget((MobEntity) entity);
             }
             return true;
         } else {
@@ -302,26 +302,26 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
-        if (!getIsPoisoning() && this.rand.nextInt(5) == 0 && entityIn instanceof LivingEntity) {
+    protected void applyEnchantments(MobEntity entityLivingBaseIn, Entity entityIn) {
+        if (!getIsPoisoning() && this.rand.nextInt(5) == 0 && entityIn instanceof MobEntity) {
             setPoisoning(true);
             if (getTypeMoC() <= 1) // Dirt Scorpion
             {
-                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 15 * 20, 1)); // 15 seconds
+                ((MobEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 15 * 20, 1)); // 15 seconds
             } else if (getTypeMoC() == 2) // Cave Scorpion
             {
-                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.NAUSEA, 15 * 20, 0)); // 15 seconds
-                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.WEAKNESS, 15 * 20, 0));
+                ((MobEntity) entityIn).addPotionEffect(new EffectInstance(Effects.NAUSEA, 15 * 20, 0)); // 15 seconds
+                ((MobEntity) entityIn).addPotionEffect(new EffectInstance(Effects.WEAKNESS, 15 * 20, 0));
             } else if (getTypeMoC() == 3) // Fire Scorpion
             {
                 entityIn.setFire(15);
             } else if (getTypeMoC() == 4) // Frost Scorpion
             {
-                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 25 * 20, 0)); // 25 seconds
+                ((MobEntity) entityIn).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 25 * 20, 0)); // 25 seconds
             } else if (getTypeMoC() == 5) // Undead Scorpion
             {
-                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.BLINDNESS, 15 * 20, 0)); // 15 seconds
-                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.WITHER, 15 * 20, 0));
+                ((MobEntity) entityIn).addPotionEffect(new EffectInstance(Effects.BLINDNESS, 15 * 20, 0)); // 15 seconds
+                ((MobEntity) entityIn).addPotionEffect(new EffectInstance(Effects.WITHER, 15 * 20, 0));
             }
         } else {
             swingArm();
@@ -579,7 +579,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
 
     @Override
     public double getMountedYOffset() {
-        return (this.height * 0.75D) - 0.15D;
+        return (this.getHeight() * 0.75D) - 0.15D;
     }
 
     @Override
@@ -627,8 +627,8 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(LivingEntity entity) {
-        return !(entity instanceof MoCEntityFox) && entity.height <= 1D && entity.width <= 1D;
+    public boolean canAttackTarget(MobEntity entity) {
+        return !(entity instanceof MoCEntityFox) && entity.getHeight() <= 1D && entity.getWidth() <= 1D;
     }
 
     static class AIPetScorpionAttack extends EntityAIAttackMelee {
@@ -649,8 +649,8 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
         }
 
         @Override
-        protected double getAttackReachSqr(LivingEntity attackTarget) {
-            return 4.0F + attackTarget.width;
+        protected double getAttackReachSqr(MobEntity attackTarget) {
+            return 4.0F + attackTarget.getWidth();
         }
     }
 }

@@ -12,7 +12,7 @@ import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.network.message.*;
 import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 
 import java.util.List;
 
@@ -101,8 +101,8 @@ public class MoCMessageHandler {
                 MoCMessageHealth message = (MoCMessageHealth) this.message;
                 List<Entity> entList = MoCProxyClient.mc.player.world.loadedEntityList;
                 for (Entity ent : entList) {
-                    if (ent.getEntityId() == message.entityId && ent instanceof LivingEntity) {
-                        ((LivingEntity) ent).setHealth(message.health);
+                    if (ent.getEntityId() == message.entityId && ent instanceof MobEntity) {
+                        ((MobEntity) ent).setHealth(message.health);
                         break;
                     }
                 }

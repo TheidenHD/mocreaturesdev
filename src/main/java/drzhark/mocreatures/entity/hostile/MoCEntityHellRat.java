@@ -7,7 +7,7 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ParticleTypes;
@@ -83,7 +83,7 @@ public class MoCEntityHellRat extends MoCEntityRat {
     public boolean attackEntityAsMob(Entity entityIn) {
         boolean flag = super.attackEntityAsMob(entityIn);
 
-        if (flag && entityIn instanceof LivingEntity) {
+        if (flag && entityIn instanceof MobEntity) {
             entityIn.setFire(5);
         }
 
@@ -94,13 +94,13 @@ public class MoCEntityHellRat extends MoCEntityRat {
     public void onLivingUpdate() {
         if (this.world.isRemote) {
             for (int i = 0; i < 2; ++i) {
-                this.world.addParticle(ParticleTypes.FLAME, this.getPosX() + (this.rand.nextDouble() - 0.5D) * (double) this.width, this.getPosY() + this.rand.nextDouble() * (double) this.height, this.getPosZ() + (this.rand.nextDouble() - 0.5D) * (double) this.width, 0.0D, 0.0D, 0.0D);
+                this.world.addParticle(ParticleTypes.FLAME, this.getPosX() + (this.rand.nextDouble() - 0.5D) * (double) this.getWidth(), this.getPosY() + this.rand.nextDouble() * (double) this.getHeight(), this.getPosZ() + (this.rand.nextDouble() - 0.5D) * (double) this.getWidth(), 0.0D, 0.0D, 0.0D);
             }
         }
         super.onLivingUpdate();
     }
 
     public float getEyeHeight() {
-        return this.height * 0.485F;
+        return this.getHeight() * 0.485F;
     }
 }

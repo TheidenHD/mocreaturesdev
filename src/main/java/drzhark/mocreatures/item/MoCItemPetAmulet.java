@@ -16,7 +16,7 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAppear;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityList;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -94,17 +94,17 @@ public class MoCItemPetAmulet extends MoCItem {
                             break;
                     }
                 }
-                LivingEntity tempLiving = (LivingEntity) EntityList.createEntityByIDFromName(new ResourceLocation(MoCConstants.MOD_PREFIX + this.spawnClass.toLowerCase()), world);
+                MobEntity tempLiving = (MobEntity) EntityList.createEntityByIDFromName(new ResourceLocation(MoCConstants.MOD_PREFIX + this.spawnClass.toLowerCase()), world);
                 if (tempLiving instanceof IMoCEntity) {
                     IMoCTameable storedCreature = (IMoCTameable) tempLiving;
-                    ((LivingEntity) storedCreature).setPosition(newPosX, newPosY, newPosZ);
+                    ((MobEntity) storedCreature).setPosition(newPosX, newPosY, newPosZ);
                     storedCreature.setTypeMoC(this.creatureType);
                     storedCreature.setTamed(true);
                     storedCreature.setPetName(this.name);
                     storedCreature.setOwnerPetId(this.PetId);
                     storedCreature.setOwnerId(player.getUniqueID());
                     this.ownerName = player.getName().getString();
-                    ((LivingEntity) storedCreature).setHealth(this.health);
+                    ((MobEntity) storedCreature).setHealth(this.health);
                     storedCreature.setAge(this.age);
                     storedCreature.setAdult(this.adult);
                     if (storedCreature instanceof MoCEntityBigCat) {
@@ -160,8 +160,8 @@ public class MoCItemPetAmulet extends MoCItem {
                         }
                     }
 
-                    if (player.getEntityWorld().addEntity((LivingEntity) storedCreature)) {
-                        MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAppear(((LivingEntity) storedCreature).getEntityId()), new TargetPoint(player.getEntityWorld().provider.getDimensionType().getId(), player.getPosX(), player.getPosY(), player.getPosZ(), 64));
+                    if (player.getEntityWorld().addEntity((MobEntity) storedCreature)) {
+                        MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAppear(((MobEntity) storedCreature).getEntityId()), new TargetPoint(player.getEntityWorld().provider.getDimensionType().getId(), player.getPosX(), player.getPosY(), player.getPosZ(), 64));
                         if (this.ownerUniqueId == null || this.name.isEmpty()) {
                             MoCTools.tameWithName(player, storedCreature);
                         }

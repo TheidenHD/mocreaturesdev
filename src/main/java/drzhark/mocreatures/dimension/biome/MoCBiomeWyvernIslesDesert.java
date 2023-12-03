@@ -45,7 +45,7 @@ public class MoCBiomeWyvernIslesDesert extends Biome {
         int k = (int) (noiseVal / 3.0D + 3.0D + random.nextDouble() * 0.25D);
         int l = x & 15;
         int i1 = z & 15;
-        BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
+        BlockPos.Mutable blockpos$mutableblockpos = new BlockPos.Mutable();
 
         for (int j1 = 255; j1 >= 0; --j1) {
             if (j1 <= random.nextInt(5)) {

@@ -113,7 +113,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     @Override
     public boolean checkSpawningBiome() {
         int i = MathHelper.floor(this.getPosX());
-        int j = MathHelper.floor(getEntityBoundingBox().minY);
+        int j = MathHelper.floor(getBoundingBox().minY);
         int k = MathHelper.floor(this.getPosZ());
         BlockPos pos = new BlockPos(i, j, k);
 
@@ -222,7 +222,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
             } else if (this.bunnyReproduceTickerB < 127) {
                 this.bunnyReproduceTickerB++;
             } else {
-                List<Entity> list1 = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(4.0D));
+                List<Entity> list1 = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(4.0D));
                 for (Entity entity1 : list1) {
                     if (!(entity1 instanceof MoCEntityBunny) || (entity1 == this)) {
                         continue;
@@ -301,6 +301,6 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     }
 
     public float getEyeHeight() {
-        return this.height * 0.675F;
+        return this.getHeight() * 0.675F;
     }
 }

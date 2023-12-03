@@ -18,7 +18,7 @@ import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -648,7 +648,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
 
     @Override
     public double getMountedYOffset() {
-        return this.height * 0.85 * getSizeFactor();
+        return this.getHeight() * 0.85 * getSizeFactor();
     }
 
     @Override
@@ -669,9 +669,9 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
+    protected void applyEnchantments(MobEntity entityLivingBaseIn, Entity entityIn) {
         if (entityIn instanceof PlayerEntity && this.rand.nextInt(3) == 0) {
-            ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 200, 0));
+            ((MobEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 200, 0));
         }
 
         super.applyEnchantments(entityLivingBaseIn, entityIn);
@@ -689,7 +689,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             }
 
             if ((entity != this) && (super.shouldAttackPlayers())) {
-                setAttackTarget((LivingEntity) entity);
+                setAttackTarget((MobEntity) entity);
             }
             return true;
         }
@@ -868,8 +868,8 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(LivingEntity entity) {
-        return !(entity instanceof MoCEntityWyvern) && entity.height <= 1D && entity.width <= 1D;
+    public boolean canAttackTarget(MobEntity entity) {
+        return !(entity instanceof MoCEntityWyvern) && entity.getHeight() <= 1D && entity.getWidth() <= 1D;
     }
 
     @Override
@@ -958,6 +958,6 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     public float getEyeHeight() {
-        return this.height * 0.925F;
+        return this.getHeight() * 0.925F;
     }
 }

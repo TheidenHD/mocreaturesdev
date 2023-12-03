@@ -163,6 +163,6 @@ public class MoCEntityJellyFish extends MoCEntityTameableAquatic {
     }
 
     public float getEyeHeight() {
-        return this.height * 0.85F;
+        return this.getHeight() * 0.85F;
     }
 }

@@ -9,7 +9,7 @@ import drzhark.mocreatures.entity.MoCEntityMob;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -56,7 +56,7 @@ public class MoCEntityRat extends MoCEntityMob {
     }
 
     @Override
-    protected PathNavigate createNavigator(World worldIn) {
+    protected PathNavigator createNavigator(World worldIn) {
         return new PathNavigateClimber(this, worldIn);
     }
 
@@ -96,7 +96,7 @@ public class MoCEntityRat extends MoCEntityMob {
 
     @Override
     public boolean checkSpawningBiome() {
-        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getEntityBoundingBox().minY), this.getPosZ());
+        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getBoundingBox().minY), this.getPosZ());
         Biome currentbiome = MoCTools.biomeKind(this.world, pos);
 
         try {
@@ -124,13 +124,13 @@ public class MoCEntityRat extends MoCEntityMob {
     @Override
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         Entity entity = damagesource.getTrueSource();
-        if (entity instanceof LivingEntity) {
-            setAttackTarget((LivingEntity) entity);
+        if (entity instanceof MobEntity) {
+            setAttackTarget((MobEntity) entity);
             if (!this.world.isRemote) {
                 List<MoCEntityRat> list = this.world.getEntitiesWithinAABB(MoCEntityRat.class, new AxisAlignedBB(this.getPosX(), this.getPosY(), this.getPosZ(), this.getPosX() + 1.0D, this.getPosY() + 1.0D, this.getPosZ() + 1.0D).grow(16D, 4D, 16D));
                 for (MoCEntityRat entityrat : list) {
                     if ((entityrat != null) && (entityrat.getAttackTarget() == null)) {
-                        entityrat.setAttackTarget((LivingEntity) entity);
+                        entityrat.setAttackTarget((MobEntity) entity);
                     }
                 }
             }
@@ -190,7 +190,7 @@ public class MoCEntityRat extends MoCEntityMob {
     }
 
     public float getEyeHeight() {
-        return this.height * 0.5F;
+        return this.getHeight() * 0.5F;
     }
 
     static class AIRatAttack extends EntityAIAttackMelee {
@@ -211,12 +211,12 @@ public class MoCEntityRat extends MoCEntityMob {
         }
 
         @Override
-        protected double getAttackReachSqr(LivingEntity attackTarget) {
-            return 4.0F + attackTarget.width;
+        protected double getAttackReachSqr(MobEntity attackTarget) {
+            return 4.0F + attackTarget.getWidth();
         }
     }
 
-    static class AIRatTarget<T extends LivingEntity> extends EntityAINearestAttackableTarget<T> {
+    static class AIRatTarget<T extends MobEntity> extends EntityAINearestAttackableTarget<T> {
         public AIRatTarget(MoCEntityRat rat, Class<T> classTarget) {
             super(rat, classTarget, true);
         }

@@ -28,7 +28,7 @@ public class MoCEntityRoach extends MoCEntityInsect {
     @Override
     protected void initEntityAI() {
         super.initEntityAI();
-        this.tasks.addTask(0, new EntityAIFleeFromEntityMoC(this, entity -> !(entity instanceof MoCEntityCrab) && (entity.height > 0.3F || entity.width > 0.3F), 6.0F, 0.8D, 1.3D));
+        this.tasks.addTask(0, new EntityAIFleeFromEntityMoC(this, entity -> !(entity instanceof MoCEntityCrab) && (entity.getHeight() > 0.3F || entity.getWidth() > 0.3F), 6.0F, 0.8D, 1.3D));
     }
 
     @Override

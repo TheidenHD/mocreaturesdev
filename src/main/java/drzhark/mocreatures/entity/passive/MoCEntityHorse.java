@@ -196,7 +196,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
     @Override
     public boolean checkSpawningBiome() {
-        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getEntityBoundingBox().minY), this.getPosZ());
+        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getBoundingBox().minY), this.getPosZ());
         Biome currentbiome = MoCTools.biomeKind(this.world, pos);
         try {
             if (BiomeDictionary.hasType(currentbiome, Type.SAVANNA)) setTypeMoC(60); // zebra
@@ -1770,7 +1770,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             return;
         }
         int i = MathHelper.floor(this.getPosX());
-        int j = MathHelper.floor(getEntityBoundingBox().minY);
+        int j = MathHelper.floor(getBoundingBox().minY);
         int k = MathHelper.floor(this.getPosZ());
         BlockPos pos = new BlockPos(i, j, k);
         BlockState blockstate = this.world.getBlockState(pos.add(-1, 0, -1));
@@ -1917,14 +1917,14 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
             int i = 0;
 
-            List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(8D, 3D, 8D));
+            List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(8D, 3D, 8D));
             for (Entity entity : list) {
                 if (entity instanceof MoCEntityHorse || entity instanceof EntityHorse) i++;
             }
 
             if (i > 1) return;
 
-            List<Entity> list1 = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(4D, 2D, 4D));
+            List<Entity> list1 = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(4D, 2D, 4D));
             for (Entity horsemate : list1) {
                 boolean flag = (horsemate instanceof EntityHorse);
                 if (!(horsemate instanceof MoCEntityHorse || flag) || (horsemate == this)) continue;
@@ -2015,8 +2015,8 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 double var2 = this.rand.nextGaussian() * 0.5D;
                 double var4 = this.rand.nextGaussian() * -0.1D;
                 double var6 = this.rand.nextGaussian() * 0.02D;
-                this.world.addParticle(ParticleTypes.NOTE, this.getPosX() + this.rand.nextFloat() * this.width * 2.0F - this.width, this.getPosY()
-                        + 0.5D + this.rand.nextFloat() * this.height, this.getPosZ() + this.rand.nextFloat() * this.width * 2.0F - this.width, var2, var4, var6);
+                this.world.addParticle(ParticleTypes.NOTE, this.getPosX() + this.rand.nextFloat() * this.getWidth() * 2.0F - this.width, this.getPosY()
+                        + 0.5D + this.rand.nextFloat() * this.getHeight(), this.getPosZ() + this.rand.nextFloat() * this.width * 2.0F - this.width, var2, var4, var6);
             }
 
             if (!this.world.isRemote && !nearMusicBox()) {
@@ -2347,6 +2347,6 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
     // Adjusted to avoid most of the roof suffocation for now
     public float getEyeHeight() {
-        return this.height * 0.9F;
+        return this.getHeight() * 0.9F;
     }
 }

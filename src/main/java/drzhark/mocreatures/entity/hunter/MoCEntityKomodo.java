@@ -15,7 +15,7 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
@@ -269,9 +269,9 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
     public double getMountedYOffset() {
         double yOff = 0.15F;
         if (getIsAdult()) {
-            return yOff + (this.height);
+            return yOff + (this.getHeight());
         }
-        return this.height * ((double) 120 / getAge());
+        return this.getHeight() * ((double) 120 / getAge());
     }
 
     @Override
@@ -279,7 +279,7 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
 
-            if ((entity != null && getIsTamed() && entity instanceof PlayerEntity) || !(entity instanceof LivingEntity)) {
+            if ((entity != null && getIsTamed() && entity instanceof PlayerEntity) || !(entity instanceof MobEntity)) {
                 return false;
             }
 
@@ -288,7 +288,7 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
             }
 
             if ((entity != this) && (super.shouldAttackPlayers())) {
-                setAttackTarget((LivingEntity) entity);
+                setAttackTarget((MobEntity) entity);
             }
             return true;
         }
@@ -319,7 +319,7 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(LivingEntity entity) {
+    public boolean canAttackTarget(MobEntity entity) {
         return !(entity instanceof MoCEntityKomodo) && super.canAttackTarget(entity);
     }
 
@@ -339,8 +339,8 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
-        ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 150, 0));
+    protected void applyEnchantments(MobEntity entityLivingBaseIn, Entity entityIn) {
+        ((MobEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 150, 0));
         super.applyEnchantments(entityLivingBaseIn, entityIn);
     }
 
@@ -360,6 +360,6 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
     }
 
     public float getEyeHeight() {
-        return !this.isMovementCeased() ? this.height * 0.7F : this.height * 0.365F;
+        return !this.isMovementCeased() ? this.getHeight() * 0.7F : this.getHeight() * 0.365F;
     }
 }

@@ -244,7 +244,7 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
     public boolean getCanSpawnHere() {
         boolean willSpawn;
         boolean debug = MoCreatures.proxy.debug;
-        willSpawn = this.world.canSeeSky(new BlockPos(this)) && this.world.checkNoEntityCollision(this.getEntityBoundingBox()) && this.world.getCollisionBoxes(this, this.getEntityBoundingBox()).isEmpty() && !this.world.containsAnyLiquid(this.getEntityBoundingBox());
+        willSpawn = this.world.canSeeSky(new BlockPos(this)) && this.world.checkNoEntityCollision(this.getBoundingBox()) && this.world.getCollisionBoxes(this, this.getBoundingBox()).isEmpty() && !this.world.containsAnyLiquid(this.getBoundingBox());
         if (willSpawn && debug)
             MoCreatures.LOGGER.info("Ambient: " + this.getName() + " at: " + this.getPosition() + " State: " + this.world.getBlockState(this.getPosition()) + " biome: " + MoCTools.biomeName(world, getPosition()));
         return willSpawn;
@@ -337,12 +337,12 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
     /**
      * Finds and entity described in entitiesToInclude at d distance
      */
-    protected LivingEntity getBoogey(double d) {
-        LivingEntity entityliving = null;
-        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(d, 4D, d));
+    protected MobEntity getBoogey(double d) {
+        MobEntity entityliving = null;
+        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(d, 4D, d));
         for (Entity entity : list) {
             if (entitiesToInclude(entity)) {
-                entityliving = (LivingEntity) entity;
+                entityliving = (MobEntity) entity;
             }
         }
         return entityliving;
@@ -352,7 +352,7 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
      * Used in getBoogey to specify what kind of entity to look for
      */
     public boolean entitiesToInclude(Entity entity) {
-        return ((entity instanceof LivingEntity) && ((entity.width >= 0.5D) || (entity.height >= 0.5D)));
+        return ((entity instanceof MobEntity) && ((entity.getWidth() >= 0.5D) || (entity.getHeight() >= 0.5D)));
     }
 
     @Override
@@ -397,7 +397,7 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
     }
 
     @Override
-    public boolean canAttackTarget(LivingEntity entity) {
+    public boolean canAttackTarget(MobEntity entity) {
         return false;
     }
 

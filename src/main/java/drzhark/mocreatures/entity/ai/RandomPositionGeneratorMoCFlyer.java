@@ -4,6 +4,7 @@
 package drzhark.mocreatures.entity.ai;
 
 import net.minecraft.entity.CreatureEntity;
+import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -62,7 +63,7 @@ public class RandomPositionGeneratorMoCFlyer {
      */
     @Nullable
     private static Vector3d findRandomTargetBlock(CreatureEntity entitycreatureIn, int xz, int y, @Nullable Vector3d targetVec3) {
-        PathNavigate pathnavigate = entitycreatureIn.getNavigator();
+        PathNavigator pathnavigate = entitycreatureIn.getNavigator();
         Random random = entitycreatureIn.getRNG();
         boolean flag = false;
         int i = 0;
@@ -71,8 +72,8 @@ public class RandomPositionGeneratorMoCFlyer {
         float f = -99999.0F;
         boolean flag1;
 
-        if (entitycreatureIn.hasHome()) {
-            double d0 = entitycreatureIn.getHomePosition().distanceSq(MathHelper.floor(entitycreatureIn.getPosX()), MathHelper.floor(entitycreatureIn.getPosY()), MathHelper.floor(entitycreatureIn.getPosZ())) + 4.0D;
+        if (entitycreatureIn.detachHome()) {
+            double d0 = entitycreatureIn.getHomePosition().distanceSq(MathHelper.floor(entitycreatureIn.getPosX()), MathHelper.floor(entitycreatureIn.getPosY()), MathHelper.floor(entitycreatureIn.getPosZ()), false) + 4.0D;
             double d1 = entitycreatureIn.getMaximumHomeDistance() + (float) xz;
             flag1 = d0 < d1 * d1;
         } else {
@@ -85,7 +86,7 @@ public class RandomPositionGeneratorMoCFlyer {
             int i1 = random.nextInt(2 * xz + 1) - xz;
 
             if (targetVec3 == null || (double) l * targetVec3.x + (double) i1 * targetVec3.z >= 0.0D) {
-                if (entitycreatureIn.hasHome() && xz > 1) {
+                if (entitycreatureIn.detachHome() && xz > 1) {
                     BlockPos blockpos = entitycreatureIn.getHomePosition();
 
                     if (entitycreatureIn.getPosX() > (double) blockpos.getX()) {

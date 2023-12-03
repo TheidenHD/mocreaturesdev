@@ -13,7 +13,7 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageHeart;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -183,8 +183,8 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     //TODO
     /*@Override
     protected void attackEntity(Entity entity, float f) {
-        if (attackTime <= 0 && (f < 3.5D) && (entity.getEntityBoundingBox().maxY > getEntityBoundingBox().minY)
-                && (entity.getEntityBoundingBox().minY < getEntityBoundingBox().maxY) && (getAge() >= 100)) {
+        if (attackTime <= 0 && (f < 3.5D) && (entity.getBoundingBox().maxY > getBoundingBox().minY)
+                && (entity.getBoundingBox().minY < getBoundingBox().maxY) && (getAge() >= 100)) {
             attackTime = 20;
             entity.attackEntityFrom(DamageSource.causeMobDamage(this), 5);
         }
@@ -194,8 +194,8 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (super.attackEntityFrom(damagesource, i) && (this.world.getDifficulty().getId() > 0)) {
             Entity entity = damagesource.getTrueSource();
-            if (entity instanceof LivingEntity) {
-                LivingEntity entityliving = (LivingEntity) entity;
+            if (entity instanceof MobEntity) {
+                MobEntity entityliving = (MobEntity) entity;
                 if (this.isRidingOrBeingRiddenBy(entity)) {
                     return true;
                 }
@@ -344,7 +344,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
                 return;
             }
             int i = 0;
-            List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(8D, 2D, 8D));
+            List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(8D, 2D, 8D));
             for (Entity entity : list) {
                 if (entity instanceof MoCEntityDolphin) {
                     i++;
@@ -354,7 +354,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
             if (i > 1) {
                 return;
             }
-            List<Entity> list1 = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(4D, 2D, 4D));
+            List<Entity> list1 = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(4D, 2D, 4D));
             for (Entity entity1 : list1) {
                 if (!(entity1 instanceof MoCEntityDolphin) || (entity1 == this)) {
                     continue;
@@ -402,7 +402,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     public boolean ReadyforParenting(MoCEntityDolphin entitydolphin) {
-        LivingEntity passenger = (LivingEntity) this.getControllingPassenger();
+        MobEntity passenger = (MobEntity) this.getControllingPassenger();
         return (entitydolphin.getRidingEntity() == null) && (passenger == null) && entitydolphin.getIsTamed()
                 && entitydolphin.getHasEaten() && entitydolphin.getIsAdult();
     }
@@ -460,10 +460,10 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
 
     @Override
     public double getMountedYOffset() {
-        return this.getAge() * 0.01F * (this.height * 0.3D);
+        return this.getAge() * 0.01F * (this.getHeight() * 0.3D);
     }
 
     public float getEyeHeight() {
-        return this.height * 0.315F;
+        return this.getHeight() * 0.315F;
     }
 }
