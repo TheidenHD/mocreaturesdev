@@ -6,14 +6,14 @@ package drzhark.mocreatures.entity.ai;
 import com.google.common.base.Predicate;
 import drzhark.mocreatures.entity.MoCEntityAnimal;
 import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 
-public class EntityAIHunt<T extends EntityLivingBase> extends EntityAINearestAttackableTarget<T> {
+public class EntityAIHunt<T extends LivingEntity> extends EntityAINearestAttackableTarget<T> {
 
     private final EntityCreature hunter;
 
-    public EntityAIHunt(EntityCreature entity, Class<T> classTarget, int chance, boolean checkSight, boolean onlyNearby, Predicate<EntityLivingBase> predicate) {
+    public EntityAIHunt(EntityCreature entity, Class<T> classTarget, int chance, boolean checkSight, boolean onlyNearby, Predicate<LivingEntity> predicate) {
         super(entity, classTarget, chance, checkSight, onlyNearby, predicate);
         this.hunter = entity;
     }

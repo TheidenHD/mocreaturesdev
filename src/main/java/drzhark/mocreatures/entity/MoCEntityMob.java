@@ -390,7 +390,7 @@ public abstract class MoCEntityMob extends EntityMob implements IMoCEntity {
     }
 
     @Override
-    public boolean canAttackTarget(EntityLivingBase entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return false;
     }
 

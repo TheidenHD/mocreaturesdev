@@ -9,7 +9,7 @@ import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
@@ -121,8 +121,8 @@ public class MoCEntityThrowableRock extends Entity {
             for (Entity entity : list) {
                 if (master != null && entity.getEntityId() == master.getEntityId()) continue;
                 if (entity instanceof MoCEntityGolem) continue;
-                if (entity != null && !(entity instanceof EntityLivingBase)) continue;
-                if (master != null) entity.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) master), 4);
+                if (entity != null && !(entity instanceof LivingEntity)) continue;
+                if (master != null) entity.attackEntityFrom(DamageSource.causeMobDamage((LivingEntity) master), 4);
                 else if (entity != null) entity.attackEntityFrom(DamageSource.GENERIC, 4);
             }
         }

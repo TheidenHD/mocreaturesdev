@@ -17,7 +17,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.item.EntityItem;
@@ -308,23 +308,23 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
             else MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_TURTLE_HURT, 2F);
 
             Entity entity = damagesource.getTrueSource();
-            if ((entity != this) && (this.world.getDifficulty().getId() > 0) && entity instanceof EntityLivingBase) {
-                this.setAttackTarget((EntityLivingBase) entity);
+            if ((entity != this) && (this.world.getDifficulty().getId() > 0) && entity instanceof LivingEntity) {
+                this.setAttackTarget((LivingEntity) entity);
                 return true;
             } else return false;
         }
         if (i > 5) i = 5; //so you can't hit a Golem too hard
         if (getGolemState() != 1 && super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
-            if ((entity != this) && (this.world.getDifficulty().getId() > 0) && entity instanceof EntityLivingBase) {
-                this.setAttackTarget((EntityLivingBase) entity);
+            if ((entity != this) && (this.world.getDifficulty().getId() > 0) && entity instanceof LivingEntity) {
+                this.setAttackTarget((LivingEntity) entity);
                 return true;
             } else return false;
         }
         if (getGolemState() == 1) {
             Entity entity = damagesource.getTrueSource();
-            if ((entity != this) && (this.world.getDifficulty().getId() > 0) && entity instanceof EntityLivingBase) {
-                this.setAttackTarget((EntityLivingBase) entity);
+            if ((entity != this) && (this.world.getDifficulty().getId() > 0) && entity instanceof LivingEntity) {
+                this.setAttackTarget((LivingEntity) entity);
                 return true;
             } else return false;
         } else return false;
@@ -816,12 +816,12 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
         }
 
         @Override
-        protected double getAttackReachSqr(EntityLivingBase attackTarget) {
+        protected double getAttackReachSqr(LivingEntity attackTarget) {
             return 4.0F + attackTarget.width;
         }
     }
 
-    static class AIGolemTarget<T extends EntityLivingBase> extends EntityAINearestAttackableTarget<T> {
+    static class AIGolemTarget<T extends LivingEntity> extends EntityAINearestAttackableTarget<T> {
         public AIGolemTarget(MoCEntityGolem golem, Class<T> classTarget) {
             super(golem, classTarget, true);
         }

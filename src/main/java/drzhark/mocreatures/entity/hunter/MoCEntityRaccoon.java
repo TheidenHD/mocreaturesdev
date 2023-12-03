@@ -9,7 +9,7 @@ import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -66,9 +66,9 @@ public class MoCEntityRaccoon extends MoCEntityTameableAnimal {
             if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
-            if (entity != this && this.isNotScared() && entity instanceof EntityLivingBase && super.shouldAttackPlayers()) {
-                setAttackTarget((EntityLivingBase) entity);
-                setRevengeTarget((EntityLivingBase) entity);
+            if (entity != this && this.isNotScared() && entity instanceof LivingEntity && super.shouldAttackPlayers()) {
+                setAttackTarget((LivingEntity) entity);
+                setRevengeTarget((LivingEntity) entity);
                 return true;
             }
         }
@@ -155,7 +155,7 @@ public class MoCEntityRaccoon extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(EntityLivingBase entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return !(entity instanceof MoCEntityRaccoon) && super.canAttackTarget(entity);
     }
 

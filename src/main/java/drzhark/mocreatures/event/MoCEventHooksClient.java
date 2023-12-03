@@ -22,11 +22,11 @@ public class MoCEventHooksClient {
 
     /* TODO: Fix rider rotation
     @SubscribeEvent
-    public void renderClimbingRiderPre(RenderLivingEvent.Pre<EntityLivingBase> event) {
-        EntityLivingBase rider = event.getEntity();
+    public void renderClimbingRiderPre(RenderLivingEvent.Pre<LivingEntity> event) {
+        LivingEntity rider = event.getEntity();
         Entity mount = rider.getRidingEntity();
         if (mount instanceof MoCEntityScorpion || mount instanceof MoCEntityPetScorpion) {
-            if (((EntityLivingBase) rider.getRidingEntity()).isOnLadder()) {
+            if (((LivingEntity) rider.getRidingEntity()).isOnLadder()) {
                 EnumFacing facing = rider.getHorizontalFacing();
                 GlStateManager.pushMatrix();
                 if (facing == EnumFacing.NORTH) {
@@ -44,11 +44,11 @@ public class MoCEventHooksClient {
     }
 
     @SubscribeEvent
-    public void renderClimbingRiderPost(RenderLivingEvent.Post<EntityLivingBase> event) {
-        EntityLivingBase rider = event.getEntity();
+    public void renderClimbingRiderPost(RenderLivingEvent.Post<LivingEntity> event) {
+        LivingEntity rider = event.getEntity();
         Entity mount = rider.getRidingEntity();
         if (mount instanceof MoCEntityScorpion || mount instanceof MoCEntityPetScorpion) {
-            if (((EntityLivingBase) rider.getRidingEntity()).isOnLadder()) {
+            if (((LivingEntity) rider.getRidingEntity()).isOnLadder()) {
                 EnumFacing facing = rider.getHorizontalFacing();
                 GlStateManager.translate(0.0F, 1.0F, 0.0F);
                 if (facing == EnumFacing.NORTH) {

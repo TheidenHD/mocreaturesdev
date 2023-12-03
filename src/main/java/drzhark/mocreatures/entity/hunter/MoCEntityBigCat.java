@@ -174,8 +174,8 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
             if (entity != null && getIsTamed() && entity instanceof EntityPlayer) {
                 return false;
             }
-            if (entity != this && entity instanceof EntityLivingBase && (this.world.getDifficulty() != EnumDifficulty.PEACEFUL)) {
-                setAttackTarget((EntityLivingBase) entity);
+            if (entity != this && entity instanceof LivingEntity && (this.world.getDifficulty() != EnumDifficulty.PEACEFUL)) {
+                setAttackTarget((LivingEntity) entity);
             }
             return true;
         } else {

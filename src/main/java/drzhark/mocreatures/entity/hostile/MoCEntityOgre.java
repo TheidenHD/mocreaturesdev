@@ -11,7 +11,7 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import drzhark.mocreatures.network.message.MoCMessageExplode;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.monster.EntityIronGolem;
@@ -67,8 +67,8 @@ public class MoCEntityOgre extends MoCEntityMob {
             if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
-            if ((entity != this) && (this.world.getDifficulty().getId() > 0) && entity instanceof EntityLivingBase) {
-                setAttackTarget((EntityLivingBase) entity);
+            if ((entity != this) && (this.world.getDifficulty().getId() > 0) && entity instanceof LivingEntity) {
+                setAttackTarget((LivingEntity) entity);
                 return true;
             } else {
                 return false;
@@ -234,12 +234,12 @@ public class MoCEntityOgre extends MoCEntityMob {
         }
 
         @Override
-        protected double getAttackReachSqr(EntityLivingBase attackTarget) {
+        protected double getAttackReachSqr(LivingEntity attackTarget) {
             return 4.0F + attackTarget.width;
         }
     }
 
-    static class AIOgreTarget<T extends EntityLivingBase> extends EntityAINearestAttackableTarget<T> {
+    static class AIOgreTarget<T extends LivingEntity> extends EntityAINearestAttackableTarget<T> {
         public AIOgreTarget(MoCEntityOgre ogre, Class<T> classTarget) {
             super(ogre, classTarget, true);
         }

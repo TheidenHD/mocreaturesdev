@@ -7,7 +7,7 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
@@ -90,7 +90,7 @@ public class MoCEntityLiard extends MoCEntityBigCat {
     }
 
     @Override
-    public boolean canAttackTarget(EntityLivingBase entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         if (!this.getIsAdult() && (this.getAge() < this.getMaxAge() * 0.8)) {
             return false;
         }

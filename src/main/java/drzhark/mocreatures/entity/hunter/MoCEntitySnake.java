@@ -18,7 +18,7 @@ import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
@@ -486,9 +486,9 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
             if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
-            if ((entity != this) && entity instanceof EntityLivingBase && (super.shouldAttackPlayers())) {
+            if ((entity != this) && entity instanceof LivingEntity && (super.shouldAttackPlayers())) {
                 setPissed(true);
-                setAttackTarget((EntityLivingBase) entity);
+                setAttackTarget((LivingEntity) entity);
             }
             return true;
         } else {
@@ -508,7 +508,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(EntityLivingBase entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return !(entity instanceof MoCEntitySnake) && entity.height < 0.5D && entity.width < 0.5D;
     }
 
@@ -652,9 +652,9 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void applyEnchantments(EntityLivingBase entityLivingBaseIn, Entity entityIn) {
+    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
         if (isVenomous()) {
-            ((EntityLivingBase) entityIn).addPotionEffect(new PotionEffect(MobEffects.POISON, 150, 2));
+            ((LivingEntity) entityIn).addPotionEffect(new PotionEffect(MobEffects.POISON, 150, 2));
         }
         super.applyEnchantments(entityLivingBaseIn, entityIn);
     }

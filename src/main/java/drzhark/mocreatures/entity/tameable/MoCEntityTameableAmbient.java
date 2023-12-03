@@ -16,7 +16,7 @@ import drzhark.mocreatures.network.message.MoCMessageHeart;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -91,7 +91,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
     }
 
     @Nullable
-    public EntityLivingBase getOwner() {
+    public LivingEntity getOwner() {
         try {
             UUID uuid = this.getOwnerId();
             return uuid == null ? null : this.world.getPlayerEntityByUUID(uuid);

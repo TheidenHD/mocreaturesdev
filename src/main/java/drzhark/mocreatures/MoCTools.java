@@ -278,8 +278,8 @@ public class MoCTools {
     public static void checkForTwistedEntities(World world) {
         for (int l = 0; l < world.loadedEntityList.size(); l++) {
             Entity entity = world.loadedEntityList.get(l);
-            if (entity instanceof EntityLivingBase) {
-                EntityLivingBase twisted = (EntityLivingBase) entity;
+            if (entity instanceof LivingEntity) {
+                LivingEntity twisted = (LivingEntity) entity;
                 if (twisted.deathTime > 0 && twisted.getRidingEntity() == null && twisted.getHealth() > 0) {
                     twisted.deathTime = 0;
                 }
@@ -989,9 +989,9 @@ public class MoCTools {
             }
 
             if (!player.inventory.addItemStackToInventory(stack)) {
-                EntityItem entityitem = new EntityItem(((EntityLivingBase) entity).world, ((EntityLivingBase) entity).posX, ((EntityLivingBase) entity).posY, ((EntityLivingBase) entity).posZ, stack);
+                EntityItem entityitem = new EntityItem(((LivingEntity) entity).world, ((LivingEntity) entity).posX, ((LivingEntity) entity).posY, ((LivingEntity) entity).posZ, stack);
                 entityitem.setPickupDelay(20);
-                ((EntityLivingBase) entity).world.spawnEntity(entityitem);
+                ((LivingEntity) entity).world.spawnEntity(entityitem);
             }
         }
     }
@@ -1192,11 +1192,11 @@ public class MoCTools {
     public static void dismountSneakingPlayer(EntityLiving entity) {
         if (!entity.isRiding()) return;
         Entity entityRidden = entity.getRidingEntity();
-        if (entityRidden instanceof EntityLivingBase && entityRidden.isSneaking()) {
+        if (entityRidden instanceof LivingEntity && entityRidden.isSneaking()) {
             entity.dismountRidingEntity();
             double dist = (-1.5D);
-            double newPosX = entityRidden.posX + (dist * Math.sin(((EntityLivingBase) entityRidden).renderYawOffset / 57.29578F));
-            double newPosZ = entityRidden.posZ - (dist * Math.cos(((EntityLivingBase) entityRidden).renderYawOffset / 57.29578F));
+            double newPosX = entityRidden.posX + (dist * Math.sin(((LivingEntity) entityRidden).renderYawOffset / 57.29578F));
+            double newPosZ = entityRidden.posZ - (dist * Math.cos(((LivingEntity) entityRidden).renderYawOffset / 57.29578F));
             entity.setPositionAndUpdate(newPosX, entityRidden.posY + 2D, newPosZ);
             MoCTools.playCustomSound(entity, SoundEvents.ENTITY_CHICKEN_EGG);
         }

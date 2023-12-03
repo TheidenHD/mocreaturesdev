@@ -13,7 +13,7 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageHeart;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -194,8 +194,8 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (super.attackEntityFrom(damagesource, i) && (this.world.getDifficulty().getId() > 0)) {
             Entity entity = damagesource.getTrueSource();
-            if (entity instanceof EntityLivingBase) {
-                EntityLivingBase entityliving = (EntityLivingBase) entity;
+            if (entity instanceof LivingEntity) {
+                LivingEntity entityliving = (LivingEntity) entity;
                 if (this.isRidingOrBeingRiddenBy(entity)) {
                     return true;
                 }
@@ -402,7 +402,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     public boolean ReadyforParenting(MoCEntityDolphin entitydolphin) {
-        EntityLivingBase passenger = (EntityLivingBase) this.getControllingPassenger();
+        LivingEntity passenger = (LivingEntity) this.getControllingPassenger();
         return (entitydolphin.getRidingEntity() == null) && (passenger == null) && entitydolphin.getIsTamed()
                 && entitydolphin.getHasEaten() && entitydolphin.getIsAdult();
     }

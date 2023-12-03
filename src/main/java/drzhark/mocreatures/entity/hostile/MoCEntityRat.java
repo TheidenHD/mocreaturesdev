@@ -9,7 +9,7 @@ import drzhark.mocreatures.entity.MoCEntityMob;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.monster.EntityIronGolem;
@@ -129,13 +129,13 @@ public class MoCEntityRat extends MoCEntityMob {
     @Override
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         Entity entity = damagesource.getTrueSource();
-        if (entity instanceof EntityLivingBase) {
-            setAttackTarget((EntityLivingBase) entity);
+        if (entity instanceof LivingEntity) {
+            setAttackTarget((LivingEntity) entity);
             if (!this.world.isRemote) {
                 List<MoCEntityRat> list = this.world.getEntitiesWithinAABB(MoCEntityRat.class, new AxisAlignedBB(this.posX, this.posY, this.posZ, this.posX + 1.0D, this.posY + 1.0D, this.posZ + 1.0D).grow(16D, 4D, 16D));
                 for (MoCEntityRat entityrat : list) {
                     if ((entityrat != null) && (entityrat.getAttackTarget() == null)) {
-                        entityrat.setAttackTarget((EntityLivingBase) entity);
+                        entityrat.setAttackTarget((LivingEntity) entity);
                     }
                 }
             }
@@ -216,12 +216,12 @@ public class MoCEntityRat extends MoCEntityMob {
         }
 
         @Override
-        protected double getAttackReachSqr(EntityLivingBase attackTarget) {
+        protected double getAttackReachSqr(LivingEntity attackTarget) {
             return 4.0F + attackTarget.width;
         }
     }
 
-    static class AIRatTarget<T extends EntityLivingBase> extends EntityAINearestAttackableTarget<T> {
+    static class AIRatTarget<T extends LivingEntity> extends EntityAINearestAttackableTarget<T> {
         public AIRatTarget(MoCEntityRat rat, Class<T> classTarget) {
             super(rat, classTarget, true);
         }

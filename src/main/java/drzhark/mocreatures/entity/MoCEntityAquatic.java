@@ -346,7 +346,7 @@ public abstract class MoCEntityAquatic extends EntityCreature implements IMoCEnt
                 if (!(entity instanceof EntityMob)) continue;
                 float f = getDistance(entity);
                 if (f < 2.0F && this.rand.nextInt(10) == 0) {
-                    attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) entity), (float) ((EntityMob) entity).getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue());
+                    attackEntityFrom(DamageSource.causeMobDamage((LivingEntity) entity), (float) ((EntityMob) entity).getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue());
                 }
             }
         }
@@ -550,7 +550,7 @@ public abstract class MoCEntityAquatic extends EntityCreature implements IMoCEnt
         }
 
         if (isNotScared()) {
-            EntityLivingBase tempEntity = this.getAttackTarget();
+            LivingEntity tempEntity = this.getAttackTarget();
             setAttackTarget(tempEntity);
             return super.attackEntityFrom(damagesource, i);
         }
@@ -628,7 +628,7 @@ public abstract class MoCEntityAquatic extends EntityCreature implements IMoCEnt
     }
 
     @Override
-    public boolean canAttackTarget(EntityLivingBase entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return false;
     }
 
@@ -657,7 +657,7 @@ public abstract class MoCEntityAquatic extends EntityCreature implements IMoCEnt
     public void travel(float strafe, float vertical, float forward) {
         if (this.isInWater()) {
             if (this.isBeingRidden()) {
-                EntityLivingBase passenger = (EntityLivingBase) this.getControllingPassenger();
+                LivingEntity passenger = (LivingEntity) this.getControllingPassenger();
                 if (passenger != null) this.moveWithRider(strafe, vertical, forward, passenger); //riding movement
                 return;
             }
@@ -689,7 +689,7 @@ public abstract class MoCEntityAquatic extends EntityCreature implements IMoCEnt
     /**
      * * riding Code
      */
-    public void moveWithRider(float strafe, float vertical, float forward, EntityLivingBase passenger) {
+    public void moveWithRider(float strafe, float vertical, float forward, LivingEntity passenger) {
         if (passenger == null) {
             return;
         }
@@ -731,7 +731,7 @@ public abstract class MoCEntityAquatic extends EntityCreature implements IMoCEnt
         }
     }
 
-    public void moveWithRiderUntamed(float strafe, float vertical, float forward, EntityLivingBase passenger) {
+    public void moveWithRiderUntamed(float strafe, float vertical, float forward, LivingEntity passenger) {
         if ((this.isBeingRidden()) && !getIsTamed()) {
             if ((this.rand.nextInt(5) == 0) && !getIsJumping() && this.jumpPending) {
                 this.motionY += getCustomJump();

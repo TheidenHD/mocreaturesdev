@@ -90,7 +90,7 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
     }
 
     @Nullable
-    public EntityLivingBase getOwner() {
+    public LivingEntity getOwner() {
         try {
             UUID uuid = this.getOwnerId();
             return uuid == null ? null : this.world.getPlayerEntityByUUID(uuid);

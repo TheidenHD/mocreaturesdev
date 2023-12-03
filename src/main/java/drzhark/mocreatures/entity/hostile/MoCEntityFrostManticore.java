@@ -6,7 +6,7 @@ package drzhark.mocreatures.entity.hostile;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
@@ -35,10 +35,10 @@ public class MoCEntityFrostManticore extends MoCEntityManticore {
     }
 
     @Override
-    protected void applyEnchantments(EntityLivingBase entityLivingBaseIn, Entity entityIn) {
-        if (!getIsPoisoning() && this.rand.nextInt(5) == 0 && entityIn instanceof EntityLivingBase) {
+    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
+        if (!getIsPoisoning() && this.rand.nextInt(5) == 0 && entityIn instanceof LivingEntity) {
             setPoisoning(true);
-            ((EntityLivingBase) entityIn).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 25 * 20, 0)); // 25 seconds
+            ((LivingEntity) entityIn).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 25 * 20, 0)); // 25 seconds
         } else {
             openMouth();
         }

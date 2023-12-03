@@ -10,7 +10,7 @@ import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
@@ -155,7 +155,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
             setAttackTarget(null);
             return false;
         }
-        if (this.getType() == 4 && entityIn instanceof EntityLivingBase) {
+        if (this.getType() == 4 && entityIn instanceof LivingEntity) {
             entityIn.setFire(10);
         }
         return super.attackEntityAsMob(entityIn);

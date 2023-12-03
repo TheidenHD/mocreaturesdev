@@ -17,7 +17,7 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
@@ -290,11 +290,11 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
-            if (!(entity instanceof EntityLivingBase) || entity instanceof EntityPlayer && getIsTamed()) {
+            if (!(entity instanceof LivingEntity) || entity instanceof EntityPlayer && getIsTamed()) {
                 return false;
             }
             if (entity != this && super.shouldAttackPlayers() && getIsAdult()) {
-                setAttackTarget((EntityLivingBase) entity);
+                setAttackTarget((LivingEntity) entity);
             }
             return true;
         } else {
@@ -303,26 +303,26 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void applyEnchantments(EntityLivingBase entityLivingBaseIn, Entity entityIn) {
-        if (!getIsPoisoning() && this.rand.nextInt(5) == 0 && entityIn instanceof EntityLivingBase) {
+    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
+        if (!getIsPoisoning() && this.rand.nextInt(5) == 0 && entityIn instanceof LivingEntity) {
             setPoisoning(true);
             if (getType() <= 1) // Dirt Scorpion
             {
-                ((EntityLivingBase) entityIn).addPotionEffect(new PotionEffect(MobEffects.POISON, 15 * 20, 1)); // 15 seconds
+                ((LivingEntity) entityIn).addPotionEffect(new PotionEffect(MobEffects.POISON, 15 * 20, 1)); // 15 seconds
             } else if (getType() == 2) // Cave Scorpion
             {
-                ((EntityLivingBase) entityIn).addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 15 * 20, 0)); // 15 seconds
-                ((EntityLivingBase) entityIn).addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 15 * 20, 0));
+                ((LivingEntity) entityIn).addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 15 * 20, 0)); // 15 seconds
+                ((LivingEntity) entityIn).addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 15 * 20, 0));
             } else if (getType() == 3) // Fire Scorpion
             {
                 entityIn.setFire(15);
             } else if (getType() == 4) // Frost Scorpion
             {
-                ((EntityLivingBase) entityIn).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 25 * 20, 0)); // 25 seconds
+                ((LivingEntity) entityIn).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 25 * 20, 0)); // 25 seconds
             } else if (getType() == 5) // Undead Scorpion
             {
-                ((EntityLivingBase) entityIn).addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 15 * 20, 0)); // 15 seconds
-                ((EntityLivingBase) entityIn).addPotionEffect(new PotionEffect(MobEffects.WITHER, 15 * 20, 0));
+                ((LivingEntity) entityIn).addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 15 * 20, 0)); // 15 seconds
+                ((LivingEntity) entityIn).addPotionEffect(new PotionEffect(MobEffects.WITHER, 15 * 20, 0));
             }
         } else {
             swingArm();
@@ -628,7 +628,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(EntityLivingBase entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return !(entity instanceof MoCEntityFox) && entity.height <= 1D && entity.width <= 1D;
     }
 
@@ -650,7 +650,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
         }
 
         @Override
-        protected double getAttackReachSqr(EntityLivingBase attackTarget) {
+        protected double getAttackReachSqr(LivingEntity attackTarget) {
             return 4.0F + attackTarget.width;
         }
     }

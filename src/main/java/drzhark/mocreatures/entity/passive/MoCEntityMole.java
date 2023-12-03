@@ -11,7 +11,7 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
@@ -154,7 +154,7 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
             }
 
             if (getState() != 2 && getState() != 1 && isOnDirt()) {
-                EntityLivingBase entityliving = getBoogey(4D);
+                LivingEntity entityliving = getBoogey(4D);
                 if ((entityliving != null) && canEntityBeSeen(entityliving)) {
                     setState(1);
                     this.getNavigator().clearPath();

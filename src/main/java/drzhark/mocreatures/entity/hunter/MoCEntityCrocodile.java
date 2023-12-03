@@ -13,7 +13,7 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
@@ -181,8 +181,8 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
 
                 if (!isInsideOfMaterial(Material.WATER)) {
                     this.waterbound = true;
-                    if (this.getRidingEntity() instanceof EntityLiving && ((EntityLivingBase) this.getRidingEntity()).getHealth() > 0) {
-                        ((EntityLivingBase) this.getRidingEntity()).deathTime = 0;
+                    if (this.getRidingEntity() instanceof EntityLiving && ((LivingEntity) this.getRidingEntity()).getHealth() > 0) {
+                        ((LivingEntity) this.getRidingEntity()).deathTime = 0;
                     }
 
                     if (!this.world.isRemote && this.rand.nextInt(50) == 0) {
@@ -282,8 +282,8 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
             Entity entity = damagesource.getTrueSource();
 
             if (this.isBeingRidden() && this.getRidingEntity() == entity) {
-                if ((entity != this) && entity instanceof EntityLivingBase && super.shouldAttackPlayers()) {
-                    setAttackTarget((EntityLivingBase) entity);
+                if ((entity != this) && entity instanceof LivingEntity && super.shouldAttackPlayers()) {
+                    setAttackTarget((LivingEntity) entity);
                 }
             }
             return true;
@@ -293,7 +293,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(EntityLivingBase entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return !(entity instanceof MoCEntityCrocodile);
     }
 
@@ -315,8 +315,8 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
             direction = 1;
         }
 
-        ((EntityLivingBase) passenger).renderYawOffset = this.rotationYaw * direction;
-        ((EntityLivingBase) passenger).prevRenderYawOffset = this.rotationYaw * direction;
+        ((LivingEntity) passenger).renderYawOffset = this.rotationYaw * direction;
+        ((LivingEntity) passenger).prevRenderYawOffset = this.rotationYaw * direction;
     }
 
     @Override
@@ -366,8 +366,8 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     public void unMount() {
 
         if (this.isBeingRidden()) {
-            if (this.getRidingEntity() instanceof EntityLiving && ((EntityLivingBase) this.getRidingEntity()).getHealth() > 0) {
-                ((EntityLivingBase) this.getRidingEntity()).deathTime = 0;
+            if (this.getRidingEntity() instanceof EntityLiving && ((LivingEntity) this.getRidingEntity()).getHealth() > 0) {
+                ((LivingEntity) this.getRidingEntity()).deathTime = 0;
             }
 
             this.dismountRidingEntity();

@@ -10,7 +10,7 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.monster.EntityIronGolem;
@@ -208,12 +208,12 @@ public class MoCEntityMiniGolem extends MoCEntityMob {
         }
 
         @Override
-        protected double getAttackReachSqr(EntityLivingBase attackTarget) {
+        protected double getAttackReachSqr(LivingEntity attackTarget) {
             return 4.0F + attackTarget.width;
         }
     }
 
-    static class AIGolemTarget<T extends EntityLivingBase> extends EntityAINearestAttackableTarget<T> {
+    static class AIGolemTarget<T extends LivingEntity> extends EntityAINearestAttackableTarget<T> {
         public AIGolemTarget(MoCEntityMiniGolem golem, Class<T> classTarget) {
             super(golem, classTarget, true);
         }

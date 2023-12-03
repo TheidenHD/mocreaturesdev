@@ -4,7 +4,7 @@
 package drzhark.mocreatures.item;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
@@ -46,7 +46,7 @@ public class MoCItemCrabClaw extends MoCItem {
     
     // TODO: Damage claw while placing/destroying blocks or hitting mobs
     @Override
-    public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
+    public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
     	Item itemOffhand = attacker.getHeldItemOffhand().getItem();
     	
         if (itemOffhand instanceof MoCItemCrabClaw) {
@@ -57,7 +57,7 @@ public class MoCItemCrabClaw extends MoCItem {
     }
     
     @Override
-    public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, EntityLivingBase entityLiving) {
+    public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, LivingEntity entityLiving) {
     	Item itemOffhand = entityLiving.getHeldItemOffhand().getItem();
     	
         if (!worldIn.isRemote && state.getBlockHardness(worldIn, pos) != 0.0D && itemOffhand instanceof MoCItemCrabClaw) {

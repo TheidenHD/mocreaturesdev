@@ -6,7 +6,7 @@ package drzhark.mocreatures.item;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.Item;
@@ -44,7 +44,7 @@ public class MoCItemSword extends ItemSword {
     }
 
     @Override
-    public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
+    public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (MoCreatures.proxy.weaponEffects) {
             int timer = 10; // In seconds
             switch (this.specialWeaponType) {

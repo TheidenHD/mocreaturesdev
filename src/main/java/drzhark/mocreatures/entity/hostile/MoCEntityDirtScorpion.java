@@ -5,7 +5,7 @@ package drzhark.mocreatures.entity.hostile;
 
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
@@ -30,10 +30,10 @@ public class MoCEntityDirtScorpion extends MoCEntityScorpion {
     }
 
     @Override
-    protected void applyEnchantments(EntityLivingBase entityLivingBaseIn, Entity entityIn) {
-        if (!getIsPoisoning() && this.rand.nextInt(5) == 0 && entityIn instanceof EntityLivingBase) {
+    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
+        if (!getIsPoisoning() && this.rand.nextInt(5) == 0 && entityIn instanceof LivingEntity) {
             setPoisoning(true);
-            ((EntityLivingBase) entityIn).addPotionEffect(new PotionEffect(MobEffects.POISON, 15 * 20, 1)); // 15 seconds
+            ((LivingEntity) entityIn).addPotionEffect(new PotionEffect(MobEffects.POISON, 15 * 20, 1)); // 15 seconds
         } else {
             swingArm();
         }

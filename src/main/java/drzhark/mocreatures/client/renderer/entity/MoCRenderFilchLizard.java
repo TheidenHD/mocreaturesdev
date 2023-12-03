@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -52,7 +52,7 @@ public class MoCRenderFilchLizard extends RenderLiving<MoCEntityFilchLizard> {
             }
         }
 
-        public void renderHeldItemLizard(EntityLivingBase entity, ItemStack itemStack, ItemCameraTransforms.TransformType transformType) {
+        public void renderHeldItemLizard(LivingEntity entity, ItemStack itemStack, ItemCameraTransforms.TransformType transformType) {
             if (!itemStack.isEmpty()) {
                 GlStateManager.pushMatrix();
                 if (entity.isSneaking()) {
