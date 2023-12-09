@@ -45,7 +45,7 @@ public class MoCEntityBoar extends MoCEntityAnimal {
         this.tasks.addTask(4, new EntityAIAttackMelee(this, 1.0D, true));
         this.tasks.addTask(7, new EntityAIWanderMoC2(this, 1.0D));
         this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        //this.targetTasks.addTask(1, new EntityAIHunt<>(this, EntityAnimal.class, true));
+        //this.targetTasks.addTask(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
     }
 
     @Override

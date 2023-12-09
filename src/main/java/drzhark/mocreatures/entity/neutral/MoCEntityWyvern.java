@@ -91,7 +91,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
         this.tasks.addTask(5, new EntityAIAttackMelee(this, 1.0D, true));
         this.tasks.addTask(4, this.wander = new EntityAIWanderMoC2(this, 1.0D, 80));
         this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        //this.targetTasks.addTask(1, new EntityAIHunt<>(this, EntityAnimal.class, true));
+        //this.targetTasks.addTask(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
         this.targetTasks.addTask(2, new EntityAIHurtByTarget(this, false));
     }
 

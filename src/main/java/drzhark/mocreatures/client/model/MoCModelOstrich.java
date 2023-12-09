@@ -573,7 +573,7 @@ public class MoCModelOstrich extends ModelBase {
      * setRotationAngles method.
      */
     /*
-     * public void setLivingAnimations(EntityLiving entityliving, float par2,
+     * public void setLivingAnimations(MobEntity entityliving, float par2,
      * float par3, float par4) { super.setLivingAnimations(entityliving, par2,
      * par3, par4); this.Head.rotationPointY = 6.0F +
      * ((EntitySheep)entityliving).func_44003_c(par4) * 9.0F; this.field_44016_o

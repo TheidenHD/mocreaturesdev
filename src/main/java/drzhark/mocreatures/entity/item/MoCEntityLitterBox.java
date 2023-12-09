@@ -8,11 +8,11 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.hostile.MoCEntityOgre;
 import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
@@ -30,7 +30,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class MoCEntityLitterBox extends EntityLiving {
+public class MoCEntityLitterBox extends MobEntity {
 
     private static final DataParameter<Boolean> PICKED_UP = EntityDataManager.createKey(MoCEntityLitterBox.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> USED_LITTER = EntityDataManager.createKey(MoCEntityLitterBox.class, DataSerializers.BOOLEAN);
@@ -154,10 +154,10 @@ public class MoCEntityLitterBox extends EntityLiving {
                 this.litterTime++;
                 List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(12D, 4D, 12D));
                 for (Entity entity : list) {
-                    if (!(entity instanceof EntityMob)) {
+                    if (!(entity instanceof MonsterEntity)) {
                         continue;
                     }
-                    EntityMob entityMob = (EntityMob) entity;
+                    MonsterEntity entityMob = (MonsterEntity) entity;
                     entityMob.setAttackTarget(this);
                     if (entityMob instanceof EntityCreeper) {
                         ((EntityCreeper) entityMob).setCreeperState(-1);

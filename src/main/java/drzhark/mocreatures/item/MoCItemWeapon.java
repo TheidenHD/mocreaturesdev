@@ -9,7 +9,7 @@ import net.minecraft.block.BlockWeb;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -95,7 +95,7 @@ public class MoCItemWeapon extends MoCItem {
         return true;
     }
 
-    public boolean onBlockDestroyed(ItemStack par1ItemStack, int par2, int par3, int par4, int par5, EntityLiving par6EntityLiving) {
+    public boolean onBlockDestroyed(ItemStack par1ItemStack, int par2, int par3, int par4, int par5, MobEntity par6EntityLiving) {
         par1ItemStack.damageItem(2, par6EntityLiving);
         return true;
     }

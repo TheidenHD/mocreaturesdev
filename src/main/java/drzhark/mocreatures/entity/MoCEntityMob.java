@@ -16,7 +16,7 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageHealth;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.*;
-import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -38,7 +38,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public abstract class MoCEntityMob extends EntityMob implements IMoCEntity {
+public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
 
     protected static final DataParameter<Boolean> ADULT = EntityDataManager.createKey(MoCEntityMob.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Integer> TYPE = EntityDataManager.createKey(MoCEntityMob.class, DataSerializers.VARINT);
@@ -183,7 +183,7 @@ public abstract class MoCEntityMob extends EntityMob implements IMoCEntity {
     }
 
     public boolean entitiesToIgnore(Entity entity) {
-        if ((!(entity instanceof EntityLiving)) || (entity instanceof EntityMob) || (entity instanceof MoCEntityEgg))
+        if ((!(entity instanceof MobEntity)) || (entity instanceof MonsterEntity) || (entity instanceof MoCEntityEgg))
             return true;
         return entity instanceof MoCEntityKittyBed || entity instanceof MoCEntityLitterBox || this.getIsTamed() && entity instanceof MoCEntityAnimal && ((MoCEntityAnimal) entity).getIsTamed() || entity instanceof EntityWolf && !MoCreatures.proxy.attackWolves || entity instanceof MoCEntityHorse && !MoCreatures.proxy.attackHorses;
     }

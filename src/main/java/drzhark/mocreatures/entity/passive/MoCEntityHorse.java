@@ -177,7 +177,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         Entity entity = damagesource.getTrueSource();
         if ((this.isBeingRidden()) && (entity == this.getRidingEntity())) return false;
         if (entity instanceof EntityWolf) {
-            EntityCreature entitycreature = (EntityCreature) entity;
+            CreatureEntity entitycreature = (CreatureEntity) entity;
             entitycreature.setAttackTarget(null);
             return false;
         } else {

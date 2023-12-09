@@ -77,7 +77,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
         this.tasks.addTask(4, new EntityAIAttackMelee(this, 1.0D, true));
         this.tasks.addTask(5, new EntityAIWanderMoC2(this, 0.8D, 30));
         this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        //this.targetTasks.addTask(1, new EntityAIHunt<>(this, EntityAnimal.class, true));
+        //this.targetTasks.addTask(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
         this.targetTasks.addTask(2, new EntityAIHunt<>(this, EntityPlayer.class, true));
     }
 

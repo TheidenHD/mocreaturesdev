@@ -4,7 +4,7 @@
 package drzhark.mocreatures.entity.ai;
 
 import drzhark.mocreatures.entity.IMoCEntity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.EntityAIBase;
 
 import java.util.List;
@@ -14,12 +14,12 @@ public class EntityAIFollowAdult extends EntityAIBase {
     /**
      * The child that is following its parent.
      */
-    EntityLiving childAnimal;
-    EntityLiving parentAnimal;
+    MobEntity childAnimal;
+    MobEntity parentAnimal;
     double moveSpeed;
     private int delayCounter;
 
-    public EntityAIFollowAdult(EntityLiving animal, double speed) {
+    public EntityAIFollowAdult(MobEntity animal, double speed) {
         this.childAnimal = animal;
         this.moveSpeed = speed;
     }
@@ -32,13 +32,13 @@ public class EntityAIFollowAdult extends EntityAIBase {
         if ((!(this.childAnimal instanceof IMoCEntity)) || ((IMoCEntity) this.childAnimal).getIsAdult()) {
             return false;
         } else {
-            List<EntityLiving> list =
+            List<MobEntity> list =
                     this.childAnimal.world.getEntitiesWithinAABB(this.childAnimal.getClass(),
                             this.childAnimal.getEntityBoundingBox().grow(8.0D, 4.0D, 8.0D));
-            EntityLiving entityliving = null;
+            MobEntity entityliving = null;
             double d0 = Double.MAX_VALUE;
 
-            for (EntityLiving entityliving1 : list) {
+            for (MobEntity entityliving1 : list) {
                 if (((IMoCEntity) entityliving1).getIsAdult()) {
                     double d1 = this.childAnimal.getDistanceSq(entityliving1);
 

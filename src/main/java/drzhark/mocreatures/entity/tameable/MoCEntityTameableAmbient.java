@@ -15,7 +15,7 @@ import drzhark.mocreatures.network.message.MoCMessageHealth;
 import drzhark.mocreatures.network.message.MoCMessageHeart;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -456,11 +456,11 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
 
                 String offspringName = this.getOffspringClazz((IMoCTameable) mate);
 
-                EntityLiving offspring = (EntityLiving) EntityList.createEntityByIDFromName(new ResourceLocation(MoCConstants.MOD_PREFIX + offspringName.toLowerCase()), this.world);
+                MobEntity offspring = (MobEntity) EntityList.createEntityByIDFromName(new ResourceLocation(MoCConstants.MOD_PREFIX + offspringName.toLowerCase()), this.world);
                 if (offspring instanceof IMoCTameable) {
                     IMoCTameable baby = (IMoCTameable) offspring;
-                    ((EntityLiving) baby).setPosition(this.posX, this.posY, this.posZ);
-                    this.world.spawnEntity((EntityLiving) baby);
+                    ((MobEntity) baby).setPosition(this.posX, this.posY, this.posZ);
+                    this.world.spawnEntity((MobEntity) baby);
                     baby.setAdult(false);
                     baby.setAge(35);
                     baby.setTamed(true);

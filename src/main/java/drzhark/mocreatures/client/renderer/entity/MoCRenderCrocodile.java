@@ -9,7 +9,7 @@ import drzhark.mocreatures.entity.hunter.MoCEntityCrocodile;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -41,7 +41,7 @@ public class MoCRenderCrocodile extends RenderLiving<MoCEntityCrocodile> {
         this.croc.swimming = entitycrocodile.isSwimming();
         this.croc.resting = entitycrocodile.getIsSitting();
         if (entitycrocodile.isSpinning()) {
-            spinCroc(entitycrocodile, (EntityLiving) entitycrocodile.getRidingEntity());
+            spinCroc(entitycrocodile, (MobEntity) entitycrocodile.getRidingEntity());
         }
         stretch(entitycrocodile);
         if (entitycrocodile.getIsSitting()) {
@@ -67,7 +67,7 @@ public class MoCRenderCrocodile extends RenderLiving<MoCEntityCrocodile> {
         GlStateManager.translate(0.0F, FHeight, 0.0F);
     }
 
-    protected void spinCroc(MoCEntityCrocodile entitycrocodile, EntityLiving prey) {
+    protected void spinCroc(MoCEntityCrocodile entitycrocodile, MobEntity prey) {
         int intSpin = entitycrocodile.spinInt;
         int direction = 1;
         if (intSpin > 40) {

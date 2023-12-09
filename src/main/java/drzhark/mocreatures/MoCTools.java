@@ -26,7 +26,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.monster.EntityZombie;
@@ -73,7 +73,7 @@ public class MoCTools {
     /**
      * Spawns entities during world gen
      */
-    public static void performCustomWorldGenSpawning(World world, Biome biome, int centerX, int centerZ, int diameterX, int diameterZ, Random random, List<Biome.SpawnListEntry> spawnList, EntityLiving.SpawnPlacementType placementType) {
+    public static void performCustomWorldGenSpawning(World world, Biome biome, int centerX, int centerZ, int diameterX, int diameterZ, Random random, List<Biome.SpawnListEntry> spawnList, MobEntity.SpawnPlacementType placementType) {
         if (spawnList == null || spawnList.isEmpty()) return;
         while (random.nextFloat() < Math.min(biome.getSpawningChance() * MoCreatures.proxy.spawnMultiplier, 0.5F)) {
             Biome.SpawnListEntry spawnListEntry = WeightedRandom.getRandomItem(random, spawnList);
@@ -89,9 +89,9 @@ public class MoCTools {
                 boolean spawned = false;
                 for (int j = 0; !spawned && j < 4; j++) {
                     BlockPos blockPos = MoCTools.getActualTopSolidOrLiquidBlock(world, new BlockPos(xPos, 0, zPos));
-                    if (placementType == EntityLiving.SpawnPlacementType.IN_WATER) blockPos = blockPos.down();
+                    if (placementType == MobEntity.SpawnPlacementType.IN_WATER) blockPos = blockPos.down();
                     if (WorldEntitySpawner.canCreatureTypeSpawnAtLocation(placementType, world, blockPos)) {
-                        EntityLiving entityliving;
+                        MobEntity entityliving;
                         try {
                             entityliving = spawnListEntry.newInstance(world);
                         } catch (Exception exception) {
@@ -201,10 +201,10 @@ public class MoCTools {
         }
     }
 
-    public static void buckleMobs(EntityLiving entityattacker, Double dist, World world) {
+    public static void buckleMobs(MobEntity entityattacker, Double dist, World world) {
         List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(entityattacker, entityattacker.getEntityBoundingBox().grow(dist, 2D, dist));
         for (Entity entitytarget : list) {
-            if (!(entitytarget instanceof EntityLiving) || (entityattacker.isBeingRidden() && entitytarget == entityattacker.getRidingEntity())) {
+            if (!(entitytarget instanceof MobEntity) || (entityattacker.isBeingRidden() && entitytarget == entityattacker.getRidingEntity())) {
                 continue;
             }
 
@@ -214,10 +214,10 @@ public class MoCTools {
         }
     }
 
-    public static void buckleMobsNotPlayers(EntityLiving entityattacker, Double dist, World world) {
+    public static void buckleMobsNotPlayers(MobEntity entityattacker, Double dist, World world) {
         List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(entityattacker, entityattacker.getEntityBoundingBox().grow(dist, 2D, dist));
         for (Entity entitytarget : list) {
-            if (!(entitytarget instanceof EntityLiving) || entityattacker.isBeingRidden() && entitytarget == entityattacker.getRidingEntity()) {
+            if (!(entitytarget instanceof MobEntity) || entityattacker.isBeingRidden() && entitytarget == entityattacker.getRidingEntity()) {
                 continue;
             }
 
@@ -230,9 +230,9 @@ public class MoCTools {
     public static void spawnNearPlayer(EntityPlayer player, int entityId, int numberToSpawn) {
         WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(player.world.provider.getDimensionType().getId());
         for (int i = 0; i < numberToSpawn; i++) {
-            EntityLiving entityliving = null;
+            MobEntity entityliving = null;
             try {
-                Class<? extends EntityLiving> entityClass = MoCreatures.instaSpawnerMap.get(entityId);
+                Class<? extends MobEntity> entityClass = MoCreatures.instaSpawnerMap.get(entityId);
                 entityliving = entityClass.getConstructor(World.class).newInstance(world);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -427,14 +427,14 @@ public class MoCTools {
         return null;
     }
 
-    public static void moveCreatureToXYZ(EntityCreature movingEntity, int x, int y, int z, float f) {
+    public static void moveCreatureToXYZ(CreatureEntity movingEntity, int x, int y, int z, float f) {
         Path pathEntity = movingEntity.getNavigator().getPathToXYZ(x, y, z);
         if (pathEntity != null) {
             movingEntity.getNavigator().setPath(pathEntity, f);
         }
     }
 
-    public static void moveToWater(EntityCreature entity) {
+    public static void moveToWater(CreatureEntity entity) {
         int[] ai = MoCTools.returnNearestMaterialCoord(entity, Material.WATER, 20D, 2D);
         if (ai[0] > -1000) {
             MoCTools.moveCreatureToXYZ(entity, ai[0], ai[1], ai[2], 24F);
@@ -977,7 +977,7 @@ public class MoCTools {
                 nbtt.setString("SpawnClass", petClass);
                 nbtt.setUniqueId("OwnerUUID", player.getUniqueID());
                 nbtt.setString("OwnerName", player.getName());
-                nbtt.setFloat("Health", ((EntityLiving) entity).getHealth());
+                nbtt.setFloat("Health", ((MobEntity) entity).getHealth());
                 nbtt.setInteger("Edad", entity.getAge());
                 nbtt.setString("Name", entity.getPetName());
                 nbtt.setInteger("CreatureType", entity.getType());
@@ -1038,14 +1038,14 @@ public class MoCTools {
         }
     }
 
-    public static void setPathToEntity(EntityLiving creatureToMove, Entity entityTarget, float distance) {
+    public static void setPathToEntity(MobEntity creatureToMove, Entity entityTarget, float distance) {
         Path pathentity = creatureToMove.getNavigator().getPathToEntityLiving(entityTarget);
         if (pathentity != null && distance < 12F) {
             creatureToMove.getNavigator().setPath(pathentity, 1D);
         }
     }
 
-    public static void runLikeHell(EntityLiving runningEntity, Entity boogey) {
+    public static void runLikeHell(MobEntity runningEntity, Entity boogey) {
         Random rand = runningEntity.getRNG();
 
         double d = runningEntity.posX - boogey.posX;
@@ -1170,10 +1170,10 @@ public class MoCTools {
     public static void findMobRider(Entity mountEntity) {
         List<Entity> list = mountEntity.world.getEntitiesWithinAABBExcludingEntity(mountEntity, mountEntity.getEntityBoundingBox().grow(4D, 2D, 4D));
         for (Entity entity : list) {
-            if (!(entity instanceof EntityMob)) {
+            if (!(entity instanceof MonsterEntity)) {
                 continue;
             }
-            EntityMob entitymob = (EntityMob) entity;
+            MonsterEntity entitymob = (MonsterEntity) entity;
             if (entitymob.getRidingEntity() == null && (entitymob instanceof EntitySkeleton || entitymob instanceof EntityZombie || entitymob instanceof MoCEntitySilverSkeleton)) {
                 if (!mountEntity.world.isRemote) {
                     entitymob.startRiding(mountEntity);
@@ -1189,7 +1189,7 @@ public class MoCTools {
         source.readFromNBT(nbttagcompound);
     }
 
-    public static void dismountSneakingPlayer(EntityLiving entity) {
+    public static void dismountSneakingPlayer(MobEntity entity) {
         if (!entity.isRiding()) return;
         Entity entityRidden = entity.getRidingEntity();
         if (entityRidden instanceof LivingEntity && entityRidden.isSneaking()) {

@@ -6,7 +6,7 @@ package drzhark.mocreatures.entity.ai;
 import drzhark.mocreatures.entity.passive.MoCEntityTurkey;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.entity.EntityAgeable;
+import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -106,7 +106,7 @@ public class EntityAIMateMoC extends EntityAIBase {
      * Spawns a baby animal of the same type.
      */
     private void spawnBaby() {
-        EntityAgeable entityageable = this.animal.createChild(this.targetMate);
+        AgeableEntity entityageable = this.animal.createChild(this.targetMate);
 
         if (entityageable != null) {
             EntityPlayerMP entityplayermp = this.animal.getLoveCause();

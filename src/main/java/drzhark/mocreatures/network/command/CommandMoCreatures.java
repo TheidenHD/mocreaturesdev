@@ -16,7 +16,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
@@ -186,7 +186,7 @@ public class CommandMoCreatures extends CommandBase {
                                 foundIds.add(mocreature.getOwnerPetId());
                                 tamedlist.add(TextFormatting.WHITE + "Found pet with " + TextFormatting.DARK_AQUA + "Type"
                                         + TextFormatting.WHITE + ":" + TextFormatting.GREEN
-                                        + ((EntityLiving) mocreature).getName() + TextFormatting.DARK_AQUA + ", Name"
+                                        + ((MobEntity) mocreature).getName() + TextFormatting.DARK_AQUA + ", Name"
                                         + TextFormatting.WHITE + ":" + TextFormatting.GREEN + mocreature.getPetName()
                                         + TextFormatting.DARK_AQUA + ", Owner" + TextFormatting.WHITE + ":" + TextFormatting.GREEN
                                         + profile.getName() + TextFormatting.DARK_AQUA + ", PetId" + TextFormatting.WHITE + ":"
@@ -248,7 +248,7 @@ public class CommandMoCreatures extends CommandBase {
                                 foundIds.add(mocreature.getOwnerPetId());
                                 tamedlist.add(TextFormatting.WHITE + "Found pet with " + TextFormatting.DARK_AQUA + "Type"
                                         + TextFormatting.WHITE + ":" + TextFormatting.GREEN
-                                        + ((EntityLiving) mocreature).getName() + TextFormatting.DARK_AQUA + ", Name"
+                                        + ((MobEntity) mocreature).getName() + TextFormatting.DARK_AQUA + ", Name"
                                         + TextFormatting.WHITE + ":" + TextFormatting.GREEN + mocreature.getPetName()
                                         + TextFormatting.DARK_AQUA + ", Owner" + TextFormatting.WHITE + ":" + TextFormatting.GREEN
                                         + mocreature.getOwnerId() + TextFormatting.DARK_AQUA + ", PetId" + TextFormatting.WHITE + ":"

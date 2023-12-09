@@ -19,7 +19,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -166,8 +166,8 @@ public class MoCEntityEnt extends MoCEntityAnimal {
         int n = this.rand.nextInt(3) + 1;
         int j = 0;
         for (Entity entity : list) {
-            if (entity instanceof EntityAnimal && entity.width < 0.6F && entity.height < 0.6F) {
-                EntityAnimal entityanimal = (EntityAnimal) entity;
+            if (entity instanceof AnimalEntity && entity.width < 0.6F && entity.height < 0.6F) {
+                AnimalEntity entityanimal = (AnimalEntity) entity;
                 if (entityanimal.getAttackTarget() == null && !MoCTools.isTamed(entityanimal)) {
                     Path pathentity = entityanimal.getNavigator().getPathToEntityLiving(this);
                     entityanimal.setAttackTarget(this);

@@ -10,7 +10,7 @@ import drzhark.mocreatures.entity.MoCEntityAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
@@ -207,7 +207,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
     }
 
     static class AIAvoidWhenNasty extends EntityAIAvoidEntity {
-        public AIAvoidWhenNasty(EntityCreature theEntityIn, Class classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn) {
+        public AIAvoidWhenNasty(CreatureEntity theEntityIn, Class classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn) {
             super(theEntityIn, classToAvoidIn, avoidDistanceIn, farSpeedIn, nearSpeedIn);
         }
 
@@ -223,7 +223,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         /**
          * The entity using this AI that is tempted by the player.
          */
-        private final EntityCreature temptedEntity;
+        private final CreatureEntity temptedEntity;
         private final double speed;
         private final Set<ItemStack> temptItem;
         private final boolean canGetScared;
@@ -254,7 +254,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         private boolean isRunning;
         private int stealDelay = 0;
 
-        public EntityAIGrabItemFromFloor(EntityCreature temptedEntityIn, double speedIn, Set<ItemStack> temptItemIn, boolean canGetScared) {
+        public EntityAIGrabItemFromFloor(CreatureEntity temptedEntityIn, double speedIn, Set<ItemStack> temptItemIn, boolean canGetScared) {
             this.temptedEntity = temptedEntityIn;
             this.speed = speedIn;
             this.temptItem = temptItemIn;
@@ -364,7 +364,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         /**
          * The entity using this AI that is tempted by the player.
          */
-        private final EntityCreature temptedEntity;
+        private final CreatureEntity temptedEntity;
         private final double speed;
         private final Set<ItemStack> temptItem;
         private final boolean canGetScared;
@@ -395,7 +395,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         private boolean isRunning;
         private int stealDelay = 0;
 
-        public EntityAIStealFromPlayer(EntityCreature temptedEntityIn, double speedIn, Set<ItemStack> temptItemIn, boolean canGetScared) {
+        public EntityAIStealFromPlayer(CreatureEntity temptedEntityIn, double speedIn, Set<ItemStack> temptItemIn, boolean canGetScared) {
             this.temptedEntity = temptedEntityIn;
             this.speed = speedIn;
             this.temptItem = temptItemIn;

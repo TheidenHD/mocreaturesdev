@@ -6,8 +6,8 @@ package drzhark.mocreatures.entity.ai;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.MoCEntityAquatic;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.pathfinding.NodeProcessor;
@@ -18,11 +18,11 @@ import net.minecraft.util.math.MathHelper;
 public class EntityAIMoverHelperMoC extends EntityMoveHelper {
 
     protected EntityMoveHelper.Action action = EntityMoveHelper.Action.WAIT;
-    EntityCreature theCreature;
+    CreatureEntity theCreature;
 
-    public EntityAIMoverHelperMoC(EntityLiving entityliving) {
+    public EntityAIMoverHelperMoC(MobEntity entityliving) {
         super(entityliving);
-        this.theCreature = (EntityCreature) entityliving;
+        this.theCreature = (CreatureEntity) entityliving;
     }
 
     public boolean isUpdating() {

@@ -3,7 +3,7 @@
  */
 package drzhark.mocreatures.entity.ai;
 
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.pathfinding.PathFinder;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.math.RayTraceResult;
@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 
 public class PathNavigateFlyer extends PathNavigate {
 
-    public PathNavigateFlyer(EntityLiving entitylivingIn, World worldIn) {
+    public PathNavigateFlyer(MobEntity entitylivingIn, World worldIn) {
         super(entitylivingIn, worldIn);
     }
 

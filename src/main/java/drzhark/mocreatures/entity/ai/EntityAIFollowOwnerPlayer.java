@@ -7,7 +7,7 @@ import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.pathfinding.PathNavigate;
@@ -20,7 +20,7 @@ import java.util.UUID;
 
 public class EntityAIFollowOwnerPlayer extends EntityAIBase {
 
-    private final EntityLiving thePet;
+    private final MobEntity thePet;
     private final double speed;
     private final PathNavigate petPathfinder;
     World world;
@@ -29,7 +29,7 @@ public class EntityAIFollowOwnerPlayer extends EntityAIBase {
     private EntityPlayer theOwner;
     private int delayCounter;
 
-    public EntityAIFollowOwnerPlayer(EntityLiving thePetIn, double speedIn, float minDistIn, float maxDistIn) {
+    public EntityAIFollowOwnerPlayer(MobEntity thePetIn, double speedIn, float minDistIn, float maxDistIn) {
         this.thePet = thePetIn;
         this.world = thePetIn.world;
         this.speed = speedIn;

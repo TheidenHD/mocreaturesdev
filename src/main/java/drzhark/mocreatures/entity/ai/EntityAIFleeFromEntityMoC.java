@@ -8,7 +8,7 @@ import com.google.common.base.Predicates;
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.MoCEntityAquatic;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.util.EntitySelectors;
@@ -25,7 +25,7 @@ public class EntityAIFleeFromEntityMoC extends EntityAIBase {
     /**
      * The entity we are attached to
      */
-    protected EntityCreature entity;
+    protected CreatureEntity entity;
     public final Predicate<Entity> canBeSeenSelector = new Predicate<Entity>() {
 
         public boolean isApplicable(Entity entityIn) {
@@ -42,7 +42,7 @@ public class EntityAIFleeFromEntityMoC extends EntityAIBase {
     private double randPosY;
     private double randPosZ;
 
-    public EntityAIFleeFromEntityMoC(EntityCreature creature, Predicate<Entity> targetSelector, float searchDistance, double farSpeedIn, double nearSpeedIn) {
+    public EntityAIFleeFromEntityMoC(CreatureEntity creature, Predicate<Entity> targetSelector, float searchDistance, double farSpeedIn, double nearSpeedIn) {
         this.entity = creature;
         this.avoidTargetSelector = targetSelector;
         this.avoidDistance = searchDistance;

@@ -12,7 +12,7 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
@@ -57,7 +57,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
         this.tasks.addTask(4, new EntityAIAttackMelee(this, 1.0D, true));
         this.tasks.addTask(7, new EntityAIWanderMoC2(this, 0.9D));
         this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        //this.targetTasks.addTask(1, new EntityAIHunt<>(this, EntityAnimal.class, true));
+        //this.targetTasks.addTask(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
         this.targetTasks.addTask(2, new EntityAIHunt<>(this, EntityPlayer.class, true));
         this.targetTasks.addTask(2, new EntityAIHurtByTarget(this, false));
 
@@ -181,7 +181,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
 
                 if (!isInsideOfMaterial(Material.WATER)) {
                     this.waterbound = true;
-                    if (this.getRidingEntity() instanceof EntityLiving && ((LivingEntity) this.getRidingEntity()).getHealth() > 0) {
+                    if (this.getRidingEntity() instanceof MobEntity && ((LivingEntity) this.getRidingEntity()).getHealth() > 0) {
                         ((LivingEntity) this.getRidingEntity()).deathTime = 0;
                     }
 
@@ -366,7 +366,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     public void unMount() {
 
         if (this.isBeingRidden()) {
-            if (this.getRidingEntity() instanceof EntityLiving && ((LivingEntity) this.getRidingEntity()).getHealth() > 0) {
+            if (this.getRidingEntity() instanceof MobEntity && ((LivingEntity) this.getRidingEntity()).getHealth() > 0) {
                 ((LivingEntity) this.getRidingEntity()).deathTime = 0;
             }
 

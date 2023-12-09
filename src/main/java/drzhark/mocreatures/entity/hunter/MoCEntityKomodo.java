@@ -70,7 +70,7 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
         this.tasks.addTask(4, new EntityAIAttackMelee(this, 1.0D, true));
         this.tasks.addTask(7, new EntityAIWanderMoC2(this, 0.9D));
         this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        //this.targetTasks.addTask(1, new EntityAIHunt<>(this, EntityAnimal.class, true));
+        //this.targetTasks.addTask(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
         this.targetTasks.addTask(2, new EntityAIHunt<>(this, EntityPlayer.class, true));
     }
 

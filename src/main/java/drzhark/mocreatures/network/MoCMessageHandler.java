@@ -12,7 +12,7 @@ import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
 import drzhark.mocreatures.entity.hostile.MoCEntityOgre;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MobEntity;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -107,8 +107,8 @@ public class MoCMessageHandler {
                 MoCMessageHealth message = (MoCMessageHealth) this.message;
                 List<Entity> entList = MoCProxyClient.mc.player.world.loadedEntityList;
                 for (Entity ent : entList) {
-                    if (ent.getEntityId() == message.entityId && ent instanceof EntityLiving) {
-                        ((EntityLiving) ent).setHealth(message.health);
+                    if (ent.getEntityId() == message.entityId && ent instanceof MobEntity) {
+                        ((MobEntity) ent).setHealth(message.health);
                         break;
                     }
                 }

@@ -6,7 +6,7 @@ package drzhark.mocreatures.client.renderer.entity;
 import drzhark.mocreatures.entity.passive.MoCEntityBird;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -20,7 +20,7 @@ public class MoCRenderBird extends MoCRenderMoC<MoCEntityBird> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityLiving par1Entity) {
+    protected ResourceLocation getEntityTexture(MobEntity par1Entity) {
         return ((MoCEntityBird) par1Entity).getTexture();
     }
 

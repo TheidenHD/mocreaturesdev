@@ -368,9 +368,9 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
         }
     }
 
-    public EntityLiving getKittyStuff(Entity entity, double d, boolean flag) {
+    public MobEntity getKittyStuff(Entity entity, double d, boolean flag) {
         double d1 = -1D;
-        EntityLiving obj = null;
+        MobEntity obj = null;
         List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(entity, getEntityBoundingBox().grow(d));
         for (Entity entity1 : list) {
             if (flag) {

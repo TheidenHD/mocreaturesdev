@@ -77,7 +77,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
         this.tasks.addTask(4, new EntityAIFollowAdult(this, 1.0D));
         this.tasks.addTask(5, new EntityAIFollowOwnerPlayer(this, 1D, 2F, 10F));
         this.tasks.addTask(2, new EntityAIWanderMoC2(this, 0.8D, 30));
-        //this.targetTasks.addTask(3, new EntityAIHunt<>(this, EntityAnimal.class, true));
+        //this.targetTasks.addTask(3, new EntityAIHunt<>(this, AnimalEntity.class, true));
         this.targetTasks.addTask(4, new EntityAIHunt<>(this, EntityPlayer.class, true));
     }
 
@@ -230,7 +230,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
 
     public void spawnGhost() {
         try {
-            EntityLiving templiving = (EntityLiving) EntityList.createEntityByIDFromName(new ResourceLocation(this.getClazzString().toLowerCase()), this.world);
+            MobEntity templiving = (MobEntity) EntityList.createEntityByIDFromName(new ResourceLocation(this.getClazzString().toLowerCase()), this.world);
             if (templiving instanceof MoCEntityBigCat) {
                 MoCEntityBigCat ghost = (MoCEntityBigCat) templiving;
                 ghost.setPosition(this.posX, this.posY, this.posZ);

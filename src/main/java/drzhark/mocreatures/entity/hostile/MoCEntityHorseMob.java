@@ -272,10 +272,10 @@ public class MoCEntityHorseMob extends MoCEntityMob {
                 /*List list = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(4D));
                 for (int i = 0; i < list.size(); i++) {
                     Entity entity = (Entity) list.get(i);
-                    if (!(entity instanceof EntityMob)) {
+                    if (!(entity instanceof MonsterEntity)) {
                         continue;
                     }
-                    EntityMob entitymob = (EntityMob) entity;
+                    MonsterEntity entitymob = (MonsterEntity) entity;
                     if (entitymob.getRidingEntity() == null
                             && (entitymob instanceof EntitySkeleton || entitymob instanceof EntityZombie || entitymob instanceof MoCEntitySilverSkeleton)) {
                         entitymob.mountEntity(this);
