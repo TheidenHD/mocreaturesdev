@@ -238,7 +238,7 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
         LivingEntity entityliving = null;
         List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(d));
         for (Entity entity1 : list) {
-            if (!(entity1 instanceof LivingEntity) || (entity1 == entity) || (entity1 == entity.getRidingEntity()) || (entity1 instanceof PlayerEntity) || (entity1 instanceof MobEntity) || (this.getHeight() <= entity1.getHeight()) || (this.getWidth() <= entity1.getWidth())) {
+            if (!(entity1 instanceof LivingEntity) || (entity1 == entity) || (entity1 == entity.getRidingEntity()) || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || (this.getHeight() <= entity1.getHeight()) || (this.getWidth() <= entity1.getWidth())) {
                 continue;
             }
             double d2 = entity1.getDistanceSq(entity.getPosX(), entity.getPosY(), entity.getPosZ());
@@ -251,7 +251,7 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
     }
 
     public boolean entitiesToIgnore(Entity entity) {
-        return !(entity instanceof MobEntity) || entity instanceof MobEntity || entity instanceof MoCEntityKittyBed || entity instanceof MoCEntityLitterBox || this.getIsTamed() && entity instanceof IMoCEntity && ((IMoCEntity) entity).getIsTamed() || entity instanceof EntityWolf && !MoCreatures.proxy.attackWolves || entity instanceof MoCEntityHorse && !MoCreatures.proxy.attackHorses || entity.getWidth() >= this.getWidth() || entity.getHeight() >= this.getHeight() || entity instanceof MoCEntityEgg || entity instanceof IMoCEntity && !MoCreatures.proxy.enableHunters;
+        return !(entity instanceof MobEntity) || entity instanceof MonsterEntity || entity instanceof MoCEntityKittyBed || entity instanceof MoCEntityLitterBox || this.getIsTamed() && entity instanceof IMoCEntity && ((IMoCEntity) entity).getIsTamed() || entity instanceof EntityWolf && !MoCreatures.proxy.attackWolves || entity instanceof MoCEntityHorse && !MoCreatures.proxy.attackHorses || entity.getWidth() >= this.getWidth() || entity.getHeight() >= this.getHeight() || entity instanceof MoCEntityEgg || entity instanceof IMoCEntity && !MoCreatures.proxy.enableHunters;
     }
 
     /**
@@ -451,12 +451,12 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
                     continue;
                 }
                 entity.onCollideWithPlayer(entityplayer);
-                if (!(entity instanceof MobEntity)) {
+                if (!(entity instanceof MonsterEntity)) {
                     continue;
                 }
                 float f = getDistance(entity);
                 if (f < 2.0F && this.rand.nextInt(10) == 0) {
-                    attackEntityFrom(DamageSource.causeMobDamage((LivingEntity) entity), (float) ((MobEntity) entity).getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue());
+                    attackEntityFrom(DamageSource.causeMobDamage((LivingEntity) entity), (float) ((MonsterEntity) entity).getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue());
                 }
             }
             if (entityplayer.isSneaking()) {

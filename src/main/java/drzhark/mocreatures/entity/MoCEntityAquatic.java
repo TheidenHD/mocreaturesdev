@@ -336,10 +336,10 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
             for (Entity entity : list) {
                 if (entity.isDead) continue;
                 entity.onCollideWithPlayer(entityplayer);
-                if (!(entity instanceof MobEntity)) continue;
+                if (!(entity instanceof MonsterEntity)) continue;
                 float f = getDistance(entity);
                 if (f < 2.0F && this.rand.nextInt(10) == 0) {
-                    attackEntityFrom(DamageSource.causeMobDamage((LivingEntity) entity), (float) ((MobEntity) entity).getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue());
+                    attackEntityFrom(DamageSource.causeMobDamage((LivingEntity) entity), (float) ((MonsterEntity) entity).getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue());
                 }
             }
         }

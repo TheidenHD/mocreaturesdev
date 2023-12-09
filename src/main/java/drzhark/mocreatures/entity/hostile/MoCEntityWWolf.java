@@ -137,7 +137,7 @@ public class MoCEntityWWolf extends MoCEntityMob {
         List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(d));
         for (Entity entity1 : list) {
             if (!(entity1 instanceof LivingEntity) || (entity1 == entity) || (entity1 == entity.getRidingEntity())
-                    || (entity1 == entity.getRidingEntity()) || (entity1 instanceof PlayerEntity) || (entity1 instanceof LivingEntity)
+                    || (entity1 == entity.getRidingEntity()) || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity)
                     || (entity1 instanceof MoCEntityBigCat) || (entity1 instanceof MoCEntityBear) || (entity1 instanceof EntityCow)
                     || ((entity1 instanceof EntityWolf) && !(MoCreatures.proxy.attackWolves))
                     || ((entity1 instanceof MoCEntityHorse) && !(MoCreatures.proxy.attackHorses))) {
@@ -199,10 +199,10 @@ public class MoCEntityWWolf extends MoCEntityMob {
         if (!this.world.isRemote && !this.isBeingRidden() && this.rand.nextInt(100) == 0) {
             List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(4D, 2D, 4D));
             for (Entity entity : list) {
-                if (!(entity instanceof MobEntity)) {
+                if (!(entity instanceof MonsterEntity)) {
                     continue;
                 }
-                MobEntity entitymob = (MobEntity) entity;
+                MonsterEntity entitymob = (MonsterEntity) entity;
                 if (entitymob.getRidingEntity() == null
                         && (entitymob instanceof EntitySkeleton || entitymob instanceof EntityZombie || entitymob instanceof MoCEntitySilverSkeleton)) {
                     entitymob.startRiding(this);

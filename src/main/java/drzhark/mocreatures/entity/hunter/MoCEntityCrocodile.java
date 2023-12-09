@@ -180,7 +180,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
 
                 if (!isInsideOfMaterial(Material.WATER)) {
                     this.waterbound = true;
-                    if (this.getRidingEntity() instanceof LivingEntity && ((MobEntity) this.getRidingEntity()).getHealth() > 0) {
+                    if (this.getRidingEntity() instanceof MobEntity && ((LivingEntity) this.getRidingEntity()).getHealth() > 0) {
                         ((LivingEntity) this.getRidingEntity()).deathTime = 0;
                     }
 
@@ -365,7 +365,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     public void unMount() {
 
         if (this.isBeingRidden()) {
-            if (this.getRidingEntity() instanceof EntityLiving && ((LivingEntity) this.getRidingEntity()).getHealth() > 0) {
+            if (this.getRidingEntity() instanceof MobEntity && ((LivingEntity) this.getRidingEntity()).getHealth() > 0) {
                 ((LivingEntity) this.getRidingEntity()).deathTime = 0;
             }
 

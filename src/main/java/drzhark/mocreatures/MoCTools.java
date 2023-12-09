@@ -1182,10 +1182,10 @@ public class MoCTools {
     public static void findMobRider(Entity mountEntity) {
         List<Entity> list = mountEntity.world.getEntitiesWithinAABBExcludingEntity(mountEntity, mountEntity.getBoundingBox().grow(4D, 2D, 4D));
         for (Entity entity : list) {
-            if (!(entity instanceof MobEntity)) {
+            if (!(entity instanceof MonsterEntity)) {
                 continue;
             }
-            MobEntity entitymob = (MobEntity) entity;
+            MonsterEntity entitymob = (MonsterEntity) entity;
             if (entitymob.getRidingEntity() == null && (entitymob instanceof EntitySkeleton || entitymob instanceof EntityZombie || entitymob instanceof MoCEntitySilverSkeleton)) {
                 if (!mountEntity.world.isRemote) {
                     entitymob.startRiding(mountEntity);

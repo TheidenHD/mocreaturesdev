@@ -183,7 +183,7 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
     }
 
     public boolean entitiesToIgnore(Entity entity) {
-        if ((!(entity instanceof MobEntity)) || (entity instanceof MobEntity) || (entity instanceof MoCEntityEgg))
+        if ((!(entity instanceof MobEntity)) || (entity instanceof MonsterEntity) || (entity instanceof MoCEntityEgg))
             return true;
         return entity instanceof MoCEntityKittyBed || entity instanceof MoCEntityLitterBox || this.getIsTamed() && entity instanceof MoCEntityAnimal && ((MoCEntityAnimal) entity).getIsTamed() || entity instanceof EntityWolf && !MoCreatures.proxy.attackWolves || entity instanceof MoCEntityHorse && !MoCreatures.proxy.attackHorses;
     }

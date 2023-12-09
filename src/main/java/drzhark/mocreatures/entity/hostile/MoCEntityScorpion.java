@@ -162,10 +162,10 @@ public class MoCEntityScorpion extends MoCEntityMob {
             /*List list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(4D, 2D, 4D));
             for (int i = 0; i < list.size(); i++) {
                 Entity entity = (Entity) list.get(i);
-                if (!(entity instanceof MobEntity)) {
+                if (!(entity instanceof MonsterEntity)) {
                     continue;
                 }
-                MobEntity entitymob = (MobEntity) entity;
+                MonsterEntity entitymob = (MonsterEntity) entity;
                 if (entitymob.getRidingEntity() == null
                         && (entitymob instanceof EntitySkeleton || entitymob instanceof EntityZombie || entitymob instanceof MoCEntitySilverSkeleton)) {
                     entitymob.mountEntity(this);

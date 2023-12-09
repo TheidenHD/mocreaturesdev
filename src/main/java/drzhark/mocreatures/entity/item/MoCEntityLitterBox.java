@@ -153,10 +153,10 @@ public class MoCEntityLitterBox extends MobEntity {
                 this.litterTime++;
                 List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(12D, 4D, 12D));
                 for (Entity entity : list) {
-                    if (!(entity instanceof MobEntity)) {
+                    if (!(entity instanceof MonsterEntity)) {
                         continue;
                     }
-                    MobEntity entityMob = (MobEntity) entity;
+                    MonsterEntity entityMob = (MonsterEntity) entity;
                     entityMob.setAttackTarget(this);
                     if (entityMob instanceof EntityCreeper) {
                         ((EntityCreeper) entityMob).setCreeperState(-1);
