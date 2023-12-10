@@ -28,8 +28,7 @@ public class MoCEntityFirefly extends MoCEntityInsect {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.ARMOR).setBaseValue(1.0D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.ARMOR, 1.0D);
     }
 
     @Override

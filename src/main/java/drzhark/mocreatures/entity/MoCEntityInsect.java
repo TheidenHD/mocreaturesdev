@@ -9,6 +9,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.pathfinding.FlyingPathNavigator;
 import net.minecraft.pathfinding.PathNavigator;
@@ -26,11 +27,7 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getAttributeMap().registerAttribute(Attributes.FLYING_SPEED);
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(4.0D);
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
-        this.getEntityAttribute(Attributes.FLYING_SPEED).setBaseValue(0.6D);
+        return MoCEntityAmbient.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 4.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.FLYING_SPEED, 0.6D);
     }
 
     @Override

@@ -25,10 +25,7 @@ public class MoCEntityGrizzlyBear extends MoCEntityBear {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(40.0D);
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(7.0D);
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 40.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override

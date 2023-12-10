@@ -3,11 +3,15 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.ambient.MoCEntityDragonfly;
-import net.minecraft.client.renderer.matrixStackIn;
+import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class MoCModelDragonfly<T extends Entity> extends EntityModel<T> {
@@ -97,22 +101,22 @@ public class MoCModelDragonfly<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         super.render(entity, f, f1, f2, f3, f4, f5);
 
         MoCEntityDragonfly dragonfly = (MoCEntityDragonfly) entity;
         //boolean onGround = dragonfly.onGround;
         boolean isFlying = (dragonfly.getIsFlying() || dragonfly.getMotion().getY() < -0.1D);
         setRotationAngles(f, f1, f2, f3, f4, f5, isFlying);
-        this.Head.render(f5);
-        this.Abdomen.render(f5);
-        this.FrontLegs.render(f5);
-        this.RAntenna.render(f5);
-        this.LAntenna.render(f5);
-        this.RearLegs.render(f5);
-        this.MidLegs.render(f5);
-        this.Mouth.render(f5);
-        this.Thorax.render(f5);
+        this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Abdomen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.FrontLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RAntenna.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LAntenna.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RearLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.MidLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Mouth.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Thorax.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         matrixStackIn.push();
         matrixStackIn.enableBlend();
@@ -120,10 +124,10 @@ public class MoCModelDragonfly<T extends Entity> extends EntityModel<T> {
         matrixStackIn.blendFunc(770, 771);
         matrixStackIn.color(0.8F, 0.8F, 0.8F, transparency);
         //matrixStackIn.scale(1.3F, 1.0F, 1.3F);
-        this.WingRearRight.render(f5);
-        this.WingFrontRight.render(f5);
-        this.WingFrontLeft.render(f5);
-        this.WingRearLeft.render(f5);
+        this.WingRearRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.WingFrontRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.WingFrontLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.WingRearLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         matrixStackIn.disableBlend();
         matrixStackIn.pop();
 

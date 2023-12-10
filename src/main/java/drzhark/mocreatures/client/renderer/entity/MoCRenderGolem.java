@@ -9,6 +9,8 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class MoCRenderGolem extends MoCRenderMoC<MoCEntityGolem> {

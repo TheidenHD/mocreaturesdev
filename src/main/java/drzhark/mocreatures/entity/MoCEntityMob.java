@@ -30,8 +30,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -74,10 +74,7 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(getMoveSpeed());
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(getAttackStrenght());
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(20.0D);
+        return MonsterEntity.func_234295_eP_().createMutableAttribute(Attributes.MOVEMENT_SPEED, getMoveSpeed()).createMutableAttribute(Attributes.ATTACK_DAMAGE, getAttackStrenght()).createMutableAttribute(Attributes.MAX_HEALTH, 20.0D);
     }
 
     @Override

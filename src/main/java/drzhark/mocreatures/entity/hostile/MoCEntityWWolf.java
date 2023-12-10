@@ -55,10 +55,7 @@ public class MoCEntityWWolf extends MoCEntityMob {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(15.0D);
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.3D);
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(3.5D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 15.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.5D);
     }
 
     @Override

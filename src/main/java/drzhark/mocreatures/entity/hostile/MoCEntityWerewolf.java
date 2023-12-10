@@ -58,10 +58,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(40.0D);
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(7.5D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 40.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.5D);
     }
 
     @Override
@@ -313,13 +310,13 @@ public class MoCEntityWerewolf extends MoCEntityMob {
             this.setHealth(40);
             setSize(0.6F, 2.125F);
             this.transforming = false;
-            this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.5D);
+            this.getEntityAttribute(Attributes.MOVEMENT_SPEED, 0.5D);
         } else {
             setHumanForm(true);
             this.setHealth(15);
             setSize(0.6F, 2.125F);
             this.transforming = false;
-            this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+            this.getEntityAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
         }
     }
 

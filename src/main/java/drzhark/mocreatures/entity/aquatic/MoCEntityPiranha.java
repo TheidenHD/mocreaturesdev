@@ -32,9 +32,8 @@ public class MoCEntityPiranha extends MoCEntitySmallFish {
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(5.0D);
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE);
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(3.5D);
+        getEntityAttribute(Attributes.MAX_HEALTH, 5.0D);
+        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.5D);
     }
 
     @Override

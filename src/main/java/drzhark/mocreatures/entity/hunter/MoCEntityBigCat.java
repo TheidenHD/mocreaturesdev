@@ -78,8 +78,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE);
-        this.getEntityAttribute(Attributes.FOLLOW_RANGE).setBaseValue(24.0D);
+        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.FOLLOW_RANGE, 24.0D);
     }
 
     @Override

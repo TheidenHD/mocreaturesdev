@@ -26,10 +26,7 @@ public class MoCEntityBlackBear extends MoCEntityBear {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(30.0D);
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(5.5D);
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 30.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.5D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override

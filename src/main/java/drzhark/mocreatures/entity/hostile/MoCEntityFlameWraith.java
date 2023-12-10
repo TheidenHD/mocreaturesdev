@@ -30,8 +30,7 @@ public class MoCEntityFlameWraith extends MoCEntityWraith implements IMob {
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(25.0D);
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(4.0D);
+        getEntityAttribute(Attributes.MAX_HEALTH, 25.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.0D);
     }
 
     @Nullable

@@ -3,11 +3,15 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.neutral.MoCEntityKitty;
-import net.minecraft.client.renderer.matrixStackIn;
+import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class MoCModelKitty<T extends Entity> extends EntityModel<T> {
@@ -91,7 +95,7 @@ public class MoCModelKitty<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         MoCEntityKitty kitty = (MoCEntityKitty) entity;
         this.isSitting = kitty.getIsSitting();
         this.isSwinging = kitty.getIsSwinging();
@@ -105,17 +109,17 @@ public class MoCModelKitty<T extends Entity> extends EntityModel<T> {
             this.tail.rotateAngleX = -2.3F;
         }
         for (int i = 0; i < 7; i++) {
-            this.headParts[i].render(f5);
+            this.headParts[i].render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
         if (this.kittystate > 2) {
-            this.headParts[7].render(f5);
+            this.headParts[7].render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
         if (this.kittystate == 12) {
-            this.headParts[8].render(f5);
+            this.headParts[8].render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
-        this.headParts[9].render(f5);
-        this.body.render(f5);
-        this.tail.render(f5);
+        this.headParts[9].render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         if (this.isSitting) {
             matrixStackIn.translate(0.0F, 0.0625F, 0.0625F);
             float f6 = -1.570796F;
@@ -126,10 +130,10 @@ public class MoCModelKitty<T extends Entity> extends EntityModel<T> {
             this.rightLeg.rotateAngleY = 0.1F;
             this.leftLeg.rotateAngleY = -0.1F;
         }
-        this.rightArm.render(f5);
-        this.leftArm.render(f5);
-        this.rightLeg.render(f5);
-        this.leftLeg.render(f5);
+        this.rightArm.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.leftArm.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.rightLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.leftLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         matrixStackIn.pop();
     }
 

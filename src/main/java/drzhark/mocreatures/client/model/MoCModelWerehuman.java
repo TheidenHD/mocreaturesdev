@@ -4,6 +4,8 @@
 package drzhark.mocreatures.client.model;
 
 import net.minecraft.client.model.ModelBiped;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class MoCModelWerehuman extends ModelBiped {

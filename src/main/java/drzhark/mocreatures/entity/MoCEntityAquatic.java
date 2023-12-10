@@ -11,6 +11,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -82,9 +84,7 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(getMoveSpeed());
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(6.0D);
+        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MOVEMENT_SPEED, getMoveSpeed()).createMutableAttribute(Attributes.MAX_HEALTH, 6.0D);
     }
 
     @Override
@@ -534,7 +534,7 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
      */
     @Override
     public boolean getCanSpawnHere() {
-        boolean willSpawn = this.world.checkNoEntityCollision(this.getBoundingBox()) && this.getPosY() >= world.getSeaLevel() - 12;
+        boolean willSpawn = this.world.checkNoEntityCollision(this) && this.getPosY() >= world.getSeaLevel() - 12;
         boolean debug = MoCreatures.proxy.debug;
         if (debug && willSpawn)
             MoCreatures.LOGGER.info("Aquatic: " + this.getName() + " at: " + this.getPosition() + " State: " + this.world.getBlockState(this.getPosition()) + " biome: " + MoCTools.biomeName(world, getPosition()));
@@ -660,7 +660,7 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
                 return;
             }
             this.moveRelative(strafe, vertical, forward, 0.1F);
-            this.move(MoverType.SELF, this.getMotion().getX(), this.getMotion().getY(), this.getMotion().getZ());
+            this.move(MoverType.SELF, this.getMotion());
             this.getMotion().getX() *= 0.8999999761581421D;
             this.getMotion().getY() *= 0.8999999761581421D;
             this.getMotion().getZ() *= 0.8999999761581421D;

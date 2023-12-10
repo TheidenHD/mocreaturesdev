@@ -8,6 +8,7 @@ import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.MoCEntityAquatic;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.pathfinding.NodeProcessor;
 import net.minecraft.pathfinding.PathNavigator;
@@ -59,7 +60,7 @@ public class EntityAIMoverHelperMoC extends MovementController {
 
     public void onUpdateMoveOnGround() {
         if (this.action == MovementController.Action.STRAFE) {
-            float f = (float) this.mob.getEntityAttribute(Attributes.MOVEMENT_SPEED).getAttributeValue();
+            float f = (float) this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED);
             float f1 = (float) this.speed * f;
             float f2 = this.moveForward;
             float f3 = this.moveStrafe;
@@ -81,7 +82,7 @@ public class EntityAIMoverHelperMoC extends MovementController {
             if (pathnavigate != null) {
                 NodeProcessor nodeprocessor = pathnavigate.getNodeProcessor();
 
-                if (nodeprocessor != null && nodeprocessor.getPathNodeType(this.mob.world, MathHelper.floor(this.mob.getPosX() + (double) f7), MathHelper.floor(this.mob.getPosY()), MathHelper.floor(this.mob.getPosZ() + (double) f8)) != PathNodeType.WALKABLE) {
+                if (nodeprocessor != null && nodeprocessor.getFloorNodeType(this.mob.world, MathHelper.floor(this.mob.getPosX() + (double) f7), MathHelper.floor(this.mob.getPosY()), MathHelper.floor(this.mob.getPosZ() + (double) f8)) != PathNodeType.WALKABLE) {
                     this.moveForward = 1.0F;
                     this.moveStrafe = 0.0F;
                     f1 = f;
@@ -106,10 +107,10 @@ public class EntityAIMoverHelperMoC extends MovementController {
 
             float f9 = (float) (MathHelper.atan2(d1, d0) * (180D / Math.PI)) - 90.0F;
             this.mob.rotationYaw = this.limitAngle(this.mob.rotationYaw, f9, 20.0F);
-            this.mob.setAIMoveSpeed((float) (this.speed * this.mob.getEntityAttribute(Attributes.MOVEMENT_SPEED).getAttributeValue()));
+            this.mob.setAIMoveSpeed((float) (this.speed * this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED)));
 
             if (d2 > (double) this.mob.stepHeight && d0 * d0 + d1 * d1 < (double) Math.max(1.0F, this.mob.getWidth())) {
-                this.mob.getJumpHelper().setJumping();
+                this.mob.getJumpController().setJumping();
             }
         } else {
             this.mob.setMoveForward(0.0F);
@@ -142,7 +143,7 @@ public class EntityAIMoverHelperMoC extends MovementController {
     }
 
     @Override
-    public void onUpdateMoveHelper() {
+    public void tick() {
         boolean isFlyer = ((IMoCEntity) theCreature).isFlyer();
         boolean isSwimmer = this.theCreature.isInWater();
         float fLimitAngle = 90F;
@@ -181,7 +182,7 @@ public class EntityAIMoverHelperMoC extends MovementController {
             float f = (float) (Math.atan2(d2, d0) * 180.0D / Math.PI) - 90.0F;
             this.theCreature.rotationYaw = this.limitAngle(this.theCreature.rotationYaw, f, fLimitAngle);
             this.theCreature.renderYawOffset = this.theCreature.rotationYaw;
-            float f1 = (float) (this.speed * this.theCreature.getEntityAttribute(Attributes.MOVEMENT_SPEED).getAttributeValue());
+            float f1 = (float) (this.speed * this.theCreature.getAttributeValue(Attributes.MOVEMENT_SPEED));
             this.theCreature.setAIMoveSpeed(this.theCreature.getAIMoveSpeed() + (f1 - this.theCreature.getAIMoveSpeed()) * 0.125F);
             double d4 = Math.sin((double) (this.theCreature.ticksExisted + this.theCreature.getEntityId()) * 0.75D) * 0.01D;
             double d5 = Math.cos(this.theCreature.rotationYaw * (float) Math.PI / 180.0F);
@@ -243,7 +244,7 @@ public class EntityAIMoverHelperMoC extends MovementController {
             }
         }
 
-        if ((this.theCreature.getAttackTarget() != null && ((this.theCreature.getAttackTarget().getPosY() < (this.getPosY() - 0.5D)) && this.theCreature
+        if ((this.theCreature.getAttackTarget() != null && ((this.theCreature.getAttackTarget().getPosY() < (this.posX - 0.5D)) && this.theCreature
                 .getDistance(this.theCreature.getAttackTarget()) < 10F))) {
             if (this.theCreature.getMotion().getY() < -0.1) {
                 this.theCreature.getMotion().getY() = -0.1;

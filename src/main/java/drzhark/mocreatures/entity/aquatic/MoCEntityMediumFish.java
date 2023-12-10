@@ -42,9 +42,7 @@ public class MoCEntityMediumFish extends MoCEntityTameableAquatic {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(7.0D);
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.5D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 7.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.5D);
     }
 
     @Override

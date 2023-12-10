@@ -3,10 +3,11 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.neutral.MoCEntityWyvern;
 import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -779,7 +780,7 @@ public class MoCModelWyvern<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         //super.render(entity, f, f1, f2, f3, f4, f5);
 
         MoCEntityWyvern wyvern = (MoCEntityWyvern) entity;
@@ -806,32 +807,32 @@ public class MoCModelWyvern<T extends Entity> extends EntityModel<T> {
             matrixStackIn.color(0.8F, 0.8F, 0.8F, transparency);
             //matrixStackIn.scale(1.3F, 1.0F, 1.3F);
         }
-        this.back1.render(f5);
-        this.Tail.render(f5);
+        this.back1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        this.chest.render(f5);
+        this.chest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        this.LeftWing.render(f5);
-        this.RightWing.render(f5);
+        this.LeftWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.RightWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        this.rightshoulder.render(f5);
-        this.leftshoulder.render(f5);
+        this.rightshoulder.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.leftshoulder.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        this.neckplate3.render(f5);
-        this.neck3.render(f5);
-        this.torso.render(f5);
+        this.neckplate3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.neck3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.torso.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         if (isChested) {
-            this.storage.render(f5);
+            this.storage.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
 
         if (isSaddled) {
-            this.saddle.render(f5);
+            this.saddle.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.mouthrod.isHidden = false; //render(f5);
             this.helmetstrap1.isHidden = false; //render(f5);
             this.helmetstrap2.isHidden = false; //render(f5);
-            this.chestbelt.render(f5);
-            this.stomachbelt.render(f5);
+            this.chestbelt.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.stomachbelt.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
             if (isRidden) {
                 this.controlrope1.isHidden = false;
@@ -913,19 +914,19 @@ public class MoCModelWyvern<T extends Entity> extends EntityModel<T> {
 
         }
 
-        this.MainHead.render(f5);
-        this.leftupleg.render(f5);
-        this.rightupleg.render(f5);
+        this.MainHead.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.leftupleg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.rightupleg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        this.ironchestarmor.render(f5);
-        this.ironrightshoulderpad.render(f5);
-        this.ironleftshoulderpad.render(f5);
-        this.goldleftshoulder.render(f5);
-        this.goldchestarmor.render(f5);
-        this.goldrightshoulder.render(f5);
-        this.diamondleftshoulder.render(f5);
-        this.diamondrightshoulder.render(f5);
-        this.diamondchestarmor.render(f5);
+        this.ironchestarmor.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.ironrightshoulderpad.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.ironleftshoulderpad.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.goldleftshoulder.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.goldchestarmor.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.goldrightshoulder.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.diamondleftshoulder.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.diamondrightshoulder.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.diamondchestarmor.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         if (isGhost) {
             matrixStackIn.disableBlend();
         }

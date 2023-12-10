@@ -53,11 +53,8 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(15.0D);
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.5D);
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE);
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(4.5D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 15.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.5D);
+        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.5D);
     }
 
     @Override

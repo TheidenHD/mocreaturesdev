@@ -28,8 +28,7 @@ public class MoCEntityMaggot extends MoCEntityAmbient {
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(4.0D);
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.1D);
+        getEntityAttribute(Attributes.MAX_HEALTH, 4.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.1D);
     }
 
     @Override

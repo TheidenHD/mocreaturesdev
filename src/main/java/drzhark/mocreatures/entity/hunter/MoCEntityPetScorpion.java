@@ -75,10 +75,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     // TODO: Varied stats depending on type
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE);
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(20.0D);
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.3D);
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(3.0D);
+        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.MAX_HEALTH, 20.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.0D);
     }
 
     @Override

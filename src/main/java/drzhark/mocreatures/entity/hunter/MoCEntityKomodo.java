@@ -71,12 +71,8 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(25.0D);
-        this.getEntityAttribute(Attributes.ARMOR).setBaseValue(5.0D);
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE);
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(4.5D);
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.18D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 25.0D).createMutableAttribute(Attributes.ARMOR, 5.0D);
+        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.5D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.18D);
     }
 
     @Override

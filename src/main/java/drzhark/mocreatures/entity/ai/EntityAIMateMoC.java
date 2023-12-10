@@ -76,7 +76,7 @@ public class EntityAIMateMoC extends Goal {
      * Keep ticking a continuous task that has already been started
      */
     public void tick() {
-        this.animal.getLookHelper().setLookPositionWithEntity(this.targetMate, 10.0F, (float) this.animal.getVerticalFaceSpeed());
+        this.animal.getLookController().setLookPositionWithEntity(this.targetMate, 10.0F, (float) this.animal.getVerticalFaceSpeed());
         this.animal.getNavigator().tryMoveToEntityLiving(this.targetMate, this.moveSpeed);
         ++this.spawnBabyDelay;
 

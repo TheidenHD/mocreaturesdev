@@ -26,8 +26,7 @@ public class MoCEntityLion extends MoCEntityBigCat {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
@@ -39,10 +38,8 @@ public class MoCEntityLion extends MoCEntityBigCat {
                 setTypeMoC(rand.nextInt(2) + 1);
             }
         }
-        super.selectType();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(calculateMaxHealth());
-        this.setHealth(getMaxHealth());
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(calculateAttackDmg());
+        super.selectType().createMutableAttribute(Attributes.MAX_HEALTH, calculateMaxHealth());
+        this.setHealth(getMaxHealth()).createMutableAttribute(Attributes.ATTACK_DAMAGE, calculateAttackDmg());
     }
 
     @Override

@@ -3,11 +3,15 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.hunter.MoCEntitySnake;
-import net.minecraft.client.renderer.matrixStackIn;
+import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
@@ -165,7 +169,7 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         //super.render(entity, f, f1, f2, f3, f4, f5);
         MoCEntitySnake entitysnake = (MoCEntitySnake) entity;
         int typeI = entitysnake.getTypeMoC();
@@ -300,25 +304,25 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
             //sidef = (0.4F * MathHelper.sin(-3.7F * t - 0.2F * (float)i)) + (0.3F * MathHelper.sin(-2F * t - 0.2F * (float)i));
             //sidef = 1.1F * MathHelper.sin(-2F * t - 0.2F * (float)i);
 
-            this.bodySnake[i].render(f5);
+            this.bodySnake[i].render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
             if (i == 0) {
-                this.Head.render(f5);
-                this.Nose.render(f5);
+                this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.Nose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-                this.LNose.render(f5);
-                this.TeethUR.render(f5);
-                this.TeethUL.render(f5);
+                this.LNose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.TeethUR.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.TeethUL.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
                 if (tongueOff != 0.0F) {
                     if (mouthOff != 0.0F || tongueOff < 2.0F || tongueOff > 7.0F) {
-                        this.Tongue1.render(f5);
+                        this.Tongue1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     } else {
-                        this.Tongue.render(f5);
+                        this.Tongue.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     }
 
                 } else {
-                    this.Tongue0.render(f5);
+                    this.Tongue0.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
 
             }
@@ -328,29 +332,29 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
             if (typeI == 6 && nearplayer)//cobra
             {
                 if (i == 1) {
-                    this.Wing1L.render(f5);
-                    this.Wing1R.render(f5);
+                    this.Wing1L.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.Wing1R.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
                 if (i == 2) {
-                    this.Wing2L.render(f5);
-                    this.Wing2R.render(f5);
+                    this.Wing2L.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.Wing2R.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
                 if (i == 3) {
-                    this.Wing3L.render(f5);
-                    this.Wing3R.render(f5);
+                    this.Wing3L.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.Wing3R.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
                 if (i == 4) {
-                    this.Wing4L.render(f5);
-                    this.Wing4R.render(f5);
+                    this.Wing4L.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.Wing4R.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
                 if (i == 5) {
-                    this.Wing5L.render(f5);
-                    this.Wing5R.render(f5);
+                    this.Wing5L.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.Wing5R.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
             }
 
             if (i == this.bodyparts - 1 && typeI == 7) {
-                this.Tail.render(f5);
+                this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
 
             matrixStackIn.pop();

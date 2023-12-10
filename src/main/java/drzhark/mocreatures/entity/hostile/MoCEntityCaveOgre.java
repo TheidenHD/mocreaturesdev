@@ -18,10 +18,7 @@ public class MoCEntityCaveOgre extends MoCEntityOgre {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(60.0D);
-        this.getEntityAttribute(Attributes.ARMOR).setBaseValue(10.0D);
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(8.0D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 60.0D).createMutableAttribute(Attributes.ARMOR, 10.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 8.0D);
     }
 
     @Override

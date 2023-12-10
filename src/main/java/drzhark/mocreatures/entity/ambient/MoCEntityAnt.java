@@ -42,10 +42,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(3.0D);
-        this.getEntityAttribute(Attributes.ARMOR).setBaseValue(1.0D);
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.28D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 3.0D).createMutableAttribute(Attributes.ARMOR, 1.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.28D);
     }
 
     public boolean getHasFood() {

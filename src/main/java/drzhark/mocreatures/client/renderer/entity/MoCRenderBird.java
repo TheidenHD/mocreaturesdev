@@ -9,6 +9,8 @@ import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class MoCRenderBird extends MoCRenderMoC<MoCEntityBird> {

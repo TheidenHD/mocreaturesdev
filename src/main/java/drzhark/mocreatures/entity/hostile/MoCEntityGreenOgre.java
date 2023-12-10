@@ -17,10 +17,7 @@ public class MoCEntityGreenOgre extends MoCEntityOgre {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(50.0D);
-        this.getEntityAttribute(Attributes.ARMOR).setBaseValue(8.0D);
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(7.0D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 50.0D).createMutableAttribute(Attributes.ARMOR, 8.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0D);
     }
 
     @Override

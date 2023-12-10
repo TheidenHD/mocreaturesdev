@@ -21,10 +21,7 @@ public class MoCEntityDarkManticore extends MoCEntityManticore {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(35.0D);
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.4D);
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(6.5D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 35.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.4D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.5D);
     }
 
     @Override

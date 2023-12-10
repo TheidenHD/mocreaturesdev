@@ -88,12 +88,8 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(30.0D);
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.2D);
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE);
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(8.0D);
-        this.getEntityAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 30.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2D);
+        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 8.0D).createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1.0D);
     }
 
     @Override
@@ -102,7 +98,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         if (getTypeMoC() == 0) {
             setTypeMoC(this.rand.nextInt(2) + 1);
         }
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(calculateMaxHealth());
+        this.getEntityAttribute(Attributes.MAX_HEALTH, calculateMaxHealth());
         this.setHealth(getMaxHealth());
     }
 

@@ -109,9 +109,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(30.0D);
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 30.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
@@ -2314,7 +2312,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
     @Override
     public void setTypeMoC(int i) {
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(calculateMaxHealth());
+        this.getEntityAttribute(Attributes.MAX_HEALTH, calculateMaxHealth());
         this.setHealth(getMaxHealth());
         if (getTypeMoC() == 38 || getTypeMoC() == 40) this.isImmuneToFire = true;
         super.setTypeMoC(i);

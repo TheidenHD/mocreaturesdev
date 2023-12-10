@@ -3,11 +3,15 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
-import net.minecraft.client.renderer.matrixStackIn;
+import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class MoCModelGolem<T extends Entity> extends EntityModel<T> {
@@ -194,7 +198,7 @@ public class MoCModelGolem<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         //super.render(entity, f, f1, f2, f3, f4, f5);
         MoCEntityGolem entityG = (MoCEntityGolem) entity;
         boolean openChest = entityG.openChest();
@@ -212,16 +216,16 @@ public class MoCModelGolem<T extends Entity> extends EntityModel<T> {
         for (int i = 0; i < 23; i++) {
             //blocksText[i] = entityG.getBlockText(i);
             if (this.blocksText[i] != 30) {
-                this.blocks[i][this.blocksText[i]].render(f5);
+                this.blocks[i][this.blocksText[i]].render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
         }
 
         if (angry) {
-            this.headb.render(f5);
-            this.chestb.render(f5);
+            this.headb.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.chestb.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else {
-            this.head.render(f5);
-            this.chest.render(f5);
+            this.head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.chest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
         matrixStackIn.pop();
 

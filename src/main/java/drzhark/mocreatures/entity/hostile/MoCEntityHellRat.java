@@ -28,11 +28,7 @@ public class MoCEntityHellRat extends MoCEntityRat {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(40.0D);
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.325D);
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(4.5D);
-        this.getEntityAttribute(Attributes.ARMOR).setBaseValue(7.0D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 40.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.325D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.5D).createMutableAttribute(Attributes.ARMOR, 7.0D);
     }
 
     @Override

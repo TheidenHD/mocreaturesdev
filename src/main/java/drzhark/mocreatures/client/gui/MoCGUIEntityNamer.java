@@ -16,6 +16,8 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;

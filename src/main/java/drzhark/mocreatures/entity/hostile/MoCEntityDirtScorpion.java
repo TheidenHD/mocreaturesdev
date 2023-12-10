@@ -19,11 +19,7 @@ public class MoCEntityDirtScorpion extends MoCEntityScorpion {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(25.0D);
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.3D);
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(4.0D);
-        this.getEntityAttribute(Attributes.ARMOR).setBaseValue(3.0D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 25.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.0D).createMutableAttribute(Attributes.ARMOR, 3.0D);
     }
 
     @Override

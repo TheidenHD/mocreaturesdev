@@ -123,10 +123,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(8.0D);
-        this.getEntityAttribute(Attributes.ARMOR).setBaseValue(2.0D);
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 8.0D).createMutableAttribute(Attributes.ARMOR, 2.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
@@ -339,7 +336,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
          * Updates the task
          */
         public void tick() {
-            this.temptedEntity.getLookHelper().setLookPositionWithEntity(this.temptingItem, (float) (this.temptedEntity.getHorizontalFaceSpeed() + 20), (float) this.temptedEntity.getVerticalFaceSpeed());
+            this.temptedEntity.getLookController().setLookPositionWithEntity(this.temptingItem, (float) (this.temptedEntity.getHorizontalFaceSpeed() + 20), (float) this.temptedEntity.getVerticalFaceSpeed());
             if (this.temptedEntity.getDistanceSq(this.temptingItem) < 1.0D) {
                 this.temptedEntity.getNavigator().clearPath();
                 ItemStack loot = temptingItem.getItem().copy();
@@ -476,7 +473,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
          * Updates the task
          */
         public void tick() {
-            this.temptedEntity.getLookHelper().setLookPositionWithEntity(this.temptingPlayer, (float) (this.temptedEntity.getHorizontalFaceSpeed() + 20), (float) this.temptedEntity.getVerticalFaceSpeed());
+            this.temptedEntity.getLookController().setLookPositionWithEntity(this.temptingPlayer, (float) (this.temptedEntity.getHorizontalFaceSpeed() + 20), (float) this.temptedEntity.getVerticalFaceSpeed());
             if (temptingPlayer.capabilities.isCreativeMode) return;
             if (this.temptedEntity.getDistanceSq(this.temptingPlayer) < 3.25D) {
                 this.temptedEntity.getNavigator().clearPath();

@@ -32,7 +32,7 @@ public class MoCEntityStingRay extends MoCEntityRay {
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(8.0D);
+        getEntityAttribute(Attributes.MAX_HEALTH, 8.0D);
     }
 
     @Override

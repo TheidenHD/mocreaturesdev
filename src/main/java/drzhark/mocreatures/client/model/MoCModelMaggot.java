@@ -3,10 +3,14 @@
  */
 package drzhark.mocreatures.client.model;
 
-import net.minecraft.client.renderer.matrixStackIn;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class MoCModelMaggot<T extends Entity> extends EntityModel<T> {
@@ -38,7 +42,7 @@ public class MoCModelMaggot<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         //super.render(entity, f, f1, f2, f3, f4, f5);
         setRotationAngles(f, f1, f2, f3, f4, f5);
 
@@ -55,10 +59,10 @@ public class MoCModelMaggot<T extends Entity> extends EntityModel<T> {
         //matrixStackIn.scale(1.0F, 1.0F, 1.0F + (f1 * 3F));
         matrixStackIn.scale(1.0F, 1.0F, 1.0F + (f9));
 
-        this.Head.render(f5);
-        this.Body.render(f5);
-        this.Tail.render(f5);
-        this.Tailtip.render(f5);
+        this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Tailtip.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         matrixStackIn.disableBlend();
         matrixStackIn.pop();
 

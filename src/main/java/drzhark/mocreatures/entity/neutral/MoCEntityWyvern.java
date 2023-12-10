@@ -86,12 +86,8 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(80.0D);
-        this.getEntityAttribute(Attributes.ARMOR).setBaseValue(14.0D);
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.3D);
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE);
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(9.0D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 80.0D).createMutableAttribute(Attributes.ARMOR, 14.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D);
+        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 9.0D);
     }
 
     @Override
@@ -208,9 +204,8 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
                 }
             }
         }
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(calculateMaxHealth());
-        this.setHealth(getMaxHealth());
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(calculateAttackDmg());
+        this.getEntityAttribute(Attributes.MAX_HEALTH, calculateMaxHealth());
+        this.setHealth(getMaxHealth()).createMutableAttribute(Attributes.ATTACK_DAMAGE, calculateAttackDmg());
     }
 
     @Override

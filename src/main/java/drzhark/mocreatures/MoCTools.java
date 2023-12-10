@@ -17,30 +17,25 @@ import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageNameGUI;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockJukebox;
+import net.minecraft.block.*;
 import net.minecraft.block.BlockJukebox.TileEntityJukebox;
-import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemFood;
-import net.minecraft.item.ItemSeeds;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -52,7 +47,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProvider;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -117,7 +112,7 @@ public class MoCTools {
      * Thanks for nothing, MCP!
      */
     public static BlockPos getActualTopSolidOrLiquidBlock(World world, BlockPos pos) {
-        Chunk chunk = world.getChunk(pos);
+        IChunk chunk = world.getChunk(pos);
         BlockPos blockPos;
         BlockPos blockPosDown;
 
@@ -444,16 +439,11 @@ public class MoCTools {
         return origAngle % 360F;
     }
 
-    public static double waterSurfaceAtGivenPosition(double getPosX(),
-
-    double getPosY(),
-
-    double getPosZ(),World worldIn)
-
+    public static double waterSurfaceAtGivenPosition(double posX, double posY, double posZ, World worldIn)
     {
-        int i = MathHelper.floor(getPosX());
-        int j = MathHelper.floor(getPosY());
-        int k = MathHelper.floor(getPosZ());
+        int i = MathHelper.floor(posX);
+        int j = MathHelper.floor(posY);
+        int k = MathHelper.floor(posZ);
         BlockState blockstate = worldIn.getBlockState(new BlockPos(i, j, k));
         if (blockstate.getBlock() != Blocks.AIR && blockstate.getMaterial() == Material.WATER) {
             for (int x = 1; x < 64; x++) {
@@ -470,16 +460,11 @@ public class MoCTools {
         return waterSurfaceAtGivenPosition(entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.world);
     }
 
-    public static float distanceToSurface(double getPosX(),
-
-    double getPosY(),
-
-    double getPosZ(),World worldIn)
-
+    public static float distanceToSurface(double posX, double posY, double posZ, World worldIn)
     {
-        int i = MathHelper.floor(getPosX());
-        int j = MathHelper.floor(getPosY());
-        int k = MathHelper.floor(getPosZ());
+        int i = MathHelper.floor(posX);
+        int j = MathHelper.floor(posY);
+        int k = MathHelper.floor(posZ);
         BlockState blockstate = worldIn.getBlockState(new BlockPos(i, j, k));
         if (blockstate.getBlock() != Blocks.AIR && blockstate.getMaterial() == Material.WATER) {
             for (int x = 1; x < 64; x++) {
@@ -846,7 +831,7 @@ public class MoCTools {
      *                 entity
      * @return the count of blocks destroyed
      */
-    public static int destroyBlocksInFront(Entity entity, double distance, int strength, int getHeight()) {
+    public static int destroyBlocksInFront(Entity entity, double distance, int strength, int height) {
         if (strength == 0) {
             return 0;
         }
@@ -858,7 +843,7 @@ public class MoCTools {
         int y = MathHelper.floor(newPosY);
         int z = MathHelper.floor(newPosZ);
 
-        for (int i = 0; i < getHeight(); i++) {
+        for (int i = 0; i < height; i++) {
             BlockPos pos = new BlockPos(x, y + i, z);
             BlockState blockstate = entity.world.getBlockState(pos);
             if (blockstate.getBlock() != Blocks.AIR && blockstate.getBlockHardness(entity.world, pos) <= strength) {
@@ -1113,17 +1098,17 @@ public class MoCTools {
     /**
      * Throws stone at entity
      */
-    public static void throwStone(Entity throwerEntity, Entity targetEntity, BlockState state, double speedMod, double getHeight()) {
-        throwStone(throwerEntity, (int) targetEntity.getPosX(), (int) targetEntity.getPosY(), (int) targetEntity.getPosZ(), state, speedMod, getHeight());
+    public static void throwStone(Entity throwerEntity, Entity targetEntity, BlockState state, double speedMod, double height) {
+        throwStone(throwerEntity, (int) targetEntity.getPosX(), (int) targetEntity.getPosY(), (int) targetEntity.getPosZ(), state, speedMod, height);
     }
 
-    public static void throwStone(Entity throwerEntity, int x, int y, int z, BlockState state, double speedMod, double getHeight()) {
+    public static void throwStone(Entity throwerEntity, int x, int y, int z, BlockState state, double speedMod, double height) {
         MoCEntityThrowableRock etrock = new MoCEntityThrowableRock(throwerEntity.world, throwerEntity, throwerEntity.getPosX(), throwerEntity.getPosY() + 0.5D, throwerEntity.getPosZ());
         throwerEntity.world.addEntity(etrock);
         etrock.setState(state);
         etrock.setBehavior(0);
         etrock.getMotion().getX() = ((x - throwerEntity.getPosX()) / speedMod);
-        etrock.getMotion().getY() = ((y - throwerEntity.getPosY()) / speedMod + getHeight());
+        etrock.getMotion().getY() = ((y - throwerEntity.getPosY()) / speedMod + height);
         etrock.getMotion().getZ() = ((z - throwerEntity.getPosZ()) / speedMod);
     }
 
@@ -1131,7 +1116,7 @@ public class MoCTools {
      * Calculates the moving speed of the entity
      */
     public static float getMyMovementSpeed(Entity entity) {
-        return MathHelper.sqrt((entity.getMotion().getX() * entity.getMotion().getx()) + (entity.getMotion().getZ() * entity.getMotion().getZ()));
+        return MathHelper.sqrt((entity.getMotion().getX() * entity.getMotion().getX()) + (entity.getMotion().getZ() * entity.getMotion().getZ()));
     }
 
     public static ItemEntity getClosestFood(Entity entity, double d) {

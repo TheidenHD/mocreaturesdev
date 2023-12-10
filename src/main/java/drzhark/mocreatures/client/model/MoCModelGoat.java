@@ -3,10 +3,14 @@
  */
 package drzhark.mocreatures.client.model;
 
-import net.minecraft.client.renderer.matrixStackIn;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class MoCModelGoat<T extends Entity> extends EntityModel<T> {
@@ -156,18 +160,18 @@ public class MoCModelGoat<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         super.render(entity, f, f1, f2, f3, f4, f5);
         setRotationAngles(f, f1, f2, f3, f4, f5);
-        this.Leg1.render(f5);
-        this.Leg2.render(f5);
-        this.Leg3.render(f5);
-        this.Leg4.render(f5);
-        this.Body.render(f5);
-        this.Tail.render(f5);
-        this.Neck.render(f5);
+        this.Leg1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Leg4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Neck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         if (this.typeInt > 1 && this.typeInt < 5) {
-            this.Tits.render(f5);
+            this.Tits.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
         matrixStackIn.push();
         if (this.attacking != 0) {
@@ -175,42 +179,42 @@ public class MoCModelGoat<T extends Entity> extends EntityModel<T> {
             float zOff = (this.attacking / 450F) - (1F / 15F);
             matrixStackIn.translate(0.0F, yOff, -zOff);
         }
-        this.LEar.render(f5);
-        this.REar.render(f5);
-        this.Head.render(f5);
-        this.Nose.render(f5);
+        this.LEar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.REar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Nose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         if (this.typeInt > 1) {
             if (this.age > 0.7) {
-                this.RHorn1.render(f5);
-                this.LHorn1.render(f5);
+                this.RHorn1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.LHorn1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
             if (this.age > 0.8) {
-                this.RHorn2.render(f5);
-                this.LHorn2.render(f5);
+                this.RHorn2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.LHorn2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
         }
         if (this.typeInt > 4) {
             if (this.age > 0.8) {
-                this.RHorn3.render(f5);
-                this.LHorn3.render(f5);
+                this.RHorn3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.LHorn3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
             if (this.age > 0.85) {
-                this.RHorn4.render(f5);
-                this.LHorn4.render(f5);
+                this.RHorn4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.LHorn4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
             if (this.age > 0.9) {
-                this.RHorn5.render(f5);
-                this.LHorn5.render(f5);
+                this.RHorn5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.LHorn5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
         }
         if (this.eatMov != 0 && !this.bleat) {
             matrixStackIn.translate(this.eatMov / 100F, 0.0F, 0.0F);
         }
         if (this.typeInt > 4 && this.age > 0.9) {
-            this.Goatie.render(f5);
+            this.Goatie.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
-        this.Tongue.render(f5);
-        this.Mouth.render(f5);
+        this.Tongue.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Mouth.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         matrixStackIn.pop();
     }
 

@@ -3,14 +3,15 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.hunter.MoCEntityPetScorpion;
-import net.minecraft.entity.Entity;
 
 
 public class MoCModelPetScorpion extends MoCModelScorpion {
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         MoCEntityPetScorpion scorpy = (MoCEntityPetScorpion) entity;
         poisoning = scorpy.swingingTail();
         isTalking = scorpy.mouthCounter != 0;

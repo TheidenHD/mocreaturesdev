@@ -54,8 +54,7 @@ public class MoCEntityEgg extends MobEntity {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(10.0D); // setMaxHealth
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 10.0D); // setMaxHealth
     }
 
     @Override

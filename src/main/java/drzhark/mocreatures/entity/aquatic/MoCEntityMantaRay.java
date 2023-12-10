@@ -22,7 +22,7 @@ public class MoCEntityMantaRay extends MoCEntityRay {
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(20.0D);
+        getEntityAttribute(Attributes.MAX_HEALTH, 20.0D);
     }
 
     @Override

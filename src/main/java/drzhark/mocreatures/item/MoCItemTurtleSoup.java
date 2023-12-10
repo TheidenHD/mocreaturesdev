@@ -5,6 +5,7 @@ package drzhark.mocreatures.item;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;

@@ -5,6 +5,8 @@ package drzhark.mocreatures.entity.hostile;
 
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCLootTables;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -19,10 +21,7 @@ public class MoCEntityFireOgre extends MoCEntityOgre {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(65.0D);
-        this.getEntityAttribute(Attributes.ARMOR).setBaseValue(9.0D);
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(7.5D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 65.0D).createMutableAttribute(Attributes.ARMOR, 9.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.5D);
     }
 
     @Override

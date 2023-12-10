@@ -55,8 +55,7 @@ public class MoCEntityKittyBed extends MobEntity {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(20.0D);
+        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 20.0D);
     }
 
     @Override

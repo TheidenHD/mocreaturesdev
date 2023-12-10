@@ -6,6 +6,8 @@ package drzhark.mocreatures.client.renderer.entity;
 import drzhark.mocreatures.entity.MoCEntityInsect;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.matrixStackIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class MoCRenderInsect<T extends MoCEntityInsect> extends MoCRenderMoC<T> {
