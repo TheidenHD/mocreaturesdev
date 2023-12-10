@@ -8,7 +8,6 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
@@ -28,13 +27,12 @@ public class MoCEntityHellRat extends MoCEntityRat {
         experienceValue = 7;
     }
 
-    @Override
-    protected void applyEntityAttributes() {
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.325D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.5D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(7.0D);
+        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(40.0D);
+        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.325D);
+        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(4.5D);
+        this.getEntityAttribute(Attributes.ARMOR).setBaseValue(7.0D);
     }
 
     @Override
@@ -91,13 +89,13 @@ public class MoCEntityHellRat extends MoCEntityRat {
     }
 
     @Override
-    public void onLivingUpdate() {
+    public void livingTick() {
         if (this.world.isRemote) {
             for (int i = 0; i < 2; ++i) {
                 this.world.addParticle(ParticleTypes.FLAME, this.getPosX() + (this.rand.nextDouble() - 0.5D) * (double) this.getWidth(), this.getPosY() + this.rand.nextDouble() * (double) this.getHeight(), this.getPosZ() + (this.rand.nextDouble() - 0.5D) * (double) this.getWidth(), 0.0D, 0.0D, 0.0D);
             }
         }
-        super.onLivingUpdate();
+        super.livingTick();
     }
 
     public float getEyeHeight() {

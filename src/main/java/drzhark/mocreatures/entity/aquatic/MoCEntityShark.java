@@ -12,8 +12,6 @@ import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,19 +38,18 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
 
     @Override
     protected void initEntityAI() {
-        this.tasks.addTask(2, new EntityAIAttackMelee(this, 1.0D, true));
-        this.tasks.addTask(5, new EntityAIWanderMoC2(this, 1.0D, 30));
-        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget<>(this, PlayerEntity.class, true));
+        this.goalSelector.addGoal(2, new EntityAIAttackMelee(this, 1.0D, true));
+        this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 1.0D, 30));
+        this.targetgoalSelector.addGoal(2, new EntityAINearestAttackableTarget<>(this, PlayerEntity.class, true));
     }
 
-    @Override
-    protected void applyEntityAttributes() {
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.55D);
-        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(5.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(32.0D);
+        getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(30.0D);
+        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.55D);
+        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE);
+        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(5.0D);
+        this.getEntityAttribute(Attributes.FOLLOW_RANGE).setBaseValue(32.0D);
     }
 
     @Override
@@ -124,8 +121,8 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
         if (!this.world.isRemote) {
             if (!getIsAdult() && (this.rand.nextInt(50) == 0)) {
                 setAge(getAge() + 1);

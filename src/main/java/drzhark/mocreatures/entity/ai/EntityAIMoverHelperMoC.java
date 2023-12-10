@@ -59,7 +59,7 @@ public class EntityAIMoverHelperMoC extends MovementController {
 
     public void onUpdateMoveOnGround() {
         if (this.action == MovementController.Action.STRAFE) {
-            float f = (float) this.mob.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
+            float f = (float) this.mob.getEntityAttribute(Attributes.MOVEMENT_SPEED).getAttributeValue();
             float f1 = (float) this.speed * f;
             float f2 = this.moveForward;
             float f3 = this.moveStrafe;
@@ -106,7 +106,7 @@ public class EntityAIMoverHelperMoC extends MovementController {
 
             float f9 = (float) (MathHelper.atan2(d1, d0) * (180D / Math.PI)) - 90.0F;
             this.mob.rotationYaw = this.limitAngle(this.mob.rotationYaw, f9, 20.0F);
-            this.mob.setAIMoveSpeed((float) (this.speed * this.mob.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue()));
+            this.mob.setAIMoveSpeed((float) (this.speed * this.mob.getEntityAttribute(Attributes.MOVEMENT_SPEED).getAttributeValue()));
 
             if (d2 > (double) this.mob.stepHeight && d0 * d0 + d1 * d1 < (double) Math.max(1.0F, this.mob.getWidth())) {
                 this.mob.getJumpHelper().setJumping();
@@ -181,7 +181,7 @@ public class EntityAIMoverHelperMoC extends MovementController {
             float f = (float) (Math.atan2(d2, d0) * 180.0D / Math.PI) - 90.0F;
             this.theCreature.rotationYaw = this.limitAngle(this.theCreature.rotationYaw, f, fLimitAngle);
             this.theCreature.renderYawOffset = this.theCreature.rotationYaw;
-            float f1 = (float) (this.speed * this.theCreature.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
+            float f1 = (float) (this.speed * this.theCreature.getEntityAttribute(Attributes.MOVEMENT_SPEED).getAttributeValue());
             this.theCreature.setAIMoveSpeed(this.theCreature.getAIMoveSpeed() + (f1 - this.theCreature.getAIMoveSpeed()) * 0.125F);
             double d4 = Math.sin((double) (this.theCreature.ticksExisted + this.theCreature.getEntityId()) * 0.75D) * 0.01D;
             double d5 = Math.cos(this.theCreature.rotationYaw * (float) Math.PI / 180.0F);

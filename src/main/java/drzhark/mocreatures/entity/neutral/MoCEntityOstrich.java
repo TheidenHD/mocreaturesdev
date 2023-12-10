@@ -68,20 +68,19 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
 
     @Override
     protected void initEntityAI() {
-        this.tasks.addTask(1, new EntityAISwimming(this));
-        this.tasks.addTask(4, new EntityAIFollowAdult(this, 1.0D));
-        this.tasks.addTask(5, new EntityAIAttackMelee(this, 1.0D, true));
-        this.tasks.addTask(6, new EntityAIWanderMoC2(this, 1.0D));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(1, new EntityAISwimming(this));
+        this.goalSelector.addGoal(4, new EntityAIFollowAdult(this, 1.0D));
+        this.goalSelector.addGoal(5, new EntityAIAttackMelee(this, 1.0D, true));
+        this.goalSelector.addGoal(6, new EntityAIWanderMoC2(this, 1.0D));
+        this.goalSelector.addGoal(7, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
     }
 
-    @Override
-    protected void applyEntityAttributes() {
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(16.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
-        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(3.0D);
+        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(16.0D);
+        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE);
+        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(3.0D);
     }
 
     @Override
@@ -266,7 +265,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                 setTypeMoC(4);
             }
         }
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(calculateMaxHealth());
+        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(calculateMaxHealth());
         this.setHealth(getMaxHealth());
     }
 
@@ -405,8 +404,8 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
 
         if (getIsTamed() && !this.world.isRemote && (this.rand.nextInt(300) == 0) && (getHealth() <= getMaxHealth()) && (this.deathTime == 0)) {
             this.setHealth(getHealth() + 1);
@@ -482,7 +481,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                     PlayerEntity eggStealer = this.world.getClosestPlayer(this, 10D);
                     if (eggStealer != null) {
                         this.world.getDifficulty();
-                        if (!getIsTamed() && this.world.getDifficulty() != EnumDifficulty.PEACEFUL) {
+                        if (!getIsTamed() && this.world.getDifficulty() != Difficulty.PEACEFUL) {
                             setAttackTarget(eggStealer);
                             flapWings();
                         }
@@ -919,9 +918,9 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public EnumCreatureAttribute getCreatureAttribute() {
+    public CreatureAttribute getCreatureAttribute() {
         if (getTypeMoC() == 7) {
-            return EnumCreatureAttribute.UNDEAD;
+            return CreatureAttribute.UNDEAD;
         }
         return super.getCreatureAttribute();
     }

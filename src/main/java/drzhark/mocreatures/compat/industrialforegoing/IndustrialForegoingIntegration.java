@@ -3,37 +3,19 @@
  */
 package drzhark.mocreatures.compat.industrialforegoing;
 
-import com.buuz135.industrial.api.extractor.ExtractorEntry;
-import com.buuz135.industrial.proxy.FluidsRegistry;
+import com.buuz135.industrial.module.ModuleCore;
+import com.buuz135.industrial.recipe.FluidExtractorRecipe;
+import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.init.MoCBlocks;
-import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 // Courtesy of SokyranTheDragon
 public class IndustrialForegoingIntegration {
 
-    public static ItemStack[] getBasicProteinGeneratorEntries() {
-        return new ItemStack[]{
-                new ItemStack(MoCItems.rawTurkey),
-                new ItemStack(MoCItems.cookedTurkey),
-                new ItemStack(MoCItems.ratRaw),
-                new ItemStack(MoCItems.ratCooked),
-                new ItemStack(MoCItems.crabraw),
-                new ItemStack(MoCItems.crabcooked),
-                new ItemStack(MoCItems.ostrichraw),
-                new ItemStack(MoCItems.ostrichcooked),
-                new ItemStack(MoCItems.turtleraw),
-                new ItemStack(MoCItems.turtlecooked),
-                new ItemStack(MoCItems.heartdarkness),
-                new ItemStack(MoCItems.heartfire),
-                new ItemStack(MoCItems.heartundead)
-        };
-    }
-
-    public static ExtractorEntry[] getLatexEntries() {
-        return new ExtractorEntry[]{
-                new ExtractorEntry(new ItemStack(MoCBlocks.wyvwoodLog), new FluidStack(FluidsRegistry.LATEX, 1)),
-        };
+    public static void generateLatexEntries() {
+        new FluidExtractorRecipe(new ResourceLocation(MoCConstants.MOD_ID, "wyvwood"), new Ingredient.SingleItemList(new ItemStack(MoCBlocks.wyvwoodLog)), MoCBlocks.strippedwyvwoodLog, 0.005f, new FluidStack(ModuleCore.LATEX.getSourceFluid(), 1), false);
     }
 }

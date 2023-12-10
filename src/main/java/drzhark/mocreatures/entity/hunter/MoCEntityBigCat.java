@@ -21,13 +21,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.EntityAIAttackMelee;
-import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemSaddle;
 import net.minecraft.item.ItemStack;
@@ -41,7 +36,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
@@ -72,20 +67,19 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
 
     @Override
     protected void initEntityAI() {
-        this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAIAttackMelee(this, 1.0D, true));
-        this.tasks.addTask(4, new EntityAIFollowAdult(this, 1.0D));
-        this.tasks.addTask(5, new EntityAIFollowOwnerPlayer(this, 1D, 2F, 10F));
-        this.tasks.addTask(2, new EntityAIWanderMoC2(this, 0.8D, 30));
-        //this.targetTasks.addTask(3, new EntityAIHunt<>(this, AnimalEntity.class, true));
-        this.targetTasks.addTask(4, new EntityAIHunt<>(this, PlayerEntity.class, true));
+        this.goalSelector.addGoal(0, new EntityAISwimming(this));
+        this.goalSelector.addGoal(1, new EntityAIAttackMelee(this, 1.0D, true));
+        this.goalSelector.addGoal(4, new EntityAIFollowAdult(this, 1.0D));
+        this.goalSelector.addGoal(5, new EntityAIFollowOwnerPlayer(this, 1D, 2F, 10F));
+        this.goalSelector.addGoal(2, new EntityAIWanderMoC2(this, 0.8D, 30));
+        //this.targetgoalSelector.addGoal(3, new EntityAIHunt<>(this, AnimalEntity.class, true));
+        this.targetgoalSelector.addGoal(4, new EntityAIHunt<>(this, PlayerEntity.class, true));
     }
 
-    @Override
-    protected void applyEntityAttributes() {
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
-        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(24.0D);
+        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE);
+        this.getEntityAttribute(Attributes.FOLLOW_RANGE).setBaseValue(24.0D);
     }
 
     @Override
@@ -174,7 +168,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
             if (entity != null && getIsTamed() && entity instanceof PlayerEntity) {
                 return false;
             }
-            if (entity != this && entity instanceof LivingEntity && (this.world.getDifficulty() != EnumDifficulty.PEACEFUL)) {
+            if (entity != this && entity instanceof LivingEntity && (this.world.getDifficulty() != Difficulty.PEACEFUL)) {
                 setAttackTarget((LivingEntity) entity);
             }
             return true;
@@ -256,9 +250,9 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void onLivingUpdate() {
+    public void livingTick() {
 
-        super.onLivingUpdate();
+        super.livingTick();
 
         if (!this.world.isRemote) {
             setSprinting(this.getAttackTarget() != null);

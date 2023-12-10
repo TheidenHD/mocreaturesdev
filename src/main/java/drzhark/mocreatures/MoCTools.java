@@ -33,9 +33,6 @@ import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Effects;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
@@ -63,7 +60,6 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.common.registry.EntityType;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.*;
@@ -80,7 +76,7 @@ public class MoCTools {
             int minCount = Math.min(spawnListEntry.minGroupCount, 1);
             int maxCount = Math.min(spawnListEntry.maxGroupCount, 6);
             int groupCount = minCount + random.nextInt(1 + maxCount - minCount);
-            IEntityLivingData livingData = null;
+            ILivingEntityData livingData = null;
             int xPos = centerX + random.nextInt(diameterX);
             int zPos = centerZ + random.nextInt(diameterZ);
             int xPosOrig = xPos;

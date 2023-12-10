@@ -4,7 +4,6 @@
 package drzhark.mocreatures.item;
 
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 

@@ -8,8 +8,6 @@ import drzhark.mocreatures.entity.MoCEntityAmbient;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -31,7 +29,7 @@ public class MoCEntitySnail extends MoCEntityAmbient {
 
     @Override
     protected void initEntityAI() {
-        this.tasks.addTask(1, new EntityAIWanderMoC2(this, 0.8D));
+        this.goalSelector.addGoal(1, new EntityAIWanderMoC2(this, 0.8D));
     }
 
     @Override
@@ -40,12 +38,11 @@ public class MoCEntitySnail extends MoCEntityAmbient {
         this.dataManager.register(IS_HIDING, Boolean.FALSE);
     }
 
-    @Override
-    protected void applyEntityAttributes() {
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(2.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.10D);
+        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(4.0D);
+        this.getEntityAttribute(Attributes.ARMOR).setBaseValue(2.0D);
+        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.10D);
     }
 
     @Override
@@ -87,8 +84,8 @@ public class MoCEntitySnail extends MoCEntityAmbient {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
 
         if (!this.world.isRemote) {
             LivingEntity entityliving = getBoogey(3D);

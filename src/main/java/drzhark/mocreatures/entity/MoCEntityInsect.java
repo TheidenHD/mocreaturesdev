@@ -5,12 +5,12 @@ package drzhark.mocreatures.entity;
 
 import drzhark.mocreatures.MoCTools;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EnumCreatureAttribute;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIWanderAvoidWaterFlying;
-import net.minecraft.entity.ai.EntityFlyHelper;
-import net.minecraft.init.Blocks;
-import net.minecraft.pathfinding.PathNavigateFlying;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.CreatureAttribute;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.pathfinding.FlyingPathNavigator;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -25,21 +25,20 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
         this.moveHelper = new EntityFlyHelper(this);
     }
 
-    @Override
-    protected void applyEntityAttributes() {
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.FLYING_SPEED);
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
-        this.getEntityAttribute(SharedMonsterAttributes.FLYING_SPEED).setBaseValue(0.6D);
+        this.getAttributeMap().registerAttribute(Attributes.FLYING_SPEED);
+        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(4.0D);
+        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+        this.getEntityAttribute(Attributes.FLYING_SPEED).setBaseValue(0.6D);
     }
 
     @Override
     protected PathNavigator createNavigator(World worldIn) {
-        PathNavigateFlying pathNavigateFlying = new PathNavigateFlying(this, worldIn);
-        pathNavigateFlying.setCanEnterDoors(true);
-        pathNavigateFlying.setCanFloat(true);
-        return pathNavigateFlying;
+        FlyingPathNavigator FlyingPathNavigator = new FlyingPathNavigator(this, worldIn);
+        FlyingPathNavigator.setCanEnterDoors(true);
+        FlyingPathNavigator.setCanFloat(true);
+        return FlyingPathNavigator;
     }
 
     @Override
@@ -50,11 +49,11 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
     @Override
     protected void initEntityAI() {
         super.initEntityAI();
-        this.tasks.addTask(0, new EntityAIWanderAvoidWaterFlying(this, 0.8D));
+        this.goalSelector.addGoal(0, new EntityAIWanderAvoidWaterFlying(this, 0.8D));
     }
 
     @Override
-    public float getEyeHeight() {
+    public float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return 0.2F;
     }
 
@@ -64,8 +63,8 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
 
         if (!this.onGround && this.getMotion().getY() < 0.0D) {
             this.getMotion().getY() *= 0.6D;
@@ -119,7 +118,7 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
     }
 
     @Override
-    public EnumCreatureAttribute getCreatureAttribute() {
-        return EnumCreatureAttribute.ARTHROPOD;
+    public CreatureAttribute getCreatureAttribute() {
+        return CreatureAttribute.ARTHROPOD;
     }
 }

@@ -13,10 +13,7 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -52,24 +49,23 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
 
     @Override
     protected void initEntityAI() {
-        this.tasks.addTask(3, new EntityAIFleeFromPlayer(this, 0.8D, 4D));
-        this.tasks.addTask(4, new EntityAIAttackMelee(this, 1.0D, true));
-        this.tasks.addTask(7, new EntityAIWanderMoC2(this, 0.9D));
-        this.tasks.addTask(9, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
-        //this.targetTasks.addTask(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
-        this.targetTasks.addTask(2, new EntityAIHunt<>(this, PlayerEntity.class, true));
-        this.targetTasks.addTask(2, new EntityAIHurtByTarget(this, false));
+        this.goalSelector.addGoal(3, new EntityAIFleeFromPlayer(this, 0.8D, 4D));
+        this.goalSelector.addGoal(4, new EntityAIAttackMelee(this, 1.0D, true));
+        this.goalSelector.addGoal(7, new EntityAIWanderMoC2(this, 0.9D));
+        this.goalSelector.addGoal(9, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
+        //this.targetgoalSelector.addGoal(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
+        this.targetgoalSelector.addGoal(2, new EntityAIHunt<>(this, PlayerEntity.class, true));
+        this.targetgoalSelector.addGoal(2, new EntityAIHurtByTarget(this, false));
 
     }
 
-    @Override
-    protected void applyEntityAttributes() {
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(25.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(6.0D);
-        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(5.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(25.0D);
+        this.getEntityAttribute(Attributes.ARMOR).setBaseValue(6.0D);
+        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE);
+        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(5.0D);
+        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
     }
 
     @Override
@@ -131,7 +127,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void onLivingUpdate() {
+    public void livingTick() {
         if (getIsSitting()) {
             this.rotationPitch = -5F;
             if (!isSwimming() && this.biteProgress < 0.3F && this.rand.nextInt(5) == 0) {
@@ -212,7 +208,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
             }
         }
 
-        super.onLivingUpdate();
+        super.livingTick();
     }
 
     @Override

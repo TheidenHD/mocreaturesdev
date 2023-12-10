@@ -5,8 +5,8 @@ package drzhark.mocreatures.entity;
 
 import drzhark.mocreatures.MoCreatures;
 import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.world.biome.Biome.MobSpawnInfo.Spawners;
+import net.minecraft.entity.EntityType;
+import net.minecraft.world.biome.MobSpawnInfo;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
 
@@ -34,11 +34,11 @@ public class MoCEntityData {
         this.dimensions = dimensions;
         this.biomeTypes = biomeTypes;
         this.frequency = spawnListEntry.itemWeight;
-        this.minGroup = spawnListEntry.minGroupCount;
-        this.maxGroup = spawnListEntry.maxGroupCount;
+        this.minGroup = spawnListEntry.minCount;
+        this.maxGroup = spawnListEntry.maxCount;
         this.maxSpawnInChunk = maxchunk;
         this.spawnListEntry = spawnListEntry;
-        MoCreatures.entityMap.put(spawnListEntry.entityClass, this);
+        MoCreatures.entityMap.put(spawnListEntry.type, this);
     }
 
     public MoCEntityData(String name, int maxchunk, int[] dimensions, EntityClassification type, MobSpawnInfo.Spawners spawnListEntry, List<Type> biomeTypes, List<Type> blockedBiomeTypes) {
@@ -48,15 +48,15 @@ public class MoCEntityData {
         this.biomeTypes = biomeTypes;
         this.blockedBiomeTypes = blockedBiomeTypes;
         this.frequency = spawnListEntry.itemWeight;
-        this.minGroup = spawnListEntry.minGroupCount;
-        this.maxGroup = spawnListEntry.maxGroupCount;
+        this.minGroup = spawnListEntry.minCount;
+        this.maxGroup = spawnListEntry.maxCount;
         this.maxSpawnInChunk = maxchunk;
         this.spawnListEntry = spawnListEntry;
-        MoCreatures.entityMap.put(spawnListEntry.entityClass, this);
+        MoCreatures.entityMap.put(spawnListEntry.type, this);
     }
 
-    public Class<? extends MobEntity> getEntityClass() {
-        return this.spawnListEntry.entityClass;
+    public EntityType<?> getEntityClass() {
+        return this.spawnListEntry.type;
     }
 
     public EntityClassification getTypeMoC() {

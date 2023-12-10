@@ -7,7 +7,6 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.MoCEntityAmbient;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
@@ -33,7 +32,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
 
     @Override
     protected void initEntityAI() {
-        this.tasks.addTask(1, new EntityAIWanderMoC2(this, 1.2D));
+        this.goalSelector.addGoal(1, new EntityAIWanderMoC2(this, 1.2D));
     }
 
     @Override
@@ -42,12 +41,11 @@ public class MoCEntityAnt extends MoCEntityAmbient {
         this.dataManager.register(FOUND_FOOD, Boolean.FALSE);
     }
 
-    @Override
-    protected void applyEntityAttributes() {
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(3.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(1.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.28D);
+        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(3.0D);
+        this.getEntityAttribute(Attributes.ARMOR).setBaseValue(1.0D);
+        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.28D);
     }
 
     public boolean getHasFood() {
@@ -59,8 +57,8 @@ public class MoCEntityAnt extends MoCEntityAmbient {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
 
         if (!this.world.isRemote) {
             if (!getHasFood()) {

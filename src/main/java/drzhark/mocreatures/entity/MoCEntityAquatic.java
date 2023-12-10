@@ -12,17 +12,23 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.pathfinding.PathNavigator;
+import net.minecraft.pathfinding.SwimmerPathNavigator;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -61,13 +67,13 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
         this.setNewDivingDepth();
         this.riderIsDisconnecting = false;
         this.texture = "blank.jpg";
-        this.navigatorWater = new PathNavigateSwimmer(this, world);
+        this.navigatorWater = new SwimmerPathNavigator(this, world);
         this.moveHelper = new EntityAIMoverHelperMoC(this);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public String getName() {
+    public ITextComponent getName() {
         String entityString = EntityList.getEntityString(this);
         if (!MoCreatures.proxy.verboseEntityNames || entityString == null) return super.getName();
         String translationKey = "entity." + entityString + ".verbose.name";
@@ -75,11 +81,10 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
         return !translatedString.equals(translationKey) ? translatedString : super.getName();
     }
 
-    @Override
-    protected void applyEntityAttributes() {
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(getMoveSpeed());
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(6.0D);
+        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(getMoveSpeed());
+        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(6.0D);
     }
 
     @Override
@@ -88,7 +93,7 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
     }
 
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData par1EntityLivingData) {
+    public ILivingEntityData onInitialSpawn(DifficultyInstance difficulty, ILivingEntityData par1EntityLivingData) {
         selectType();
         return super.onInitialSpawn(difficulty, par1EntityLivingData);
     }
@@ -339,7 +344,7 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
                 if (!(entity instanceof MonsterEntity)) continue;
                 float f = getDistance(entity);
                 if (f < 2.0F && this.rand.nextInt(10) == 0) {
-                    attackEntityFrom(DamageSource.causeMobDamage((LivingEntity) entity), (float) ((MonsterEntity) entity).getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue());
+                    attackEntityFrom(DamageSource.causeMobDamage((LivingEntity) entity), (float) ((MonsterEntity) entity).getEntityAttribute(Attributes.ATTACK_DAMAGE).getAttributeValue());
                 }
             }
         }
@@ -351,7 +356,7 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
     }
 
     @Override
-    public void onLivingUpdate() {
+    public void livingTick() {
         if (!this.world.isRemote) {
             if (this.isBeingRidden()) {
                 riding();
@@ -396,8 +401,8 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
 
                 List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(2));
                 for (Entity entity1 : list) {
-                    if (entity1 instanceof EntityFishHook && ((EntityFishHook) entity1).caughtEntity == this) {
-                        ((EntityFishHook) entity1).caughtEntity = null;
+                    if (entity1 instanceof FishingBobberEntity && ((FishingBobberEntity) entity1).caughtEntity == this) {
+                        ((FishingBobberEntity) entity1).caughtEntity = null;
                     }
                 }
             }
@@ -432,7 +437,7 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
                 this.divingCount = 0;
             }
         }
-        super.onLivingUpdate();
+        super.livingTick();
     }
 
     public boolean isSwimming() {
@@ -585,7 +590,7 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
     private void getFished() {
         PlayerEntity entityplayer1 = this.world.getClosestPlayer(this, 18D);
         if (entityplayer1 != null) {
-            EntityFishHook fishHook = entityplayer1.fishEntity;
+            FishingBobberEntity fishHook = entityplayer1.fishingBobber;
             if (fishHook != null && fishHook.caughtEntity == null) {
                 float f = fishHook.getDistance(this);
                 if (f > 1) {
@@ -640,7 +645,7 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
 
     @Override
     public boolean shouldAttackPlayers() {
-        return !getIsTamed() && this.world.getDifficulty() != EnumDifficulty.PEACEFUL;
+        return !getIsTamed() && this.world.getDifficulty() != Difficulty.PEACEFUL;
     }
 
     /**
@@ -718,7 +723,7 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
                 this.divePending = false;
                 this.getMotion().getY() -= 0.3D;
             }
-            this.setAIMoveSpeed((float) this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
+            this.setAIMoveSpeed((float) this.getEntityAttribute(Attributes.MOVEMENT_SPEED).getAttributeValue());
             super.travel(strafe, vertical, forward);
             this.moveRelative(strafe, vertical, forward, 0.1F);
         }
@@ -781,9 +786,9 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
      * Gets called every tick from main Entity class
      */
     @Override
-    public void onEntityUpdate() {
+    public void baseTick() {
         int i = this.getAir();
-        super.onEntityUpdate();
+        super.baseTick();
 
         if (this.isAlive() && !this.isInWater()) {
             --i;
@@ -879,7 +884,7 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
         if (!entityIn.isInWater()) {
             return false;
         }
-        boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), ((int) this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue()));
+        boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), ((int) this.getEntityAttribute(Attributes.ATTACK_DAMAGE).getAttributeValue()));
         if (flag) {
             this.applyEnchantments(this, entityIn);
         }

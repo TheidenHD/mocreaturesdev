@@ -6,8 +6,6 @@ package drzhark.mocreatures.entity.ambient;
 import drzhark.mocreatures.entity.MoCEntityAmbient;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -25,14 +23,13 @@ public class MoCEntityMaggot extends MoCEntityAmbient {
 
     @Override
     protected void initEntityAI() {
-        this.tasks.addTask(1, new EntityAIWanderMoC2(this, 0.8D));
+        this.goalSelector.addGoal(1, new EntityAIWanderMoC2(this, 0.8D));
     }
 
-    @Override
-    protected void applyEntityAttributes() {
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.1D);
+        getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(4.0D);
+        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.1D);
     }
 
     @Override

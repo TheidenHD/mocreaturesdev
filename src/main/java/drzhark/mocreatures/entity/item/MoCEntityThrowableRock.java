@@ -108,7 +108,7 @@ public class MoCEntityThrowableRock extends Entity {
     }
 
     @Override
-    public void onEntityUpdate() {
+    public void baseTick() {
         Entity master = getMaster();
         if (this.rockTimer-- <= -50 && getBehavior() == 0 || master == null) transformToItem();
 

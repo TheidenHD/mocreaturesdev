@@ -7,7 +7,6 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.util.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
@@ -29,11 +28,10 @@ public class MoCEntityFlameWraith extends MoCEntityWraith implements IMob {
         experienceValue = 7;
     }
 
-    @Override
-    protected void applyEntityAttributes() {
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(25.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.0D);
+        getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(25.0D);
+        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(4.0D);
     }
 
     @Nullable
@@ -42,7 +40,7 @@ public class MoCEntityFlameWraith extends MoCEntityWraith implements IMob {
     }
 
     @Override
-    public void onLivingUpdate() {
+    public void livingTick() {
         if (!this.world.isRemote) {
             if (this.world.isDaytime()) {
                 float f = getBrightness();
@@ -55,7 +53,7 @@ public class MoCEntityFlameWraith extends MoCEntityWraith implements IMob {
                 this.world.addParticle(ParticleTypes.FLAME, this.getPosX() + (this.rand.nextDouble() - 0.5D) * (double) this.getWidth(), this.getPosY() + this.rand.nextDouble() * (double) this.getHeight(), this.getPosZ() + (this.rand.nextDouble() - 0.5D) * (double) this.getWidth(), 0.0D, 0.0D, 0.0D);
             }
         }
-        super.onLivingUpdate();
+        super.livingTick();
     }
 
     //TODO TEST

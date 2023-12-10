@@ -39,20 +39,19 @@ public class MoCEntityRat extends MoCEntityMob {
 
     @Override
     protected void initEntityAI() {
-        this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(2, new MoCEntityRat.AIRatAttack(this));
-        this.tasks.addTask(8, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
-        this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
-        this.targetTasks.addTask(2, new MoCEntityRat.AIRatTarget<>(this, PlayerEntity.class));
-        this.targetTasks.addTask(3, new MoCEntityRat.AIRatTarget<>(this, EntityIronGolem.class));
+        this.goalSelector.addGoal(0, new EntityAISwimming(this));
+        this.goalSelector.addGoal(2, new MoCEntityRat.AIRatAttack(this));
+        this.goalSelector.addGoal(8, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
+        this.targetgoalSelector.addGoal(1, new EntityAIHurtByTarget(this, false));
+        this.targetgoalSelector.addGoal(2, new MoCEntityRat.AIRatTarget<>(this, PlayerEntity.class));
+        this.targetgoalSelector.addGoal(3, new MoCEntityRat.AIRatTarget<>(this, EntityIronGolem.class));
     }
 
-    @Override
-    protected void applyEntityAttributes() {
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(16.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(3.0D);
+        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(16.0D);
+        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.3D);
+        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(3.0D);
     }
 
     @Override
@@ -139,8 +138,8 @@ public class MoCEntityRat extends MoCEntityMob {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
 
         if ((this.rand.nextInt(100) == 0) && (this.getBrightness() > 0.5F)) {
             setAttackTarget(null);

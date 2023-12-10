@@ -5,7 +5,6 @@ package drzhark.mocreatures.entity.hostile;
 
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCLootTables;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -18,12 +17,11 @@ public class MoCEntityCaveOgre extends MoCEntityOgre {
         super(world);
     }
 
-    @Override
-    protected void applyEntityAttributes() {
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(60.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(10.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(8.0D);
+        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(60.0D);
+        this.getEntityAttribute(Attributes.ARMOR).setBaseValue(10.0D);
+        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(8.0D);
     }
 
     @Override

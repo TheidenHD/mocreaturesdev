@@ -53,10 +53,9 @@ public class MoCEntityEgg extends MobEntity {
         return MoCreatures.proxy.getModelTexture("egg.png");
     }
 
-    @Override
-    protected void applyEntityAttributes() {
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10.0D); // setMaxHealth
+        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(10.0D); // setMaxHealth
     }
 
     @Override
@@ -97,7 +96,7 @@ public class MoCEntityEgg extends MobEntity {
     }
 
     @Override
-    public void onLivingUpdate() {
+    public void livingTick() {
         this.moveStrafing = 0.0F;
         this.moveForward = 0.0F;
         this.randomYawVelocity = 0.0F;

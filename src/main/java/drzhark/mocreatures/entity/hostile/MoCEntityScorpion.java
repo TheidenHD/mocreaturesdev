@@ -13,11 +13,8 @@ import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.EnumCreatureAttribute;
-import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -58,15 +55,15 @@ public class MoCEntityScorpion extends MoCEntityMob {
 
     @Override
     protected void initEntityAI() {
-        this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(3, new EntityAILeapAtTarget(this, 0.4F));
-        this.tasks.addTask(4, new MoCEntityScorpion.AIScorpionAttack(this));
-        this.tasks.addTask(5, new EntityAIWanderAvoidWater(this, 0.8D));
-        this.tasks.addTask(6, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
-        this.tasks.addTask(6, new EntityAILookIdle(this));
-        this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
-        this.targetTasks.addTask(2, new MoCEntityScorpion.AIScorpionTarget<>(this, PlayerEntity.class));
-        this.targetTasks.addTask(3, new MoCEntityScorpion.AIScorpionTarget<>(this, EntityIronGolem.class));
+        this.goalSelector.addGoal(0, new EntityAISwimming(this));
+        this.goalSelector.addGoal(3, new EntityAILeapAtTarget(this, 0.4F));
+        this.goalSelector.addGoal(4, new MoCEntityScorpion.AIScorpionAttack(this));
+        this.goalSelector.addGoal(5, new EntityAIWanderAvoidWater(this, 0.8D));
+        this.goalSelector.addGoal(6, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(6, new EntityAILookIdle(this));
+        this.targetgoalSelector.addGoal(1, new EntityAIHurtByTarget(this, false));
+        this.targetgoalSelector.addGoal(2, new MoCEntityScorpion.AIScorpionTarget<>(this, PlayerEntity.class));
+        this.targetgoalSelector.addGoal(3, new MoCEntityScorpion.AIScorpionTarget<>(this, EntityIronGolem.class));
     }
 
     @Override
@@ -143,7 +140,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
     }
 
     @Override
-    public void onLivingUpdate() {
+    public void livingTick() {
 
         if (!this.onGround && (this.getRidingEntity() != null)) {
             this.rotationYaw = this.getRidingEntity().rotationYaw;
@@ -185,7 +182,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
             }
         }
 
-        super.onLivingUpdate();
+        super.livingTick();
     }
 
     @Override
@@ -286,8 +283,8 @@ public class MoCEntityScorpion extends MoCEntityMob {
     }
 
     @Override
-    public EnumCreatureAttribute getCreatureAttribute() {
-        return EnumCreatureAttribute.ARTHROPOD;
+    public CreatureAttribute getCreatureAttribute() {
+        return CreatureAttribute.ARTHROPOD;
     }
 
     @Override

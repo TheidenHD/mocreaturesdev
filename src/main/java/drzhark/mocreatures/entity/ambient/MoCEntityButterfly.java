@@ -6,7 +6,8 @@ package drzhark.mocreatures.entity.ambient;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.init.MoCLootTables;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.Pose;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -26,8 +27,8 @@ public class MoCEntityButterfly extends MoCEntityInsect {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
     }
 
     @Override
@@ -121,7 +122,7 @@ public class MoCEntityButterfly extends MoCEntityInsect {
     }
 
     @Override
-    public float getEyeHeight() {
+    public float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return 0.1F;
     }
 }

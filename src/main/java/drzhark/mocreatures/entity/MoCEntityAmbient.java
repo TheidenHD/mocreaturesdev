@@ -7,9 +7,8 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.MoverType;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -20,10 +19,16 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.Difficulty;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,8 +48,8 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public String getName() {
-        String entityString = EntityList.getEntityString(this);
+    public ITextComponent getName() {
+        ITextComponent entityString = this.getProfessionName();
         if (!MoCreatures.proxy.verboseEntityNames || entityString == null) return super.getName();
         String translationKey = "entity." + entityString + ".verbose.name";
         String translatedString = I18n.format(translationKey);
@@ -56,15 +61,14 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
         return MoCreatures.proxy.getModelTexture(this.texture);
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MobEntity.func_233666_p_();
     }
 
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData par1EntityLivingData) {
+    public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
         selectType();
-        return super.onInitialSpawn(difficulty, par1EntityLivingData);
+        return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
     /**
@@ -160,14 +164,14 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
     }
 
     @Override
-    public void onLivingUpdate() {
+    public void livingTick() {
         if (!this.world.isRemote) {
             if (isMovementCeased()) {
                 this.getNavigator().clearPath();
             }
             this.getNavigator().onUpdateNavigation();
         }
-        super.onLivingUpdate();
+        super.livingTick();
     }
 
     public boolean swimmerEntity() {
@@ -244,7 +248,7 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
     public boolean getCanSpawnHere() {
         boolean willSpawn;
         boolean debug = MoCreatures.proxy.debug;
-        willSpawn = this.world.canSeeSky(new BlockPos(this)) && this.world.checkNoEntityCollision(this.getBoundingBox()) && this.world.getCollisionBoxes(this, this.getBoundingBox()).isEmpty() && !this.world.containsAnyLiquid(this.getBoundingBox());
+        willSpawn = this.world.canSeeSky(new BlockPos(this)) && this.world.checkNoEntityCollision(this) && this.world.hasNoCollisions(this, this.getBoundingBox()) && !this.world.containsAnyLiquid(this.getBoundingBox());
         if (willSpawn && debug)
             MoCreatures.LOGGER.info("Ambient: " + this.getName() + " at: " + this.getPosition() + " State: " + this.world.getBlockState(this.getPosition()) + " biome: " + MoCTools.biomeName(world, getPosition()));
         return willSpawn;
@@ -426,7 +430,7 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
 
     @Override
     public boolean shouldAttackPlayers() {
-        return this.world.getDifficulty() != EnumDifficulty.PEACEFUL;
+        return this.world.getDifficulty() != Difficulty.PEACEFUL;
     }
 
     @Override
@@ -469,24 +473,22 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
     }
 
     @Override
-    public void travel(float strafe, float vertical, float forward) {
+    public void travel(Vector3d vector) {
         if (!getIsFlying()) {
-            super.travel(strafe, vertical, forward);
+            super.travel(vector);
             return;
         }
-        this.moveEntityWithHeadingFlying(strafe, vertical, forward);
+        this.moveEntityWithHeadingFlying(vector);
     }
 
-    public void moveEntityWithHeadingFlying(float strafe, float vertical, float forward) {
+    public void moveEntityWithHeadingFlying(Vector3d vector) {
         if (this.isServerWorld()) {
 
-            this.moveRelative(strafe, vertical, forward, 0.1F);
-            this.move(MoverType.SELF, this.getMotion().getX(), this.getMotion().getY(), this.getMotion().getZ());
-            this.getMotion().getX() *= 0.8999999761581421D;
-            this.getMotion().getY() *= 0.8999999761581421D;
-            this.getMotion().getZ() *= 0.8999999761581421D;
+            this.moveRelative(0.1F, vector);
+            this.move(MoverType.SELF, this.getMotion());
+            this.setMotion(this.getMotion().mul(0.8999999761581421D, 0.8999999761581421D, 0.8999999761581421D));
         } else {
-            super.travel(strafe, vertical, forward);
+            super.travel(vector);
         }
     }
 

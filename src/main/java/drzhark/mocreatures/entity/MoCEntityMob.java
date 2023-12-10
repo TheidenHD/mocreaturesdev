@@ -15,25 +15,28 @@ import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageHealth;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.MoverType;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.PathNavigateSwimmer;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.Difficulty;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -54,34 +57,33 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
         super(world);
         this.texture = "blank.jpg";
         this.moveHelper = new EntityAIMoverHelperMoC(this);
-        this.navigatorWater = new PathNavigateSwimmer(this, world);
+        this.navigatorWater = new SwimmerPathNavigator(this, world);
         this.navigatorFlyer = new PathNavigateFlyer(this, world);
         this.wander = new EntityAIWanderMoC2(this, 1.0D, 80);
-        this.tasks.addTask(4, this.wander);
+        this.goalSelector.addGoal(4, this.wander);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public String getName() {
-        String entityString = EntityList.getEntityString(this);
+    public ITextComponent getName() {
+        ITextComponent entityString = this.getProfessionName();
         if (!MoCreatures.proxy.verboseEntityNames || entityString == null) return super.getName();
         String translationKey = "entity." + entityString + ".verbose.name";
         String translatedString = I18n.format(translationKey);
         return !translatedString.equals(translationKey) ? translatedString : super.getName();
     }
 
-    @Override
-    protected void applyEntityAttributes() {
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(getMoveSpeed());
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(getAttackStrenght());
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20.0D);
+        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(getMoveSpeed());
+        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(getAttackStrenght());
+        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(20.0D);
     }
 
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData par1EntityLivingData) {
+    public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
         selectType();
-        return super.onInitialSpawn(difficulty, par1EntityLivingData);
+        return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
     @Override
@@ -194,7 +196,7 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
     }
 
     @Override
-    public void onLivingUpdate() {
+    public void livingTick() {
         if (!this.world.isRemote) {
             if (getIsTamed() && this.rand.nextInt(200) == 0) {
                 MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageHealth(this.getEntityId(), this.getHealth()), new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
@@ -220,7 +222,7 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
         }
 
         this.getNavigator().onUpdateNavigation();
-        super.onLivingUpdate();
+        super.livingTick();
     }
 
     protected int getMaxAge() {
@@ -234,7 +236,7 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
     @Override
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (!this.world.isRemote && getIsTamed()) {
-            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageHealth(this.getEntityId(), this.getHealth()), new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageHealth(this.getEntityId(), this.getHealth()), new PacketDistributor.TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
         }
         return super.attackEntityFrom(damagesource, i);
     }
@@ -283,24 +285,24 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
     }
 
     @Override
-    public void travel(float strafe, float vertical, float forward) {
+    public void travel(Vector3d vector) {
         if (!isFlyer()) {
-            super.travel(strafe, vertical, forward);
+            super.travel(vector);
             return;
         }
-        this.moveEntityWithHeadingFlyer(strafe, vertical, forward);
+        this.moveEntityWithHeadingFlyer(vector);
     }
 
-    public void moveEntityWithHeadingFlyer(float strafe, float vertical, float forward) {
+    public void moveEntityWithHeadingFlyer(Vector3d vector) {
         if (this.isServerWorld()) {
 
-            this.moveRelative(strafe, vertical, forward, 0.1F);
-            this.move(MoverType.SELF, this.getMotion().getX(), this.getMotion().getY(), this.getMotion().getZ());
+            this.moveRelative(0.1F, vector);
+            this.move(MoverType.SELF, this.getMotion());
             this.getMotion().getX() *= 0.8999999761581421D;
             this.getMotion().getY() *= 0.8999999761581421D;
             this.getMotion().getZ() *= 0.8999999761581421D;
         } else {
-            super.travel(strafe, vertical, forward);
+            super.travel(vector);
         }
     }
 
@@ -411,7 +413,7 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
 
     @Override
     public boolean shouldAttackPlayers() {
-        return this.world.getDifficulty() != EnumDifficulty.PEACEFUL;
+        return this.world.getDifficulty() != Difficulty.PEACEFUL;
     }
 
     @Override
@@ -430,7 +432,7 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
 
     @Override
     public boolean attackEntityAsMob(Entity entityIn) {
-        boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), ((int) this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue()));
+        boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), ((int) this.getEntityAttribute(Attributes.ATTACK_DAMAGE).getAttributeValue()));
         if (flag) {
             this.applyEnchantments(this, entityIn);
         }

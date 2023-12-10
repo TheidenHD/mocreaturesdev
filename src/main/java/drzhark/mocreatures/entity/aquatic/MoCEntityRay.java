@@ -17,7 +17,7 @@ public class MoCEntityRay extends MoCEntityTameableAquatic {
 
     @Override
     protected void initEntityAI() {
-        this.tasks.addTask(2, new EntityAIWanderMoC2(this, 1.0D, 80));
+        this.goalSelector.addGoal(2, new EntityAIWanderMoC2(this, 1.0D, 80));
     }
 
     public boolean isPoisoning() {

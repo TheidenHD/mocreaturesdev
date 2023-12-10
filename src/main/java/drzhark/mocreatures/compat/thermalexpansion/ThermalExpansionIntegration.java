@@ -3,19 +3,12 @@
  */
 package drzhark.mocreatures.compat.thermalexpansion;
 
-import cofh.core.util.helpers.ItemHelper;
-import cofh.thermalexpansion.util.managers.device.FactorizerManager;
-import cofh.thermalexpansion.util.managers.device.TapperManager;
-import cofh.thermalexpansion.util.managers.machine.PulverizerManager;
-import cofh.thermalexpansion.util.managers.machine.SawmillManager;
-import cofh.thermalexpansion.util.managers.machine.SmelterManager;
-import cofh.thermalfoundation.init.TFFluids;
-import cofh.thermalfoundation.item.ItemMaterial;
+import cofh.lib.util.helpers.ItemHelper;
 import drzhark.mocreatures.init.MoCBlocks;
 import drzhark.mocreatures.init.MoCItems;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraftforge.fluids.FluidStack;
 
 // Courtesy of SokyranTheDragon

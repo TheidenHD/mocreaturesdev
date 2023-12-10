@@ -5,7 +5,6 @@ package drzhark.mocreatures.entity.hostile;
 
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCLootTables;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -19,12 +18,11 @@ public class MoCEntityFireOgre extends MoCEntityOgre {
         this.isImmuneToFire = true;
     }
 
-    @Override
-    protected void applyEntityAttributes() {
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(65.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(9.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(7.5D);
+        this.getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(65.0D);
+        this.getEntityAttribute(Attributes.ARMOR).setBaseValue(9.0D);
+        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(7.5D);
     }
 
     @Override
@@ -43,8 +41,8 @@ public class MoCEntityFireOgre extends MoCEntityOgre {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
 
         if (this.isWet()) {
             this.attackEntityFrom(DamageSource.DROWN, 1.0F);

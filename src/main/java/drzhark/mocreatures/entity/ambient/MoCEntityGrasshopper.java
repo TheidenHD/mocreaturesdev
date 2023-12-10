@@ -8,7 +8,9 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -26,10 +28,9 @@ public class MoCEntityGrasshopper extends MoCEntityInsect {
         super(world);
     }
 
-    @Override
-    protected void applyEntityAttributes() {
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(1.0D);
+        this.getEntityAttribute(Attributes.ARMOR).setBaseValue(1.0D);
     }
 
     @Override
@@ -54,8 +55,8 @@ public class MoCEntityGrasshopper extends MoCEntityInsect {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
         if (!this.world.isRemote) {
             if (getIsFlying() || !this.onGround) {
                 PlayerEntity ep = this.world.getClosestPlayer(this, 5D);
@@ -124,7 +125,7 @@ public class MoCEntityGrasshopper extends MoCEntityInsect {
     }
 
     @Override
-    public float getEyeHeight() {
+    public float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return 0.15F;
     }
 }

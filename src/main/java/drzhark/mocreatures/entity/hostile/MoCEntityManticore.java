@@ -10,7 +10,6 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.*;
 import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
@@ -36,12 +35,12 @@ public class MoCEntityManticore extends MoCEntityMob {
 
     @Override
     protected void initEntityAI() {
-        this.tasks.addTask(2, new MoCEntityManticore.AIManticoreAttack(this));
-        this.tasks.addTask(6, new EntityAILookIdle(this));
-        this.tasks.addTask(8, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
-        this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
-        this.targetTasks.addTask(2, new MoCEntityManticore.AIManticoreTarget<>(this, PlayerEntity.class));
-        this.targetTasks.addTask(3, new MoCEntityManticore.AIManticoreTarget<>(this, EntityIronGolem.class));
+        this.goalSelector.addGoal(2, new MoCEntityManticore.AIManticoreAttack(this));
+        this.goalSelector.addGoal(6, new EntityAILookIdle(this));
+        this.goalSelector.addGoal(8, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
+        this.targetgoalSelector.addGoal(1, new EntityAIHurtByTarget(this, false));
+        this.targetgoalSelector.addGoal(2, new MoCEntityManticore.AIManticoreTarget<>(this, PlayerEntity.class));
+        this.targetgoalSelector.addGoal(3, new MoCEntityManticore.AIManticoreTarget<>(this, EntityIronGolem.class));
     }
 
     @Override
@@ -96,8 +95,8 @@ public class MoCEntityManticore extends MoCEntityMob {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void livingTick() {
+        super.livingTick();
 
         // TODO: Fix broken mouth movement
         if (this.world.isRemote) {

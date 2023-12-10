@@ -3,21 +3,20 @@
  */
 package drzhark.mocreatures.compat.datafixes;
 
+import com.mojang.datafixers.DataFix;
 import drzhark.mocreatures.MoCConstants;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.datafix.IFixableData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class BlockIDFixer implements IFixableData {
+public class BlockIDFixer implements DataFix {
     private static final Map<ResourceLocation, ResourceLocation> BLOCK_NAME_MAPPINGS = new HashMap<>();
 
     static {

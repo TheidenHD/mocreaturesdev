@@ -10,7 +10,6 @@ import drzhark.mocreatures.entity.passive.MoCEntityFilchLizard;
 import drzhark.mocreatures.init.MoCBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;

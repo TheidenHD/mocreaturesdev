@@ -18,7 +18,6 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -83,6 +82,8 @@ public class MoCBlocks {
     public static Block wyvwoodSapling;
     @GameRegistry.ObjectHolder("wyvwood_log")
     public static Block wyvwoodLog;
+    @GameRegistry.ObjectHolder("stripped_wyvwood_log")
+    public static Block strippedwyvwoodLog;
     @GameRegistry.ObjectHolder("wyvwood_planks")
     public static Block wyvwoodPlanks;
 
@@ -113,6 +114,7 @@ public class MoCBlocks {
                 setup(new MoCBlockLeaf(MapColor.DIAMOND, true, 100), "wyvwood_leaves").setHardness(0.2F).setLightOpacity(1),
                 setup(new MoCBlockSapling(EnumWoodType.WYVWOOD, MapColor.FOLIAGE, true), "wyvwood_sapling").setHardness(0.0F),
                 setup(new MoCBlockLog(MapColor.CYAN_STAINED_HARDENED_CLAY, true), "wyvwood_log").setHardness(2.0F),
+                setup(new MoCBlockLog(MapColor.CYAN_STAINED_HARDENED_CLAY, true), "stripped_wyvwood_log").setHardness(2.0F),
                 setup(new MoCBlockTallGrass(MapColor.LIGHT_BLUE_STAINED_HARDENED_CLAY, false), "tall_wyvgrass").setHardness(0.0F),
                 setup(new MoCBlockPlanks(MapColor.DIAMOND, true), "wyvwood_planks").setHardness(2.0F).setResistance(5.0F),
                 setup(new MoCBlockNest(), "wyvern_nest_block").setHardness(0.5F)

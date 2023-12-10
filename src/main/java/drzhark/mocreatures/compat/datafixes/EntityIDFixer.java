@@ -3,16 +3,16 @@
  */
 package drzhark.mocreatures.compat.datafixes;
 
+import com.mojang.datafixers.DataFix;
 import drzhark.mocreatures.MoCConstants;
+import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.datafix.IFixableData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent.MissingMappings;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.EntityType;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class EntityIDFixer implements IFixableData {
+public class EntityIDFixer implements DataFix {
     public EntityIDFixer() {
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -63,10 +63,10 @@ public class EntityIDFixer implements IFixableData {
     }
 
     @SubscribeEvent
-    public void missingEntityMapping(MissingMappings<EntityType> event) {
+    public void missingEntityMapping(MissingMappings<EntityType<?>> event) {
         ResourceLocation scorpion = new ResourceLocation(MoCConstants.MOD_ID, "scorpion");
         ResourceLocation manticore = new ResourceLocation(MoCConstants.MOD_ID, "manticore");
-        for (MissingMappings.Mapping<EntityType> entry : event.getAllMappings()) {
+        for (MissingMappings.Mapping<EntityType<?>> entry : event.getAllMappings()) {
             if (entry.key.equals(scorpion) || entry.key.equals(manticore)) {
                 entry.ignore();
             }
