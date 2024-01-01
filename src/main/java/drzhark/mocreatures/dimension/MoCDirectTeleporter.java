@@ -4,12 +4,13 @@
 package drzhark.mocreatures.dimension;
 
 import drzhark.mocreatures.dimension.worldgen.MoCWorldGenPortal;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 
 import java.util.Random;
 
@@ -17,7 +18,7 @@ public class MoCDirectTeleporter extends Teleporter {
 
     private boolean portalDone;
 
-    public MoCDirectTeleporter(WorldServer par1WorldServer) {
+    public MoCDirectTeleporter(ServerWorld par1WorldServer) {
         super(par1WorldServer);
     }
 

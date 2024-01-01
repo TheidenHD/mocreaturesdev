@@ -13,16 +13,21 @@ import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageHeart;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -33,8 +38,8 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
     private static final DataParameter<Boolean> HAS_EATEN = EntityDataManager.createKey(MoCEntityFishy.class, DataSerializers.BOOLEAN);
     public int gestationtime;
 
-    public MoCEntityFishy(World world) {
-        super(world);
+    public MoCEntityFishy(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(0.5f, 0.3f);
         setAdult(true);
         //setAge(50 + this.rand.nextInt(50));
@@ -42,14 +47,14 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
     }
 
     @Override
-    protected void initEntityAI() {
+    protected void registerGoals() {
         this.goalSelector.addGoal(2, new EntityAIPanicMoC(this, 1.3D));
         this.goalSelector.addGoal(3, new EntityAIFleeFromEntityMoC(this, entity -> (entity.getHeight() > 0.3F || entity.getWidth() > 0.3F), 2.0F, 0.6D, 1.5D));
         this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 1.0D, 80));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
+        return TODO_REPLACE.registerAttributes();
         getEntityAttribute(Attributes.MAX_HEALTH, 3.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.5D);
     }
 
@@ -87,8 +92,8 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(HAS_EATEN, Boolean.FALSE);
     }
 
@@ -127,7 +132,7 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
     public void livingTick() {
         super.livingTick();
 
-        if (!this.isInsideOfMaterial(Material.WATER)) {
+        if (!this.areEyesInFluid(FluidTags.WATER)) {
             this.prevRenderYawOffset = this.renderYawOffset = this.rotationYaw = this.prevRotationYaw;
             this.rotationPitch = this.prevRotationPitch;
         }
@@ -166,8 +171,7 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
                     this.gestationtime++;
                 }
                 if (this.gestationtime % 3 == 0) {
-                    MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageHeart(this.getEntityId()),
-                            new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+                    MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageHeart(this.getEntityId()));
                 }
                 if (this.gestationtime <= 50) {
                     continue;
@@ -215,7 +219,7 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
 
     @Override
     public float rollRotationOffset() {
-        if (!this.isInsideOfMaterial(Material.WATER)) {
+        if (!this.areEyesInFluid(FluidTags.WATER)) {
             return -90F;
         }
         return 0F;
@@ -261,13 +265,13 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
 
     @Override
     public float getAdjustedYOffset() {
-        if (!this.isInsideOfMaterial(Material.WATER)) {
+        if (!this.areEyesInFluid(FluidTags.WATER)) {
             return 0.2F;
         }
         return -0.5F;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.65F;
     }
 }

@@ -9,6 +9,10 @@ import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -19,13 +23,13 @@ import javax.annotation.Nullable;
 
 public class MoCEntityGrizzlyBear extends MoCEntityBear {
 
-    public MoCEntityGrizzlyBear(World world) {
-        super(world);
+    public MoCEntityGrizzlyBear(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(1.125F, 1.57F);
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 40.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 40.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
@@ -78,7 +82,7 @@ public class MoCEntityGrizzlyBear extends MoCEntityBear {
 
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && this.getAge() < 80 && MoCTools.isItemEdibleforCarnivores(stack.getItem())) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
 
             if (!getIsTamed() && !this.world.isRemote) {
                 MoCTools.tameWithName(player, this);
@@ -135,7 +139,7 @@ public class MoCEntityGrizzlyBear extends MoCEntityBear {
         return mate instanceof MoCEntityGrizzlyBear;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.76F;
     }
 }

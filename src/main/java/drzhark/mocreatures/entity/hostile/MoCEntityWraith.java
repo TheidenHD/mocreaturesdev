@@ -10,15 +10,20 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 
@@ -27,22 +32,22 @@ public class MoCEntityWraith extends MoCEntityMob//MoCEntityFlyerMob
 
     public int attackCounter;
 
-    public MoCEntityWraith(World world) {
-        super(world);
+    public MoCEntityWraith(EntityType<? extends MoCEntityWraith> type, World world) {
+        super(type, world);
         this.collidedVertically = false;
-        setSize(0.6F, 2.0F);
+        //setSize(0.6F, 2.0F);
         experienceValue = 5;
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(2, new EntityAIAttackMelee(this, 1.0D, true));
-        this.goalSelector.addGoal(8, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
-        this.targetgoalSelector.addGoal(1, new EntityAINearestAttackableTarget<>(this, PlayerEntity.class, true));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0D, true));
+        this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.0D).createMutableAttribute(Attributes.MAX_HEALTH, 20.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+        return MoCEntityMob.registerAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.0D).createMutableAttribute(Attributes.MAX_HEALTH, 20.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
@@ -51,7 +56,7 @@ public class MoCEntityWraith extends MoCEntityMob//MoCEntityFlyerMob
             int i = this.rand.nextInt(100);
             if (i < 5 && MoCreatures.proxy.easterEggs) {
                 setTypeMoC(2);
-                setCustomNameTag("Scratch");
+                setCustomName(new StringTextComponent("Scratch"));
             } else {
                 setTypeMoC(1);
             }
@@ -107,7 +112,8 @@ public class MoCEntityWraith extends MoCEntityMob//MoCEntityFlyerMob
     }
 
     @Override
-    public void fall(float f, float f1) {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
     }
 
     protected void updateFallState(double y, boolean onGroundIn, Block blockIn, BlockPos pos) {
@@ -133,7 +139,7 @@ public class MoCEntityWraith extends MoCEntityMob//MoCEntityFlyerMob
     private void startArmSwingAttack() {
         if (!this.world.isRemote) {
             this.attackCounter = 1;
-            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 1), new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 1));
         }
     }
 
@@ -160,7 +166,7 @@ public class MoCEntityWraith extends MoCEntityMob//MoCEntityFlyerMob
         return true;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.86F;
     }
 }

@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 
 // Just here for makeshift MIA compatibility
 public class MoCEntityWerewolf extends MoCEntityMob {
-    public MoCEntityWerewolf(World world) {
-        super(world);
+    public MoCEntityWerewolf(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
     }
 }

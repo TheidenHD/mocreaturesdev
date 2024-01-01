@@ -4,9 +4,9 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.hunter.MoCEntitySnake;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.matrixStackIn;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -56,7 +56,7 @@ public class MoCRenderSnake extends MoCRenderMoC<MoCEntitySnake> {
              */
         }
 
-        if (entitysnake.isInsideOfMaterial(Material.WATER)) {
+        if (entitysnake.areEyesInFluid(FluidTags.WATER)) {
             adjustHeight(entitysnake, -0.25F);
         }
 

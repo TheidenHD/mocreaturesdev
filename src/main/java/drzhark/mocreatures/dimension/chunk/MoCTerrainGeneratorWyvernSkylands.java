@@ -9,6 +9,7 @@ import drzhark.mocreatures.init.MoCBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.BlockFlower;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.MobEntity;
@@ -317,7 +318,7 @@ public class MoCTerrainGeneratorWyvernSkylands extends MoCTerrainGenerator {
                 BlockPos snowPos = world.getTopSolidOrLiquidBlock(xzPos);
 
                 if (world.canSnowAt(snowPos, true) && snowPos.getY() > 0 && snowPos.getY() < 128 && world.isAirBlock(snowPos) && world.getBlockState(snowPos.add(0, -1, 0)).getMaterial().isSolid() && world.getBlockState(snowPos.add(0, -1, 0)).getMaterial() != Material.ICE) {
-                    world.setBlockState(snowPos, Blocks.SNOW_LAYER.getDefaultState());
+                    world.setBlockState(snowPos, Blocks.SNOW.getDefaultState());
                 }
             }
         }

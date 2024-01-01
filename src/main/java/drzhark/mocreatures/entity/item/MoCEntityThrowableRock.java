@@ -76,7 +76,7 @@ public class MoCEntityThrowableRock extends Entity {
     }
 
     @Override
-    protected void entityInit() {
+    protected void registerData() {
         this.dataManager.register(BEHAVIOUR_TYPE, 0);
         this.dataManager.register(ROCK_STATE, 0);
         this.dataManager.register(MASTERS_ID, 0);
@@ -104,7 +104,7 @@ public class MoCEntityThrowableRock extends Entity {
 
     @Override
     public boolean canBeCollidedWith() {
-        return !this.isDead;
+        return !this.removed;
     }
 
     @Override
@@ -151,7 +151,7 @@ public class MoCEntityThrowableRock extends Entity {
             if (distXZToMaster < 1.5F && master instanceof MoCEntityGolem) {
                 ((MoCEntityGolem) master).receiveRock(this.getState());
                 this.setBehavior(0);
-                this.setDead();
+                this.remove(keepData);
             }
 
             double summonedSpeed = this.acceleration;
@@ -231,7 +231,7 @@ public class MoCEntityThrowableRock extends Entity {
             entityitem.setAgeToCreativeDespawnTime();
             this.world.addEntity(entityitem);
         }
-        this.setDead();
+        this.remove(keepData);
     }
 
     private Entity getMaster() {

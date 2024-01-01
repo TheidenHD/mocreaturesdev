@@ -17,7 +17,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 import net.minecraftforge.common.DimensionManager;
 
 import java.util.ArrayList;
@@ -84,7 +84,7 @@ public class CommandMoCTP extends CommandBase {
                 CompoundNBT nbt = ownerPetData.getTamedList().getCompound(i);
                 if (nbt.contains("PetId") && nbt.getInt("PetId") == petId) {
                     String petName = nbt.getString("Name");
-                    WorldServer world = DimensionManager.getWorld(nbt.getInt("Dimension"));
+                    ServerWorld world = DimensionManager.getWorld(nbt.getInt("Dimension"));
                     if (!teleportLoadedPet(world, player, petId, petName, sender)) {
                         double getPosX () = nbt.getList("Pos", 6).getDouble(0);
                         double getPosY () = nbt.getList("Pos", 6).getDouble(1);
@@ -121,7 +121,7 @@ public class CommandMoCTP extends CommandBase {
         return CommandMoCTP.commands;
     }
 
-    public boolean teleportLoadedPet(WorldServer world, PlayerEntity player, int petId, String petName, ICommandSender par1ICommandSender) {
+    public boolean teleportLoadedPet(ServerWorld world, PlayerEntity player, int petId, String petName, ICommandSender par1ICommandSender) {
         for (int j = 0; j < world.loadedEntityList.size(); j++) {
             Entity entity = world.loadedEntityList.get(j);
             // search for entities that are MoCEntityAnimal's
@@ -148,7 +148,7 @@ public class CommandMoCTP extends CommandBase {
                             if (entity.getRidingEntity() != null) {
                                 entity.getRidingEntity().dismountRidingEntity();
                             }
-                            entity.isDead = true;
+                            entity.removed = true;
                             world.resetUpdateEntityTick();
                             DimensionManager.getWorld(player.dimension).resetUpdateEntityTick();
                         }

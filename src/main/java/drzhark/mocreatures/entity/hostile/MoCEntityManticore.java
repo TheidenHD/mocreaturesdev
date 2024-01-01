@@ -8,16 +8,18 @@ import drzhark.mocreatures.entity.MoCEntityMob;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.monster.EntityIronGolem;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 public class MoCEntityManticore extends MoCEntityMob {
 
@@ -27,20 +29,24 @@ public class MoCEntityManticore extends MoCEntityMob {
     private boolean isPoisoning;
     private int poisontimer;
 
-    public MoCEntityManticore(World world) {
-        super(world);
-        setSize(1.35F, 1.45F);
+    public MoCEntityManticore(EntityType<? extends MoCEntityManticore> type, World world) {
+        super(type, world);
+        //setSize(1.35F, 1.45F);
         experienceValue = 5;
     }
 
     @Override
-    protected void initEntityAI() {
+    protected void registerGoals() {
         this.goalSelector.addGoal(2, new MoCEntityManticore.AIManticoreAttack(this));
-        this.goalSelector.addGoal(6, new EntityAILookIdle(this));
-        this.goalSelector.addGoal(8, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
-        this.targetgoalSelector.addGoal(1, new EntityAIHurtByTarget(this, false));
-        this.targetgoalSelector.addGoal(2, new MoCEntityManticore.AIManticoreTarget<>(this, PlayerEntity.class));
-        this.targetgoalSelector.addGoal(3, new MoCEntityManticore.AIManticoreTarget<>(this, EntityIronGolem.class));
+        this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new MoCEntityManticore.AIManticoreTarget<>(this, PlayerEntity.class));
+        this.targetSelector.addGoal(3, new MoCEntityManticore.AIManticoreTarget<>(this, IronGolemEntity.class));
+    }
+
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MoCEntityMob.registerAttributes().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.9F);
     }
 
     @Override
@@ -48,14 +54,9 @@ public class MoCEntityManticore extends MoCEntityMob {
         return true;
     }
 
-    // Flying Speed
     @Override
-    public float getMoveSpeed() {
-        return 0.9F;
-    }
-
-    @Override
-    public void fall(float f, float f1) {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
     }
 
     public boolean getIsRideable() {
@@ -173,8 +174,7 @@ public class MoCEntityManticore extends MoCEntityMob {
         if (this.isFlyer() && this.wingFlapCounter == 0) {
             this.wingFlapCounter = 1;
             if (!this.world.isRemote) {
-                MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 3),
-                        new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 3));
             }
         }
     }
@@ -196,8 +196,7 @@ public class MoCEntityManticore extends MoCEntityMob {
 
     public void setPoisoning(boolean flag) {
         if (flag && !this.world.isRemote) {
-            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 0),
-                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 0));
         }
 
         this.isPoisoning = flag;
@@ -230,11 +229,11 @@ public class MoCEntityManticore extends MoCEntityMob {
         return 1.4F;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.945F;
     }
 
-    static class AIManticoreAttack extends EntityAIAttackMelee {
+    static class AIManticoreAttack extends MeleeAttackGoal {
         public AIManticoreAttack(MoCEntityManticore manticore) {
             super(manticore, 1.0D, true);
         }
@@ -257,14 +256,14 @@ public class MoCEntityManticore extends MoCEntityMob {
         }
     }
 
-    static class AIManticoreTarget<T extends LivingEntity> extends EntityAINearestAttackableTarget<T> {
+    static class AIManticoreTarget<T extends LivingEntity> extends NearestAttackableTargetGoal<T> {
         public AIManticoreTarget(MoCEntityManticore manticore, Class<T> classTarget) {
             super(manticore, classTarget, true);
         }
 
         @Override
         public boolean shouldExecute() {
-            float f = this.taskOwner.getBrightness();
+            float f = this.goalOwner.getBrightness();
             return f < 0.5F && super.shouldExecute();
         }
     }

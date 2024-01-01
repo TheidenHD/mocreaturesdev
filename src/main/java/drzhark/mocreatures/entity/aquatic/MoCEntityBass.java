@@ -12,8 +12,8 @@ import javax.annotation.Nullable;
 
 public class MoCEntityBass extends MoCEntityMediumFish {
 
-    public MoCEntityBass(World world) {
-        super(world);
+    public MoCEntityBass(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         this.setTypeMoC(3);
     }
 

@@ -10,6 +10,7 @@ import drzhark.mocreatures.network.message.MoCMessageEntityJump;
 import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.gameevent.InputEvent;

@@ -7,6 +7,7 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.init.MoCBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFalling;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.util.math.BlockPos;

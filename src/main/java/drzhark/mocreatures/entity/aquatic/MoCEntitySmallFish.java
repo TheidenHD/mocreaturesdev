@@ -8,15 +8,21 @@ import drzhark.mocreatures.entity.ai.EntityAIFleeFromEntityMoC;
 import drzhark.mocreatures.entity.ai.EntityAIPanicMoC;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class MoCEntitySmallFish extends MoCEntityTameableAquatic {
 
     public static final String[] fishNames = {"Anchovy", "Angelfish", "Angler", "Clownfish", "Goldfish", "Hippo Tang", "Mandarinfish"};
 
-    public MoCEntitySmallFish(World world) {
-        super(world);
+    public MoCEntitySmallFish(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(0.5f, 0.3f);
         // TODO: Make hitboxes adjust depending on size
         //setAge(70 + this.rand.nextInt(30));
@@ -50,14 +56,14 @@ public class MoCEntitySmallFish extends MoCEntityTameableAquatic {
     }
 
     @Override
-    protected void initEntityAI() {
+    protected void registerGoals() {
         this.goalSelector.addGoal(1, new EntityAIPanicMoC(this, 1.3D));
         this.goalSelector.addGoal(2, new EntityAIFleeFromEntityMoC(this, entity -> (entity.getHeight() > 0.3F || entity.getWidth() > 0.3F), 2.0F, 0.6D, 1.5D));
         this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 1.0D, 80));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
+        return TODO_REPLACE.registerAttributes();
         getEntityAttribute(Attributes.MAX_HEALTH, 4.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.5D);
     }
 
@@ -189,7 +195,7 @@ public class MoCEntitySmallFish extends MoCEntityTameableAquatic {
         return 0F;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.45F;
     }
 }

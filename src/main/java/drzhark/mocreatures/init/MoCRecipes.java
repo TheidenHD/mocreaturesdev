@@ -13,8 +13,7 @@ import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.ObjectHolder;
 
 @ObjectHolder(MoCConstants.MOD_ID)
 public class MoCRecipes {

@@ -10,9 +10,12 @@ import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -20,7 +23,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 
@@ -29,19 +32,19 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
     public int attackCounterLeft;
     public int attackCounterRight;
 
-    public MoCEntitySilverSkeleton(World world) {
-        super(world);
+    public MoCEntitySilverSkeleton(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         this.texture = "silver_skeleton.png";
         setSize(0.6F, 2.125F);
         experienceValue = 5 + this.world.rand.nextInt(4);
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(0, new EntityAISwimming(this));
-        this.goalSelector.addGoal(2, new EntityAIAttackMelee(this, 1.0D, true));
-        this.goalSelector.addGoal(8, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
-        this.targetgoalSelector.addGoal(1, new EntityAINearestAttackableTarget<>(this, PlayerEntity.class, true));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0D, true));
+        this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
@@ -87,10 +90,10 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
 
             if (leftArmW) {
                 this.attackCounterLeft = 1;
-                MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 1), new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 1));
             } else {
                 this.attackCounterRight = 1;
-                MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 2), new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 2));
             }
         }
     }
@@ -131,7 +134,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
 
     // TODO: Add unique step sound
     @Override
-    protected void playStepSound(BlockPos pos, Block block) {
+    protected void playStepSound(BlockPos pos, BlockState block) {
         this.playSound(SoundEvents.ENTITY_SKELETON_STEP, 0.15F, 1.0F);
     }
 
@@ -145,7 +148,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
         return true;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.905F;
     }
 }

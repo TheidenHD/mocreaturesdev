@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -74,23 +75,23 @@ public class MoCItemSword extends SwordItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (MoCreatures.proxy.weaponEffects) {
             switch (this.specialWeaponType) {
                 case 1: // Poison 2
-                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault1").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault1").setStyle(Style.EMPTY.setFormatting(TextFormatting.BLUE)));
                     break;
                 case 2: // Slowness
-                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault2").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault2").setStyle(Style.EMPTY.setFormatting(TextFormatting.BLUE)));
                     break;
                 case 3: // Fire
-                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault3").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault3").setStyle(Style.EMPTY.setFormatting(TextFormatting.BLUE)));
                     break;
                 case 4: // Weakness (Nausea for players)
-                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault4").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault4").setStyle(Style.EMPTY.setFormatting(TextFormatting.BLUE)));
                     break;
                 case 5: // Wither (Blindness for players)
-                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault5").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault5").setStyle(Style.EMPTY.setFormatting(TextFormatting.BLUE)));
                     break;
                 default:
                     break;

@@ -13,17 +13,22 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.potion.Effects;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -48,8 +53,8 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
     private int earcount; // 20 to 40 default = 30
     private int eatcount;
 
-    public MoCEntityGoat(World world) {
-        super(world);
+    public MoCEntityGoat(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         // TODO: Separate hitbox for female goats
         setSize(0.8F, 0.9F);
         setAdult(true);
@@ -57,23 +62,23 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(1, new EntityAISwimming(this));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new SwimGoal(this));
         this.goalSelector.addGoal(2, new EntityAIPanicMoC(this, 1.0D));
         this.goalSelector.addGoal(4, new EntityAIFollowAdult(this, 1.0D));
-        this.goalSelector.addGoal(5, new EntityAIAttackMelee(this, 1.0D, true));
+        this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(6, new EntityAIWanderMoC2(this, 1.0D));
-        this.goalSelector.addGoal(7, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 8.0F));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 10.0D).createMutableAttribute(Attributes.ARMOR, 1.0D);
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 10.0D).createMutableAttribute(Attributes.ARMOR, 1.0D);
         this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 2.5D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(IS_CHARGING, Boolean.FALSE);
         this.dataManager.register(IS_UPSET, Boolean.FALSE);
     }
@@ -271,7 +276,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
                         MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EATING);
                         setEating(true);
 
-                        entityitem.setDead();
+                        entityitem.remove(keepData);
                         return;
                     }
                 }
@@ -492,7 +497,8 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void fall(float f, float f1) {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
     }
 
     @Override
@@ -513,13 +519,13 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
                 return false;
             }
 
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             player.addItemStackToInventory(new ItemStack(Items.MILK_BUCKET));
             return true;
         }
 
         if (getIsTamed() && !stack.isEmpty() && (MoCTools.isItemEdible(stack.getItem()))) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             this.setHealth(getMaxHealth());
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EATING);
             return true;
@@ -578,7 +584,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
 
     // TODO: Add unique step sound
     @Override
-    protected void playStepSound(BlockPos pos, Block block) {
+    protected void playStepSound(BlockPos pos, BlockState block) {
         this.playSound(SoundEvents.ENTITY_SHEEP_STEP, 0.15F, 1.0F);
     }
 
@@ -601,7 +607,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         return 0.15F;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.945F;
     }
 }

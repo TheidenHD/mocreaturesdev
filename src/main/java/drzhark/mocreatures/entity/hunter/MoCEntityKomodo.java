@@ -15,7 +15,13 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemSaddle;
 import net.minecraft.item.ItemStack;
@@ -24,12 +30,13 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 
@@ -41,8 +48,8 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
     public int mouthCounter;
     private int sitCounter;
 
-    public MoCEntityKomodo(World world) {
-        super(world);
+    public MoCEntityKomodo(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(1.25F, 0.9F);
         this.texture = "komodo_dragon.png";
         setTamed(false);
@@ -60,24 +67,24 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void initEntityAI() {
+    protected void registerGoals() {
         this.goalSelector.addGoal(2, new EntityAIPanicMoC(this, 1.1D));
         this.goalSelector.addGoal(3, new EntityAIFleeFromPlayer(this, 1.1D, 4D));
-        this.goalSelector.addGoal(4, new EntityAIAttackMelee(this, 1.0D, true));
+        this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(7, new EntityAIWanderMoC2(this, 0.9D));
-        this.goalSelector.addGoal(9, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
-        //this.targetgoalSelector.addGoal(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
-        this.targetgoalSelector.addGoal(2, new EntityAIHunt<>(this, PlayerEntity.class, true));
+        this.goalSelector.addGoal(9, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        //this.targetSelector.addGoal(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
+        this.targetSelector.addGoal(2, new EntityAIHunt<>(this, PlayerEntity.class, true));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 25.0D).createMutableAttribute(Attributes.ARMOR, 5.0D);
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 25.0D).createMutableAttribute(Attributes.ARMOR, 5.0D);
         this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.5D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.18D);
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(RIDEABLE, Boolean.FALSE);
         // rideable: 0 nothing, 1 saddle
     }
@@ -171,8 +178,7 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
     private void sit() {
         this.sitCounter = 1;
         if (!this.world.isRemote) {
-            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 0),
-                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 0));
         }
         this.getNavigator().clearPath();
     }
@@ -204,7 +210,7 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && getIsTamed() && (getAge() > 90 || getIsAdult()) && !getIsRideable()
                 && (stack.getItem() instanceof ItemSaddle || stack.getItem() == MoCItems.horsesaddle)) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             setRideable(true);
             return true;
         }
@@ -350,7 +356,7 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
         return this.isInWater();
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return !this.isMovementCeased() ? this.getHeight() * 0.7F : this.getHeight() * 0.365F;
     }
 }

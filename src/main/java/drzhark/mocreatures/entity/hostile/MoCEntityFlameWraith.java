@@ -6,9 +6,12 @@ package drzhark.mocreatures.entity.hostile;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.util.ParticleTypes;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -20,17 +23,16 @@ public class MoCEntityFlameWraith extends MoCEntityWraith implements IMob {
 
     protected int burningTime;
 
-    public MoCEntityFlameWraith(World world) {
-        super(world);
+    public MoCEntityFlameWraith(EntityType<? extends MoCEntityFlameWraith> type, World world) {
+        super(type, world);
         this.texture = MoCreatures.proxy.alphaWraithEyes ? "wraith_flame_alpha.png" : "wraith_flame.png";
-        this.isImmuneToFire = true;
+        //this.isImmuneToFire = true;
         this.burningTime = 30;
         experienceValue = 7;
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
-        getEntityAttribute(Attributes.MAX_HEALTH, 25.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.0D);
+        return MoCEntityWraith.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 25.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.0D);
     }
 
     @Nullable
@@ -62,8 +64,8 @@ public class MoCEntityFlameWraith extends MoCEntityWraith implements IMob {
     }*/
 
     @Override
-    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
-        if (!this.world.isRemote && !this.world.provider.doesWaterVaporize()) {
+    public void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
+        if (!this.world.isRemote && !this.world.getDimensionType().isUltrawarm()) {
             entityLivingBaseIn.setFire(this.burningTime);
         }
         super.applyEnchantments(entityLivingBaseIn, entityIn);

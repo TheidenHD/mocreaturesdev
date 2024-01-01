@@ -111,7 +111,7 @@ public class ItemBuilderHammer extends MoCItem {
             Item itemTemp = slotStack.getItem();
             int metadata = slotStack.getItemDamage();
             if (itemTemp instanceof ItemBlock) {
-                if (remove && !entityplayer.capabilities.isCreativeMode) {
+                if (remove && !entityplayer.abilities.isCreativeMode) {
                     slotStack.shrink(1);
                     if (slotStack.isEmpty()) {
                         entityplayer.inventory.setInventorySlotContents(y, ItemStack.EMPTY);

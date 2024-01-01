@@ -19,7 +19,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 import net.minecraftforge.common.DimensionManager;
 
 import java.util.ArrayList;
@@ -74,7 +74,7 @@ public class CommandMoCPets extends CommandBase {
         UUID playerId = player.getUniqueID();
         // search for tamed entity
         for (int dimension : DimensionManager.getIDs()) {
-            WorldServer world = DimensionManager.getWorld(dimension);
+            ServerWorld world = DimensionManager.getWorld(dimension);
             for (int j = 0; j < world.loadedEntityList.size(); j++) {
                 Entity entity = world.loadedEntityList.get(j);
                 if (IMoCTameable.class.isAssignableFrom(entity.getClass())) {
@@ -154,7 +154,7 @@ public class CommandMoCPets extends CommandBase {
         return CommandMoCPets.commands;
     }
 
-    public boolean teleportLoadedPet(WorldServer world, ServerPlayerEntity player, int petId, String petName, ICommandSender par1ICommandSender) {
+    public boolean teleportLoadedPet(ServerWorld world, ServerPlayerEntity player, int petId, String petName, ICommandSender par1ICommandSender) {
         for (int j = 0; j < world.loadedEntityList.size(); j++) {
             Entity entity = world.loadedEntityList.get(j);
             // search for entities that are MoCEntityAnimal's
@@ -181,7 +181,7 @@ public class CommandMoCPets extends CommandBase {
                             if (entity.getRidingEntity() != null) {
                                 entity.getRidingEntity().dismountRidingEntity();
                             }
-                            entity.isDead = true;
+                            entity.removed = true;
                             world.resetUpdateEntityTick();
                             DimensionManager.getWorld(player.dimension).resetUpdateEntityTick();
                         }

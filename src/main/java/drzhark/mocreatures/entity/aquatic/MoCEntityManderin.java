@@ -12,8 +12,8 @@ import javax.annotation.Nullable;
 
 public class MoCEntityManderin extends MoCEntitySmallFish {
 
-    public MoCEntityManderin(World world) {
-        super(world);
+    public MoCEntityManderin(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         this.setTypeMoC(7);
     }
 

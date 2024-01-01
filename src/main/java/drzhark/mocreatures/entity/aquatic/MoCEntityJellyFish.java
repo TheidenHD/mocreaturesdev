@@ -8,12 +8,17 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
 import drzhark.mocreatures.init.MoCLootTables;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
@@ -24,8 +29,8 @@ public class MoCEntityJellyFish extends MoCEntityTameableAquatic {
     private static final DataParameter<Boolean> GLOWS = EntityDataManager.createKey(MoCEntityJellyFish.class, DataSerializers.BOOLEAN);
     private int poisoncounter;
 
-    public MoCEntityJellyFish(World world) {
-        super(world);
+    public MoCEntityJellyFish(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(0.45F, 0.575F);
         // TODO: Make hitboxes adjust depending on size
         //setAge(50 + (this.rand.nextInt(50)));
@@ -33,12 +38,12 @@ public class MoCEntityJellyFish extends MoCEntityTameableAquatic {
     }
 
     @Override
-    protected void initEntityAI() {
+    protected void registerGoals() {
         this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 0.5D, 120));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
+        return TODO_REPLACE.registerAttributes();
         getEntityAttribute(Attributes.MAX_HEALTH, 6.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.15D);
     }
 
@@ -50,8 +55,8 @@ public class MoCEntityJellyFish extends MoCEntityTameableAquatic {
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(GLOWS, Boolean.FALSE);
     }
 
@@ -158,7 +163,7 @@ public class MoCEntityJellyFish extends MoCEntityTameableAquatic {
         return true;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.85F;
     }
 }

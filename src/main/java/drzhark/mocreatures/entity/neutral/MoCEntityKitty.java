@@ -16,27 +16,31 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.EntityAIWanderAvoidWater;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.WaterAvoidingRandomWalkingGoal;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.Path;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Random;
 
 public class MoCEntityKitty extends MoCEntityTameableAnimal {
 
@@ -54,8 +58,8 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
     private boolean onTree;
     private ItemEntity itemAttackTarget;
 
-    public MoCEntityKitty(World world) {
-        super(world);
+    public MoCEntityKitty(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(0.8F, 0.8F);
         setAdult(true);
         setAge(40);
@@ -66,17 +70,17 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(1, new EntityAISwimming(this));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new SwimGoal(this));
         this.goalSelector.addGoal(2, new EntityAIPanicMoC(this, 1.0D));
         this.goalSelector.addGoal(4, new EntityAIFollowAdult(this, 1.0D));
-        this.goalSelector.addGoal(5, new EntityAIAttackMelee(this, 1.0D, true));
-        this.goalSelector.addGoal(6, new EntityAIWanderAvoidWater(this, 1.0D));
-        this.goalSelector.addGoal(7, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
+        this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
+        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 8.0F));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 10.0D);
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 10.0D);
         this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 2.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
@@ -112,8 +116,8 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(SITTING, Boolean.FALSE);
         this.dataManager.register(HUNGRY, Boolean.FALSE);
         this.dataManager.register(EMO, Boolean.FALSE);
@@ -195,7 +199,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.8F;
     }
 
@@ -261,8 +265,8 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void fall(float f, float f1) {
-        // No fall damage
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
     }
 
     @Override
@@ -424,7 +428,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                 MoCTools.tameWithName(player, this);
             }
             if (getIsTamed()) {
-                if (!player.capabilities.isCreativeMode) stack.shrink(1);
+                if (!player.abilities.isCreativeMode) stack.shrink(1);
                 changeKittyState(3);
                 this.setHealth(getMaxHealth());
                 return true;
@@ -432,14 +436,14 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
             return false;
         }
         if (getKittyState() == 7 && !stack.isEmpty() && (stack.getItem() == Items.CAKE || stack.getItem() == Items.FISH || stack.getItem() == Items.COOKED_FISH)) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EATING);
             this.setHealth(getMaxHealth());
             changeKittyState(9);
             return true;
         }
         if (getKittyState() == 11 && !stack.isEmpty() && stack.getItem() == MoCItems.woolball) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             setKittyState(8);
             if (!this.world.isRemote) {
                 ItemEntity entityitem = new ItemEntity(this.world, this.getPosX(), this.getPosY() + 1.0D, this.getPosZ(), new ItemStack(MoCItems.woolball, 1));
@@ -454,7 +458,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
             return true;
         }
         if (getKittyState() == 13 && !stack.isEmpty() && stack.getItem() == Items.FISH || stack.getItem() == Items.COOKED_FISH) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EATING);
             this.setHealth(getMaxHealth());
             changeKittyState(7);
@@ -554,7 +558,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                             setPathToEntity(entityItem, f);
                         }
                         if (f < 2.0F && this.deathTime < 1) {
-                            entityItem.setDead();
+                            entityItem.remove(keepData);
                             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EATING);
                             setHungry(false);
                         }
@@ -1066,16 +1070,16 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void setDead() {
+    public void remove(keepData) {
         if (this.world.isRemote || getKittyState() <= 2 || getHealth() <= 0) {
-            super.setDead();
+            super.remove(keepData);
         }
     }
 
     public void swingArm() {
         // To synchronize, uses the packet handler to invoke the same method in the clients
         if (!this.world.isRemote) {
-            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 0), new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 0));
         }
         if (!getIsSwinging()) {
             setSwinging(true);
@@ -1096,8 +1100,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
         return getKittyState() != 13;
     }
 
-    @Override
-    public boolean getCanSpawnHere() {
+    public static boolean getCanSpawnHere(EntityType<TODO_REPLACE> type, IWorld world, SpawnReason reason, BlockPos pos, Random randomIn) {
         if (MoCreatures.proxy.kittyVillageChance <= 0) return super.getCanSpawnHere();
         BlockPos villagePos = world.findNearestStructure("Village", getPosition(), true);
         if (villagePos != null) {

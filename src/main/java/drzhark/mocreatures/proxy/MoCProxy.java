@@ -13,6 +13,7 @@ import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.BiomeDictionary;
@@ -84,7 +85,7 @@ public class MoCProxy implements IGuiHandler {
     public int ostrichEggDropChance;
     public int particleFX;
     public int rareItemDropChance;
-    public int wyvernDimension;
+    public RegistryKey<World> wyvernDimension;
     public int wyvernEggDropChance;
     public short ogreAttackRange;
 

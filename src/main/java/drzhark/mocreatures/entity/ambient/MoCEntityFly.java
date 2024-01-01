@@ -7,8 +7,10 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -20,8 +22,8 @@ public class MoCEntityFly extends MoCEntityInsect {
 
     private int soundCount;// = 50;
 
-    public MoCEntityFly(World world) {
-        super(world);
+    public MoCEntityFly(EntityType<? extends MoCEntityFly> type, World world) {
+        super(type, world);
         this.texture = "fly.png";
     }
 

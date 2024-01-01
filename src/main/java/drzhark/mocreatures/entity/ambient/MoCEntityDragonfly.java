@@ -8,12 +8,18 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -22,24 +28,24 @@ public class MoCEntityDragonfly extends MoCEntityInsect {
 
     private int soundCount;
 
-    public MoCEntityDragonfly(World world) {
-        super(world);
+    public MoCEntityDragonfly(EntityType<? extends MoCEntityDragonfly> type, World world) {
+        super(type, world);
         this.texture = "dragonflya.png";
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.ARMOR, 1.0D);
+        return MoCEntityInsect.registerAttributes().createMutableAttribute(Attributes.ARMOR, 1.0D);
     }
 
     @Override
-    public ILivingEntityData onInitialSpawn(DifficultyInstance difficulty, ILivingEntityData par1EntityLivingData) {
-        if (this.world.provider.getDimension() == MoCreatures.proxy.wyvernDimension) this.enablePersistence();
-        return super.onInitialSpawn(difficulty, par1EntityLivingData);
+    public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
+        if (this.world.getDimensionKey() == MoCreatures.proxy.wyvernDimension) this.enablePersistence();
+        return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
     @Override
-    protected boolean canDespawn() {
-        return this.world.provider.getDimension() != MoCreatures.proxy.wyvernDimension;
+    public boolean canDespawn(double distanceToClosestPlayer) {
+        return this.world.getDimensionKey() != MoCreatures.proxy.wyvernDimension;
     }
 
     @Override

@@ -18,7 +18,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -112,8 +112,7 @@ public class CommandMoCSpawn extends CommandBase {
             }
             player.world.addEntity(specialEntity);
             if (!player.world.isRemote) {
-                MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAppear(specialEntity.getEntityId()),
-                        new TargetPoint(player.world.provider.getDimensionType().getId(), player.getPosX(), player.getPosY(), player.getPosZ(), 64));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(player.getPosX(), player.getPosY(), player.getPosZ(), 64, player.world.getDimensionKey())), new MoCMessageAppear(specialEntity.getEntityId()));
             }
             MoCTools.playCustomSound(specialEntity, MoCSoundEvents.ENTITY_GENERIC_MAGIC_APPEAR);
         } else {

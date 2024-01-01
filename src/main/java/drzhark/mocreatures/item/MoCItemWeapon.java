@@ -6,7 +6,6 @@ package drzhark.mocreatures.item;
 import com.google.common.collect.Multimap;
 import drzhark.mocreatures.MoCreatures;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWeb;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -23,13 +22,13 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -171,23 +170,23 @@ public class MoCItemWeapon extends MoCItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (MoCreatures.proxy.weaponEffects) {
             switch (this.specialWeaponType) {
                 case 1: // Poison 2
-                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault1").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault1").setStyle(Style.EMPTY.setFormatting(TextFormatting.BLUE)));
                     break;
                 case 2: // Slowness
-                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault2").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault2").setStyle(Style.EMPTY.setFormatting(TextFormatting.BLUE)));
                     break;
                 case 3: // Fire
-                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault3").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault3").setStyle(Style.EMPTY.setFormatting(TextFormatting.BLUE)));
                     break;
                 case 4: // Weakness (Nausea for players)
-                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault4").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault4").setStyle(Style.EMPTY.setFormatting(TextFormatting.BLUE)));
                     break;
                 case 5: // Wither (Blindness for players)
-                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault5").setStyle(new Style().setColor(TextFormatting.BLUE)).getFormattedText());
+                    tooltip.add(new TranslationTextComponent("info.mocreatures.stingdefault5").setStyle(Style.EMPTY.setFormatting(TextFormatting.BLUE)));
                     break;
                 default:
                     break;

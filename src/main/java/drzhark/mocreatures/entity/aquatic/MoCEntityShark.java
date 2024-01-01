@@ -11,9 +11,13 @@ import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.passive.EntityWolf;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.util.DamageSource;
@@ -25,8 +29,8 @@ import java.util.List;
 
 public class MoCEntityShark extends MoCEntityTameableAquatic {
 
-    public MoCEntityShark(World world) {
-        super(world);
+    public MoCEntityShark(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         this.texture = "shark.png";
         setSize(1.65F, 0.9F);
         setAdult(true);
@@ -37,21 +41,21 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(2, new EntityAIAttackMelee(this, 1.0D, true));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 1.0D, 30));
-        this.targetgoalSelector.addGoal(2, new EntityAINearestAttackableTarget<>(this, PlayerEntity.class, true));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
+        return TODO_REPLACE.registerAttributes();
         getEntityAttribute(Attributes.MAX_HEALTH, 30.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.55D);
         this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.0D).createMutableAttribute(Attributes.FOLLOW_RANGE, 32.0D);
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
     }
 
     @Override
@@ -101,7 +105,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
         LivingEntity entityliving = null;
         List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(d));
         for (Entity o : list) {
-            if (!(o instanceof LivingEntity) || (o instanceof MoCEntityAquatic) || (o instanceof MoCEntityEgg) || (o instanceof PlayerEntity) || ((o instanceof EntityWolf) && !(MoCreatures.proxy.attackWolves)) || ((o instanceof MoCEntityHorse) && !(MoCreatures.proxy.attackHorses))) {
+            if (!(o instanceof LivingEntity) || (o instanceof MoCEntityAquatic) || (o instanceof MoCEntityEgg) || (o instanceof PlayerEntity) || ((o instanceof WolfEntity) && !(MoCreatures.proxy.attackWolves)) || ((o instanceof MoCEntityHorse) && !(MoCreatures.proxy.attackHorses))) {
                 continue;
             } else {
                 if ((o instanceof MoCEntityDolphin)) {
@@ -131,10 +135,10 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public void setDead() {
+    public void remove(keepData) {
         if (!this.world.isRemote && getIsTamed() && (getHealth() > 0)) {
         } else {
-            super.setDead();
+            super.remove(keepData);
         }
     }
 
@@ -177,7 +181,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
         return true;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.61F;
     }
 }

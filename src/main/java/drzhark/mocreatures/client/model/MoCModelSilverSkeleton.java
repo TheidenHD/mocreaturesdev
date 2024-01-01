@@ -7,15 +7,13 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.hostile.MoCEntitySilverSkeleton;
 import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelSilverSkeleton<T extends Entity> extends EntityModel<T> {
+public class MoCModelSilverSkeleton<T extends MoCEntitySilverSkeleton> extends EntityModel<T> {
 
     private final float radianF = 57.29578F;
     ModelRenderer Head;
@@ -139,7 +137,7 @@ public class MoCModelSilverSkeleton<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
+        super.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         MoCEntitySilverSkeleton samurai = (MoCEntitySilverSkeleton) entity;
         boolean sprinting = samurai.isSprinting();
         this.leftAttack = samurai.attackCounterLeft;
@@ -165,7 +163,7 @@ public class MoCModelSilverSkeleton<T extends Entity> extends EntityModel<T> {
         matrixStackIn.pop();
     }
 
-    private void renderParts(float f5) {
+    private void renderParts(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Back.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);

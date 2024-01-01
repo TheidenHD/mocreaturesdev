@@ -7,6 +7,11 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityAmbient;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -19,13 +24,13 @@ public class MoCEntityCricket extends MoCEntityAmbient {
     private int jumpCounter;
     private int soundCounter;
 
-    public MoCEntityCricket(World world) {
-        super(world);
-        setSize(0.4F, 0.3F);
+    public MoCEntityCricket(EntityType<? extends MoCEntityCricket> type, World world) {
+        super(type, world);
+        //setSize(0.4F, 0.3F);
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 4.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.ARMOR, 1.0D);
+        return MoCEntityAmbient.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 4.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.ARMOR, 1.0D);
     }
 
     @Override
@@ -89,9 +94,7 @@ public class MoCEntityCricket extends MoCEntityAmbient {
         if (!this.world.isRemote) {
             if (onGround && ((getMotion().getX() > 0.05D) || (getMotion().getZ() > 0.05D) || (getMotion().getX() < -0.05D) || (getMotion().getZ() < -0.05D)))
                 if (this.jumpCounter == 0) {
-                    this.getMotion().getY() = 0.45D;
-                    this.getMotion().getX() *= 5D;
-                    this.getMotion().getZ() *= 5D;
+                    this.setMotion(this.getMotion().getX() * 5D, 0.45D, this.getMotion().getZ() * 5D);
                     this.jumpCounter = 1;
                 }
         }
@@ -106,7 +109,7 @@ public class MoCEntityCricket extends MoCEntityAmbient {
     }
 
     @Override
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return 0.15F;
     }
 }

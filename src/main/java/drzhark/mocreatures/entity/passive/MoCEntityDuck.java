@@ -8,10 +8,16 @@ import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -26,22 +32,22 @@ public class MoCEntityDuck extends MoCEntityAnimal {
     public float field_70888_h;
     public float field_70889_i = 1.0F;
 
-    public MoCEntityDuck(World world) {
-        super(world);
+    public MoCEntityDuck(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         this.texture = "duck.png";
         setSize(0.4F, 0.7F);
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(0, new EntityAISwimming(this));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EntityAIPanic(this, 1.4D));
         this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 1.0D));
-        this.goalSelector.addGoal(6, new EntityAIWatchClosest(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 6.0F));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 4.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 4.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     // TODO: Fix death sound
@@ -100,10 +106,11 @@ public class MoCEntityDuck extends MoCEntityAnimal {
     }
 
     @Override
-    public void fall(float f, float f1) {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.945F;
     }
 }

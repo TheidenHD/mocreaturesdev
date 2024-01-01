@@ -5,6 +5,10 @@ package drzhark.mocreatures.entity.aquatic;
 
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCLootTables;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -12,8 +16,8 @@ import javax.annotation.Nullable;
 
 public class MoCEntityMantaRay extends MoCEntityRay {
 
-    public MoCEntityMantaRay(World world) {
-        super(world);
+    public MoCEntityMantaRay(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(1.4F, 0.4F);
         // TODO: Make hitboxes adjust depending on size
         //setAge(80 + (this.rand.nextInt(100)));
@@ -21,7 +25,7 @@ public class MoCEntityMantaRay extends MoCEntityRay {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
+        return TODO_REPLACE.registerAttributes();
         getEntityAttribute(Attributes.MAX_HEALTH, 20.0D);
     }
 
@@ -45,7 +49,7 @@ public class MoCEntityMantaRay extends MoCEntityRay {
         return true;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.5875F;
     }
 }

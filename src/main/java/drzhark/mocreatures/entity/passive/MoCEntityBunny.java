@@ -10,16 +10,19 @@ import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
@@ -38,8 +41,8 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     private int bunnyReproduceTickerB;
     private int jumpTimer;
 
-    public MoCEntityBunny(World world) {
-        super(world);
+    public MoCEntityBunny(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setAdult(true);
         setTamed(false);
         setAge(50 + this.rand.nextInt(15));
@@ -52,23 +55,23 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(0, new EntityAISwimming(this));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EntityAIFollowOwnerPlayer(this, 0.8D, 6F, 5F));
         this.goalSelector.addGoal(2, new EntityAIPanicMoC(this, 1.0D));
         this.goalSelector.addGoal(3, new EntityAIFleeFromPlayer(this, 1.0D, 4D));
         this.goalSelector.addGoal(4, new EntityAIFollowAdult(this, 1.0D));
         this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 0.8D));
-        this.goalSelector.addGoal(6, new EntityAIWatchClosest(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 6.0F));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 4.0D).createMutableAttribute(Attributes.ARMOR, 1.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.35D);
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 4.0D).createMutableAttribute(Attributes.ARMOR, 1.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.35D);
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(HAS_EATEN, Boolean.FALSE);
     }
 
@@ -136,7 +139,8 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void fall(float f, float f1) {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
     }
 
     @Override
@@ -172,7 +176,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
 
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && (stack.getItem() == Items.GOLDEN_CARROT) && !getHasEaten()) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             setHasEaten(true);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
             return true;
@@ -291,7 +295,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
         return true;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.675F;
     }
 }

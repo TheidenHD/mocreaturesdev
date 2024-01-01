@@ -6,10 +6,10 @@ package drzhark.mocreatures.client.renderer.entity;
 import drzhark.mocreatures.client.model.MoCModelCrocodile;
 import drzhark.mocreatures.entity.hunter.MoCEntityCrocodile;
 import drzhark.mocreatures.proxy.MoCProxyClient;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
@@ -45,7 +45,7 @@ public class MoCRenderCrocodile extends RenderLiving<MoCEntityCrocodile> {
         }
         stretch(entitycrocodile);
         if (entitycrocodile.getIsSitting()) {
-            if (!entitycrocodile.isInsideOfMaterial(Material.WATER)) {
+            if (!entitycrocodile.areEyesInFluid(FluidTags.WATER)) {
                 adjustHeight(entitycrocodile, 0.2F);
             } else {
                 //adjustHeight(entitycrocodile, 0.1F);

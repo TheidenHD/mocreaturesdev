@@ -4,24 +4,32 @@
 package drzhark.mocreatures.entity.hostile;
 
 import drzhark.mocreatures.MoCreatures;
+import drzhark.mocreatures.entity.MoCEntityMob;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 public class MoCEntityCaveScorpion extends MoCEntityScorpion {
 
-    public MoCEntityCaveScorpion(World world) {
-        super(world, 2);
+    public MoCEntityCaveScorpion(EntityType<? extends MoCEntityCaveScorpion> type, World world) {
+        super(type, world, 2);
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 20.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.325D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.5D).createMutableAttribute(Attributes.ARMOR, 4.0D);
+        return MoCEntityScorpion.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 20.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.325D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.5D).createMutableAttribute(Attributes.ARMOR, 4.0D);
     }
 
     @Override
@@ -30,7 +38,7 @@ public class MoCEntityCaveScorpion extends MoCEntityScorpion {
     }
 
     @Override
-    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
+    public void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
         if (!getIsPoisoning() && this.rand.nextInt(5) == 0 && entityIn instanceof LivingEntity) {
             setPoisoning(true);
             ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.NAUSEA, 15 * 20, 0)); // 15 seconds
@@ -41,9 +49,8 @@ public class MoCEntityCaveScorpion extends MoCEntityScorpion {
         super.applyEnchantments(entityLivingBaseIn, entityIn);
     }
 
-    @Override
-    public boolean getCanSpawnHere() {
-        return super.getCanSpawnHere() && !this.world.canSeeSky(new BlockPos(this)) && (this.getPosY() < 50.0D);
+    public static boolean getCanSpawnHere(EntityType<? extends MoCEntityMob> type, IServerWorld world, SpawnReason reason, BlockPos pos, Random randomIn) {
+        return MoCEntityScorpion.getCanSpawnHere(type, world, reason, pos, randomIn) && !world.canSeeSky(pos) && (pos.getY() < 50.0D);
     }
 
     @Nullable

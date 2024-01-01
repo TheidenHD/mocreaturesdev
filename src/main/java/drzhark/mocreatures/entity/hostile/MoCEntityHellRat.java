@@ -6,10 +6,11 @@ package drzhark.mocreatures.entity.hostile;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
@@ -20,15 +21,15 @@ public class MoCEntityHellRat extends MoCEntityRat {
 
     private int textCounter;
 
-    public MoCEntityHellRat(World world) {
-        super(world);
-        setSize(0.88F, 0.755F);
-        this.isImmuneToFire = true;
+    public MoCEntityHellRat(EntityType<? extends MoCEntityHellRat> type, World world) {
+        super(type, world);
+        //setSize(0.88F, 0.755F);
+        //this.isImmuneToFire = true;
         experienceValue = 7;
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 40.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.325D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.5D).createMutableAttribute(Attributes.ARMOR, 7.0D);
+        return MoCEntityRat.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 40.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.325D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.5D).createMutableAttribute(Attributes.ARMOR, 7.0D);
     }
 
     @Override
@@ -94,7 +95,7 @@ public class MoCEntityHellRat extends MoCEntityRat {
         super.livingTick();
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.485F;
     }
 }

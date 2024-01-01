@@ -5,8 +5,8 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.client.model.MoCModelTurtle;
 import drzhark.mocreatures.entity.passive.MoCEntityTurtle;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.matrixStackIn;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -34,7 +34,7 @@ public class MoCRenderTurtle extends MoCRenderMoC<MoCEntityTurtle> {
         }
         if (entityturtle.getIsHiding()) {
             adjustHeight(entityturtle, 0.15F * entityturtle.getAge() * 0.01F);
-        } else if (!entityturtle.getIsHiding() && !entityturtle.getIsUpsideDown() && !entityturtle.isInsideOfMaterial(Material.WATER)) {
+        } else if (!entityturtle.getIsHiding() && !entityturtle.getIsUpsideDown() && !entityturtle.areEyesInFluid(FluidTags.WATER)) {
             adjustHeight(entityturtle, 0.05F * entityturtle.getAge() * 0.01F);
         }
         if (entityturtle.getIsUpsideDown()) {

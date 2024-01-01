@@ -11,11 +11,18 @@ import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -23,8 +30,8 @@ import javax.annotation.Nullable;
 
 public class MoCEntityBoar extends MoCEntityAnimal {
 
-    public MoCEntityBoar(World world) {
-        super(world);
+    public MoCEntityBoar(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(0.9F, 0.9F);
         setAdult(this.rand.nextInt(4) != 0);
         // TODO: Make hitboxes adjust depending on size
@@ -33,18 +40,18 @@ public class MoCEntityBoar extends MoCEntityAnimal {
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(1, new EntityAISwimming(this));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new SwimGoal(this));
         this.goalSelector.addGoal(2, new EntityAIFleeFromPlayer(this, 1.0D, 4D));
         this.goalSelector.addGoal(3, new EntityAIFollowAdult(this, 1.0D));
-        this.goalSelector.addGoal(4, new EntityAIAttackMelee(this, 1.0D, true));
+        this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(7, new EntityAIWanderMoC2(this, 1.0D));
-        this.goalSelector.addGoal(9, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
-        //this.targetgoalSelector.addGoal(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
+        this.goalSelector.addGoal(9, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        //this.targetSelector.addGoal(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
+        return TODO_REPLACE.registerAttributes();
         getEntityAttribute(Attributes.MAX_HEALTH, 10.0D);
         this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 2.5D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D);
     }
@@ -127,7 +134,7 @@ public class MoCEntityBoar extends MoCEntityAnimal {
         return getAge() * 0.01F;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.75F;
     }
 }

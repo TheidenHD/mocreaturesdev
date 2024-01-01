@@ -10,7 +10,10 @@ import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -18,10 +21,11 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -32,8 +36,8 @@ public class MoCEntityLitterBox extends MobEntity {
     private static final DataParameter<Boolean> USED_LITTER = EntityDataManager.createKey(MoCEntityLitterBox.class, DataSerializers.BOOLEAN);
     public int litterTime;
 
-    public MoCEntityLitterBox(World world) {
-        super(world);
+    public MoCEntityLitterBox(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(1.0F, 0.15F);
         setNoAI(true);
     }
@@ -43,12 +47,12 @@ public class MoCEntityLitterBox extends MobEntity {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 20.0D);
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 20.0D);
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(PICKED_UP, Boolean.FALSE);
         this.dataManager.register(USED_LITTER, Boolean.FALSE);
     }
@@ -75,7 +79,7 @@ public class MoCEntityLitterBox extends MobEntity {
 
     @Override
     public boolean canBePushed() {
-        return !this.isDead;
+        return !this.removed;
     }
 
     @Override
@@ -89,7 +93,8 @@ public class MoCEntityLitterBox extends MobEntity {
     }
 
     @Override
-    public void fall(float f, float f1) {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
     }
 
     @Override
@@ -111,7 +116,7 @@ public class MoCEntityLitterBox extends MobEntity {
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && stack.getItem() == Item.getItemFromBlock(Blocks.SAND)) {
             MoCTools.playCustomSound(this, SoundEvents.BLOCK_SAND_PLACE);
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             setUsedLitter(false);
             this.litterTime = 0;
             return true;
@@ -120,7 +125,7 @@ public class MoCEntityLitterBox extends MobEntity {
             if (player.isSneaking()) {
                 player.inventory.addItemStackToInventory(new ItemStack(MoCItems.litterbox));
                 MoCTools.playCustomSound(this, SoundEvents.ENTITY_ITEM_PICKUP, 0.2F);
-                setDead();
+                remove(keepData);
             } else {
                 setRotationYawHead((float) MoCTools.roundToNearest90Degrees(this.rotationYawHead) + 90.0F);
                 MoCTools.playCustomSound(this, SoundEvents.ENTITY_ITEMFRAME_ROTATE_ITEM);

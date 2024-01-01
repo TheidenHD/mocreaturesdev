@@ -11,7 +11,12 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -29,20 +34,20 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
 
     private static final DataParameter<Integer> MOLE_STATE = EntityDataManager.createKey(MoCEntityMole.class, DataSerializers.VARINT);
 
-    public MoCEntityMole(World world) {
-        super(world);
+    public MoCEntityMole(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(1F, 0.5F);
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(1, new EntityAISwimming(this));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new SwimGoal(this));
         this.goalSelector.addGoal(2, new EntityAIWanderMoC2(this, 1.0D));
-        this.goalSelector.addGoal(4, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(4, new LookAtGoal(this, PlayerEntity.class, 8.0F));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 6.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2D);
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 6.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2D);
     }
 
     @Override
@@ -51,8 +56,8 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(MOLE_STATE, 0); // state - 0 outside / 1 digging / 2 underground / 3 pick-a-boo
 
     }
@@ -251,7 +256,7 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
         return MoCLootTables.MOLE;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.525F;
     }
 }

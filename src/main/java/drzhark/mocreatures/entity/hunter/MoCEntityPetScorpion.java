@@ -16,22 +16,27 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
+import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemSaddle;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.potion.Effects;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 
@@ -48,8 +53,8 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     private int poisontimer;
     private int transformCounter;
 
-    public MoCEntityPetScorpion(World world) {
-        super(world);
+    public MoCEntityPetScorpion(EntityType<? extends MoCEntityPetScorpion> type, World world) {
+        super(type, world);
         setSize(1.4F, 0.9F);
         this.poisontimer = 0;
         setAdult(false);
@@ -59,22 +64,22 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(0, new EntityAISwimming(this));
-        this.goalSelector.addGoal(3, new EntityAILeapAtTarget(this, 0.4F));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(3, new LeapAtTargetGoal(this, 0.4F));
         this.goalSelector.addGoal(4, new MoCEntityPetScorpion.AIPetScorpionAttack(this));
         this.goalSelector.addGoal(4, new EntityAIWanderMoC2(this, 1.0D));
-        this.goalSelector.addGoal(5, new EntityAIWanderAvoidWater(this, 0.8D));
+        this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.8D));
         this.goalSelector.addGoal(5, new EntityAIFleeFromPlayer(this, 1.2D, 4D));
         this.goalSelector.addGoal(6, new EntityAIFollowOwnerPlayer(this, 1.0D, 2F, 10F));
-        this.goalSelector.addGoal(7, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
-        this.goalSelector.addGoal(7, new EntityAILookIdle(this));
-        //this.targetgoalSelector.addGoal(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
+        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(7, new LookRandomlyGoal(this));
+        //this.targetSelector.addGoal(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
     }
 
     // TODO: Varied stats depending on type
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
+        return TODO_REPLACE.registerAttributes();
         this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.MAX_HEALTH, 20.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.0D);
     }
 
@@ -142,8 +147,8 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(CLIMBING, Boolean.FALSE);
         this.dataManager.register(HAS_BABIES, Boolean.FALSE);
         this.dataManager.register(IS_SITTING, Boolean.FALSE);
@@ -183,8 +188,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
 
     public void setPoisoning(boolean flag) {
         if (flag && !this.world.isRemote) {
-            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 0),
-                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 0));
         }
         this.isPoisoning = flag;
     }
@@ -321,8 +325,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
 
     public void swingArm() {
         if (!this.world.isRemote) {
-            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 1),
-                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 1));
         }
     }
 
@@ -353,8 +356,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     protected SoundEvent getAmbientSound() {
         // Mouth Movement Animation
         if (!this.world.isRemote) {
-            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 3),
-                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 3));
         }
         return MoCSoundEvents.ENTITY_SCORPION_AMBIENT;
     }
@@ -397,7 +399,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && getIsAdult() && !getIsRideable()
                 && (stack.getItem() instanceof ItemSaddle || stack.getItem() == MoCItems.horsesaddle)) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             setRideable(true);
             return true;
         }
@@ -412,7 +414,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
 
             // Fire Scorpion (Essence of Fire)
             if (stack.getItem() == MoCItems.essencefire && this.getTypeMoC() != 3) {
-                if (!player.capabilities.isCreativeMode) stack.shrink(1);
+                if (!player.abilities.isCreativeMode) stack.shrink(1);
                 if (stack.isEmpty()) {
                     player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
                 } else {
@@ -425,7 +427,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
 
             // Undead Scorpion (Essence of Undead)
             if (!stack.isEmpty() && this.getIsTamed() && !this.isBeingRidden() && !this.isRiding() && this.transformCounter < 1 && stack.getItem() == MoCItems.essenceundead && this.getTypeMoC() != 5) {
-                if (!player.capabilities.isCreativeMode) stack.shrink(1);
+                if (!player.abilities.isCreativeMode) stack.shrink(1);
                 if (stack.isEmpty()) {
                     player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
                 } else {
@@ -438,7 +440,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
         }
 
         if (!stack.isEmpty() && this.getIsTamed() && !this.isBeingRidden() && !this.isRiding() && stack.getItem() == MoCItems.essencedarkness) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (stack.isEmpty()) {
                 player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
             } else {
@@ -529,7 +531,8 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void fall(float f, float f1) {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
     }
 
     @Override
@@ -600,8 +603,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
 
     public void transform(int tType) {
         if (!this.world.isRemote) {
-            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), tType),
-                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), tType));
         }
 
         // Set what type to transform to based on type integer
@@ -621,7 +623,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
         return !(entity instanceof MoCEntityFox) && entity.getHeight() <= 1D && entity.getWidth() <= 1D;
     }
 
-    static class AIPetScorpionAttack extends EntityAIAttackMelee {
+    static class AIPetScorpionAttack extends MeleeAttackGoal {
         public AIPetScorpionAttack(MoCEntityPetScorpion scorpion) {
             super(scorpion, 1.0D, true);
         }

@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 
 // Just here for makeshift MIA compatibility
 public class MoCEntityBoar extends MoCEntityAnimal {
-    public MoCEntityBoar(World world) {
-        super(world);
+    public MoCEntityBoar(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
     }
 }

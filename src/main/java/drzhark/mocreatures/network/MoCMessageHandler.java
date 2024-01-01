@@ -13,12 +13,15 @@ import drzhark.mocreatures.network.message.*;
 import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
+import org.spongepowered.asm.mixin.MixinEnvironment.Side;
 
 import java.util.List;
 
 public class MoCMessageHandler {
 
-    public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel("MoCreatures");
+    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel("MoCreatures");
 
     public static void init() {
         INSTANCE.registerMessage(MoCMessageAnimation.class, MoCMessageAnimation.class, 0, Side.CLIENT);

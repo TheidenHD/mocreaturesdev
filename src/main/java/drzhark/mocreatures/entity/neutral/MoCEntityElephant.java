@@ -15,15 +15,21 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.DoubleSidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -39,6 +45,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.List;
 
@@ -62,8 +69,8 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     private byte temper;
 
 
-    public MoCEntityElephant(World world) {
-        super(world);
+    public MoCEntityElephant(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setAdult(true);
         setTamed(false);
         setAge(50);
@@ -79,16 +86,16 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(1, new EntityAISwimming(this));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new SwimGoal(this));
         this.goalSelector.addGoal(4, new EntityAIFollowAdult(this, 1.0D));
-        this.goalSelector.addGoal(5, new EntityAIAttackMelee(this, 1.0D, true));
+        this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(6, new EntityAIWanderMoC2(this, 1.0D));
-        this.goalSelector.addGoal(7, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 8.0F));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 30.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2D);
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 30.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2D);
         this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 8.0D).createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1.0D);
     }
 
@@ -103,8 +110,8 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(TUSK_TYPE, 0);// tusks: 0 nothing, 1 wood, 2 iron, 3 diamond
         this.dataManager.register(STORAGE_TYPE, 0);// storage: 0 nothing, 1 chest, 2 chests....
         this.dataManager.register(HARNESS_TYPE, 0);// harness: 0 nothing, 1 harness, 2 cabin
@@ -276,8 +283,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     private void sit() {
         this.sitCounter = 1;
         if (!this.world.isRemote) {
-            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 0),
-                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 0));
         }
         this.getNavigator().clearPath();
     }
@@ -300,7 +306,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
 
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && !getIsTamed() && !getIsAdult() && stack.getItem() == Items.CAKE) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
             this.temper += 2;
             this.setHealth(getMaxHealth());
@@ -311,7 +317,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         }
 
         if (!stack.isEmpty() && !getIsTamed() && !getIsAdult() && stack.getItem() == MoCItems.sugarlump) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
             this.temper += 1;
             this.setHealth(getMaxHealth());
@@ -323,7 +329,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         }
 
         if (!stack.isEmpty() && getIsTamed() && getIsAdult() && getArmorType() == 0 && stack.getItem() == MoCItems.elephantHarness) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ROPING);
             setArmorType((byte) 1);
             return true;
@@ -331,7 +337,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
 
         if (!stack.isEmpty() && getIsTamed() && getIsAdult() && getArmorType() >= 1 && getStorage() == 0
                 && stack.getItem() == MoCItems.elephantChest) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ROPING);
             //entityplayer.inventory.addItemStackToInventory(new ItemStack(MoCreatures.key));
             setStorage((byte) 1);
@@ -340,7 +346,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         // second storage unit
         if (!stack.isEmpty() && getIsTamed() && getIsAdult() && getArmorType() >= 1 && getStorage() == 1
                 && stack.getItem() == MoCItems.elephantChest) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ROPING);
             setStorage((byte) 2);
             return true;
@@ -348,7 +354,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         // third storage unit for small mammoths
         if (!stack.isEmpty() && getIsTamed() && getIsAdult() && (getTypeMoC() == 3) && getArmorType() >= 1 && getStorage() == 2
                 && stack.getItem() == Item.getItemFromBlock(Blocks.CHEST)) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ROPING);
             setStorage((byte) 3);
             return true;
@@ -356,7 +362,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         // fourth storage unit for small mammoths
         if (!stack.isEmpty() && getIsTamed() && getIsAdult() && (getTypeMoC() == 3) && getArmorType() >= 1 && getStorage() == 3
                 && stack.getItem() == Item.getItemFromBlock(Blocks.CHEST)) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ROPING);
             setStorage((byte) 4);
             return true;
@@ -365,7 +371,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         //giving a garment to an indian elephant with a harness will make it pretty
         if (!stack.isEmpty() && getIsTamed() && getIsAdult() && getArmorType() == 1 && getTypeMoC() == 2
                 && stack.getItem() == MoCItems.elephantGarment) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ROPING);
             setArmorType((byte) 2);
             setTypeMoC(5);
@@ -375,7 +381,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         //giving a howdah to a pretty indian elephant with a garment will attach the howdah
         if (!stack.isEmpty() && getIsTamed() && getIsAdult() && getArmorType() == 2 && getTypeMoC() == 5
                 && stack.getItem() == MoCItems.elephantHowdah) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ROPING);
             setArmorType((byte) 3);
             return true;
@@ -384,14 +390,14 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         //giving a platform to a ? mammoth with harness will attach the platform
         if (!stack.isEmpty() && getIsTamed() && getIsAdult() && getArmorType() == 1 && getTypeMoC() == 4
                 && stack.getItem() == MoCItems.mammothPlatform) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_OFF);
             setArmorType((byte) 3);
             return true;
         }
 
         if (!stack.isEmpty() && getIsTamed() && getIsAdult() && stack.getItem() == MoCItems.tusksWood) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_OFF);
             dropTusks();
             this.tuskUses = (byte) stack.getItemDamage();
@@ -400,7 +406,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         }
 
         if (!stack.isEmpty() && getIsTamed() && getIsAdult() && stack.getItem() == MoCItems.tusksIron) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_OFF);
             dropTusks();
             this.tuskUses = (byte) stack.getItemDamage();
@@ -409,7 +415,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         }
 
         if (!stack.isEmpty() && getIsTamed() && getIsAdult() && stack.getItem() == MoCItems.tusksDiamond) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_OFF);
             dropTusks();
             this.tuskUses = (byte) stack.getItemDamage();
@@ -714,7 +720,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
             PlayerEntity entityplayer = (PlayerEntity) this.getRidingEntity();
             List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(1.0D, 0.0D, 1.0D));
             for (Entity entity : list) {
-                if (entity.isDead) {
+                if (entity.removed) {
                     continue;
                 }
                 entity.onCollideWithPlayer(entityplayer);
@@ -829,7 +835,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected Item getDropItem() {
+    protected dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         return MoCItems.animalHide;
     }
 
@@ -923,8 +929,8 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void fall(float f, float f1) {
-        int i = (int) Math.ceil(f - 3F);
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        int i = (int) Math.ceil(distance - 3F);
         if ((i > 0)) {
             i /= 2;
             if (i > 0) {
@@ -942,7 +948,9 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
                 SoundType soundtype = block.getSoundType(iblockstate, world, new BlockPos(this.getPosX(), this.getPosY() - 0.2D - (double) this.prevRotationYaw, this.getPosZ()), this);
                 this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), soundtype.getStepSound(), this.getSoundCategory(), soundtype.getVolume() * 0.5F, soundtype.getPitch() * 0.75F);
             }
+            return  true;
         }
+        return false;
     }
 
     @Override

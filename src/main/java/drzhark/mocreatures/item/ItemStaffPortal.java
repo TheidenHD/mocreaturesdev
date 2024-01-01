@@ -9,10 +9,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.init.Enchantments;
-import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
@@ -133,8 +132,7 @@ public class ItemStaffPortal extends MoCItem {
      * are being used
      */
     @Override
-    public EnumAction getItemUseAction(ItemStack par1ItemStack) {
-        return EnumAction.BLOCK;
+    public EnumAction getItemUseAction(ItemStack par1ItemStack) {return EnumAction.BLOCK;
     }
 
     public void readFromNBT(CompoundNBT nbt) {

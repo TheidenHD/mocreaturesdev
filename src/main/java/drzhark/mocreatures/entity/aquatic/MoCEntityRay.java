@@ -11,12 +11,12 @@ import net.minecraft.world.World;
 
 public class MoCEntityRay extends MoCEntityTameableAquatic {
 
-    public MoCEntityRay(World world) {
-        super(world);
+    public MoCEntityRay(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
     }
 
     @Override
-    protected void initEntityAI() {
+    protected void registerGoals() {
         this.goalSelector.addGoal(2, new EntityAIWanderMoC2(this, 1.0D, 80));
     }
 

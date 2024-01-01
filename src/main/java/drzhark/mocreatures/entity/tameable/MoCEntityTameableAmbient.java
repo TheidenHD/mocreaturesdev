@@ -16,23 +16,26 @@ import drzhark.mocreatures.network.message.MoCMessageHeart;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -46,13 +49,13 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
     private boolean hasEaten;
     private int gestationtime;
 
-    public MoCEntityTameableAmbient(World world) {
-        super(world);
+    public MoCEntityTameableAmbient(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(OWNER_UNIQUE_ID, Optional.absent());
         this.dataManager.register(PET_ID, -1);
         this.dataManager.register(TAMED, false);
@@ -91,7 +94,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
     public LivingEntity getOwner() {
         try {
             UUID uuid = this.getOwnerId();
-            return uuid == null ? null : this.world.getPlayerEntityByUUID(uuid);
+            return uuid == null ? null : this.world.getPlayerByUuid(uuid);
         } catch (IllegalArgumentException var2) {
             return null;
         }
@@ -107,8 +110,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
         }
 
         if (!this.world.isRemote && getIsTamed()) {
-            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageHealth(this.getEntityId(), this.getHealth()), new TargetPoint(
-                    this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () ->  new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageHealth(this.getEntityId(), this.getHealth()));
         }
         return super.attackEntityFrom(damagesource, i);
     }
@@ -124,7 +126,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
                 // Remove when client is updated
                 ((ServerPlayerEntity) player).sendAllContents(player.openContainer, player.openContainer.getInventory());
                 ITextComponent message = new TranslationTextComponent("msg.mocreatures.foreignpet");
-                message.getStyle().setColor(TextFormatting.RED);
+                message.getStyle().setFormatting(TextFormatting.RED);
                 player.sendMessage(message);
             }
             return false;
@@ -134,7 +136,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
         if (MoCreatures.proxy.enableOwnership && this.getOwnerId() != null
                 && !player.getUniqueID().equals(this.getOwnerId())) {
             ITextComponent message = new TranslationTextComponent("msg.mocreatures.foreignpet");
-            message.getStyle().setColor(TextFormatting.RED);
+            message.getStyle().setFormatting(TextFormatting.RED);
             player.sendMessage(message);
             return false;
         }
@@ -166,7 +168,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
         //before ownership check
         if (getIsTamed() && stack.getItem() == MoCItems.scrollOfOwner && MoCreatures.proxy.enableResetOwnership
                 && MoCTools.isThisPlayerAnOP(player)) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (!this.world.isRemote) {
                 if (this.getOwnerPetId() != -1) // required since getInt will always return 0 if no key is found
                 {
@@ -191,7 +193,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
 
         //sets it free, untamed
         if (getIsTamed() && stack.getItem() == MoCItems.scrollFreedom) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (!this.world.isRemote) {
                 if (this.getOwnerPetId() != -1) // required since getInt will always return 0 if no key is found
                 {
@@ -208,7 +210,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
 
         //removes owner, any other player can claim it by renaming it
         if (getIsTamed() && stack.getItem() == MoCItems.scrollOfSale) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (!this.world.isRemote) {
                 if (this.getOwnerPetId() != -1) // required since getInt will always return 0 if no key is found
                 {
@@ -220,7 +222,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
         }
 
         if (getIsTamed() && isMyHealFood(stack)) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
             if (!this.world.isRemote) {
                 this.setHealth(getMaxHealth());
@@ -237,7 +239,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
                     petData.setInAmulet(this.getOwnerPetId(), true);
                 }
                 MoCTools.dropAmulet(this, 1, player);
-                this.isDead = true;
+                this.removed = true;
             }
 
             return true;
@@ -245,7 +247,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
 
         //heals
         if (getIsTamed() && isMyHealFood(stack)) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
             if (!this.world.isRemote) {
                 this.setHealth(getMaxHealth());
@@ -266,11 +268,11 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
 
     // Fixes despawn issue when chunks unload and duplicated mounts when disconnecting on servers
     @Override
-    public void setDead() {
+    public void remove(keepData) {
         if (!this.world.isRemote && getIsTamed() && getHealth() > 0 && !isRiderDisconnecting()) {
             return;
         }
-        super.setDead();
+        super.remove(keepData);
     }
 
     /**
@@ -337,7 +339,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
                             // entity was cloned
                             nbt.remove("Cloned"); // clear flag
                             this.setTamed(false);
-                            this.setDead();
+                            this.remove(keepData);
                         }
                     }
                 }
@@ -441,8 +443,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
 
             setGestationTime(getGestationTime() + 1);
             if (!this.world.isRemote) {
-                MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageHeart(this.getEntityId()),
-                        new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageHeart(this.getEntityId()));
             }
 
             if (getGestationTime() <= 50) {
@@ -467,7 +468,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
                     UUID ownerId = this.getOwnerId();
                     PlayerEntity entityplayer = null;
                     if (ownerId != null) {
-                        entityplayer = this.world.getPlayerEntityByUUID(this.getOwnerId());
+                        entityplayer = this.world.getPlayerByUuid(this.getOwnerId());
                     }
                     if (entityplayer != null) {
                         MoCTools.tameWithName(entityplayer, baby);

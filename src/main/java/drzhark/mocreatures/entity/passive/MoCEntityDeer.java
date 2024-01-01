@@ -12,6 +12,11 @@ import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -24,8 +29,8 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
 
     private int readyToJumpTimer;
 
-    public MoCEntityDeer(World world) {
-        super(world);
+    public MoCEntityDeer(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setAge(75);
         setSize(0.9F, 1.425F);
         setAdult(true);
@@ -33,17 +38,17 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(0, new EntityAISwimming(this));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EntityAIFleeFromEntityMoC(this, entity -> !(entity instanceof MoCEntityDeer) && (entity.getHeight() > 0.8F || entity.getWidth() > 0.8F), 6.0F, this.getMyAISpeed(), this.getMyAISpeed() * 1.2D));
         this.goalSelector.addGoal(2, new EntityAIPanic(this, this.getMyAISpeed() * 1.2D));
         this.goalSelector.addGoal(4, new EntityAIFollowAdult(this, getMyAISpeed()));
         this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, getMyAISpeed()));
-        this.goalSelector.addGoal(6, new EntityAIWatchClosest(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 6.0F));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 10.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.35D);
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 10.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.35D);
     }
 
     @Override
@@ -76,7 +81,8 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void fall(float f, float f1) {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
     }
 
     @Override
@@ -188,7 +194,7 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
         return getAge() * 0.01F;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.945F;
     }
 }

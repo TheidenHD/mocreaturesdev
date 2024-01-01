@@ -8,9 +8,14 @@ import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -19,13 +24,13 @@ import javax.annotation.Nullable;
 
 public class MoCEntityTiger extends MoCEntityBigCat {
 
-    public MoCEntityTiger(World world) {
-        super(world);
+    public MoCEntityTiger(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(1.25F, 1.275F);
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
@@ -75,7 +80,7 @@ public class MoCEntityTiger extends MoCEntityBigCat {
 
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && getIsTamed() && getTypeMoC() == 2 && (stack.getItem() == MoCItems.essencelight)) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (stack.isEmpty()) {
                 player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
             } else {
@@ -188,7 +193,7 @@ public class MoCEntityTiger extends MoCEntityBigCat {
         return entity.getHeight() < 2F && entity.getWidth() < 2F;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.92F;
     }
 }

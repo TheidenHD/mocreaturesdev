@@ -31,7 +31,7 @@ public class MoCEventHooks {
     @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload event) {
         // if overworld has been deleted or unloaded, reset our flag
-        if (event.getWorld().provider.getDimensionType().getId() == 0) {
+        if (event.getWorld().getDimensionKey() == 0) {
             MoCreatures.proxy.worldInitDone = false;
         }
     }

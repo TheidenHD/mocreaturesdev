@@ -8,7 +8,9 @@ import drzhark.mocreatures.entity.ai.EntityAIFollowHerd;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -18,20 +20,20 @@ import javax.annotation.Nullable;
 
 public class MoCEntityPiranha extends MoCEntitySmallFish {
 
-    public MoCEntityPiranha(World world) {
-        super(world);
+    public MoCEntityPiranha(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         experienceValue = 3;
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(3, new EntityAIAttackMelee(this, 1.0D, true));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(4, new EntityAIFollowHerd(this, 0.6D, 4D, 20D, 1));
-        this.targetgoalSelector.addGoal(2, new EntityAINearestAttackableTarget<>(this, PlayerEntity.class, true));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
+        return TODO_REPLACE.registerAttributes();
         getEntityAttribute(Attributes.MAX_HEALTH, 5.0D);
         this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.5D);
     }

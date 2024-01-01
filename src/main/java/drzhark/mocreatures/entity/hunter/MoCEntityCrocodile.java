@@ -10,14 +10,17 @@ import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.EntityAIHurtByTarget;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.HurtByTargetGoal;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -35,8 +38,8 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     public int spinInt;
     private boolean waterbound;
 
-    public MoCEntityCrocodile(World world) {
-        super(world);
+    public MoCEntityCrocodile(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         this.texture = "crocodile.png";
         setSize(0.9F, 0.5F);
         setAdult(true);
@@ -48,25 +51,25 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void initEntityAI() {
+    protected void registerGoals() {
         this.goalSelector.addGoal(3, new EntityAIFleeFromPlayer(this, 0.8D, 4D));
-        this.goalSelector.addGoal(4, new EntityAIAttackMelee(this, 1.0D, true));
+        this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(7, new EntityAIWanderMoC2(this, 0.9D));
-        this.goalSelector.addGoal(9, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
-        //this.targetgoalSelector.addGoal(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
-        this.targetgoalSelector.addGoal(2, new EntityAIHunt<>(this, PlayerEntity.class, true));
-        this.targetgoalSelector.addGoal(2, new EntityAIHurtByTarget(this, false));
+        this.goalSelector.addGoal(9, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        //this.targetSelector.addGoal(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
+        this.targetSelector.addGoal(2, new EntityAIHunt<>(this, PlayerEntity.class, true));
+        this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
 
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 25.0D).createMutableAttribute(Attributes.ARMOR, 6.0D);
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 25.0D).createMutableAttribute(Attributes.ARMOR, 6.0D);
         this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(IS_RESTING, Boolean.FALSE);
         this.dataManager.register(EATING_PREY, Boolean.FALSE);
         this.dataManager.register(IS_BITING, Boolean.FALSE);
@@ -132,7 +135,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
             if (this.getAttackTarget() != null) {
                 setIsSitting(false);
             }
-            if (!this.world.isRemote && this.getAttackTarget() != null || isSwimming() || getHasCaughtPrey() || this.rand.nextInt(500) == 0)// isInsideOfMaterial(Material.WATER)
+            if (!this.world.isRemote && this.getAttackTarget() != null || isSwimming() || getHasCaughtPrey() || this.rand.nextInt(500) == 0)// areEyesInFluid(FluidTags.WATER)
             {
                 setIsSitting(false);
                 this.biteProgress = 0;
@@ -156,7 +159,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
         }
 
         if (this.waterbound) {
-            if (!isInsideOfMaterial(Material.WATER)) {
+            if (!areEyesInFluid(FluidTags.WATER)) {
                 MoCTools.moveToWater(this);
             } else {
                 this.waterbound = false;
@@ -170,7 +173,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
                 this.biteProgress = 0.4F;
                 setIsSitting(false);
 
-                if (!isInsideOfMaterial(Material.WATER)) {
+                if (!areEyesInFluid(FluidTags.WATER)) {
                     this.waterbound = true;
                     if (this.getRidingEntity() instanceof MobEntity && ((LivingEntity) this.getRidingEntity()).getHealth() > 0) {
                         ((LivingEntity) this.getRidingEntity()).deathTime = 0;
@@ -386,7 +389,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
         return this.isNotScared() && !this.isMovementCeased() && !this.isBeingRidden() && !this.getHasCaughtPrey();
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return !this.isMovementCeased() ? this.getHeight() * 0.7F : this.getHeight() * 0.39F;
     }
 }

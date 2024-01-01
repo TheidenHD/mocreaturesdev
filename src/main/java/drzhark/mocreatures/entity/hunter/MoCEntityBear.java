@@ -12,13 +12,19 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemSaddle;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -27,9 +33,10 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 public class MoCEntityBear extends MoCEntityTameableAnimal {
 
@@ -43,8 +50,8 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     private int attackCounter;
     private int standingCounter;
 
-    public MoCEntityBear(World world) {
-        super(world);
+    public MoCEntityBear(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(1.2F, 1.5F);
         setAge(55);
         setAdult(this.rand.nextInt(4) != 0);
@@ -53,20 +60,20 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(1, new EntityAISwimming(this));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new SwimGoal(this));
         this.goalSelector.addGoal(2, new EntityAIPanicMoC(this, 1.0D));
         this.goalSelector.addGoal(3, new EntityAIFollowOwnerPlayer(this, 1D, 2F, 10F));
         this.goalSelector.addGoal(4, new EntityAIFollowAdult(this, 1.0D));
-        this.goalSelector.addGoal(5, new EntityAIAttackMelee(this, 1.0D, true));
+        this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(6, new EntityAIWanderMoC2(this, 1.0D));
-        this.goalSelector.addGoal(7, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
-        //this.targetgoalSelector.addGoal(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
-        this.targetgoalSelector.addGoal(2, new EntityAIHunt<>(this, PlayerEntity.class, true));
+        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        //this.targetSelector.addGoal(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
+        this.targetSelector.addGoal(2, new EntityAIHunt<>(this, PlayerEntity.class, true));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
+        return TODO_REPLACE.registerAttributes();
         this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.FOLLOW_RANGE, 20.0D);
     }
 
@@ -75,8 +82,8 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
      * server data to client.
      */
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(BEAR_STATE, 0);
         this.dataManager.register(RIDEABLE, Boolean.FALSE);
         this.dataManager.register(CHESTED, Boolean.FALSE);
@@ -205,7 +212,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
         if (!this.world.isRemote && !getIsTamed() && getIsStanding()
                 && getBearState() != 2 && getIsAdult() && (this.rand.nextInt(200) == 0) && shouldAttackPlayers()) {
             PlayerEntity entityplayer1 = this.world.getClosestPlayer(this, 4D);
-            if ((entityplayer1 != null && this.canEntityBeSeen(entityplayer1) && !entityplayer1.capabilities.disableDamage)) {
+            if ((entityplayer1 != null && this.canEntityBeSeen(entityplayer1) && !entityplayer1.abilities.disableDamage)) {
                 this.setStand();
                 setBearState(1);
             }
@@ -220,7 +227,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
                     setPathToEntity(entityitem, f);
                 }
                 if (f < 2.0F && this.deathTime == 0) {
-                    entityitem.setDead();
+                    entityitem.remove(keepData);
                     MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
                     this.setHealth(getMaxHealth());
                 }
@@ -269,8 +276,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
 
     private void startAttack() {
         if (!this.world.isRemote && this.attackCounter == 0 && getBearState() == 1) {
-            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 0),
-                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 0));
             this.attackCounter = 1;
         }
     }
@@ -316,12 +322,12 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && getIsTamed() && !getIsRideable() && (getAge() > 80)
                 && (stack.getItem() instanceof ItemSaddle || stack.getItem() == MoCItems.horsesaddle)) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             setRideable(true);
             return true;
         }
         if (!stack.isEmpty() && getIsTamed() && (MoCTools.isItemEdibleforCarnivores(stack.getItem()))) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             this.setHealth(getMaxHealth());
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
             setIsHunting(false);
@@ -329,7 +335,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
             return true;
         }
         if (!stack.isEmpty() && getIsTamed() && getIsAdult() && !getIsChested() && (stack.getItem() == Item.getItemFromBlock(Blocks.CHEST))) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             setIsChested(true);
             MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
             return true;

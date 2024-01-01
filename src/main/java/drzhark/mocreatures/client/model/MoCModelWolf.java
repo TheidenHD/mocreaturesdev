@@ -230,9 +230,9 @@ public class MoCModelWolf<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        MoCEntityWWolf entitywolf = (MoCEntityWWolf) entity;
-        boolean openMouth = (entitywolf.mouthCounter != 0);
-        boolean moveTail = (entitywolf.tailCounter != 0);
+        MoCEntityWWolf WolfEntity = (MoCEntityWWolf) entity;
+        boolean openMouth = (WolfEntity.mouthCounter != 0);
+        boolean moveTail = (WolfEntity.tailCounter != 0);
 
         setRotationAngles(f, f1, f2, f3, f4, f5, moveTail);
         this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);

@@ -15,17 +15,21 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -50,8 +54,8 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
     private boolean fleeing;
     private int jumpTimer;
 
-    public MoCEntityBird(World world) {
-        super(world);
+    public MoCEntityBird(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(0.5F, 0.9F);
         this.collidedVertically = true;
         this.wingb = 0.0F;
@@ -64,16 +68,16 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(1, new EntityAISwimming(this));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new SwimGoal(this));
         this.goalSelector.addGoal(2, new EntityAIFleeFromEntityMoC(this, entity -> !(entity instanceof MoCEntityBird) && (entity.getHeight() > 0.4F || entity.getWidth() > 0.4F), 6.0F, 1.D, 1.3D));
         this.goalSelector.addGoal(3, new EntityAIFollowOwnerPlayer(this, 0.8D, 2F, 10F));
         this.goalSelector.addGoal(4, this.wander = new EntityAIWanderMoC2(this, 1.0D, 80));
-        this.goalSelector.addGoal(7, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 8.0F));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 6.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D);
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 6.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D);
     }
 
     @Override
@@ -119,8 +123,8 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(PRE_TAMED, Boolean.FALSE);
         this.dataManager.register(IS_FLYING, Boolean.FALSE);
     }
@@ -142,7 +146,8 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void fall(float f, float f1) {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
     }
 
     private int[] FindTreeTop(int i, int j, int k) {
@@ -306,7 +311,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
 
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && getPreTamed() && !getIsTamed() && stack.getItem() == Items.WHEAT_SEEDS) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (!this.world.isRemote) {
                 MoCTools.tameWithName(player, this);
             }
@@ -395,12 +400,12 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
                     FlyToNextEntity(entityitem);
                     ItemEntity entityitem1 = getClosestItem(this, 1.0D, Items.WHEAT_SEEDS, Items.MELON_SEEDS);
                     if ((this.rand.nextInt(50) == 0) && (entityitem1 != null)) {
-                        entityitem1.setDead();
+                        entityitem1.remove(keepData);
                         setPreTamed(true);
                     }
                 }
             }
-            if (this.rand.nextInt(10) == 0 && isInsideOfMaterial(Material.WATER)) {
+            if (this.rand.nextInt(10) == 0 && areEyesInFluid(FluidTags.WATER)) {
                 WingFlap();
             }
         }
@@ -461,10 +466,10 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void setDead() {
+    public void remove(keepData) {
         if (!this.world.isRemote && getIsTamed() && (this.getHealth() > 0)) {
         } else {
-            super.setDead();
+            super.remove(keepData);
         }
     }
 
@@ -521,7 +526,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
         return true;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.75F;
     }
 }

@@ -11,6 +11,7 @@ import drzhark.mocreatures.compat.morph.MorphIntegration;
 import drzhark.mocreatures.compat.thermalexpansion.ThermalExpansionIntegration;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 

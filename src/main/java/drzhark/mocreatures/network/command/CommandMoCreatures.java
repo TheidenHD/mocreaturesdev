@@ -21,6 +21,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -172,7 +173,7 @@ public class CommandMoCreatures {
                 }
                 // search for tamed entity
                 for (int dimension : DimensionManager.getIDs()) {
-                    WorldServer world = DimensionManager.getWorld(dimension);
+                    ServerWorld world = DimensionManager.getWorld(dimension);
                     for (int j = 0; j < world.loadedEntityList.size(); j++) {
                         Entity entity = world.loadedEntityList.get(j);
                         if (IMoCTameable.class.isAssignableFrom(entity.getClass())) {
@@ -234,7 +235,7 @@ public class CommandMoCreatures {
                 ArrayList<String> tamedlist = new ArrayList<>();
                 // search for mocreature tamed entities
                 for (int dimension : DimensionManager.getIDs()) {
-                    WorldServer world = DimensionManager.getWorld(dimension);
+                    ServerWorld world = DimensionManager.getWorld(dimension);
                     for (int j = 0; j < world.loadedEntityList.size(); j++) {
                         Entity entity = world.loadedEntityList.get(j);
                         if (IMoCTameable.class.isAssignableFrom(entity.getClass())) {
@@ -310,7 +311,7 @@ public class CommandMoCreatures {
                     CompoundNBT nbt = ownerPetData.getTamedList().getCompound(i);
                     if (nbt.contains("PetId") && nbt.getInt("PetId") == petId) {
                         String petName = nbt.getString("Name");
-                        WorldServer world = DimensionManager.getWorld(nbt.getInt("Dimension"));
+                        ServerWorld world = DimensionManager.getWorld(nbt.getInt("Dimension"));
                         if (!teleportLoadedPet(world, player, petId, petName, sender)) {
                             double posX = nbt.getList("Pos", 10).getDouble(0);
                             double posY = nbt.getList("Pos", 10).getDouble(1);
@@ -564,7 +565,7 @@ public class CommandMoCreatures {
         return CommandMoCreatures.commands;
     }
 
-    public boolean teleportLoadedPet(WorldServer world, ServerPlayerEntity player, int petId, String petName, ICommandSender par1ICommandSender) {
+    public boolean teleportLoadedPet(ServerWorld world, ServerPlayerEntity player, int petId, String petName, ICommandSender par1ICommandSender) {
         for (int j = 0; j < world.loadedEntityList.size(); j++) {
             Entity entity = world.loadedEntityList.get(j);
             // search for entities that are MoCEntityAnimal's
@@ -591,7 +592,7 @@ public class CommandMoCreatures {
                             if (entity.getRidingEntity() != null) {
                                 entity.getRidingEntity().dismountRidingEntity();
                             }
-                            entity.isDead = true;
+                            entity.removed = true;
                             world.resetUpdateEntityTick();
                             DimensionManager.getWorld(player.dimension).resetUpdateEntityTick();
                         }

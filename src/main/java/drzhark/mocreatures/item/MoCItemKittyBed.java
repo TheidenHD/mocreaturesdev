@@ -6,6 +6,7 @@ package drzhark.mocreatures.item;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.item.MoCEntityKittyBed;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -17,12 +18,12 @@ public class MoCItemKittyBed extends MoCItem {
 
     private int sheetType;
 
-    public MoCItemKittyBed(String name) {
-        super(name);
+    public MoCItemKittyBed(Item.Properties properties, String name) {
+        super(properties, name);
     }
 
-    public MoCItemKittyBed(String name, int type) {
-        this(name);
+    public MoCItemKittyBed(Item.Properties properties, String name, int type) {
+        this(properties, name);
         this.sheetType = type;
     }
 
@@ -30,7 +31,7 @@ public class MoCItemKittyBed extends MoCItem {
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (!world.isRemote) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCEntityKittyBed kittyBed = new MoCEntityKittyBed(world, this.sheetType);
             kittyBed.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
             world.addEntity(kittyBed);

@@ -8,13 +8,19 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityMob;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.pathfinding.ClimberPathNavigator;
+import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -31,34 +37,34 @@ public class MoCEntityRat extends MoCEntityMob {
 
     private static final DataParameter<Boolean> CLIMBING = EntityDataManager.createKey(MoCEntityRat.class, DataSerializers.BOOLEAN);
 
-    public MoCEntityRat(World world) {
-        super(world);
-        setSize(0.58F, 0.455F);
+    public MoCEntityRat(EntityType<? extends MoCEntityRat> type, World world) {
+        super(type, world);
+        //setSize(0.58F, 0.455F);
         experienceValue = 5;
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(0, new EntityAISwimming(this));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(2, new MoCEntityRat.AIRatAttack(this));
-        this.goalSelector.addGoal(8, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
-        this.targetgoalSelector.addGoal(1, new EntityAIHurtByTarget(this, false));
-        this.targetgoalSelector.addGoal(2, new MoCEntityRat.AIRatTarget<>(this, PlayerEntity.class));
-        this.targetgoalSelector.addGoal(3, new MoCEntityRat.AIRatTarget<>(this, EntityIronGolem.class));
+        this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new MoCEntityRat.AIRatTarget<>(this, PlayerEntity.class));
+        this.targetSelector.addGoal(3, new MoCEntityRat.AIRatTarget<>(this, IronGolemEntity.class));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 16.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.0D);
+        return MoCEntityMob.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 16.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.0D);
     }
 
     @Override
     protected PathNavigator createNavigator(World worldIn) {
-        return new PathNavigateClimber(this, worldIn);
+        return new ClimberPathNavigator(this, worldIn);
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(CLIMBING, Boolean.FALSE);
     }
 
@@ -93,7 +99,7 @@ public class MoCEntityRat extends MoCEntityMob {
     @Override
     public boolean checkSpawningBiome() {
         BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getBoundingBox().minY), this.getPosZ());
-        Biome currentbiome = MoCTools.biomeKind(this.world, pos);
+        RegistryKey<Biome> currentbiome = MoCTools.biomeKind(this.world, pos);
 
         try {
             if (BiomeDictionary.hasType(currentbiome, BiomeDictionary.Type.MESA)) {
@@ -114,7 +120,8 @@ public class MoCEntityRat extends MoCEntityMob {
     }
 
     @Override
-    public void fall(float distance, float damageMultiplier) {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
     }
 
     @Override
@@ -185,11 +192,11 @@ public class MoCEntityRat extends MoCEntityMob {
         }
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.5F;
     }
 
-    static class AIRatAttack extends EntityAIAttackMelee {
+    static class AIRatAttack extends MeleeAttackGoal {
         public AIRatAttack(MoCEntityRat rat) {
             super(rat, 1.0D, true);
         }
@@ -212,14 +219,14 @@ public class MoCEntityRat extends MoCEntityMob {
         }
     }
 
-    static class AIRatTarget<T extends LivingEntity> extends EntityAINearestAttackableTarget<T> {
+    static class AIRatTarget<T extends LivingEntity> extends NearestAttackableTargetGoal<T> {
         public AIRatTarget(MoCEntityRat rat, Class<T> classTarget) {
             super(rat, classTarget, true);
         }
 
         @Override
         public boolean shouldExecute() {
-            float f = this.taskOwner.getBrightness();
+            float f = this.goalOwner.getBrightness();
             return f < 0.5F && super.shouldExecute();
         }
     }

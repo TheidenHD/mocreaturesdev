@@ -15,6 +15,8 @@ import drzhark.mocreatures.entity.neutral.MoCEntityWyvern;
 import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -34,8 +36,8 @@ public class MoCEntityEgg extends MobEntity {
         this.eggType = type;
     }
 
-    public MoCEntityEgg(World world) {
-        super(world);
+    public MoCEntityEgg(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(0.25F, 0.25F);
         this.tCounter = 0;
         this.lCounter = 0;
@@ -54,7 +56,7 @@ public class MoCEntityEgg extends MobEntity {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 10.0D); // setMaxHealth
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 10.0D); // setMaxHealth
     }
 
     @Override
@@ -90,7 +92,7 @@ public class MoCEntityEgg extends MobEntity {
                 entityplayer.onItemPickup(this, 1);
 
             }
-            setDead();
+            remove(keepData);
         }
     }
 
@@ -113,7 +115,7 @@ public class MoCEntityEgg extends MobEntity {
             if (this.lCounter > 500) {
                 PlayerEntity entityplayer1 = this.world.getClosestPlayer(this, 24D);
                 if (entityplayer1 == null) {
-                    this.setDead();
+                    this.remove(keepData);
                 }
             }
 
@@ -183,7 +185,7 @@ public class MoCEntityEgg extends MobEntity {
                         }
                     }
                     MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
-                    setDead();
+                    remove(keepData);
                 }
             } else if (!isInWater() && getEggType() > 20 && (this.rand.nextInt(20) == 0)) // non aquatic creatures
             {
@@ -294,7 +296,7 @@ public class MoCEntityEgg extends MobEntity {
                         }
                     }
                     MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
-                    setDead();
+                    remove(keepData);
                 }
             }
         }

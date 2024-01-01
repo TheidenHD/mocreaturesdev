@@ -10,11 +10,15 @@ import drzhark.mocreatures.entity.ai.EntityAIFleeFromPlayer;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.PathNavigateClimber;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
@@ -32,32 +36,32 @@ import javax.annotation.Nullable;
 public class MoCEntityMouse extends MoCEntityAnimal {
     private static final DataParameter<Boolean> CLIMBING = EntityDataManager.createKey(MoCEntityMouse.class, DataSerializers.BOOLEAN);
 
-    public MoCEntityMouse(World world) {
-        super(world);
+    public MoCEntityMouse(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(0.45F, 0.3F);
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(0, new EntityAISwimming(this));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EntityAIFleeFromPlayer(this, 1.2D, 4D));
         this.goalSelector.addGoal(2, new EntityAIPanic(this, 1.4D));
         this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 1.0D));
-        this.goalSelector.addGoal(6, new EntityAIWatchClosest(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 6.0F));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 8.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.35D);
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 8.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.35D);
     }
 
     @Override
     protected PathNavigator createNavigator(World worldIn) {
-        return new PathNavigateClimber(this, worldIn);
+        return new ClimberPathNavigator(this, worldIn);
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(CLIMBING, Boolean.FALSE);
     }
 
@@ -130,7 +134,8 @@ public class MoCEntityMouse extends MoCEntityAnimal {
     }
 
     @Override
-    public void fall(float f, float f1) {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
     }
 
     @Override
@@ -200,7 +205,7 @@ public class MoCEntityMouse extends MoCEntityAnimal {
         return true;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.575F;
     }
 }

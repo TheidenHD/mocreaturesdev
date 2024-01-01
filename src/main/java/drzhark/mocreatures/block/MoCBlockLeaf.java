@@ -5,24 +5,19 @@ package drzhark.mocreatures.block;
 
 import drzhark.mocreatures.init.MoCBlocks;
 import drzhark.mocreatures.init.MoCItems;
-import net.minecraft.block.BlockLeaves;
-import net.minecraft.block.BlockPlanks.EnumType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.material.MapColor;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stats.StatList;
+import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -31,7 +26,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-public class MoCBlockLeaf extends BlockLeaves {
+public class MoCBlockLeaf extends LeavesBlock {
 
     private final MapColor mapColor;
     public boolean flammable;
@@ -58,7 +53,7 @@ public class MoCBlockLeaf extends BlockLeaves {
     @OnlyIn(Dist.CLIENT)
     public boolean shouldSideBeRendered(BlockState blockState, IBlockAccess blockAccess, BlockPos pos, Direction side) {
         if (!Minecraft.getMinecraft().gameSettings.fancyGraphics) {
-            return !(blockAccess.getBlockState(pos.offset(side)).getBlock() instanceof BlockLeaves);
+            return !(blockAccess.getBlockState(pos.offset(side)).getBlock() instanceof LeavesBlock);
         }
         return true;
     }

@@ -8,7 +8,9 @@ import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
@@ -22,13 +24,13 @@ public class MoCEntityFirefly extends MoCEntityInsect {
 
     private int soundCount;
 
-    public MoCEntityFirefly(World world) {
-        super(world);
+    public MoCEntityFirefly(EntityType<? extends MoCEntityFirefly> type, World world) {
+        super(type, world);
         this.texture = "firefly.png";
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.ARMOR, 1.0D);
+        return MoCEntityInsect.registerAttributes().createMutableAttribute(Attributes.ARMOR, 1.0D);
     }
 
     @Override

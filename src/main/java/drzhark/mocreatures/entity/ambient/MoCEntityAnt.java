@@ -7,6 +7,11 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.MoCEntityAmbient;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
@@ -24,25 +29,25 @@ public class MoCEntityAnt extends MoCEntityAmbient {
 
     private static final DataParameter<Boolean> FOUND_FOOD = EntityDataManager.createKey(MoCEntityAnt.class, DataSerializers.BOOLEAN);
 
-    public MoCEntityAnt(World world) {
-        super(world);
-        setSize(0.3F, 0.2F);
+    public MoCEntityAnt(EntityType<? extends MoCEntityAnt> type, World world) {
+        super(type, world);
+        //setSize(0.3F, 0.2F);
         this.texture = "ant.png";
     }
 
     @Override
-    protected void initEntityAI() {
+    protected void registerGoals() {
         this.goalSelector.addGoal(1, new EntityAIWanderMoC2(this, 1.2D));
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(FOUND_FOOD, Boolean.FALSE);
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 3.0D).createMutableAttribute(Attributes.ARMOR, 1.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.28D);
+        return MoCEntityAmbient.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 3.0D).createMutableAttribute(Attributes.ARMOR, 1.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.28D);
     }
 
     public boolean getHasFood() {
@@ -60,7 +65,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
         if (!this.world.isRemote) {
             if (!getHasFood()) {
                 ItemEntity entityitem = MoCTools.getClosestFood(this, 8D);
-                if (entityitem == null || entityitem.isDead) {
+                if (entityitem == null || entityitem.removed) {
                     return;
                 }
                 if (entityitem.getRidingEntity() == null) {
@@ -102,7 +107,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
 
     private void exchangeItem(ItemEntity entityitem) {
         ItemEntity cargo = new ItemEntity(this.world, this.getPosX(), this.getPosY() + 0.2D, this.getPosZ(), entityitem.getItem());
-        entityitem.setDead();
+        entityitem.remove();
         if (!this.world.isRemote) {
             this.world.addEntity(cargo);
         }
@@ -137,7 +142,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
     }
 
     @Override
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return 0.1F;
     }
 }

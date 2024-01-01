@@ -9,9 +9,12 @@ import drzhark.mocreatures.entity.MoCEntityMob;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
@@ -20,15 +23,17 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 public class MoCEntityWerewolf extends MoCEntityMob {
 
@@ -38,8 +43,8 @@ public class MoCEntityWerewolf extends MoCEntityMob {
     private int tcounter;
     private int textCounter;
 
-    public MoCEntityWerewolf(World world) {
-        super(world);
+    public MoCEntityWerewolf(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         // TODO: Change hitbox depending on form
         setSize(0.7F, 2.0F);
         this.transforming = false;
@@ -49,21 +54,21 @@ public class MoCEntityWerewolf extends MoCEntityMob {
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(0, new EntityAISwimming(this));
-        this.goalSelector.addGoal(2, new EntityAIAttackMelee(this, 1.0D, true));
-        this.goalSelector.addGoal(3, new EntityAILeapAtTarget(this, 0.4F));
-        this.goalSelector.addGoal(8, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
-        this.targetgoalSelector.addGoal(1, new EntityAINearestAttackableTarget<>(this, PlayerEntity.class, true));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0D, true));
+        this.goalSelector.addGoal(3, new LeapAtTargetGoal(this, 0.4F));
+        this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 40.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.5D);
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 40.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.5D);
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(IS_HUMAN, Boolean.FALSE);
         this.dataManager.register(IS_HUNCHED, Boolean.FALSE);
     }
@@ -273,9 +278,8 @@ public class MoCEntityWerewolf extends MoCEntityMob {
         }
     }
 
-    @Override
-    public boolean getCanSpawnHere() {
-        return super.getCanSpawnHere() && this.world.canSeeSky(new BlockPos(this));
+    public static boolean getCanSpawnHere(EntityType<? extends MoCEntityMob> type, IServerWorld world, SpawnReason reason, BlockPos pos, Random randomIn) {
+        return MoCEntityMob.getCanSpawnHere(type, world, reason, pos, randomIn) && this.world.canSeeSky(new BlockPos(this));
     }
 
     private void Transform() {
@@ -302,7 +306,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
             d3 *= d7;
             d4 *= d7;
             d5 *= d7;
-            this.world.addParticle(ParticleTypes.EXPLOSION_NORMAL, (d + (i * 1.0D)) / 2D, (d1 + (j * 1.0D)) / 2D, (d2 + (k * 1.0D)) / 2D, d3, d4, d5);
+            this.world.addParticle(ParticleTypes.POOF, (d + (i * 1.0D)) / 2D, (d1 + (j * 1.0D)) / 2D, (d2 + (k * 1.0D)) / 2D, d3, d4, d5);
         }
 
         if (getIsHumanForm()) {
@@ -351,7 +355,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
         return super.onInitialSpawn(difficulty, livingdata);
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return getIsHumanForm() ? this.getHeight() * 0.885F : this.getHeight();
     }
 }

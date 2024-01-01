@@ -15,7 +15,6 @@ import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAppear;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -24,11 +23,14 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -161,7 +163,7 @@ public class MoCItemPetAmulet extends MoCItem {
                     }
 
                     if (player.getEntityWorld().addEntity((MobEntity) storedCreature)) {
-                        MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAppear(((MobEntity) storedCreature).getEntityId()), new TargetPoint(player.getEntityWorld().provider.getDimensionType().getId(), player.getPosX(), player.getPosY(), player.getPosZ(), 64));
+                        MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(player.getPosX(), player.getPosY(), player.getPosZ(), 64, player.getEntityWorld().getDimensionKey())), new MoCMessageAppear(((MobEntity) storedCreature).getEntityId()));
                         if (this.ownerUniqueId == null || this.name.isEmpty()) {
                             MoCTools.tameWithName(player, storedCreature);
                         }
@@ -216,16 +218,16 @@ public class MoCItemPetAmulet extends MoCItem {
      * allows items to add custom lines of information to the mouseover description
      */
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         initAndReadNBT(stack);
         if (!this.spawnClass.equals("")) {
-            tooltip.add(TextFormatting.AQUA + this.spawnClass);
+            tooltip.add(new StringTextComponent(this.spawnClass).setStyle(Style.EMPTY.setFormatting(TextFormatting.AQUA)));
         }
         if (!this.name.equals("")) {
-            tooltip.add(TextFormatting.BLUE + this.name);
+            tooltip.add(new StringTextComponent(this.name).setStyle(Style.EMPTY.setFormatting(TextFormatting.BLUE)));
         }
         if (!this.ownerName.equals("")) {
-            tooltip.add(TextFormatting.DARK_BLUE + "Owned by " + this.ownerName);
+            tooltip.add(new StringTextComponent("Owned by " + this.ownerName).setStyle(Style.EMPTY.setFormatting(TextFormatting.DARK_BLUE)));
         }
     }
 

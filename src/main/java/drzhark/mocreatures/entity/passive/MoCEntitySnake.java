@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 
 // Just here for makeshift MIA compatibility
 public class MoCEntitySnake extends MoCEntityTameableAnimal {
-    public MoCEntitySnake(World world) {
-        super(world);
+    public MoCEntitySnake(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
     }
 }

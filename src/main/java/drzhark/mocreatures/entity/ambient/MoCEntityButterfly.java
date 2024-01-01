@@ -7,9 +7,10 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -22,8 +23,8 @@ public class MoCEntityButterfly extends MoCEntityInsect {
 
     private int fCounter;
 
-    public MoCEntityButterfly(World world) {
-        super(world);
+    public MoCEntityButterfly(EntityType<? extends MoCEntityButterfly> type, World world) {
+        super(type, world);
     }
 
     @Override
@@ -85,7 +86,7 @@ public class MoCEntityButterfly extends MoCEntityInsect {
 
     @Override
     public boolean isMyFavoriteFood(ItemStack stack) {
-        return !stack.isEmpty() && (stack.getItem() == Item.getItemFromBlock(Blocks.RED_FLOWER) || stack.getItem() == Item.getItemFromBlock(Blocks.YELLOW_FLOWER));
+        return !stack.isEmpty() && stack.getItem().isIn(ItemTags.FLOWERS);
     }
 
     @Override

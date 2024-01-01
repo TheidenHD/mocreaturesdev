@@ -9,11 +9,15 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 
@@ -22,8 +26,8 @@ public class MoCEntityStingRay extends MoCEntityRay {
     private int poisoncounter;
     private int tailCounter;
 
-    public MoCEntityStingRay(World world) {
-        super(world);
+    public MoCEntityStingRay(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(0.7F, 0.3F);
         // TODO: Make hitboxes adjust depending on size
         //setAge(50 + (this.rand.nextInt(40)));
@@ -31,7 +35,7 @@ public class MoCEntityStingRay extends MoCEntityRay {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
+        return TODO_REPLACE.registerAttributes();
         getEntityAttribute(Attributes.MAX_HEALTH, 8.0D);
     }
 
@@ -56,8 +60,7 @@ public class MoCEntityStingRay extends MoCEntityRay {
         if (!this.world.isRemote) {
             if (!getIsTamed() && ++this.poisoncounter > 250 && (this.world.getDifficulty().getId() > 0) && this.rand.nextInt(30) == 0) {
                 if (MoCTools.findNearPlayerAndPoison(this, true)) {
-                    MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 1),
-                            new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+                    MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 1));
                     this.poisoncounter = 0;
                 }
             }
@@ -94,7 +97,7 @@ public class MoCEntityStingRay extends MoCEntityRay {
         return false;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.86F;
     }
 }

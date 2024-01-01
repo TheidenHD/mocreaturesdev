@@ -24,11 +24,14 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -158,7 +161,7 @@ public class MoCItemHorseAmulet extends MoCItem {
                 }
 
                 if (player.world.addEntity(storedCreature)) {
-                    MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAppear(storedCreature.getEntityId()), new TargetPoint(player.world.provider.getDimensionType().getId(), player.getPosX(), player.getPosY(), player.getPosZ(), 64));
+                    MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(player.getPosX(), player.getPosY(), player.getPosZ(), 64, player.world.getDimensionKey())), new MoCMessageAppear(storedCreature.getEntityId()));
                     MoCTools.playCustomSound(storedCreature, MoCSoundEvents.ENTITY_GENERIC_MAGIC_APPEAR);
                     //gives an empty amulet
                     if (storedCreature instanceof MoCEntityBigCat || storedCreature instanceof MoCEntityWyvern || this.creatureType == 21 || this.creatureType == 22) {
@@ -233,14 +236,14 @@ public class MoCItemHorseAmulet extends MoCItem {
      * allows items to add custom lines of information to the mouseover description
      */
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         initAndReadNBT(stack);
-        tooltip.add(TextFormatting.AQUA + this.spawnClass);
+        tooltip.add(new StringTextComponent(this.spawnClass).setStyle(Style.EMPTY.setFormatting(TextFormatting.AQUA)));
         if (!this.name.equals("")) {
-            tooltip.add(TextFormatting.BLUE + this.name);
+            tooltip.add(new StringTextComponent(this.name).setStyle(Style.EMPTY.setFormatting(TextFormatting.BLUE)));
         }
         if (!this.ownerName.equals("")) {
-            tooltip.add(TextFormatting.DARK_BLUE + "Owned by " + this.ownerName);
+            tooltip.add(new StringTextComponent("Owned by " + this.ownerName).setStyle(Style.EMPTY.setFormatting(TextFormatting.DARK_BLUE)));
         }
     }
 

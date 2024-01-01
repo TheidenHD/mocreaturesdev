@@ -13,17 +13,23 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.EntityAITempt;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.item.Items;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.Set;
@@ -31,24 +37,24 @@ import java.util.Set;
 public class MoCEntityTurkey extends MoCEntityTameableAnimal {
     private static final Set<Item> TEMPTATION_ITEMS = Sets.newHashSet(Items.WHEAT_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS);
 
-    public MoCEntityTurkey(World world) {
-        super(world);
+    public MoCEntityTurkey(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(0.6F, 0.9F);
         setAdult(true);
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(0, new EntityAISwimming(this));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EntityAIPanic(this, 1.4D));
         this.goalSelector.addGoal(2, new EntityAIMateMoC(this, 1.0D));
         this.goalSelector.addGoal(3, new EntityAITempt(this, 1.0D, false, TEMPTATION_ITEMS));
         this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 1.0D));
-        this.goalSelector.addGoal(6, new EntityAIWatchClosest(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 6.0F));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
+        return TODO_REPLACE.registerAttributes();
         getEntityAttribute(Attributes.MAX_HEALTH, 8.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
@@ -219,7 +225,7 @@ public class MoCEntityTurkey extends MoCEntityTameableAnimal {
         }
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.945F;
     }
 }

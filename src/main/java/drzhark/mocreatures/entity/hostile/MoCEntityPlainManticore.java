@@ -6,6 +6,7 @@ package drzhark.mocreatures.entity.hostile;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -18,8 +19,8 @@ import javax.annotation.Nullable;
 
 public class MoCEntityPlainManticore extends MoCEntityManticore {
 
-    public MoCEntityPlainManticore(World world) {
-        super(world);
+    public MoCEntityPlainManticore(EntityType<? extends MoCEntityPlainManticore> type, World world) {
+        super(type, world);
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {

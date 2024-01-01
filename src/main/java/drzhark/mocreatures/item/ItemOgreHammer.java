@@ -110,7 +110,7 @@ public class ItemOgreHammer extends MoCItem {
             Item itemTemp = slotStack.getItem();
             int metadata = slotStack.getItemDamage();
             if (itemTemp instanceof ItemBlock) {
-                if (remove && !player.capabilities.isCreativeMode) {
+                if (remove && !player.abilities.isCreativeMode) {
                     slotStack.shrink(1);
                     if (slotStack.isEmpty()) {
                         player.inventory.setInventorySlotContents(y, ItemStack.EMPTY);

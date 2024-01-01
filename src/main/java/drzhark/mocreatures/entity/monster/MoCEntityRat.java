@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 
 // Just here for makeshift MIA compatibility
 public class MoCEntityRat extends MoCEntityMob {
-    public MoCEntityRat(World world) {
-        super(world);
+    public MoCEntityRat(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
     }
 }

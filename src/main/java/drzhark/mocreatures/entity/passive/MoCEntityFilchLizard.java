@@ -15,18 +15,22 @@ import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootTable;
@@ -50,16 +54,16 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
     }
 
     @Override
-    protected void initEntityAI() {
+    protected void registerGoals() {
         stealItems = getCustomLootItems(this, this.getStealLootTable(), new ItemStack(Items.IRON_INGOT));
-        this.goalSelector.addGoal(0, new EntityAISwimming(this));
+        this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EntityAIPanic(this, 1.25D));
         this.goalSelector.addGoal(2, new EntityAIGrabItemFromFloor(this, 1.2D, Sets.newHashSet(stealItems), true));
         this.goalSelector.addGoal(3, new EntityAIStealFromPlayer(this, 0.8D, Sets.newHashSet(stealItems), true));
         this.goalSelector.addGoal(4, new MoCEntityFilchLizard.AIAvoidWhenNasty(this, PlayerEntity.class, 16.0F, 1.0D, 1.33D));
         this.goalSelector.addGoal(5, new EntityAIWander(this, 1.0D));
-        this.goalSelector.addGoal(6, new EntityAIWatchClosest(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(7, new EntityAILookIdle(this));
+        this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(7, new LookRandomlyGoal(this));
     }
 
     @Override
@@ -123,7 +127,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 8.0D).createMutableAttribute(Attributes.ARMOR, 2.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 8.0D).createMutableAttribute(Attributes.ARMOR, 2.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
@@ -163,7 +167,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
     public ItemStack getCustomLootItem(Entity entityIn, ResourceLocation resourceLootTable, ItemStack defaultItem) {
         if (resourceLootTable != null) {
             LootTable loottable = entityIn.world.getLootTableManager().getLootTableFromLocation(resourceLootTable);
-            LootContext.Builder lootContextBuilder = (new LootContext.Builder((WorldServer) entityIn.world)).withLootedEntity(entityIn);
+            LootContext.Builder lootContextBuilder = (new LootContext.Builder((ServerWorld) entityIn.world)).withLootedEntity(entityIn);
             for (ItemStack itemstack : loottable.generateLootForPools(entityIn.getEntityWorld().rand, lootContextBuilder.build())) {
                 return itemstack;
             }
@@ -176,7 +180,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         ItemStack[] arrayOfItems = null;
         if (resourceLootTable != null) {
             LootTable loottable = entityIn.world.getLootTableManager().getLootTableFromLocation(resourceLootTable);
-            LootContext.Builder lootContextBuilder = (new LootContext.Builder((WorldServer) entityIn.world)).withLootedEntity(entityIn);
+            LootContext.Builder lootContextBuilder = (new LootContext.Builder((ServerWorld) entityIn.world)).withLootedEntity(entityIn);
             List<ItemStack> listOfItems = loottable.generateLootForPools(entityIn.getEntityWorld().rand, lootContextBuilder.build());
             arrayOfItems = new ItemStack[listOfItems.size()];
             int i = 0;
@@ -193,7 +197,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
 
     // Sneaky...
     @Override
-    protected void playStepSound(BlockPos pos, Block block) {
+    protected void playStepSound(BlockPos pos, BlockState block) {
     }
 
     @Nullable
@@ -340,7 +344,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
             if (this.temptedEntity.getDistanceSq(this.temptingItem) < 1.0D) {
                 this.temptedEntity.getNavigator().clearPath();
                 ItemStack loot = temptingItem.getItem().copy();
-                temptingItem.setDead();
+                temptingItem.remove(keepData);
                 this.temptedEntity.setItemStackToSlot(EquipmentSlotType.MAINHAND, loot);
             } else {
                 this.temptedEntity.getNavigator().tryMoveToEntityLiving(this.temptingItem, this.speed);
@@ -474,7 +478,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
          */
         public void tick() {
             this.temptedEntity.getLookController().setLookPositionWithEntity(this.temptingPlayer, (float) (this.temptedEntity.getHorizontalFaceSpeed() + 20), (float) this.temptedEntity.getVerticalFaceSpeed());
-            if (temptingPlayer.capabilities.isCreativeMode) return;
+            if (temptingPlayer.abilities.isCreativeMode) return;
             if (this.temptedEntity.getDistanceSq(this.temptingPlayer) < 3.25D) {
                 this.temptedEntity.getNavigator().clearPath();
                 for (int i = 0; i < this.temptingPlayer.inventory.getSizeInventory(); i++) {

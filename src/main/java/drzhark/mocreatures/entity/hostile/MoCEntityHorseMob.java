@@ -8,13 +8,16 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityMob;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -24,6 +27,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 @SuppressWarnings("deprecation")
@@ -36,29 +40,29 @@ public class MoCEntityHorseMob extends MoCEntityMob {
     public int eatingCounter;
     public int wingFlapCounter;
 
-    public MoCEntityHorseMob(World world) {
-        super(world);
-        setSize(1.3964844F, 1.6F);
+    public MoCEntityHorseMob(EntityType<? extends MoCEntityHorseMob> type, World world) {
+        super(type, world);
+        //setSize(1.3964844F, 1.6F);
         experienceValue = 5;
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(0, new EntityAISwimming(this));
-        this.goalSelector.addGoal(2, new EntityAIAttackMelee(this, 1.0D, true));
-        this.goalSelector.addGoal(8, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
-        this.targetgoalSelector.addGoal(1, new EntityAINearestAttackableTarget<>(this, PlayerEntity.class, true));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0D, true));
+        this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        MoCEntityMob.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 30.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.0D);
+        return MoCEntityMob.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 30.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.0D);
     }
 
     @Override
     public void selectType() {
-        if (this.world.provider.doesWaterVaporize()) {
+        if (this.world.getDimensionType().isUltrawarm()) {
             setTypeMoC(38);
-            this.isImmuneToFire = true;
+            //this.isImmuneToFire = true; //TODO TheidenHD
         } else {
             if (getTypeMoC() == 0) {
                 int j = this.rand.nextInt(100);
@@ -165,12 +169,12 @@ public class MoCEntityHorseMob extends MoCEntityMob {
     }
 
     @Override
-    protected void playStepSound(BlockPos pos, Block blockIn) {
-        if (!blockIn.getDefaultState().getMaterial().isLiquid()) {
-            SoundType soundtype = blockIn.getSoundType();
+    protected void playStepSound(BlockPos pos, BlockState blockIn) {
+        if (!blockIn.getMaterial().isLiquid()) {
+            SoundType soundtype = blockIn.getBlock().getSoundType(blockIn);
 
-            if (this.world.getBlockState(pos.up()).getBlock() == Blocks.SNOW_LAYER) {
-                soundtype = Blocks.SNOW_LAYER.getSoundType();
+            if (this.world.getBlockState(pos.up()).getBlock() == Blocks.SNOW) {
+                soundtype = Blocks.SNOW.getSoundType(this.world.getBlockState(pos.up()));
             } else if (soundtype == SoundType.WOOD) {
                 this.playSound(SoundEvents.ENTITY_HORSE_STEP_WOOD, soundtype.getVolume() * 0.15F, soundtype.getPitch());
             } else {
@@ -298,41 +302,46 @@ public class MoCEntityHorseMob extends MoCEntityMob {
     }
 
     @Override
-    protected Item getDropItem() {
+    protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
+        super.dropSpecialItems(source, looting, recentlyHitIn);
         boolean flag = (this.rand.nextInt(100) < MoCreatures.proxy.rareItemDropChance);
         if (this.getTypeMoC() == 32 && MoCreatures.proxy.rareItemDropChance < 25) {
             flag = (this.rand.nextInt(100) < 25);
         }
 
+        Item drop = Items.LEATHER;
+
         if (flag && (this.getTypeMoC() == 36 || (this.getTypeMoC() >= 50 && this.getTypeMoC() < 60))) //unicorn
         {
-            return MoCItems.unicornhorn;
+            drop = MoCItems.unicornhorn;
         }
 
-        if (this.getTypeMoC() == 38 && flag && this.world.provider.doesWaterVaporize()) //nightmare
+        if (this.getTypeMoC() == 38 && flag && this.world.getDimensionType().isUltrawarm()) //nightmare
         {
-            return MoCItems.heartfire;
+            drop = MoCItems.heartfire;
         }
         if (this.getTypeMoC() == 32 && flag) //bat horse
         {
-            return MoCItems.heartdarkness;
+            drop = MoCItems.heartdarkness;
         }
         if (this.getTypeMoC() == 26)//skely
         {
-            return Items.BONE;
+            drop = Items.BONE;
         }
         if ((this.getTypeMoC() == 23 || this.getTypeMoC() == 24 || this.getTypeMoC() == 25)) {
             if (flag) {
-                return MoCItems.heartundead;
+                drop = MoCItems.heartundead;
             }
-            return Items.ROTTEN_FLESH;
+            else {
+                drop = Items.ROTTEN_FLESH;
+                }
         }
 
         if (this.getTypeMoC() == 21 || this.getTypeMoC() == 22) {
-            return Items.GHAST_TEAR;
+            drop = Items.GHAST_TEAR;
         }
 
-        return Items.LEATHER;
+        this.entityDropItem(drop);
     }
 
     @Override
@@ -362,12 +371,11 @@ public class MoCEntityHorseMob extends MoCEntityMob {
         return (this.getHeight() * 0.75D) - 0.1D;
     }
 
-    @Override
-    public boolean getCanSpawnHere() {
-        if (this.getPosY() < 50D && !this.world.provider.doesWaterVaporize()) {
+    public boolean canSpawn(IWorld worldIn, SpawnReason spawnReasonIn) {
+        if (this.getPosition().getY() < 50D && !world.getDimensionType().isUltrawarm()) {
             setTypeMoC(32);
         }
-        return super.getCanSpawnHere();
+        return super.canSpawn(worldIn, spawnReasonIn);
     }
 
     public void UndeadFX() {
@@ -409,7 +417,7 @@ public class MoCEntityHorseMob extends MoCEntityMob {
     }
 
     // Adjusted to avoid most of the roof suffocation for now
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.9F;
     }
 }

@@ -8,9 +8,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.controller.FlyingMovementController;
+import net.minecraft.entity.ai.goal.WaterAvoidingRandomFlyingGoal;
 import net.minecraft.pathfinding.FlyingPathNavigator;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.math.BlockPos;
@@ -20,10 +23,10 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
 
     private int climbCounter;
 
-    protected MoCEntityInsect(World world) {
-        super(world);
-        setSize(0.4F, 0.3F);
-        this.moveHelper = new EntityFlyHelper(this);
+    protected MoCEntityInsect(EntityType<? extends MoCEntityInsect> type, World world) {
+        super(type, world);
+        //setSize(0.4F, 0.3F);
+        this.moveController = new FlyingMovementController(this, 10, false);
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
@@ -34,19 +37,19 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
     protected PathNavigator createNavigator(World worldIn) {
         FlyingPathNavigator FlyingPathNavigator = new FlyingPathNavigator(this, worldIn);
         FlyingPathNavigator.setCanEnterDoors(true);
-        FlyingPathNavigator.setCanFloat(true);
+        FlyingPathNavigator.setCanSwim(true);
         return FlyingPathNavigator;
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
     }
 
     @Override
-    protected void initEntityAI() {
-        super.initEntityAI();
-        this.goalSelector.addGoal(0, new EntityAIWanderAvoidWaterFlying(this, 0.8D));
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(0, new WaterAvoidingRandomFlyingGoal(this, 0.8D));
     }
 
     @Override
@@ -64,7 +67,7 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
         super.livingTick();
 
         if (!this.onGround && this.getMotion().getY() < 0.0D) {
-            this.getMotion().getY() *= 0.6D;
+            this.setMotion(this.getMotion().mul(1.0D, 0.6D, 1.0D));
         }
 
         if (!this.world.isRemote) {

@@ -23,7 +23,7 @@ public class MoCBlockNest extends Block {
 
     @Override
     public void onFallenUpon(World worldIn, BlockPos pos, Entity entityIn, float fallDistance) {
-        entityIn.fall(fallDistance, 0.2F);
+        entityIn.onLivingFall(fallDistance, 0.2F);
     }
 
     @Override

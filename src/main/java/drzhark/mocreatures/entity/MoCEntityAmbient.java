@@ -21,15 +21,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.World;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEntity {
@@ -42,18 +41,18 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
     protected String texture;
     protected boolean riderIsDisconnecting;
 
-    protected MoCEntityAmbient(World world) {
-        super(world);
+    protected MoCEntityAmbient(EntityType<? extends MoCEntityAmbient> type, World world) {
+        super(type, world);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public ITextComponent getName() {
-        ITextComponent entityString = this.getProfessionName();
+        String entityString = this.getType().getTranslationKey();
         if (!MoCreatures.proxy.verboseEntityNames || entityString == null) return super.getName();
         String translationKey = "entity." + entityString + ".verbose.name";
         String translatedString = I18n.format(translationKey);
-        return !translatedString.equals(translationKey) ? translatedString : super.getName();
+        return !translatedString.equals(translationKey) ? new TranslationTextComponent(translationKey) : super.getName();
     }
 
     @Override
@@ -81,8 +80,8 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(ADULT, false);
         this.dataManager.register(TYPE, 0);
         this.dataManager.register(AGE, 45);
@@ -169,7 +168,7 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
             if (isMovementCeased()) {
                 this.getNavigator().clearPath();
             }
-            this.getNavigator().onUpdateNavigation();
+            this.getNavigator().tick();
         }
         super.livingTick();
     }
@@ -238,19 +237,18 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
     }
 
     public void getMyOwnPath(Entity entity, float f) {
-        Path pathentity = this.getNavigator().getPathToEntityLiving(entity);
+        Path pathentity = this.getNavigator().pathfind(entity, 0);
         if (pathentity != null) {
             this.getNavigator().setPath(pathentity, 1D);
         }
     }
 
-    @Override
-    public boolean getCanSpawnHere() {
+    public static boolean getCanSpawnHere(EntityType<MoCEntityAmbient> type, IWorld world, SpawnReason reason, BlockPos pos, Random randomIn) {
         boolean willSpawn;
         boolean debug = MoCreatures.proxy.debug;
-        willSpawn = this.world.canSeeSky(new BlockPos(this)) && this.world.checkNoEntityCollision(this) && this.world.hasNoCollisions(this, this.getBoundingBox()) && !this.world.containsAnyLiquid(this.getBoundingBox());
+        willSpawn = world.canSeeSky(pos);
         if (willSpawn && debug)
-            MoCreatures.LOGGER.info("Ambient: " + this.getName() + " at: " + this.getPosition() + " State: " + this.world.getBlockState(this.getPosition()) + " biome: " + MoCTools.biomeName(world, getPosition()));
+            MoCreatures.LOGGER.info("Ambient: " + type.getName() + " at: " + pos + " State: " + world.getBlockState(pos) + " biome: " + MoCTools.biomeName(world, pos));
         return willSpawn;
     }
 
@@ -388,18 +386,6 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
         return (this instanceof IMoCTameable) && getIsTamed();
     }
 
-    /**
-     * Returns true if the entity is of the @link{EntityClassification} provided
-     *
-     * @param type          The EntityClassification type this entity is evaluating
-     * @param forSpawnCount If this is being invoked to check spawn count caps.
-     * @return If the creature is of the type provided
-     */
-    @Override
-    public boolean isCreatureType(EntityClassification type, boolean forSpawnCount) {
-        return type == EntityClassification.AMBIENT;
-    }
-
     @Override
     public boolean canAttackTarget(LivingEntity entity) {
         return false;
@@ -457,7 +443,8 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
     }
 
     @Override
-    public void fall(float f, float f1) {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
     }
 
     @Override
@@ -495,11 +482,6 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
     @Override
     public boolean getIsFlying() {
         return false;
-    }
-
-    @Override
-    public String getClazzString() {
-        return EntityList.getEntityString(this);
     }
 
     @Override

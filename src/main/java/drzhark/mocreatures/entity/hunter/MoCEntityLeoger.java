@@ -7,7 +7,11 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -17,13 +21,13 @@ import javax.annotation.Nullable;
 
 public class MoCEntityLeoger extends MoCEntityBigCat {
 
-    public MoCEntityLeoger(World world) {
-        super(world);
+    public MoCEntityLeoger(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(1.3F, 1.3815F);
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 40.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.5D);
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 40.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.5D);
     }
 
     @Override
@@ -100,7 +104,7 @@ public class MoCEntityLeoger extends MoCEntityBigCat {
         return entity.getHeight() < 2F && entity.getWidth() < 2F;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.92F;
     }
 }

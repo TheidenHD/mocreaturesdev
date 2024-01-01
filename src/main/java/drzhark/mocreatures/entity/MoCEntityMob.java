@@ -19,17 +19,20 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigator;
+import net.minecraft.pathfinding.SwimmerPathNavigator;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
@@ -39,6 +42,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 import java.util.UUID;
 
 public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
@@ -53,10 +57,10 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
     protected PathNavigator navigatorFlyer;
     protected EntityAIWanderMoC2 wander;
 
-    protected MoCEntityMob(World world) {
-        super(world);
+    protected MoCEntityMob(EntityType<? extends MoCEntityMob> type, World world) {
+        super(type, world);
         this.texture = "blank.jpg";
-        this.moveHelper = new EntityAIMoverHelperMoC(this);
+        this.moveController = new EntityAIMoverHelperMoC(this);
         this.navigatorWater = new SwimmerPathNavigator(this, world);
         this.navigatorFlyer = new PathNavigateFlyer(this, world);
         this.wander = new EntityAIWanderMoC2(this, 1.0D, 80);
@@ -66,15 +70,15 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
     @OnlyIn(Dist.CLIENT)
     @Override
     public ITextComponent getName() {
-        ITextComponent entityString = this.getProfessionName();
+        String entityString = this.getType().getTranslationKey();
         if (!MoCreatures.proxy.verboseEntityNames || entityString == null) return super.getName();
         String translationKey = "entity." + entityString + ".verbose.name";
         String translatedString = I18n.format(translationKey);
-        return !translatedString.equals(translationKey) ? translatedString : super.getName();
+        return !translatedString.equals(translationKey) ? new TranslationTextComponent(translationKey) : super.getName();
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return MonsterEntity.func_234295_eP_().createMutableAttribute(Attributes.MOVEMENT_SPEED, getMoveSpeed()).createMutableAttribute(Attributes.ATTACK_DAMAGE, getAttackStrenght()).createMutableAttribute(Attributes.MAX_HEALTH, 20.0D);
+        return MonsterEntity.func_234295_eP_().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.7F).createMutableAttribute(Attributes.ATTACK_DAMAGE, 2D).createMutableAttribute(Attributes.MAX_HEALTH, 20.0D);
     }
 
     @Override
@@ -88,10 +92,6 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
         return MoCreatures.proxy.getModelTexture(this.texture);
     }
 
-    protected double getAttackStrenght() {
-        return 2D;
-    }
-
     /**
      * Put your code to choose a texture / the mob type in here. Will be called
      * by default MocEntity constructors.
@@ -102,8 +102,8 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(ADULT, false);
         this.dataManager.register(TYPE, 0);
         this.dataManager.register(AGE, 45);
@@ -172,19 +172,18 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
     public void setOwnerPetId(int petId) {
     }
 
-    @Override
-    public boolean getCanSpawnHere() {
-        boolean willSpawn = super.getCanSpawnHere();
+    public static boolean getCanSpawnHere(EntityType<? extends MoCEntityMob> type, IServerWorld world, SpawnReason reason, BlockPos pos, Random randomIn) {
+        boolean willSpawn = MonsterEntity.canMonsterSpawnInLight(type, world, reason, pos, randomIn);
         boolean debug = MoCreatures.proxy.debug;
         if (willSpawn && debug)
-            MoCreatures.LOGGER.info("Mob: " + this.getName() + " at: " + this.getPosition() + " State: " + this.world.getBlockState(this.getPosition()) + " biome: " + MoCTools.biomeName(world, getPosition()));
+            MoCreatures.LOGGER.info("Mob: " + type.getName() + " at: " + pos + " State: " + world.getBlockState(pos) + " biome: " + MoCTools.biomeName(world, pos));
         return willSpawn;
     }
 
     public boolean entitiesToIgnore(Entity entity) {
         if ((!(entity instanceof MobEntity)) || (entity instanceof MonsterEntity) || (entity instanceof MoCEntityEgg))
             return true;
-        return entity instanceof MoCEntityKittyBed || entity instanceof MoCEntityLitterBox || this.getIsTamed() && entity instanceof MoCEntityAnimal && ((MoCEntityAnimal) entity).getIsTamed() || entity instanceof EntityWolf && !MoCreatures.proxy.attackWolves || entity instanceof MoCEntityHorse && !MoCreatures.proxy.attackHorses;
+        return entity instanceof MoCEntityKittyBed || entity instanceof MoCEntityLitterBox || this.getIsTamed() && entity instanceof MoCEntityAnimal && ((MoCEntityAnimal) entity).getIsTamed() || entity instanceof WolfEntity && !MoCreatures.proxy.attackWolves || entity instanceof MoCEntityHorse && !MoCreatures.proxy.attackHorses;
     }
 
     @Override
@@ -196,7 +195,7 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
     public void livingTick() {
         if (!this.world.isRemote) {
             if (getIsTamed() && this.rand.nextInt(200) == 0) {
-                MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageHealth(this.getEntityId(), this.getHealth()), new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageHealth(this.getEntityId(), this.getHealth()));
             }
 
             if (this.isHarmedByDaylight() && this.world.isDaytime()) {
@@ -218,7 +217,7 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
             }
         }
 
-        this.getNavigator().onUpdateNavigation();
+        this.getNavigator().tick();
         super.livingTick();
     }
 
@@ -233,7 +232,7 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
     @Override
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (!this.world.isRemote && getIsTamed()) {
-            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageHealth(this.getEntityId(), this.getHealth()), new PacketDistributor.TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageHealth(this.getEntityId(), this.getHealth()));
         }
         return super.attackEntityFrom(damagesource, i);
     }
@@ -266,10 +265,11 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
     }
 
     @Override
-    public void fall(float f, float f1) {
+    public  boolean onLivingFall(float distance, float damageMultiplier) {
         if (!isFlyer()) {
-            super.fall(f, f1);
+            return super.onLivingFall(distance, damageMultiplier);
         }
+        return false;
     }
 
     @Override
@@ -295,9 +295,7 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
 
             this.moveRelative(0.1F, vector);
             this.move(MoverType.SELF, this.getMotion());
-            this.getMotion().getX() *= 0.8999999761581421D;
-            this.getMotion().getY() *= 0.8999999761581421D;
-            this.getMotion().getZ() *= 0.8999999761581421D;
+            this.setMotion(this.getMotion().mul(0.8999999761581421D, 0.8999999761581421D, 0.8999999761581421D));
         } else {
             super.travel(vector);
         }
@@ -309,10 +307,6 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
      */
     @Override
     public void performAnimation(int attackType) {
-    }
-
-    public float getMoveSpeed() {
-        return 0.7F;
     }
 
     @Override
@@ -336,17 +330,17 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
     }
 
     @Override
-    protected boolean canDespawn() {
+    public boolean canDespawn(double distanceToClosestPlayer) {
         return !getIsTamed();
     }
 
     @Override
-    public void setDead() {
+    public void remove(boolean keepData) {
         // Server check required to prevent tamed entities from being duplicated on client-side
         if (!this.world.isRemote && (getIsTamed()) && (getHealth() > 0)) {
             return;
         }
-        super.setDead();
+        super.remove(keepData);
     }
 
     @Override
@@ -429,7 +423,7 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
 
     @Override
     public boolean attackEntityAsMob(Entity entityIn) {
-        boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), ((int) this.getEntityAttribute(Attributes.ATTACK_DAMAGE).getAttributeValue()));
+        boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), ((int) this.getAttributeValue(Attributes.ATTACK_DAMAGE)));
         if (flag) {
             this.applyEnchantments(this, entityIn);
         }
@@ -465,23 +459,6 @@ public abstract class MoCEntityMob extends MonsterEntity implements IMoCEntity {
     @Override
     public boolean getIsFlying() {
         return isFlyer();
-    }
-
-    /**
-     * Returns true if the entity is of the @link{EntityClassification} provided
-     *
-     * @param type          The EntityClassification type this entity is evaluating
-     * @param forSpawnCount If this is being invoked to check spawn count caps.
-     * @return If the creature is of the type provided
-     */
-    @Override
-    public boolean isCreatureType(EntityClassification type, boolean forSpawnCount) {
-        return type == EntityClassification.MONSTER;
-    }
-
-    @Override
-    public String getClazzString() {
-        return EntityList.getEntityString(this);
     }
 
     @Override

@@ -12,10 +12,11 @@ import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -27,8 +28,8 @@ public class MoCEntityBee extends MoCEntityInsect {
 
     private int soundCount;
 
-    public MoCEntityBee(World world) {
-        super(world);
+    public MoCEntityBee(EntityType<? extends MoCEntityBee> type, World world) {
+        super(type, world);
         this.texture = "bee.png";
     }
 
@@ -91,7 +92,7 @@ public class MoCEntityBee extends MoCEntityInsect {
 
     @Override
     public boolean isMyFavoriteFood(ItemStack stack) {
-        return !stack.isEmpty() && (stack.getItem() == Item.getItemFromBlock(Blocks.RED_FLOWER) || stack.getItem() == Item.getItemFromBlock(Blocks.YELLOW_FLOWER));
+        return !stack.isEmpty() && stack.getItem().isIn(ItemTags.FLOWERS);
     }
 
     @Override

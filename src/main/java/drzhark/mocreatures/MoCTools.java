@@ -17,8 +17,10 @@ import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageNameGUI;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockJukebox.TileEntityJukebox;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.EntityBoat;
@@ -31,8 +33,11 @@ import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
@@ -44,10 +49,13 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProvider;
 import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.spawner.WorldEntitySpawner;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -219,7 +227,7 @@ public class MoCTools {
     }
 
     public static void spawnNearPlayer(PlayerEntity player, int entityId, int numberToSpawn) {
-        WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(player.world.provider.getDimensionType().getId());
+        ServerWorld world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(player.world.provider.getDimensionType().getId());
         for (int i = 0; i < numberToSpawn; i++) {
             MobEntity entityliving = null;
             try {
@@ -491,13 +499,13 @@ public class MoCTools {
         return 0;
     }
 
-    public static String biomeName(World world, BlockPos pos) {
+    public static String biomeName(IWorld world, BlockPos pos) {
         BiomeProvider biomeProvider = world.getBiomeProvider();
         Biome biome = biomeProvider.getBiome(pos);
         return biome.biomeName;
     }
 
-    public static Biome biomeKind(World world, BlockPos pos) {
+    public static RegistryKey<Biome> biomeKind(World world, BlockPos pos) {
         return world.getBiome(pos);
     }
 
@@ -643,7 +651,7 @@ public class MoCTools {
                   shows explosion on clients!
                  */
                 if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
-                    entity.world.addParticle(ParticleTypes.EXPLOSION_NORMAL, (d14 + (d)) / 2D, (d16 + (d1)) / 2D, (d18 + (d2)) / 2D, d20, d22, d23);
+                    entity.world.addParticle(ParticleTypes.POOF, (d14 + (d)) / 2D, (d16 + (d1)) / 2D, (d18 + (d2)) / 2D, d20, d22, d23);
                     entity.getMotion().getX() -= 0.0010000000474974511D;
                     entity.getMotion().getY() -= 0.0010000000474974511D;
                 }
@@ -677,7 +685,7 @@ public class MoCTools {
                 if ((blockstate.getBlock() == Blocks.AIR) && (entity.world.rand.nextInt(8) == 0)) {
                     BlockEvent.BreakEvent event = null;
                     if (!entity.world.isRemote) {
-                        event = new BlockEvent.BreakEvent(entity.world, chunkposition1, blockstate, FakePlayerFactory.get((WorldServer) entity.world, MoCreatures.MOCFAKEPLAYER));
+                        event = new BlockEvent.BreakEvent(entity.world, chunkposition1, blockstate, FakePlayerFactory.get((ServerWorld) entity.world, MoCreatures.MOCFAKEPLAYER));
                     }
                     if (event != null && !event.isCanceled()) {
                         entity.world.setBlockState(chunkposition1, Blocks.FIRE.getDefaultState(), 3);
@@ -742,7 +750,7 @@ public class MoCTools {
                 if (mobGriefing(entity.world)) {
                     BlockEvent.BreakEvent event = null;
                     if (!entity.world.isRemote) {
-                        event = new BlockEvent.BreakEvent(entity.world, pos, stateTarget, FakePlayerFactory.get((WorldServer) entity.world, MoCreatures.MOCFAKEPLAYER));
+                        event = new BlockEvent.BreakEvent(entity.world, pos, stateTarget, FakePlayerFactory.get((ServerWorld) entity.world, MoCreatures.MOCFAKEPLAYER));
                     }
                     if (event != null && !event.isCanceled()) {
                         entity.world.setBlockToAir(pos);
@@ -849,7 +857,7 @@ public class MoCTools {
             if (blockstate.getBlock() != Blocks.AIR && blockstate.getBlockHardness(entity.world, pos) <= strength) {
                 BlockEvent.BreakEvent event = null;
                 if (!entity.world.isRemote) {
-                    event = new BlockEvent.BreakEvent(entity.world, pos, blockstate, FakePlayerFactory.get((WorldServer) entity.world, MoCreatures.MOCFAKEPLAYER));
+                    event = new BlockEvent.BreakEvent(entity.world, pos, blockstate, FakePlayerFactory.get((ServerWorld) entity.world, MoCreatures.MOCFAKEPLAYER));
                 }
                 if (event != null && !event.isCanceled()) {
                     blockstate.getBlock().dropBlockAsItemWithChance(entity.world, pos, blockstate, 0.20F * strength, 1);
@@ -909,7 +917,7 @@ public class MoCTools {
             UUID ownerId = entity.getOwnerId();
             PlayerEntity epOwner = null;
             if (ownerId != null) {
-                epOwner = entity.world.getPlayerEntityByUUID(entity.getOwnerId());
+                epOwner = entity.world.getPlayerByUuid(entity.getOwnerId());
             }
 
             try {
@@ -1032,7 +1040,7 @@ public class MoCTools {
     }
 
     public static void setPathToEntity(MobEntity creatureToMove, Entity entityTarget, float distance) {
-        Path pathentity = creatureToMove.getNavigator().getPathToEntityLiving(entityTarget);
+        Path pathentity = creatureToMove.getNavigator().pathfind(entityTarget);
         if (pathentity != null && distance < 12F) {
             creatureToMove.getNavigator().setPath(pathentity, 1D);
         }
@@ -1075,7 +1083,7 @@ public class MoCTools {
      */
     public static boolean findNearPlayerAndPoison(Entity poisoner, boolean needsToBeInWater) {
         PlayerEntity entityplayertarget = poisoner.world.getClosestPlayer(poisoner, 2D);
-        if (entityplayertarget != null && (!needsToBeInWater || entityplayertarget.isInWater()) && poisoner.getDistance(entityplayertarget) < 2.0F && !entityplayertarget.capabilities.disableDamage && !(entityplayertarget.getRidingEntity() instanceof EntityBoat)) {
+        if (entityplayertarget != null && (!needsToBeInWater || entityplayertarget.isInWater()) && poisoner.getDistance(entityplayertarget) < 2.0F && !entityplayertarget.abilities.disableDamage && !(entityplayertarget.getRidingEntity() instanceof EntityBoat)) {
             //don't poison players on boats
             entityplayertarget.addPotionEffect(new EffectInstance(Effects.POISON, 120, 0));
             return true;

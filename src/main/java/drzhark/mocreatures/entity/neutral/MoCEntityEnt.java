@@ -12,20 +12,27 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.world.BlockEvent;
 
@@ -33,23 +40,23 @@ import java.util.List;
 
 public class MoCEntityEnt extends MoCEntityAnimal {
 
-    public MoCEntityEnt(World world) {
-        super(world);
+    public MoCEntityEnt(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(1.4F, 7F);
         this.stepHeight = 2F;
         experienceValue = 10;
     }
 
     @Override
-    protected void initEntityAI() {
-        this.goalSelector.addGoal(1, new EntityAISwimming(this));
-        this.goalSelector.addGoal(5, new EntityAIAttackMelee(this, 1.0D, true));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new SwimGoal(this));
+        this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(6, new EntityAIWanderMoC2(this, 1.0D));
-        this.goalSelector.addGoal(7, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 8.0F));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 60.0D).createMutableAttribute(Attributes.ARMOR, 7.0D);
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 60.0D).createMutableAttribute(Attributes.ARMOR, 7.0D);
         this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.5D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1.0D);
     }
 
@@ -155,7 +162,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
             if (entity instanceof AnimalEntity && entity.getWidth() < 0.6F && entity.getHeight() < 0.6F) {
                 AnimalEntity entityanimal = (AnimalEntity) entity;
                 if (entityanimal.getAttackTarget() == null && !MoCTools.isTamed(entityanimal)) {
-                    Path pathentity = entityanimal.getNavigator().getPathToEntityLiving(this);
+                    Path pathentity = entityanimal.getNavigator().pathfind(this);
                     entityanimal.setAttackTarget(this);
                     entityanimal.getNavigator().setPath(pathentity, 1D);
                     j++;
@@ -178,7 +185,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
             BlockEvent.BreakEvent event = null;
             if (!this.world.isRemote) {
                 event =
-                        new BlockEvent.BreakEvent(this.world, pos, block.getDefaultState(), FakePlayerFactory.get((WorldServer) this.world,
+                        new BlockEvent.BreakEvent(this.world, pos, block.getDefaultState(), FakePlayerFactory.get((ServerWorld) this.world,
                                 MoCreatures.MOCFAKEPLAYER));
             }
             if (event != null && !event.isCanceled()) {
@@ -202,7 +209,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
                     //BlockEvent.BreakEvent event = null;
                     //if (!this.world.isRemote) {
                     //    event =
-                    //            new BlockEvent.BreakEvent(this.world, pos1, iblockstate, FakePlayerFactory.get((WorldServer) this.world,
+                    //            new BlockEvent.BreakEvent(this.world, pos1, iblockstate, FakePlayerFactory.get((ServerWorld) this.world,
                     //                    MoCreatures.MOCFAKEPLAYER));
                     //}
                     //cantPlant = (event != null && event.isCanceled());
@@ -309,7 +316,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
         return false;
     }
 
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.73F;
     }
 }

@@ -16,12 +16,18 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -33,7 +39,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 /**
  * Biome - specific Forest Desert plains Swamp Jungle Tundra Taiga Extreme Hills
@@ -56,8 +62,8 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     private int movInt;
     private boolean isNearPlayer;
 
-    public MoCEntitySnake(World world) {
-        super(world);
+    public MoCEntitySnake(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(1.4F, 0.5F);
         this.bodyswing = 2F;
         this.movInt = this.rand.nextInt(10);
@@ -66,18 +72,18 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void initEntityAI() {
+    protected void registerGoals() {
         this.goalSelector.addGoal(2, new EntityAIPanicMoC(this, 0.8D));
         this.goalSelector.addGoal(3, new EntityAIFleeFromPlayer(this, 0.8D, 4D));
-        this.goalSelector.addGoal(4, new EntityAIAttackMelee(this, 1.0D, true));
+        this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 0.8D, 30));
-        this.goalSelector.addGoal(9, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
-        //this.targetgoalSelector.addGoal(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
-        this.targetgoalSelector.addGoal(2, new EntityAIHunt<>(this, PlayerEntity.class, true));
+        this.goalSelector.addGoal(9, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        //this.targetSelector.addGoal(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
+        this.targetSelector.addGoal(2, new EntityAIHunt<>(this, PlayerEntity.class, true));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes();
+        return TODO_REPLACE.registerAttributes();
         this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.MAX_HEALTH, 10.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
@@ -138,7 +144,8 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void fall(float f, float f1) {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
     }
 
     @Override
@@ -413,7 +420,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
 
                 /*if (entityplayer1.isBeingRidden()
                         && (entityplayer1.riddenByEntity instanceof MoCEntityMouse || entityplayer1.riddenByEntity instanceof MoCEntityBird)) {
-                    PathEntity pathentity = this.navigator.getPathToEntityLiving(entityplayer1);
+                    PathEntity pathentity = this.navigator.pathfind(entityplayer1);
                     this.navigator.setPath(pathentity, 1D);
                     setPissed(false);
                     this.hissCounter = 0;
@@ -451,8 +458,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
 
     public void setBiting(boolean flag) {
         if (flag && !this.world.isRemote) {
-            MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getEntityId(), 0),
-                    new TargetPoint(this.world.provider.getDimensionType().getId(), this.getPosX(), this.getPosY(), this.getPosZ(), 64));
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 0));
         }
         this.isBiting = flag;
     }
@@ -505,7 +511,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
 
     @Override
     protected void playStepSound(BlockPos pos, Block par4) {
-        if (isInsideOfMaterial(Material.WATER)) {
+        if (areEyesInFluid(FluidTags.WATER)) {
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SNAKE_SWIM);
         }
         // TODO - add sound for slither

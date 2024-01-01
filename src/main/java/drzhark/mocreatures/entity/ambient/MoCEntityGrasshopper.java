@@ -9,7 +9,9 @@ import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
@@ -24,12 +26,12 @@ public class MoCEntityGrasshopper extends MoCEntityInsect {
     private int jumpCounter;
     private int soundCounter;
 
-    public MoCEntityGrasshopper(World world) {
-        super(world);
+    public MoCEntityGrasshopper(EntityType<? extends MoCEntityGrasshopper> type, World world) {
+        super(type, world);
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.ARMOR, 1.0D);
+        return MoCEntityGrasshopper.registerAttributes().createMutableAttribute(Attributes.ARMOR, 1.0D);
     }
 
     @Override
@@ -102,9 +104,7 @@ public class MoCEntityGrasshopper extends MoCEntityInsect {
         if (!this.world.isRemote) {
             if (onGround && ((getMotion().getX() > 0.05D) || (getMotion().getZ() > 0.05D) || (getMotion().getX() < -0.05D) || (getMotion().getZ() < -0.05D)))
                 if (this.jumpCounter == 0) {
-                    this.getMotion().getY() = 0.45D;
-                    this.getMotion().getX() *= 5D;
-                    this.getMotion().getZ() *= 5D;
+                    this.setMotion(this.getMotion().getX() * 5D, 0.45D, this.getMotion().getZ() * 5D);
                     this.jumpCounter = 1;
                 }
         }

@@ -11,8 +11,11 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -20,6 +23,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
@@ -31,8 +35,8 @@ public class MoCEntityKittyBed extends MobEntity {
     private static final DataParameter<Integer> SHEET_COLOR = EntityDataManager.createKey(MoCEntityKittyBed.class, DataSerializers.VARINT);
     public float milkLevel;
 
-    public MoCEntityKittyBed(World world) {
-        super(world);
+    public MoCEntityKittyBed(EntityType<? extends TODO_REPLACE> type, World world) {
+        super(type, world);
         setSize(1.0F, 0.15F);
         setNoAI(true);
         this.milkLevel = 0.0F;
@@ -55,12 +59,12 @@ public class MoCEntityKittyBed extends MobEntity {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        super.applyEntityAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 20.0D);
+        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 20.0D);
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(HAS_MILK, Boolean.FALSE);
         this.dataManager.register(HAS_FOOD, Boolean.FALSE);
         this.dataManager.register(PICKED_UP, Boolean.FALSE);
@@ -101,7 +105,7 @@ public class MoCEntityKittyBed extends MobEntity {
 
     @Override
     public boolean canBePushed() {
-        return !this.isDead;
+        return !this.removed;
     }
 
     @Override
@@ -120,7 +124,8 @@ public class MoCEntityKittyBed extends MobEntity {
     }
 
     @Override
-    public void fall(float f, float f1) {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
     }
 
     @Override
@@ -142,7 +147,7 @@ public class MoCEntityKittyBed extends MobEntity {
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && !getHasFood() && !getHasMilk()) {
             if (stack.getItem() == MoCItems.petfood) {
-                if (!player.capabilities.isCreativeMode) stack.shrink(1);
+                if (!player.abilities.isCreativeMode) stack.shrink(1);
                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTYBED_POURINGFOOD);
                 setHasMilk(false);
                 setHasFood(true);
@@ -161,7 +166,7 @@ public class MoCEntityKittyBed extends MobEntity {
                 if (getHasFood()) player.inventory.addItemStackToInventory(new ItemStack(MoCItems.petfood, 1));
                 else if (getHasMilk()) player.inventory.addItemStackToInventory(new ItemStack(Items.MILK_BUCKET, 1));
                 MoCTools.playCustomSound(this, SoundEvents.ENTITY_ITEM_PICKUP, 0.2F);
-                setDead();
+                remove(keepData);
             } else {
                 setRotationYawHead((float) MoCTools.roundToNearest90Degrees(this.rotationYawHead) + 90.0F);
                 MoCTools.playCustomSound(this, SoundEvents.ENTITY_ITEMFRAME_ROTATE_ITEM);
