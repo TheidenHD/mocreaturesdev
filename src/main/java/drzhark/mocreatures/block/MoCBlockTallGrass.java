@@ -35,7 +35,6 @@ public class MoCBlockTallGrass extends BlockBush implements IShearable {
 
     public MoCBlockTallGrass(MapColor mapColor, boolean flammable) {
         super(Material.VINE, mapColor);
-        this.setCreativeTab(MoCreatures.tabMoC);
         this.setSoundType(SoundType.PLANT);
     }
 

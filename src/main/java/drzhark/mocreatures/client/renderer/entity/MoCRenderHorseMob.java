@@ -6,14 +6,13 @@ package drzhark.mocreatures.client.renderer.entity;
 import drzhark.mocreatures.client.model.MoCModelHorseMob;
 import drzhark.mocreatures.entity.hostile.MoCEntityHorseMob;
 import drzhark.mocreatures.proxy.MoCProxyClient;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.matrixStackIn;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCRenderHorseMob extends RenderLiving<MoCEntityHorseMob> {
+public class MoCRenderHorseMob extends MobRenderer<MoCEntityHorseMob> {
 
     public MoCRenderHorseMob(MoCModelHorseMob modelbase) {
         super(MoCProxyClient.mc.getRenderManager(), modelbase, 0.5F);
@@ -25,7 +24,7 @@ public class MoCRenderHorseMob extends RenderLiving<MoCEntityHorseMob> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityHorseMob entityhorsemob) {
+    public ResourceLocation getEntityTexture(MoCEntityHorseMob entityhorsemob) {
         return entityhorsemob.getTexture();
     }
 }

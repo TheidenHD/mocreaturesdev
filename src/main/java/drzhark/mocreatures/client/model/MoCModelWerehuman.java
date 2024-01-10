@@ -3,12 +3,13 @@
  */
 package drzhark.mocreatures.client.model;
 
-import net.minecraft.client.model.ModelBiped;
+import drzhark.mocreatures.entity.hostile.MoCEntityWerewolf;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelWerehuman extends ModelBiped {
+public class MoCModelWerehuman<T extends MoCEntityWerewolf> extends BipedModel<T> {
 
     public MoCModelWerehuman() {
         //TODO 4.1 FIX

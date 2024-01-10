@@ -3,11 +3,11 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import drzhark.mocreatures.client.model.MoCModelGolem;
 import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
-import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -21,7 +21,7 @@ public class MoCRenderGolem extends MoCRenderMoC<MoCEntityGolem> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityGolem par1Entity) {
+    public ResourceLocation getEntityTexture(MoCEntityGolem par1Entity) {
         return par1Entity.getTexture();
     }
 
@@ -34,12 +34,13 @@ public class MoCRenderGolem extends MoCRenderMoC<MoCEntityGolem> {
             this.mocRenderer = render;
         }
 
-        public void doRenderLayer(MoCEntityGolem entity, float f, float f1, float f2, float f3, float f4, float f5, float f6) {
+        @Override
+        public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, MoCEntityGolem entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 
             ResourceLocation effectTexture = entity.getEffectTexture();
             if (effectTexture != null) {
                 matrixStackIn.depthMask(false);
-                float var4 = entity.ticksExisted + f1;
+                float var4 = entity.ticksExisted + limbSwingAmount;
                 bindTexture(effectTexture);
                 matrixStackIn.matrixMode(5890);
                 matrixStackIn.loadIdentity();
@@ -53,7 +54,7 @@ public class MoCRenderGolem extends MoCRenderMoC<MoCEntityGolem> {
 
                 matrixStackIn.blendFunc(1, 1);
                 this.mocModel.setModelAttributes(this.mocRenderer.getMainModel());
-                this.mocModel.setLivingAnimations(entity, f, f1, f2);
+                this.mocModel.setLivingAnimations(entity, limbSwing, limbSwingAmount, partialTicks);
                 this.mocModel.render(entity, f, f1, f3, f4, f5, f6);
                 matrixStackIn.matrixMode(5890);
                 matrixStackIn.loadIdentity();

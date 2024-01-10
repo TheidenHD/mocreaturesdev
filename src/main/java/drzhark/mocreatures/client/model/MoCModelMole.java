@@ -87,7 +87,6 @@ public class MoCModelMole<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         MoCEntityMole mole = (MoCEntityMole) entity;
         float yOffset = mole.getAdjustedYOffset();
         matrixStackIn.push();
@@ -112,16 +111,16 @@ public class MoCModelMole<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        //super.setRotationAngles(f, f1, f2, f3, f4, f5);
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        //super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
 
-        this.Head.rotateAngleY = f3 / 57.29578F;
-        this.Head.rotateAngleX = f4 / 57.29578F;
+        this.Head.rotateAngleY = netHeadYaw / 57.29578F;
+        this.Head.rotateAngleX = headPitch / 57.29578F;
         this.Nose.rotateAngleX = 0.2617994F + this.Head.rotateAngleX;
         this.Nose.rotateAngleY = this.Head.rotateAngleY;
 
-        float RLegXRot = MathHelper.cos((f) + 3.141593F) * 0.8F * f1;
-        float LLegXRot = MathHelper.cos(f) * 0.8F * f1;
+        float RLegXRot = MathHelper.cos((limbSwing) + 3.141593F) * 0.8F * limbSwingAmount;
+        float LLegXRot = MathHelper.cos(limbSwing) * 0.8F * limbSwingAmount;
 
         this.RLeg.rotateAngleY = RLegXRot;
         this.RFingers.rotateAngleY = this.RLeg.rotateAngleY;

@@ -75,8 +75,8 @@ public class MoCModelDolphin extends EntityModel<MoCEntityDolphin> {
         this.RightFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
-    public void setRotationAngles(MoCEntityDolphin entityIn, float f, float f1, float f2, float f3, float f4) {
-        this.RTailFin.rotateAngleX = MathHelper.cos(f * 0.4F) * f1;
-        this.LTailFin.rotateAngleX = MathHelper.cos(f * 0.4F) * f1;
+    public void setRotationAngles(MoCEntityDolphin entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.RTailFin.rotateAngleX = MathHelper.cos(limbSwing * 0.4F) * limbSwingAmount;
+        this.LTailFin.rotateAngleX = MathHelper.cos(limbSwing * 0.4F) * limbSwingAmount;
     }
 }

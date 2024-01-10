@@ -579,7 +579,7 @@ public class MoCModelElephant<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        //super.render(entity, f, f1, f2, f3, f4, f5);
+        //super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
         MoCEntityElephant elephant = (MoCEntityElephant) entity;
         this.tusks = elephant.getTusks();
         int type = elephant.getTypeMoC();
@@ -591,7 +591,7 @@ public class MoCModelElephant<T extends Entity> extends EntityModel<T> {
         this.isSitting = (elephant.sitCounter != 0);
         //boolean moveTail = (elephant.tailCounter != 0);
 
-        setRotationAngles(f, f1, f2, f3, f4, f5);
+        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
 
         if (tusks == 0) {
             this.LeftTuskB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -750,123 +750,123 @@ public class MoCModelElephant<T extends Entity> extends EntityModel<T> {
     /**
      * Used to adjust the Y offset of the model cubes
      */
-    private void AdjustY(float f) {
-        this.Head.rotationPointY = f - 10F;
-        this.Neck.rotationPointY = f - 8F;
-        this.HeadBump.rotationPointY = f - 10F;
-        this.Chin.rotationPointY = f - 10F;
-        this.LowerLip.rotationPointY = f - 10F;
-        this.Back.rotationPointY = f - 4F;
-        this.LeftSmallEar.rotationPointY = f - 10F;
-        this.LeftBigEar.rotationPointY = f - 10F;
-        this.RightSmallEar.rotationPointY = f - 10F;
-        this.RightBigEar.rotationPointY = f - 10F;
-        this.Hump.rotationPointY = f - 13F;
-        this.Body.rotationPointY = f - 2F;
-        this.Skirt.rotationPointY = f + 8F;
-        this.RightTuskA.rotationPointY = f - 10F;
-        this.RightTuskB.rotationPointY = f - 10F;
-        this.RightTuskC.rotationPointY = f - 10F;
-        this.RightTuskD.rotationPointY = f - 10F;
-        this.LeftTuskA.rotationPointY = f - 10F;
-        this.LeftTuskB.rotationPointY = f - 10F;
-        this.LeftTuskC.rotationPointY = f - 10F;
-        this.LeftTuskD.rotationPointY = f - 10F;
-        this.TrunkA.rotationPointY = f - 3F;
-        this.TrunkB.rotationPointY = f + 5.5F;
-        this.TrunkC.rotationPointY = f + 13F;
-        this.TrunkD.rotationPointY = f + 16F;
-        this.TrunkE.rotationPointY = f + 19.5F;
-        this.FrontRightUpperLeg.rotationPointY = f + 4F;
-        this.FrontRightLowerLeg.rotationPointY = f + 14F;
-        this.FrontLeftUpperLeg.rotationPointY = f + 4F;
-        this.FrontLeftLowerLeg.rotationPointY = f + 14F;
-        this.BackRightUpperLeg.rotationPointY = f + 4F;
-        this.BackRightLowerLeg.rotationPointY = f + 14F;
-        this.BackLeftUpperLeg.rotationPointY = f + 4F;
-        this.BackLeftLowerLeg.rotationPointY = f + 14F;
-        this.TailRoot.rotationPointY = f - 8F;
-        this.Tail.rotationPointY = f - 8F;
-        this.TailPlush.rotationPointY = f - 8F;
-        this.StorageRightBedroll.rotationPointY = f - 10.2F;
-        this.StorageLeftBedroll.rotationPointY = f - 10.2F;
-        this.StorageFrontRightChest.rotationPointY = f - 1.2F;
-        this.StorageBackRightChest.rotationPointY = f - 1.2F;
-        this.StorageFrontLeftChest.rotationPointY = f - 1.2F;
-        this.StorageBackLeftChest.rotationPointY = f - 1.2F;
-        this.StorageRightBlankets.rotationPointY = f - 10.2F;
-        this.StorageLeftBlankets.rotationPointY = f - 10.2F;
-        this.HarnessBlanket.rotationPointY = f - 13.2F;
-        this.HarnessUpperBelt.rotationPointY = f - 2F;
-        this.HarnessLowerBelt.rotationPointY = f - 2F;
-        this.CabinPillow.rotationPointY = f - 16F;
-        this.CabinLeftRail.rotationPointY = f - 23F;
-        this.Cabin.rotationPointY = f - 35F;
-        this.CabinRightRail.rotationPointY = f - 23F;
-        this.CabinBackRail.rotationPointY = f - 23F;
-        this.CabinRoof.rotationPointY = f - 34F;
-        this.FortBackRightWall.rotationPointY = f - 16F;
-        this.FortBackLeftWall.rotationPointY = f - 16F;
-        this.FortBackWall.rotationPointY = f - 16F;
-        this.FortNeckBeam.rotationPointY = f - 16F;
-        this.FortBackBeam.rotationPointY = f - 16F;
-        this.FortFloor1.rotationPointY = f - 16F;
-        this.FortFloor2.rotationPointY = f - 16F;
-        this.FortFloor3.rotationPointY = f - 16F;
+    private void AdjustY(float limbSwing) {
+        this.Head.rotationPointY = limbSwing - 10F;
+        this.Neck.rotationPointY = limbSwing - 8F;
+        this.HeadBump.rotationPointY = limbSwing - 10F;
+        this.Chin.rotationPointY = limbSwing - 10F;
+        this.LowerLip.rotationPointY = limbSwing - 10F;
+        this.Back.rotationPointY = limbSwing - 4F;
+        this.LeftSmallEar.rotationPointY = limbSwing - 10F;
+        this.LeftBigEar.rotationPointY = limbSwing - 10F;
+        this.RightSmallEar.rotationPointY = limbSwing - 10F;
+        this.RightBigEar.rotationPointY = limbSwing - 10F;
+        this.Hump.rotationPointY = limbSwing - 13F;
+        this.Body.rotationPointY = limbSwing - 2F;
+        this.Skirt.rotationPointY = limbSwing + 8F;
+        this.RightTuskA.rotationPointY = limbSwing - 10F;
+        this.RightTuskB.rotationPointY = limbSwing - 10F;
+        this.RightTuskC.rotationPointY = limbSwing - 10F;
+        this.RightTuskD.rotationPointY = limbSwing - 10F;
+        this.LeftTuskA.rotationPointY = limbSwing - 10F;
+        this.LeftTuskB.rotationPointY = limbSwing - 10F;
+        this.LeftTuskC.rotationPointY = limbSwing - 10F;
+        this.LeftTuskD.rotationPointY = limbSwing - 10F;
+        this.TrunkA.rotationPointY = limbSwing - 3F;
+        this.TrunkB.rotationPointY = limbSwing + 5.5F;
+        this.TrunkC.rotationPointY = limbSwing + 13F;
+        this.TrunkD.rotationPointY = limbSwing + 16F;
+        this.TrunkE.rotationPointY = limbSwing + 19.5F;
+        this.FrontRightUpperLeg.rotationPointY = limbSwing + 4F;
+        this.FrontRightLowerLeg.rotationPointY = limbSwing + 14F;
+        this.FrontLeftUpperLeg.rotationPointY = limbSwing + 4F;
+        this.FrontLeftLowerLeg.rotationPointY = limbSwing + 14F;
+        this.BackRightUpperLeg.rotationPointY = limbSwing + 4F;
+        this.BackRightLowerLeg.rotationPointY = limbSwing + 14F;
+        this.BackLeftUpperLeg.rotationPointY = limbSwing + 4F;
+        this.BackLeftLowerLeg.rotationPointY = limbSwing + 14F;
+        this.TailRoot.rotationPointY = limbSwing - 8F;
+        this.Tail.rotationPointY = limbSwing - 8F;
+        this.TailPlush.rotationPointY = limbSwing - 8F;
+        this.StorageRightBedroll.rotationPointY = limbSwing - 10.2F;
+        this.StorageLeftBedroll.rotationPointY = limbSwing - 10.2F;
+        this.StorageFrontRightChest.rotationPointY = limbSwing - 1.2F;
+        this.StorageBackRightChest.rotationPointY = limbSwing - 1.2F;
+        this.StorageFrontLeftChest.rotationPointY = limbSwing - 1.2F;
+        this.StorageBackLeftChest.rotationPointY = limbSwing - 1.2F;
+        this.StorageRightBlankets.rotationPointY = limbSwing - 10.2F;
+        this.StorageLeftBlankets.rotationPointY = limbSwing - 10.2F;
+        this.HarnessBlanket.rotationPointY = limbSwing - 13.2F;
+        this.HarnessUpperBelt.rotationPointY = limbSwing - 2F;
+        this.HarnessLowerBelt.rotationPointY = limbSwing - 2F;
+        this.CabinPillow.rotationPointY = limbSwing - 16F;
+        this.CabinLeftRail.rotationPointY = limbSwing - 23F;
+        this.Cabin.rotationPointY = limbSwing - 35F;
+        this.CabinRightRail.rotationPointY = limbSwing - 23F;
+        this.CabinBackRail.rotationPointY = limbSwing - 23F;
+        this.CabinRoof.rotationPointY = limbSwing - 34F;
+        this.FortBackRightWall.rotationPointY = limbSwing - 16F;
+        this.FortBackLeftWall.rotationPointY = limbSwing - 16F;
+        this.FortBackWall.rotationPointY = limbSwing - 16F;
+        this.FortNeckBeam.rotationPointY = limbSwing - 16F;
+        this.FortBackBeam.rotationPointY = limbSwing - 16F;
+        this.FortFloor1.rotationPointY = limbSwing - 16F;
+        this.FortFloor2.rotationPointY = limbSwing - 16F;
+        this.FortFloor3.rotationPointY = limbSwing - 16F;
 
-        this.StorageUpLeft.rotationPointY = f - 16F;
-        this.StorageUpRight.rotationPointY = f - 16F;
+        this.StorageUpLeft.rotationPointY = limbSwing - 16F;
+        this.StorageUpRight.rotationPointY = limbSwing - 16F;
 
-        this.TuskLD1.rotationPointY = f - 10F;
-        this.TuskLD2.rotationPointY = f - 10F;
-        this.TuskLD3.rotationPointY = f - 10F;
-        this.TuskLD4.rotationPointY = f - 10F;
-        this.TuskLD5.rotationPointY = f - 10F;
-        this.TuskRD1.rotationPointY = f - 10F;
-        this.TuskRD2.rotationPointY = f - 10F;
-        this.TuskRD3.rotationPointY = f - 10F;
-        this.TuskRD4.rotationPointY = f - 10F;
-        this.TuskRD5.rotationPointY = f - 10F;
-        this.TuskLI1.rotationPointY = f - 10F;
-        this.TuskLI2.rotationPointY = f - 10F;
-        this.TuskLI3.rotationPointY = f - 10F;
-        this.TuskLI4.rotationPointY = f - 10F;
-        this.TuskLI5.rotationPointY = f - 10F;
-        this.TuskRI1.rotationPointY = f - 10F;
-        this.TuskRI2.rotationPointY = f - 10F;
-        this.TuskRI3.rotationPointY = f - 10F;
-        this.TuskRI4.rotationPointY = f - 10F;
-        this.TuskRI5.rotationPointY = f - 10F;
-        this.TuskLW1.rotationPointY = f - 10F;
-        this.TuskLW2.rotationPointY = f - 10F;
-        this.TuskLW3.rotationPointY = f - 10F;
-        this.TuskLW4.rotationPointY = f - 10F;
-        this.TuskLW5.rotationPointY = f - 10F;
-        this.TuskRW1.rotationPointY = f - 10F;
-        this.TuskRW2.rotationPointY = f - 10F;
-        this.TuskRW3.rotationPointY = f - 10F;
-        this.TuskRW4.rotationPointY = f - 10F;
-        this.TuskRW5.rotationPointY = f - 10F;
+        this.TuskLD1.rotationPointY = limbSwing - 10F;
+        this.TuskLD2.rotationPointY = limbSwing - 10F;
+        this.TuskLD3.rotationPointY = limbSwing - 10F;
+        this.TuskLD4.rotationPointY = limbSwing - 10F;
+        this.TuskLD5.rotationPointY = limbSwing - 10F;
+        this.TuskRD1.rotationPointY = limbSwing - 10F;
+        this.TuskRD2.rotationPointY = limbSwing - 10F;
+        this.TuskRD3.rotationPointY = limbSwing - 10F;
+        this.TuskRD4.rotationPointY = limbSwing - 10F;
+        this.TuskRD5.rotationPointY = limbSwing - 10F;
+        this.TuskLI1.rotationPointY = limbSwing - 10F;
+        this.TuskLI2.rotationPointY = limbSwing - 10F;
+        this.TuskLI3.rotationPointY = limbSwing - 10F;
+        this.TuskLI4.rotationPointY = limbSwing - 10F;
+        this.TuskLI5.rotationPointY = limbSwing - 10F;
+        this.TuskRI1.rotationPointY = limbSwing - 10F;
+        this.TuskRI2.rotationPointY = limbSwing - 10F;
+        this.TuskRI3.rotationPointY = limbSwing - 10F;
+        this.TuskRI4.rotationPointY = limbSwing - 10F;
+        this.TuskRI5.rotationPointY = limbSwing - 10F;
+        this.TuskLW1.rotationPointY = limbSwing - 10F;
+        this.TuskLW2.rotationPointY = limbSwing - 10F;
+        this.TuskLW3.rotationPointY = limbSwing - 10F;
+        this.TuskLW4.rotationPointY = limbSwing - 10F;
+        this.TuskLW5.rotationPointY = limbSwing - 10F;
+        this.TuskRW1.rotationPointY = limbSwing - 10F;
+        this.TuskRW2.rotationPointY = limbSwing - 10F;
+        this.TuskRW3.rotationPointY = limbSwing - 10F;
+        this.TuskRW4.rotationPointY = limbSwing - 10F;
+        this.TuskRW5.rotationPointY = limbSwing - 10F;
 
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {//, byte tusks, boolean sitting, boolean tail) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {//, byte tusks, boolean sitting, boolean tail) {
 
-        float RLegXRot = MathHelper.cos((f * 0.6662F) + 3.141593F) * 0.8F * f1;
-        float LLegXRot = MathHelper.cos(f * 0.6662F) * 0.8F * f1;
+        float RLegXRot = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
+        float LLegXRot = MathHelper.cos(limbSwing * 0.6662F) * 0.8F * limbSwingAmount;
 
-        if (f4 < 0) {
-            f4 = 0;
+        if (headPitch < 0) {
+            headPitch = 0;
         }
 
-        float HeadXRot = (f4 / 57.29578F);
-        if (f3 > 20F) {
-            f3 = 20F;
+        float HeadXRot = (headPitch / 57.29578F);
+        if (netHeadYaw > 20F) {
+            netHeadYaw = 20F;
         }
-        if (f3 < -20F) {
-            f3 = -20F;
+        if (netHeadYaw < -20F) {
+            netHeadYaw = -20F;
         }
-        float HeadYRot = (f3 / 57.29578F);
+        float HeadYRot = (netHeadYaw / 57.29578F);
 
         float f10 = 0F;
         if (isSitting) {
@@ -905,16 +905,16 @@ public class MoCModelElephant<T extends Entity> extends EntityModel<T> {
 
         //ears
         /*
-         * f = distance walked f1 = speed 0 - 1 f2 = timer
+         * limbSwing = distance walked limbSwingAmount = speed 0 - 1 ageInTicks = timer
          */
         /*
          * Ear random animation
          */
         float EarF = 0F;
 
-        /*float f2a = f2 % 100F;
+        /*float f2a = ageInTicks % 100F;
         if (f2a > 60 & f2a < 90) {
-            EarF = MathHelper.cos(f2 * 0.5F) * 0.35F;
+            EarF = MathHelper.cos(ageInTicks * 0.5F) * 0.35F;
         }*/
 
         if (this.earCounter != 0) {
@@ -1110,16 +1110,16 @@ public class MoCModelElephant<T extends Entity> extends EntityModel<T> {
         this.FortBackLeftWall.rotateAngleZ = (LLegXRot / 50F);
         this.FortBackWall.rotateAngleX = 0F - (LLegXRot / 50F);
 
-        //f1 = movement speed!
-        //f2 = timer!
+        //limbSwingAmount = movement speed!
+        //ageInTicks = timer!
         //tail
-        float tailMov = (f1 * 0.9F);
+        float tailMov = (limbSwingAmount * 0.9F);
         if (tailMov < 0) {
             tailMov = 0;
         }
 
         if (this.tailCounter != 0) {
-            this.TailRoot.rotateAngleY = MathHelper.cos(f2 * 0.4F) * 1.3F;
+            this.TailRoot.rotateAngleY = MathHelper.cos(ageInTicks * 0.4F) * 1.3F;
             tailMov = 30F / this.radianF;
         } else {
             this.TailRoot.rotateAngleY = 0F;

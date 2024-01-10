@@ -125,8 +125,6 @@ public class MoCModelBoar<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Trout.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Tusks.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -153,9 +151,9 @@ public class MoCModelBoar<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        float XAngle = (f4 / 57.29578F);
-        float YAngle = f3 / 57.29578F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        float XAngle = (headPitch / 57.29578F);
+        float YAngle = netHeadYaw / 57.29578F;
         this.Head.rotateAngleX = 0.2617994F + XAngle;
         this.Head.rotateAngleY = YAngle;
         this.HeadMane.rotateAngleX = 0.4363323F + XAngle;
@@ -171,8 +169,8 @@ public class MoCModelBoar<T extends Entity> extends EntityModel<T> {
         this.RightEar.rotateAngleX = 0.6981317F + XAngle;
         this.RightEar.rotateAngleY = YAngle;
 
-        float LLegRotX = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
-        float RLegRotX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.4F * f1;
+        float LLegRotX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        float RLegRotX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.4F * limbSwingAmount;
 
         this.UpperLegLeft.rotateAngleX = LLegRotX;
         this.LowerLegLeft.rotateAngleX = LLegRotX;

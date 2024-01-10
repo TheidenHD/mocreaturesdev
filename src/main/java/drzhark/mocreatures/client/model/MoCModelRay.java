@@ -145,12 +145,10 @@ public class MoCModelRay<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
         MoCEntityRay ray = (MoCEntityRay) entity;
         this.attacking = ray.isPoisoning();
         this.isMantaRay = ray.isMantaRay();
 
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.BodyU.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -188,11 +186,11 @@ public class MoCModelRay<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        //super.setRotationAngles(f, f1, f2, f3, f4, f5);
-        float rotF = MathHelper.cos(f * 0.6662F) * 1.5F * f1;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        //super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
+        float rotF = MathHelper.cos(limbSwing * 0.6662F) * 1.5F * limbSwingAmount;
         float f6 = 20F;
-        this.Tail.rotateAngleY = MathHelper.cos(f * 0.6662F) * 0.7F * f1;
+        this.Tail.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F) * 0.7F * limbSwingAmount;
         this.RWingA.rotateAngleZ = rotF;
         this.LWingA.rotateAngleZ = -rotF;
         rotF += (rotF / f6);

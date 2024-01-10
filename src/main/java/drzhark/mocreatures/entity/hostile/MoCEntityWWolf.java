@@ -14,22 +14,21 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.HurtByTargetGoal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.monster.SkeletonEntity;
+import net.minecraft.entity.monster.ZombieEntity;
+import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
@@ -44,9 +43,9 @@ public class MoCEntityWWolf extends MoCEntityMob {
     public int mouthCounter;
     public int tailCounter;
 
-    public MoCEntityWWolf(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityWWolf(EntityType<? extends MoCEntityWWolf> type, World world) {
         super(type, world);
-        setSize(0.8F, 1.1F);
+        //setSize(0.8F, 1.1F);
         setAdult(true);
         experienceValue = 5;
     }
@@ -62,7 +61,7 @@ public class MoCEntityWWolf extends MoCEntityMob {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 15.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.5D);
+        return MoCEntityMob.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 15.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.5D);
     }
 
     @Override
@@ -119,7 +118,7 @@ public class MoCEntityWWolf extends MoCEntityMob {
         int j = MathHelper.floor(getBoundingBox().minY);
         int k = MathHelper.floor(this.getPosZ());
 
-        Biome biome = MoCTools.biomeKind(this.world, new BlockPos(i, j, k));
+        RegistryKey<Biome> biome = MoCTools.biomeKind(this.world, new BlockPos(i, j, k));
         if (BiomeDictionary.hasType(biome, Type.SNOWY)) {
             setTypeMoC(3);
         }
@@ -128,7 +127,7 @@ public class MoCEntityWWolf extends MoCEntityMob {
     }
 
     public static boolean getCanSpawnHere(EntityType<? extends MoCEntityMob> type, IServerWorld world, SpawnReason reason, BlockPos pos, Random randomIn) {
-        return MoCEntityMob.getCanSpawnHere(type, world, reason, pos, randomIn) && this.world.canSeeSky(new BlockPos(this));
+        return MoCEntityMob.getCanSpawnHere(type, world, reason, pos, randomIn) && world.canSeeSky(new BlockPos(pos));
     }
 
     //TODO move this
@@ -139,7 +138,7 @@ public class MoCEntityWWolf extends MoCEntityMob {
         for (Entity entity1 : list) {
             if (!(entity1 instanceof LivingEntity) || (entity1 == entity) || (entity1 == entity.getRidingEntity())
                     || (entity1 == entity.getRidingEntity()) || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity)
-                    || (entity1 instanceof MoCEntityBigCat) || (entity1 instanceof MoCEntityBear) || (entity1 instanceof EntityCow)
+                    || (entity1 instanceof MoCEntityBigCat) || (entity1 instanceof MoCEntityBear) || (entity1 instanceof CowEntity)
                     || ((entity1 instanceof WolfEntity) && !(MoCreatures.proxy.attackWolves))
                     || ((entity1 instanceof MoCEntityHorse) && !(MoCreatures.proxy.attackHorses))) {
                 continue;
@@ -205,7 +204,7 @@ public class MoCEntityWWolf extends MoCEntityMob {
                 }
                 MonsterEntity entitymob = (MonsterEntity) entity;
                 if (entitymob.getRidingEntity() == null
-                        && (entitymob instanceof EntitySkeleton || entitymob instanceof EntityZombie || entitymob instanceof MoCEntitySilverSkeleton)) {
+                        && (entitymob instanceof SkeletonEntity || entitymob instanceof ZombieEntity || entitymob instanceof MoCEntitySilverSkeleton)) {
                     entitymob.startRiding(this);
                     break;
                 }

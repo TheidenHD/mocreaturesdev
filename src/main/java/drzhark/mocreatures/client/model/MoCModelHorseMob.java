@@ -26,7 +26,7 @@ public class MoCModelHorseMob extends MoCModelHorse {
         boolean rider = (entityhorse.isBeingRidden());
         boolean floating = (entityhorse.isFlyer() && entityhorse.isOnAir());
 
-        setRotationAngles(f, f1, f2, f3, f4, f5, eating, rider, floating, standing, false, moveTail, wings, flapwings, false, 0);
+        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, eating, rider, floating, standing, false, moveTail, wings, flapwings, false, 0);
         this.Ear1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Ear2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Neck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);

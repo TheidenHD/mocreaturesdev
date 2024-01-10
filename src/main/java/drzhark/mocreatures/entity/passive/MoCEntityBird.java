@@ -21,6 +21,7 @@ import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -111,7 +112,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
     @Override
     public boolean checkSpawningBiome() {
         BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getBoundingBox().minY), this.getPosZ());
-        Biome currentbiome = MoCTools.biomeKind(this.world, pos);
+        RegistryKey<Biome> currentbiome = MoCTools.biomeKind(this.world, pos);
 
         try {
             if (BiomeDictionary.hasType(currentbiome, BiomeDictionary.Type.MESA)) {

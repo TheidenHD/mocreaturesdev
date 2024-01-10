@@ -149,7 +149,6 @@ public class MoCModelJellyFish<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         MoCEntityJellyFish jellyfish = (MoCEntityJellyFish) entity;
         boolean glowing = jellyfish.isGlowing();
         boolean outOfWater = !jellyfish.isInWater();
@@ -158,7 +157,7 @@ public class MoCModelJellyFish<T extends Entity> extends EntityModel<T> {
             matrixStackIn.translate(0F, 0.6F, -0.3F);
         } else {
             matrixStackIn.translate(0F, 0.2F, 0F);
-            matrixStackIn.rotate((float) (f1 * -60D), -1F, 0.0F, 0.0F);
+            matrixStackIn.rotate((float) (limbSwingAmount * -60D), -1F, 0.0F, 0.0F);
         }
         matrixStackIn.enableBlend();
         if (!glowing || outOfWater) {
@@ -195,8 +194,8 @@ public class MoCModelJellyFish<T extends Entity> extends EntityModel<T> {
         matrixStackIn.pop();
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        float f6 = f1 * 2.0F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        float f6 = limbSwingAmount * 2.0F;
         if (f6 > 1.0F) {
             f6 = 1.0F;
         }

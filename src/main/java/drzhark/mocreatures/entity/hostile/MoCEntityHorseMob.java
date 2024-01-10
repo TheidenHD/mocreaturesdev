@@ -372,7 +372,7 @@ public class MoCEntityHorseMob extends MoCEntityMob {
     }
 
     public boolean canSpawn(IWorld worldIn, SpawnReason spawnReasonIn) {
-        if (this.getPosition().getY() < 50D && !world.getDimensionType().isUltrawarm()) {
+        if (this.getPosY() < 50D && !world.getDimensionType().isUltrawarm()) {
             setTypeMoC(32);
         }
         return super.canSpawn(worldIn, spawnReasonIn);

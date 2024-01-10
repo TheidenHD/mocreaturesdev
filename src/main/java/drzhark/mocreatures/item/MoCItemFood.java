@@ -3,44 +3,36 @@
  */
 package drzhark.mocreatures.item;
 
+import com.mojang.datafixers.util.Pair;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemFood;
+import net.minecraft.item.Food;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.world.World;
 
-public class MoCItemFood extends ItemFood {
+public class MoCItemFood extends MoCItem {
     public int itemUseDuration;
-    public boolean alwaysEdible;
 
-    public MoCItemFood(String name, int amount) {
-        super(amount, 0.6F, false);
-        this.setCreativeTab(MoCreatures.tabMoC);
-        this.setRegistryName(MoCConstants.MOD_ID, name);
-        this.setTranslationKey(name);
+    private MoCItemFood(MoCItemFood.Builder builder) {
+        super(builder.properties.food(builder.foodBuilder.build()), builder.name);
+        itemUseDuration = builder.itemUseDuration;
     }
 
-    public MoCItemFood(String name, int amount, float saturation, boolean isWolfFood) {
-        super(amount, saturation, isWolfFood);
-        this.setCreativeTab(MoCreatures.tabMoC);
-        this.setRegistryName(MoCConstants.MOD_ID, name);
-        this.setTranslationKey(name);
+    private MoCItemFood(Item.Properties properties, String name) {
+        super(properties, name);
     }
-
-    public MoCItemFood(String name, int amount, float saturation, boolean isWolfFood, int eatingSpeed) {
-        super(amount, saturation, isWolfFood);
-        this.setCreativeTab(MoCreatures.tabMoC);
-        this.setRegistryName(MoCConstants.MOD_ID, name);
-        this.setTranslationKey(name);
-        itemUseDuration = eatingSpeed; // 32 by default
+    private MoCItemFood(Item.Properties properties, String name, int eatingSpeed) {
+        super(properties, name);
+        itemUseDuration = eatingSpeed;
     }
 
     @Override
-    public int getMaxItemUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack stack) {
         if (itemUseDuration == 0) {
             return 32;
         }
@@ -62,8 +54,42 @@ public class MoCItemFood extends ItemFood {
         super.onFoodEaten(stack, world, player);
     }
 
-    public MoCItemFood setAlwaysEdible() {
-        this.alwaysEdible = true;
-        return this;
+
+    public static class Builder {
+        private Food.Builder foodBuilder;
+        private int itemUseDuration;
+        private Item.Properties properties;
+        private String name;
+
+        public Builder(Item.Properties properties, String name, int amount) {
+            this(properties, name, amount, 0.6F, false);
+        }
+
+        public Builder(Item.Properties properties, String name, int amount, float saturation, boolean isWolfFood) {
+            this(properties, name, amount, saturation, isWolfFood, 32);
+        }
+
+        public Builder(Item.Properties properties, String name, int amount, float saturation, boolean isWolfFood, int eatingSpeed) {
+            this.properties = properties;
+            this.name = name;
+            foodBuilder = (new Food.Builder()).hunger(amount).saturation(saturation);
+            if(isWolfFood)
+                foodBuilder.meat();
+            itemUseDuration = eatingSpeed; // 32 by default
+        }
+
+        public Builder setAlwaysEdible() {
+            foodBuilder.setAlwaysEdible();
+            return this;
+        }
+
+        public Builder setPotionEffect(EffectInstance effectIn, float probability) {
+            foodBuilder.effect(() -> effectIn, probability);
+            return this;
+        }
+
+        public MoCItemFood build() {
+            return new MoCItemFood(this);
+        }
     }
 }

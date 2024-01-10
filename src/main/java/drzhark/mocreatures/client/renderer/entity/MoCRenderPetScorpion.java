@@ -5,7 +5,6 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.client.model.MoCModelScorpion;
 import drzhark.mocreatures.entity.hunter.MoCEntityPetScorpion;
-import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -18,8 +17,8 @@ public class MoCRenderPetScorpion extends MoCRenderMoC<MoCEntityPetScorpion> {
     }
 
     @Override
-    public void doRender(MoCEntityPetScorpion entityscorpion, double d, double d1, double d2, float f, float f1) {
-        super.doRender(entityscorpion, d, d1, d2, f, f1);
+    public void render(MoCEntityPetScorpion entityscorpion, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+        super.render(entityscorpion, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
 
     @Override
@@ -74,7 +73,7 @@ public class MoCRenderPetScorpion extends MoCRenderMoC<MoCEntityPetScorpion> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityPetScorpion entityscorpion) {
+    public ResourceLocation getEntityTexture(MoCEntityPetScorpion entityscorpion) {
         return entityscorpion.getTexture();
     }
 }

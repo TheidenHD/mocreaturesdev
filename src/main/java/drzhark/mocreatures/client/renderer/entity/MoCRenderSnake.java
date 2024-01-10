@@ -4,8 +4,6 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.hunter.MoCEntitySnake;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -19,7 +17,7 @@ public class MoCRenderSnake extends MoCRenderMoC<MoCEntitySnake> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntitySnake par1Entity) {
+    public ResourceLocation getEntityTexture(MoCEntitySnake par1Entity) {
         return par1Entity.getTexture();
     }
 

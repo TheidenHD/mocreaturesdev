@@ -80,8 +80,6 @@ public class MoCModelSmallFish<T extends Entity> extends EntityModel<T> {
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         float scale = 0.0715F;
 
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         MoCEntitySmallFish smallFish = (MoCEntitySmallFish) entity;
         float yOffset = smallFish.getAdjustedYOffset();
         float xOffset = smallFish.getAdjustedXOffset();
@@ -89,16 +87,16 @@ public class MoCModelSmallFish<T extends Entity> extends EntityModel<T> {
         matrixStackIn.push();
         matrixStackIn.translate(xOffset, yOffset, zOffset);
         matrixStackIn.rotate(90.0F, 0.0F, 1.0F, 0.0F);
-        this.BodyFlat.render(scale);
-        this.BodyRomboid.render(scale);
-        this.MidBodyFin.render(scale);
-        this.UpperFinA.render(scale);
-        this.UpperFinB.render(scale);
-        this.UpperFinC.render(scale);
-        this.LowerFinA.render(scale);
-        this.LowerFinB.render(scale);
-        this.LowerFinC.render(scale);
-        this.Tail.render(scale);
+        this.BodyFlat.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.BodyRomboid.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.MidBodyFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.UpperFinA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.UpperFinB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.UpperFinC.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LowerFinA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LowerFinB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.LowerFinC.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         matrixStackIn.pop();
     }
 
@@ -108,9 +106,9 @@ public class MoCModelSmallFish<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        float tailMov = MathHelper.cos(f * 0.8F) * f1 * 0.6F;
-        float finMov = MathHelper.cos(f2 * 0.4F) * 0.2F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        float tailMov = MathHelper.cos(limbSwing * 0.8F) * limbSwingAmount * 0.6F;
+        float finMov = MathHelper.cos(ageInTicks * 0.4F) * 0.2F;
 
         this.Tail.rotateAngleY = tailMov;
         this.MidBodyFin.rotateAngleY = 0.7853982F + finMov;

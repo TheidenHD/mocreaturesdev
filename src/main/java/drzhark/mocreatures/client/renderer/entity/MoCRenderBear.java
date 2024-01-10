@@ -5,7 +5,6 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.client.model.MoCModelBear;
 import drzhark.mocreatures.entity.hunter.MoCEntityBear;
-import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -34,7 +33,7 @@ public class MoCRenderBear extends MoCRenderMoC<MoCEntityBear> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityBear entitybear) {
+    public ResourceLocation getEntityTexture(MoCEntityBear entitybear) {
         return entitybear.getTexture();
     }
 }

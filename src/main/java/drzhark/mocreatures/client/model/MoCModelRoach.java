@@ -155,7 +155,7 @@ public class MoCModelRoach<T extends Entity> extends EntityModel<T> {
         MoCEntityRoach entityroach = (MoCEntityRoach) entity;
         boolean isFlying = (entityroach.getIsFlying() || entityroach.getMotion().getY() < -0.1D);
 
-        setRotationAngles(f, f1, f2, f3, f4, f5, isFlying);
+        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, isFlying);
         this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         //LAnthenna.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         //LAnthennaB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -193,14 +193,14 @@ public class MoCModelRoach<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, boolean isFlying) {
-        this.Head.rotateAngleX = -2.171231F + (f4 / 57.29578F);
-        //Head.rotateAngleY = f3 / 57.29578F;
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, boolean isFlying) {
+        this.Head.rotateAngleX = -2.171231F + (headPitch / 57.29578F);
+        //Head.rotateAngleY = netHeadYaw / 57.29578F;
 
-        //f1 = movement speed!
-        //f2 = timer!
+        //limbSwingAmount = movement speed!
+        //ageInTicks = timer!
 
-        float antMov = 5F / this.radianF + (f1 * 1.5F);
+        float antMov = 5F / this.radianF + (limbSwingAmount * 1.5F);
 
         this.LAnthenna.rotateAngleZ = -antMov;
         this.RAnthenna.rotateAngleZ = antMov;
@@ -211,16 +211,16 @@ public class MoCModelRoach<T extends Entity> extends EntityModel<T> {
         float frontLegAdj = 0F;
 
         if (isFlying) {
-            float WingRot = MathHelper.cos((f2 * 2.0F)) * 0.7F;
+            float WingRot = MathHelper.cos((ageInTicks * 2.0F)) * 0.7F;
             this.RightWing.rotateAngleY = 1.047198F + WingRot;
             this.LeftWing.rotateAngleY = -1.047198F - WingRot;
-            legMov = (f1 * 1.5F);
+            legMov = (limbSwingAmount * 1.5F);
             legMovB = legMov;
             frontLegAdj = 1.4F;
 
         } else {
-            legMov = MathHelper.cos((f * 1.5F) + 3.141593F) * 0.6F * f1;
-            legMovB = MathHelper.cos(f * 1.5F) * 0.8F * f1;
+            legMov = MathHelper.cos((limbSwing * 1.5F) + 3.141593F) * 0.6F * limbSwingAmount;
+            legMovB = MathHelper.cos(limbSwing * 1.5F) * 0.8F * limbSwingAmount;
         }
 
         //AntennaB.rotateAngleX = 2.88506F - legMov;

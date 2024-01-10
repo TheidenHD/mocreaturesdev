@@ -8,17 +8,15 @@ import drzhark.mocreatures.client.model.MoCModelGoat;
 import drzhark.mocreatures.entity.neutral.MoCEntityGoat;
 import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.matrixStackIn;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCRenderGoat extends RenderLiving<MoCEntityGoat> {
+public class MoCRenderGoat extends MobRenderer<MoCEntityGoat> {
 
     private final MoCModelGoat tempGoat;
     float depth = 0F;
@@ -29,7 +27,7 @@ public class MoCRenderGoat extends RenderLiving<MoCEntityGoat> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityGoat entitygoat) {
+    public ResourceLocation getEntityTexture(MoCEntityGoat entitygoat) {
         return entitygoat.getTexture();
     }
 
@@ -40,7 +38,7 @@ public class MoCRenderGoat extends RenderLiving<MoCEntityGoat> {
     }
 
     @Override
-    public void doRender(MoCEntityGoat entitygoat, double d, double d1, double d2, float f, float f1) {
+    public void render(MoCEntityGoat entitygoat, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         this.tempGoat.typeInt = entitygoat.getTypeMoC();
         this.tempGoat.age = entitygoat.getAge() * 0.01F;
         this.tempGoat.bleat = entitygoat.getBleating();
@@ -49,7 +47,7 @@ public class MoCRenderGoat extends RenderLiving<MoCEntityGoat> {
         this.tempGoat.earMov = entitygoat.earMovement();
         this.tempGoat.tailMov = entitygoat.tailMovement();
         this.tempGoat.eatMov = entitygoat.mouthMovement();
-        super.doRender(entitygoat, d, d1, d2, f, f1);
+        super.render(entitygoat, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         boolean flag = MoCreatures.proxy.getDisplayPetName() && !(entitygoat.getPetName()).isEmpty();
         boolean flag1 = MoCreatures.proxy.getDisplayPetHealth();
         if (entitygoat.getIsTamed()) {

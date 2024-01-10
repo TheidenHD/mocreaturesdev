@@ -4,16 +4,17 @@
 package drzhark.mocreatures.client.renderer.fx;
 
 import drzhark.mocreatures.MoCreatures;
-import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.TexturedParticle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.FMLClientHandler;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCEntityFXVanish extends Particle {
+public class MoCEntityFXVanish extends TexturedParticle {
 
     private final double portalPosX;
     private final double portalPosY;
@@ -27,14 +28,14 @@ public class MoCEntityFXVanish extends Particle {
         this.particleRed = red;
         this.particleGreen = green;
         this.particleBlue = blue;
-        this.getMotion().getX() = par8;
-        this.getMotion().getY() = par10 * 5D;
-        this.getMotion().getZ() = par12;
-        this.portalPosX = this.getPosX() = par2;
-        this.portalPosY = this.getPosY() = par4;// + 0.7D;
-        this.portalPosZ = this.getPosZ() = par6;
+        this.motionX = par8;
+        this.motionY = par10 * 5D;
+        this.motionZ = par12;
+        this.portalPosX = this.posX = par2;
+        this.portalPosY = this.posY = par4;// + 0.7D;
+        this.portalPosZ = this.posZ = par6;
         this.implode = flag;
-        this.particleMaxAge = (int) (Math.random() * 10.0D) + 70;
+        this.maxAge = (int) (Math.random() * 10.0D) + 70;
     }
 
     /**
@@ -50,26 +51,26 @@ public class MoCEntityFXVanish extends Particle {
      */
     @Override
     public void tick() {
-        this.prevPosX = this.getPosX();
-        this.prevPosY = this.getPosY();
-        this.prevPosZ = this.getPosZ();
+        this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
 
         int speeder = 0;
         float sizeExp = 2.0F;
         if (this.implode) {
-            speeder = (this.particleMaxAge / 2);
+            speeder = (this.maxAge / 2);
             sizeExp = 5.0F;
         }
 
-        float var1 = (float) (this.particleAge + speeder) / (float) this.particleMaxAge;
+        float var1 = (float) (this.age + speeder) / (float) this.maxAge;
         float var2 = var1;
         var1 = -var1 + var1 * var1 * sizeExp;//5 insteaf of 2 makes an explosion
         var1 = 1.0F - var1;
-        this.getPosX() = this.portalPosX + this.getMotion().getX() * var1;
-        this.getPosY() = this.portalPosY + this.getMotion().getY() * var1 + (1.0F - var2);
-        this.getPosZ() = this.portalPosZ + this.getMotion().getZ() * var1;
+        this.posX = this.portalPosX + this.motionX * var1;
+        this.posY = this.portalPosY + this.motionY * var1 + (1.0F - var2);
+        this.posZ = this.portalPosZ + this.motionZ * var1;
 
-        if (this.particleAge++ >= this.particleMaxAge) {
+        if (this.age++ >= this.maxAge) {
             this.setExpired();
         }
     }
@@ -77,10 +78,11 @@ public class MoCEntityFXVanish extends Particle {
     @Override
     public void renderParticle(BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, float par3, float par4, float par5, float par6, float par7) {
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(MoCreatures.proxy.getMiscTexture("fx_vanish.png"));
+        Vector3d vector3d = renderInfo.getProjectedView();
         float scale = 0.1F * this.particleScale;
-        float xPos = (float) (this.prevPosX + (this.getPosX() - this.prevPosX) * partialTicks - interpPosX);
-        float yPos = (float) (this.prevPosY + (this.getPosY() - this.prevPosY) * partialTicks - interpPosY);
-        float zPos = (float) (this.prevPosZ + (this.getPosZ() - this.prevPosZ) * partialTicks - interpPosZ);
+        float xPos = (float)(MathHelper.lerp((double)partialTicks, this.prevPosX, this.posX) - vector3d.getX());
+        float yPos = (float)(MathHelper.lerp((double)partialTicks, this.prevPosY, this.posY) - vector3d.getY());
+        float zPos = (float)(MathHelper.lerp((double)partialTicks, this.prevPosZ, this.posZ) - vector3d.getZ());
         float colorIntensity = 1.0F;
         int i = this.getBrightnessForRender(partialTicks);
         int j = i >> 16 & 65535;

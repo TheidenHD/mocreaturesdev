@@ -150,9 +150,8 @@ public class MoCLegacyModelScorpion<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void render(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        this.setRotationAngles(f, f1, f2, f3, f4, f5);
+    public void render(final Entity entity, final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float f5) {
+        this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
         this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.RearEnd.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Leg8.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -177,7 +176,7 @@ public class MoCLegacyModelScorpion<T extends Entity> extends EntityModel<T> {
         this.Tail5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
-    public void setRotationAngles(final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
+    public void setRotationAngles(final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float f5) {
         final float f6 = 0.7853982f;
         this.Leg1.rotateAngleZ = -f6;
         this.Leg2.rotateAngleZ = f6;
@@ -197,14 +196,14 @@ public class MoCLegacyModelScorpion<T extends Entity> extends EntityModel<T> {
         this.Leg6.rotateAngleY = f8 - f7;
         this.Leg7.rotateAngleY = -f8 * 2.0f + f7;
         this.Leg8.rotateAngleY = f8 * 2.0f - f7;
-        final float f9 = -(MathHelper.cos(f * 0.6662f * 2.0f + 0.0f) * 0.4f) * f1;
-        final float f10 = -(MathHelper.cos(f * 0.6662f * 2.0f + 3.141593f) * 0.4f) * f1;
-        final float f11 = -(MathHelper.cos(f * 0.6662f * 2.0f + 1.570796f) * 0.4f) * f1;
-        final float f12 = -(MathHelper.cos(f * 0.6662f * 2.0f + 4.712389f) * 0.4f) * f1;
-        final float f13 = Math.abs(MathHelper.sin(f * 0.6662f + 0.0f) * 0.4f) * f1;
-        final float f14 = Math.abs(MathHelper.sin(f * 0.6662f + 3.141593f) * 0.4f) * f1;
-        final float f15 = Math.abs(MathHelper.sin(f * 0.6662f + 1.570796f) * 0.4f) * f1;
-        final float f16 = Math.abs(MathHelper.sin(f * 0.6662f + 4.712389f) * 0.4f) * f1;
+        final float f9 = -(MathHelper.cos(limbSwing * 0.6662f * 2.0f + 0.0f) * 0.4f) * limbSwingAmount;
+        final float f10 = -(MathHelper.cos(limbSwing * 0.6662f * 2.0f + 3.141593f) * 0.4f) * limbSwingAmount;
+        final float f11 = -(MathHelper.cos(limbSwing * 0.6662f * 2.0f + 1.570796f) * 0.4f) * limbSwingAmount;
+        final float f12 = -(MathHelper.cos(limbSwing * 0.6662f * 2.0f + 4.712389f) * 0.4f) * limbSwingAmount;
+        final float f13 = Math.abs(MathHelper.sin(limbSwing * 0.6662f + 0.0f) * 0.4f) * limbSwingAmount;
+        final float f14 = Math.abs(MathHelper.sin(limbSwing * 0.6662f + 3.141593f) * 0.4f) * limbSwingAmount;
+        final float f15 = Math.abs(MathHelper.sin(limbSwing * 0.6662f + 1.570796f) * 0.4f) * limbSwingAmount;
+        final float f16 = Math.abs(MathHelper.sin(limbSwing * 0.6662f + 4.712389f) * 0.4f) * limbSwingAmount;
         final ModelRenderer leg1 = this.Leg1;
         leg1.rotateAngleY += f9;
         final ModelRenderer leg2 = this.Leg2;
@@ -285,7 +284,7 @@ public class MoCLegacyModelScorpion<T extends Entity> extends EntityModel<T> {
             this.LHand.rotateAngleY = 0.27925f + f18;
             this.LHandB.rotateAngleY = 0.27925f + f18;
         } else {
-            final float mov = MathHelper.cos(f * 0.4f) * 0.3f * f1;
+            final float mov = MathHelper.cos(limbSwing * 0.4f) * 0.3f * limbSwingAmount;
             this.Tail1.rotateAngleX = mov * 0.8f;
             this.Tail2.rotateAngleX = mov;
             this.Tail3.rotateAngleX = mov;

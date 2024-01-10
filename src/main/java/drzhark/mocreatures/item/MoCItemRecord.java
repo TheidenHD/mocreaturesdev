@@ -4,28 +4,26 @@
 package drzhark.mocreatures.item;
 
 import drzhark.mocreatures.MoCConstants;
-import drzhark.mocreatures.MoCreatures;
-import net.minecraft.item.ItemRecord;
+import net.minecraft.item.Item;
+import net.minecraft.item.MusicDiscItem;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class MoCItemRecord extends ItemRecord {
+public class MoCItemRecord extends MusicDiscItem {
 
     public static ResourceLocation RECORD_SHUFFLE_RESOURCE = new ResourceLocation(MoCConstants.MOD_ID, "shuffling");
 
-    public MoCItemRecord(String name, SoundEvent soundEvent) {
-        super(name, soundEvent);
-        this.setCreativeTab(MoCreatures.tabMoC);
+    public MoCItemRecord(int comparatorValueIn, String name, SoundEvent soundEvent, Item.Properties builder) {
+        super(comparatorValueIn, soundEvent, builder);
         this.setRegistryName(MoCConstants.MOD_ID, name);
-        this.setTranslationKey(name);
     }
 
     @OnlyIn(Dist.CLIENT)
     /*
      * Return the title for this record.
      */ public String getRecordTitle() {
-        return "MoC - " + this.getRecordNameLocal();
+        return "MoC - " + this.getDescription();
     }
 }

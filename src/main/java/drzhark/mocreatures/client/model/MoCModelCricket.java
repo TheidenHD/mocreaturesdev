@@ -126,7 +126,7 @@ public class MoCModelCricket<T extends Entity> extends EntityModel<T> {
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         MoCEntityCricket entitycricket = (MoCEntityCricket) entity;
         boolean isFlying = (entitycricket.getIsFlying() || entitycricket.getMotion().getY() < -0.1D);
-        setRotationAngles(f, f1, f2, f3, f4, f5, isFlying);
+        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, isFlying);
         this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Antenna.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.AntennaB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -164,7 +164,7 @@ public class MoCModelCricket<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, boolean isFlying) {
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, boolean isFlying) {
 
         float legMov;
         float legMovB;
@@ -172,13 +172,13 @@ public class MoCModelCricket<T extends Entity> extends EntityModel<T> {
         float frontLegAdj = 0F;
 
         if (isFlying) {
-            legMov = (f1 * 1.5F);
+            legMov = (limbSwingAmount * 1.5F);
             legMovB = legMov;
             frontLegAdj = 1.4F;
 
         } else {
-            legMov = MathHelper.cos((f * 1.5F) + 3.141593F) * 2.0F * f1;
-            legMovB = MathHelper.cos(f * 1.5F) * 2.0F * f1;
+            legMov = MathHelper.cos((limbSwing * 1.5F) + 3.141593F) * 2.0F * limbSwingAmount;
+            legMovB = MathHelper.cos(limbSwing * 1.5F) * 2.0F * limbSwingAmount;
         }
 
         this.AntennaB.rotateAngleX = 2.88506F - legMov;

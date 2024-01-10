@@ -137,17 +137,15 @@ public class MoCModelSilverSkeleton<T extends MoCEntitySilverSkeleton> extends E
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        super.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         MoCEntitySilverSkeleton samurai = (MoCEntitySilverSkeleton) entity;
         boolean sprinting = samurai.isSprinting();
         this.leftAttack = samurai.attackCounterLeft;
         this.rightAttack = samurai.attackCounterRight;
         this.riding = samurai.getRidingEntity() != null;
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         matrixStackIn.push();
-        if (sprinting && f1 > 0.3F) {
+        if (sprinting && limbSwingAmount > 0.3F) {
             //matrixStackIn.push();
-            matrixStackIn.rotate((float) (f1 * -20D), -1F, 0.0F, 0.0F);
+            matrixStackIn.rotate((float) (limbSwingAmount * -20D), -1F, 0.0F, 0.0F);
             //renderParts(f5);
             //matrixStackIn.pop();
         }
@@ -189,29 +187,29 @@ public class MoCModelSilverSkeleton<T extends MoCEntitySilverSkeleton> extends E
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        float hRotY = f3 / 57.29578F;
-        float hRotX = f4 / 57.29578F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        float hRotY = netHeadYaw / 57.29578F;
+        float hRotX = headPitch / 57.29578F;
 
         this.Head.rotateAngleX = hRotX;
         this.Head.rotateAngleY = hRotY;
 
-        float RLegXRot = MathHelper.cos((f * 0.6662F) + 3.141593F) * 0.8F * f1;
-        float LLegXRot = MathHelper.cos(f * 0.6662F) * 0.8F * f1;
-        // float ClothRot = MathHelper.cos(f * 0.9F) * 0.6F * f1;
+        float RLegXRot = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
+        float LLegXRot = MathHelper.cos(limbSwing * 0.6662F) * 0.8F * limbSwingAmount;
+        // float ClothRot = MathHelper.cos(limbSwing * 0.9F) * 0.6F * limbSwingAmount;
 
         float RLegXRotB = RLegXRot;
         float LLegXRotB = LLegXRot;
 
         if (leftAttack == 0) {
-            this.LeftArm.rotateAngleZ = (MathHelper.cos(f2 * 0.09F) * 0.05F) - 0.05F;
+            this.LeftArm.rotateAngleZ = (MathHelper.cos(ageInTicks * 0.09F) * 0.05F) - 0.05F;
             this.LeftArm.rotateAngleX = RLegXRot;
         } else {
             this.LeftArm.rotateAngleX = -(MathHelper.cos((leftAttack) * 0.18F) * 3F);
         }
 
         if (rightAttack == 0) {
-            this.RightArm.rotateAngleZ = -(MathHelper.cos(f2 * 0.09F) * 0.05F) + 0.05F;
+            this.RightArm.rotateAngleZ = -(MathHelper.cos(ageInTicks * 0.09F) * 0.05F) + 0.05F;
             this.RightArm.rotateAngleX = LLegXRot;
         } else {
             this.RightArm.rotateAngleX = -(MathHelper.cos((rightAttack) * 0.18F) * 3F);
@@ -249,10 +247,10 @@ public class MoCModelSilverSkeleton<T extends MoCEntitySilverSkeleton> extends E
             this.RightKnee.rotateAngleX = this.RightThigh.rotateAngleX;
             this.LeftKnee.rotateAngleX = this.LeftThigh.rotateAngleX;
 
-            float RLegXRot2 = MathHelper.cos(((f + 0.1F) * 0.6662F) + 3.141593F) * 0.8F * f1;
-            float LLegXRot2 = MathHelper.cos((f + 0.1F) * 0.6662F) * 0.8F * f1;
+            float RLegXRot2 = MathHelper.cos(((limbSwing + 0.1F) * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
+            float LLegXRot2 = MathHelper.cos((limbSwing + 0.1F) * 0.6662F) * 0.8F * limbSwingAmount;
 
-            if (f1 > 0.15F) {
+            if (limbSwingAmount > 0.15F) {
                 if (RLegXRot > RLegXRot2) // - - >
                 {
                     RLegXRotB = RLegXRot + (25 / 57.29578F);

@@ -3,20 +3,21 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.client.model.MoCModelWerehuman;
 import drzhark.mocreatures.client.model.MoCModelWerewolf;
 import drzhark.mocreatures.entity.hostile.MoCEntityWerewolf;
 import drzhark.mocreatures.proxy.MoCProxyClient;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCRenderWerewolf extends RenderLiving<MoCEntityWerewolf> {
+public class MoCRenderWerewolf extends MobRenderer<MoCEntityWerewolf> {
 
     private final MoCModelWerewolf tempWerewolf;
 
@@ -27,14 +28,14 @@ public class MoCRenderWerewolf extends RenderLiving<MoCEntityWerewolf> {
     }
 
     @Override
-    public void doRender(MoCEntityWerewolf entitywerewolf, double d, double d1, double d2, float f, float f1) {
+    public void render(MoCEntityWerewolf entitywerewolf, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         this.tempWerewolf.hunched = entitywerewolf.getIsHunched();
-        super.doRender(entitywerewolf, d, d1, d2, f, f1);
+        super.render(entitywerewolf, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityWerewolf entitywerewolf) {
+    public ResourceLocation getEntityTexture(MoCEntityWerewolf entitywerewolf) {
         return entitywerewolf.getTexture();
     }
 
@@ -47,7 +48,7 @@ public class MoCRenderWerewolf extends RenderLiving<MoCEntityWerewolf> {
             this.mocRenderer = render;
         }
 
-        public void doRenderLayer(MoCEntityWerewolf entity, float f, float f1, float f2, float f3, float f4, float f5, float f6) {
+        public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, MoCEntityWerewolf entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             int myType = entity.getTypeMoC();
 
             if (!entity.getIsHumanForm()) {

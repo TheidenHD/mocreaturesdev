@@ -32,7 +32,6 @@ public class MoCBlockSapling extends BlockBush implements IGrowable {
     public MoCBlockSapling(EnumWoodType woodType, MapColor mapColor, boolean flammable) {
         super(Material.PLANTS, mapColor);
         this.flammable = flammable;
-        this.setCreativeTab(MoCreatures.tabMoC);
         this.setSoundType(SoundType.PLANT);
         this.setDefaultState(this.blockState.getBaseState().withProperty(STAGE, 0));
         this.woodType = woodType;

@@ -57,7 +57,6 @@ public class MoCModelBird<T extends Entity> extends EntityModel<T> {
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         MoCEntityBird bird = (MoCEntityBird) entity;
         this.isOnAir = bird.isOnAir() && bird.getRidingEntity() == null;
-        setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         this.head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.beak.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -69,20 +68,20 @@ public class MoCModelBird<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
-        this.head.rotateAngleX = -(f4 / 2.0F / 57.29578F);
-        //head.rotateAngleY = f3 / 2.0F / 57.29578F; //fixed SMP bug
-        this.head.rotateAngleY = f3 / 57.29578F;
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, Entity entity) {
+        this.head.rotateAngleX = -(headPitch / 2.0F / 57.29578F);
+        //head.rotateAngleY = netHeadYaw / 2.0F / 57.29578F; //fixed SMP bug
+        this.head.rotateAngleY = netHeadYaw / 57.29578F;
         this.beak.rotateAngleY = this.head.rotateAngleY;
 
         if (this.isOnAir) {
             this.leftleg.rotateAngleX = 1.4F;
             this.rightleg.rotateAngleX = 1.4F;
         } else {
-            this.leftleg.rotateAngleX = MathHelper.cos(f * 0.6662F) * f1;
-            this.rightleg.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * f1;
+            this.leftleg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
+            this.rightleg.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * limbSwingAmount;
         }
-        this.rwing.rotateAngleZ = f2;
-        this.lwing.rotateAngleZ = -f2;
+        this.rwing.rotateAngleZ = ageInTicks;
+        this.lwing.rotateAngleZ = -ageInTicks;
     }
 }

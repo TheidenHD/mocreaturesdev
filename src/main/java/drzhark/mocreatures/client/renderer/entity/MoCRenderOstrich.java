@@ -4,8 +4,6 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.neutral.MoCEntityOstrich;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -18,7 +16,7 @@ public class MoCRenderOstrich extends MoCRenderMoC<MoCEntityOstrich> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityOstrich entityostrich) {
+    public ResourceLocation getEntityTexture(MoCEntityOstrich entityostrich) {
         return entityostrich.getTexture();
     }
 

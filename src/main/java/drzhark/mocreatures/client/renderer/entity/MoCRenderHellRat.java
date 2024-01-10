@@ -4,8 +4,6 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.hostile.MoCEntityHellRat;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -24,7 +22,7 @@ public class MoCRenderHellRat extends MoCRenderRat<MoCEntityHellRat> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityHellRat entityhellrat) {
+    public ResourceLocation getEntityTexture(MoCEntityHellRat entityhellrat) {
         return entityhellrat.getTexture();
     }
 }

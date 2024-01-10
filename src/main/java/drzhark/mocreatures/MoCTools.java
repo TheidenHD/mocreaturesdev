@@ -18,18 +18,12 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageNameGUI;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockJukebox.TileEntityJukebox;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
-import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntitySlime;
-import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -46,24 +40,21 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeProvider;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.spawner.WorldEntitySpawner;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.eventbus.api.Event;
 
 import java.util.*;
 
@@ -500,13 +491,12 @@ public class MoCTools {
     }
 
     public static String biomeName(IWorld world, BlockPos pos) {
-        BiomeProvider biomeProvider = world.getBiomeProvider();
-        Biome biome = biomeProvider.getBiome(pos);
+        Biome biome = world.getBiome(pos);
         return biome.biomeName;
     }
 
     public static RegistryKey<Biome> biomeKind(World world, BlockPos pos) {
-        return world.getBiome(pos);
+        return WorldGenRegistries.BIOME.getOptionalKey(world.getBiome(pos)).orElse(Biomes.THE_VOID);
     }
 
     public static void destroyDrops(Entity entity, double d) {
@@ -974,10 +964,10 @@ public class MoCTools {
             CompoundNBT nbtt = stack.getTag();
             try {
                 final EntityType entry = EntityRegistry.getEntry((Class<? extends Entity>) entity.getClass());
-                final String petClass = entry.getName().replace(MoCConstants.MOD_PREFIX, "");
+                final String petClass = entry.getName().getString().replace(MoCConstants.MOD_PREFIX, "");
                 nbtt.putString("SpawnClass", petClass);
                 nbtt.putUniqueId("OwnerUUID", player.getUniqueID());
-                nbtt.putString("OwnerName", player.getName());
+                nbtt.putString("OwnerName", player.getName().getString());
                 nbtt.putFloat("Health", ((MobEntity) entity).getHealth());
                 nbtt.putInt("Edad", entity.getAge());
                 nbtt.putString("Name", entity.getPetName());

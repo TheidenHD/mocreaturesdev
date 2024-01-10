@@ -7,13 +7,12 @@ import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.dimension.biome.MoCBiomeWyvernIsles;
 import drzhark.mocreatures.dimension.biome.MoCBiomeWyvernIslesDesert;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.BiomeProperties;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.ObjectHolder;
 
 @ObjectHolder(MoCConstants.MOD_ID)
 public class MoCBiomes {

@@ -116,10 +116,9 @@ public class MoCModelButterfly<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
         MoCEntityButterfly butterfly = (MoCEntityButterfly) entity;
         boolean flying = (butterfly.getIsFlying() || butterfly.getMotion().getY() < -0.1D);
-        setRotationAngles(f, f1, f2, f3, f4, f5, !flying);
+        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, !flying);
         this.Abdomen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.FrontLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.RightAntenna.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -153,40 +152,40 @@ public class MoCModelButterfly<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, boolean onGround) {
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, boolean onGround) {
 
         /*
          * butterfly to have two / 3 moves: 1 slow movement when idle on ground
          * has to be random from closing up to horizontal 2 fast wing flapping
          * flying movement, short range close to 0 degree RLegXRot =
-         * MathHelper.cos((f * 0.6662F) + 3.141593F) * 0.8F * f1;
+         * MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
          */
 
         /*
-         * f = distance walked f1 = speed 0 - 1 f2 = timer
+         * limbSwing = distance walked limbSwingAmount = speed 0 - 1 ageInTicks = timer
          */
 
-        float f2a = f2 % 100F;
+        float f2a = ageInTicks % 100F;
         float WingRot = 0F;
         float legMov;
         float legMovB;
 
         if (!onGround) //flying
         {
-            WingRot = MathHelper.cos((f2 * 0.9F)) * 0.9F;
+            WingRot = MathHelper.cos((ageInTicks * 0.9F)) * 0.9F;
 
             /*
-             * WingRot = MathHelper.cos((f2 * 0.6662F)) * 0.5F; if (f2a > 40 &
-             * f2a < 60) { WingRot = MathHelper.cos((f2 * 0.9F)) * 0.9F; }
+             * WingRot = MathHelper.cos((ageInTicks * 0.6662F)) * 0.5F; if (f2a > 40 &
+             * f2a < 60) { WingRot = MathHelper.cos((ageInTicks * 0.9F)) * 0.9F; }
              */
-            legMov = (f1 * 1.5F);
+            legMov = (limbSwingAmount * 1.5F);
             legMovB = legMov;
         } else {
-            legMov = MathHelper.cos((f * 1.5F) + 3.141593F) * 2.0F * f1;
-            legMovB = MathHelper.cos(f * 1.5F) * 2.0F * f1;
+            legMov = MathHelper.cos((limbSwing * 1.5F) + 3.141593F) * 2.0F * limbSwingAmount;
+            legMovB = MathHelper.cos(limbSwing * 1.5F) * 2.0F * limbSwingAmount;
             if (f2a > 40 & f2a < 60) //random movement
             {
-                WingRot = MathHelper.cos((f2 * 0.15F)) * 0.9F;
+                WingRot = MathHelper.cos((ageInTicks * 0.15F)) * 0.9F;
             }
 
         }

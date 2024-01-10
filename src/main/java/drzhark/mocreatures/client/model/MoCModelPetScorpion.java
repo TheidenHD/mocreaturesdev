@@ -18,7 +18,6 @@ public class MoCModelPetScorpion extends MoCModelScorpion {
         babies = scorpy.getHasBabies();
         attacking = scorpy.armCounter;
         sitting = scorpy.getIsSitting();
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         renderParts(f5);
     }
 }

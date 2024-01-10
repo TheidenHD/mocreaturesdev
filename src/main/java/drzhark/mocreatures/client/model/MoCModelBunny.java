@@ -65,7 +65,6 @@ public class MoCModelBunny<T extends Entity> extends EntityModel<T> {
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         this.bunnyHat = entity.getRidingEntity() != null;
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         this.part1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.part8.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.part9.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -79,9 +78,9 @@ public class MoCModelBunny<T extends Entity> extends EntityModel<T> {
         this.part7.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        this.part1.rotateAngleX = -(f4 / 57.29578F);
-        this.part1.rotateAngleY = f3 / 57.29578F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.part1.rotateAngleX = -(headPitch / 57.29578F);
+        this.part1.rotateAngleY = netHeadYaw / 57.29578F;
 
         this.part8.rotateAngleX = this.part1.rotateAngleX;
         this.part8.rotateAngleY = this.part1.rotateAngleY;
@@ -94,10 +93,10 @@ public class MoCModelBunny<T extends Entity> extends EntityModel<T> {
         this.part2.rotateAngleX = 1.570796F;
         this.part3.rotateAngleX = 1.570796F;
         if (!this.bunnyHat) {
-            this.part4.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.0F * f1;
-            this.part6.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.2F * f1;
-            this.part5.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.0F * f1;
-            this.part7.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.2F * f1;
+            this.part4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.0F * limbSwingAmount;
+            this.part6.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.2F * limbSwingAmount;
+            this.part5.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.0F * limbSwingAmount;
+            this.part7.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.2F * limbSwingAmount;
         }
     }
 }

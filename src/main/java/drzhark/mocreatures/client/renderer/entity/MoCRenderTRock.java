@@ -7,10 +7,6 @@ import drzhark.mocreatures.entity.item.MoCEntityThrowableRock;
 import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.matrixStackIn;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -43,7 +39,7 @@ public class MoCRenderTRock extends Render<Entity> {
     }
 
     @Override
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
+    public void render(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
         this.renderMyRock((MoCEntityThrowableRock) par1Entity, par2, par4, par6, par8, par9);
     }
 
@@ -52,7 +48,7 @@ public class MoCRenderTRock extends Render<Entity> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(Entity par1Entity) {
+    public ResourceLocation getEntityTexture(Entity par1Entity) {
         return null;//this.getMyTexture((MoCEntityThrowableRock) par1Entity);
     }
 }

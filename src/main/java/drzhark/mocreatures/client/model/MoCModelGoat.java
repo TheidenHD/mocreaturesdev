@@ -161,8 +161,6 @@ public class MoCModelGoat<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         this.Leg1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Leg2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Leg3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -218,19 +216,19 @@ public class MoCModelGoat<T extends Entity> extends EntityModel<T> {
         matrixStackIn.pop();
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        this.Leg1.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
-        this.Leg2.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.4F * f1;
-        this.Leg3.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.4F * f1;
-        this.Leg4.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
-        float baseAngle = (30 / 57.29578F) + (f4 / 57.29578F);
-        if (f3 > 20F) {
-            f3 = 20F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.Leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        this.Leg2.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.4F * limbSwingAmount;
+        this.Leg3.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.4F * limbSwingAmount;
+        this.Leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        float baseAngle = (30 / 57.29578F) + (headPitch / 57.29578F);
+        if (netHeadYaw > 20F) {
+            netHeadYaw = 20F;
         }
-        if (f3 < -20F) {
-            f3 = -20F;
+        if (netHeadYaw < -20F) {
+            netHeadYaw = -20F;
         }
-        this.Head.rotateAngleY = (f3 / 57.29578F);
+        this.Head.rotateAngleY = (netHeadYaw / 57.29578F);
         this.Neck.rotateAngleX = -30 / 57.29578F;
         this.Head.rotateAngleX = baseAngle;
         if (this.bleat) {

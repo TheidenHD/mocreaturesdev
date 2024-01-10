@@ -4,8 +4,6 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.ambient.MoCEntityCricket;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,7 +33,7 @@ public class MoCRenderCricket extends MoCRenderMoC<MoCEntityCricket> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityCricket par1Entity) {
+    public ResourceLocation getEntityTexture(MoCEntityCricket par1Entity) {
         return par1Entity.getTexture();
     }
 }

@@ -471,7 +471,6 @@ public class MoCModelBear<T extends Entity> extends EntityModel<T> {
         this.bearstate = entitybear.getBearState();
         boolean openMouth = (entitybear.mouthCounter != 0);
         this.attackSwing = entitybear.getAttackSwing();
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         boolean chested = entitybear.getIsChested();
         boolean saddled = entitybear.getIsRideable();
 
@@ -580,11 +579,11 @@ public class MoCModelBear<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        float LLegRotX = MathHelper.cos(f * 0.6662F) * 0.8F * f1;
-        float RLegRotX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 0.8F * f1;
-        float XAngle = (f4 / 57.29578F);
-        float YAngle = f3 / 57.29578F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        float LLegRotX = MathHelper.cos(limbSwing * 0.6662F) * 0.8F * limbSwingAmount;
+        float RLegRotX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
+        float XAngle = (headPitch / 57.29578F);
+        float YAngle = netHeadYaw / 57.29578F;
 
         if (this.bearstate == 0) {
             this.Head.rotateAngleX = 0.1502636F + XAngle;
@@ -643,7 +642,7 @@ public class MoCModelBear<T extends Entity> extends EntityModel<T> {
             /*
              * Arm breathing movement
              */
-            float breathing = MathHelper.cos(f2 * 0.09F) * 0.05F + 0.05F;
+            float breathing = MathHelper.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
             this.BLegFR1.rotateAngleZ = 0.2617994F + breathing;
             this.BLegFR2.rotateAngleZ = breathing;
             this.BLegFR3.rotateAngleZ = breathing;

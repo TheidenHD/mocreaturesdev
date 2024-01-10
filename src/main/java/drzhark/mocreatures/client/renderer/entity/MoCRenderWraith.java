@@ -6,21 +6,20 @@ package drzhark.mocreatures.client.renderer.entity;
 import drzhark.mocreatures.entity.hostile.MoCEntityWraith;
 import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.matrixStackIn;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCRenderWraith extends RenderLiving<MoCEntityWraith> {
+public class MoCRenderWraith extends MobRenderer<MoCEntityWraith> {
 
     public MoCRenderWraith(ModelBiped modelbiped, float f) {
         super(MoCProxyClient.mc.getRenderManager(), modelbiped, f);
     }
 
     @Override
-    public void doRender(MoCEntityWraith wraith, double d, double d1, double d2, float f, float f1) {
+    public void render(MoCEntityWraith wraith, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         boolean flag = wraith.isGlowing();
         matrixStackIn.push();
         matrixStackIn.enableBlend();
@@ -31,13 +30,13 @@ public class MoCRenderWraith extends RenderLiving<MoCEntityWraith> {
         } else {
             matrixStackIn.blendFunc(770, 1);
         }
-        super.doRender(wraith, d, d1, d2, f, f1);
+        super.render(wraith, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         matrixStackIn.disableBlend();
         matrixStackIn.pop();
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityWraith wraith) {
+    public ResourceLocation getEntityTexture(MoCEntityWraith wraith) {
         return wraith.getTexture();
     }
 }

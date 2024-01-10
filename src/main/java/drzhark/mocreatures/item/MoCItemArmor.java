@@ -29,9 +29,7 @@ public class MoCItemArmor extends ArmorItem {
 
     public MoCItemArmor(String name, IArmorMaterial materialIn, int renderIndex, EquipmentSlotType equipmentSlotIn) {
         super(materialIn, renderIndex, equipmentSlotIn);
-        this.setCreativeTab(MoCreatures.tabMoC);
         this.setRegistryName(MoCConstants.MOD_ID, name);
-        this.setTranslationKey(name);
     }
 
     @Override
@@ -100,7 +98,7 @@ public class MoCItemArmor extends ArmorItem {
      * Called to tick armor in the armor slot. Override to do something
      */
     @Override
-    public void onArmorTick(World world, PlayerEntity player, ItemStack itemStack) {
+    public void onArmorTick(ItemStack itemStack, World world, PlayerEntity player) {
         if (player.ticksExisted % 40 == 0) {
             player.getItemStackFromSlot(EquipmentSlotType.FEET);
             ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.FEET);

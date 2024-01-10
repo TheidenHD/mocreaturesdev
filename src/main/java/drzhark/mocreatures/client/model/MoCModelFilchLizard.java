@@ -123,8 +123,6 @@ public class MoCModelFilchLizard<T extends Entity> extends EntityModel<T> {
     }
 
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         MoCEntityFilchLizard lizard = (MoCEntityFilchLizard) entity;
         if (!lizard.getHeldItemMainhand().isEmpty()) {
             Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -147,8 +145,8 @@ public class MoCModelFilchLizard<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
-        super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, Entity entity) {
+        super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, entity);
         MoCEntityFilchLizard lizard = (MoCEntityFilchLizard) entity;
         if (!lizard.getHeldItemMainhand().isEmpty()) {
             Leg1.setRotationPoint(-2F, 13F, -1F);
@@ -163,8 +161,8 @@ public class MoCModelFilchLizard<T extends Entity> extends EntityModel<T> {
             setRotation(Body, -0.9948377F, 0F, 0F);
             Tail.setRotationPoint(0F, 20F, 6F);
             setRotation(Tail, 0.6806784F, 0F, 0F);
-            Head.rotateAngleX = f4 / (180F / (float) Math.PI);
-            Head.rotateAngleY = f3 / (180F / (float) Math.PI);
+            Head.rotateAngleX = headPitch / (180F / (float) Math.PI);
+            Head.rotateAngleY = netHeadYaw / (180F / (float) Math.PI);
         } else {
             Leg1.setRotationPoint(2F, 22F, -4F);
             setRotation(Leg1, 0F, 0F, 0.3839724F);
@@ -178,13 +176,13 @@ public class MoCModelFilchLizard<T extends Entity> extends EntityModel<T> {
             setRotation(Body, 0F, 0F, 0F);
             Tail.setRotationPoint(0F, 21F, 6F);
             setRotation(Tail, 0F, 0F, 0F);
-            Leg1.rotateAngleY = MathHelper.cos(f * 0.6662F * 2.0F + (float) Math.PI) * 0.6F * f1;
-            Leg2.rotateAngleY = -MathHelper.cos(f * 0.6662F * 2.0F + (float) Math.PI) * 0.6F * f1;
-            FoldHead.rotateAngleX = f4 / (180F / (float) Math.PI);
-            FoldHead.rotateAngleY = f3 / (180F / (float) Math.PI);
+            Leg1.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F * 2.0F + (float) Math.PI) * 0.6F * limbSwingAmount;
+            Leg2.rotateAngleY = -MathHelper.cos(limbSwing * 0.6662F * 2.0F + (float) Math.PI) * 0.6F * limbSwingAmount;
+            FoldHead.rotateAngleX = headPitch / (180F / (float) Math.PI);
+            FoldHead.rotateAngleY = netHeadYaw / (180F / (float) Math.PI);
         }
-        Leg3.rotateAngleY = MathHelper.cos(f * 0.6662F * 2.0F + (float) Math.PI) * 0.6F * f1;
-        Leg4.rotateAngleY = MathHelper.cos(f * 0.6662F * 2.0F + (float) Math.PI) * 0.6F * f1;
-        Tail.rotateAngleY = -MathHelper.cos(f * 0.6662F * 2.0F + (float) Math.PI) * 0.2F * f1;
+        Leg3.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F * 2.0F + (float) Math.PI) * 0.6F * limbSwingAmount;
+        Leg4.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F * 2.0F + (float) Math.PI) * 0.6F * limbSwingAmount;
+        Tail.rotateAngleY = -MathHelper.cos(limbSwing * 0.6662F * 2.0F + (float) Math.PI) * 0.2F * limbSwingAmount;
     }
 }

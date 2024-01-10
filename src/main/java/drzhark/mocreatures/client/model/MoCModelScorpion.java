@@ -323,7 +323,6 @@ public class MoCModelScorpion<T extends Entity> extends EntityModel<T> {
         isTalking = scorpy.mouthCounter != 0;
         babies = scorpy.getHasBabies();
         attacking = scorpy.armCounter;
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         renderParts(f5);
     }
 
@@ -392,8 +391,8 @@ public class MoCModelScorpion<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z / this.radianF;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        //float RLegXRot = MathHelper.cos((f * 0.6662F) + 3.141593F) * 0.4F * f1;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        //float RLegXRot = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.4F * limbSwingAmount;
 
         if (!poisoning) {
             this.Body.rotateAngleX = 5F / this.radianF;
@@ -461,7 +460,7 @@ public class MoCModelScorpion<T extends Entity> extends EntityModel<T> {
          */
         float MouthRot = 0F;
         if (isTalking) {
-            MouthRot = MathHelper.cos((f2 * 1.1F)) * 0.2F;
+            MouthRot = MathHelper.cos((ageInTicks * 1.1F)) * 0.2F;
         }
         this.MouthR.rotateAngleY = (22F / this.radianF) + MouthRot;
         this.MouthL.rotateAngleY = (-22F / this.radianF) - MouthRot;
@@ -502,7 +501,7 @@ public class MoCModelScorpion<T extends Entity> extends EntityModel<T> {
              */
             float lHand = 0F;
 
-            float f2a = f2 % 100F;
+            float f2a = ageInTicks % 100F;
             if (f2a > 0 & f2a < 20) {
                 lHand = f2a / this.radianF;
             }
@@ -513,7 +512,7 @@ public class MoCModelScorpion<T extends Entity> extends EntityModel<T> {
              * RHand random animation
              */
             float RHand = 0F;
-            float f2b = f2 % 75F;
+            float f2b = ageInTicks % 75F;
             if (f2b > 30 & f2b < 50) {
                 RHand = (f2b - 29) / this.radianF;
             }
@@ -585,7 +584,7 @@ public class MoCModelScorpion<T extends Entity> extends EntityModel<T> {
          * Babies animation
          */
         if (babies && isAdult) {
-            float fmov = f2 % 100;
+            float fmov = ageInTicks % 100;
             float fb1 = 0F;
             float fb2 = 142F / this.radianF;
             float fb3 = 49F / this.radianF;
@@ -599,21 +598,21 @@ public class MoCModelScorpion<T extends Entity> extends EntityModel<T> {
             //fb4 -= fmov;
 
             if (fmov > 0F && fmov < 20F) {
-                fb2 -= (MathHelper.cos((f2 * 0.8F)) * 0.3F);
-                fb3 -= (MathHelper.cos((f2 * 0.6F)) * 0.2F);
-                fb1 += (MathHelper.cos((f2 * 0.4F)) * 0.4F);
-                fb5 += (MathHelper.cos((f2 * 0.7F)) * 0.5F);
+                fb2 -= (MathHelper.cos((ageInTicks * 0.8F)) * 0.3F);
+                fb3 -= (MathHelper.cos((ageInTicks * 0.6F)) * 0.2F);
+                fb1 += (MathHelper.cos((ageInTicks * 0.4F)) * 0.4F);
+                fb5 += (MathHelper.cos((ageInTicks * 0.7F)) * 0.5F);
             }
 
             if (fmov > 30F && fmov < 50F) {
-                fb4 -= (MathHelper.cos((f2 * 0.8F)) * 0.4F);
-                fb1 += (MathHelper.cos((f2 * 0.7F)) * 0.1F);
-                fb3 -= (MathHelper.cos((f2 * 0.6F)) * 0.2F);
+                fb4 -= (MathHelper.cos((ageInTicks * 0.8F)) * 0.4F);
+                fb1 += (MathHelper.cos((ageInTicks * 0.7F)) * 0.1F);
+                fb3 -= (MathHelper.cos((ageInTicks * 0.6F)) * 0.2F);
             }
             if (fmov > 80F) {
-                fb5 += (MathHelper.cos((f2 * 0.2F)) * 0.4F);
-                fb2 -= (MathHelper.cos((f2 * 0.6F)) * 0.3F);
-                fb4 -= (MathHelper.cos((f2 * 0.4F)) * 0.2F);
+                fb5 += (MathHelper.cos((ageInTicks * 0.2F)) * 0.4F);
+                fb2 -= (MathHelper.cos((ageInTicks * 0.6F)) * 0.3F);
+                fb4 -= (MathHelper.cos((ageInTicks * 0.4F)) * 0.2F);
             }
 
             /*
@@ -631,14 +630,14 @@ public class MoCModelScorpion<T extends Entity> extends EntityModel<T> {
         /*
          * floats used for the scorpion's leg animations
          */
-        float f9 = -(MathHelper.cos(f * 0.6662F * 2.0F + 0.0F) * 0.4F) * f1;
-        float f10 = -(MathHelper.cos(f * 0.6662F * 2.0F + 3.141593F) * 0.4F) * f1;
-        float f11 = -(MathHelper.cos(f * 0.6662F * 2.0F + 1.570796F) * 0.4F) * f1;
-        float f12 = -(MathHelper.cos(f * 0.6662F * 2.0F + 4.712389F) * 0.4F) * f1;
-        float f13 = Math.abs(MathHelper.sin(f * 0.6662F + 0.0F) * 0.4F) * f1;
-        float f14 = Math.abs(MathHelper.sin(f * 0.6662F + 3.141593F) * 0.4F) * f1;
-        float f15 = Math.abs(MathHelper.sin(f * 0.6662F + 1.570796F) * 0.4F) * f1;
-        float f16 = Math.abs(MathHelper.sin(f * 0.6662F + 4.712389F) * 0.4F) * f1;
+        float f9 = -(MathHelper.cos(limbSwing * 0.6662F * 2.0F + 0.0F) * 0.4F) * limbSwingAmount;
+        float f10 = -(MathHelper.cos(limbSwing * 0.6662F * 2.0F + 3.141593F) * 0.4F) * limbSwingAmount;
+        float f11 = -(MathHelper.cos(limbSwing * 0.6662F * 2.0F + 1.570796F) * 0.4F) * limbSwingAmount;
+        float f12 = -(MathHelper.cos(limbSwing * 0.6662F * 2.0F + 4.712389F) * 0.4F) * limbSwingAmount;
+        float f13 = Math.abs(MathHelper.sin(limbSwing * 0.6662F + 0.0F) * 0.4F) * limbSwingAmount;
+        float f14 = Math.abs(MathHelper.sin(limbSwing * 0.6662F + 3.141593F) * 0.4F) * limbSwingAmount;
+        float f15 = Math.abs(MathHelper.sin(limbSwing * 0.6662F + 1.570796F) * 0.4F) * limbSwingAmount;
+        float f16 = Math.abs(MathHelper.sin(limbSwing * 0.6662F + 4.712389F) * 0.4F) * limbSwingAmount;
 
         if (sitting) {
             this.Leg1A.rotateAngleX = -10F / this.radianF;

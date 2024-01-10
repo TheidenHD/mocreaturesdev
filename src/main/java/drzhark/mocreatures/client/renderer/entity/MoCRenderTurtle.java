@@ -5,7 +5,6 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.client.model.MoCModelTurtle;
 import drzhark.mocreatures.entity.passive.MoCEntityTurtle;
-import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -65,7 +64,7 @@ public class MoCRenderTurtle extends MoCRenderMoC<MoCEntityTurtle> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityTurtle entityturtle) {
+    public ResourceLocation getEntityTexture(MoCEntityTurtle entityturtle) {
         return entityturtle.getTexture();
     }
 }

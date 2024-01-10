@@ -5,13 +5,13 @@ package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.passive.MoCEntityMouse;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
 
-public class MoCModelMouse<T extends Entity> extends EntityModel<T> {
+public class MoCModelMouse<T extends MoCEntityMouse> extends EntityModel<T> {
 
     public ModelRenderer Head;
     public ModelRenderer EarR;
@@ -64,8 +64,6 @@ public class MoCModelMouse<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.EarR.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.EarL.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -79,9 +77,9 @@ public class MoCModelMouse<T extends Entity> extends EntityModel<T> {
         this.BodyF.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        this.Head.rotateAngleX = -(f4 / 57.29578F);
-        this.Head.rotateAngleY = f3 / 57.29578F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.Head.rotateAngleX = -(headPitch / 57.29578F);
+        this.Head.rotateAngleY = netHeadYaw / 57.29578F;
         this.EarR.rotateAngleX = this.Head.rotateAngleX;
         this.EarR.rotateAngleY = this.Head.rotateAngleY;
         this.EarL.rotateAngleX = this.Head.rotateAngleX;
@@ -90,10 +88,10 @@ public class MoCModelMouse<T extends Entity> extends EntityModel<T> {
         this.WhiskerR.rotateAngleY = this.Head.rotateAngleY;
         this.WhiskerL.rotateAngleX = this.Head.rotateAngleX;
         this.WhiskerL.rotateAngleY = this.Head.rotateAngleY;
-        this.FrontL.rotateAngleX = MathHelper.cos(f * 0.6662F) * 0.6F * f1;
-        this.RearL.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 0.8F * f1;
-        this.RearR.rotateAngleX = MathHelper.cos(f * 0.6662F) * 0.6F * f1;
-        this.FrontR.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 0.8F * f1;
+        this.FrontL.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 0.6F * limbSwingAmount;
+        this.RearL.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
+        this.RearR.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 0.6F * limbSwingAmount;
+        this.FrontR.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
         this.Tail.rotateAngleY = this.FrontL.rotateAngleX * 0.625F;
     }
 }

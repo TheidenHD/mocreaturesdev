@@ -597,8 +597,8 @@ public class MoCModelOstrich<T extends Entity> extends EntityModel<T> {
 
         this.helmet = entityostrich.getHelmet();
         this.flagColor = entityostrich.getFlagColor();
-        //super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5, isHiding, wingFlap, rider, jumpCounter, floating);
+        //super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
+        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, isHiding, wingFlap, rider, jumpCounter, floating);
 
         this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
@@ -792,10 +792,10 @@ public class MoCModelOstrich<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, boolean hiding, boolean wing, boolean rider,
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, boolean hiding, boolean wing, boolean rider,
                                   int jumpCounter, boolean floating) {
-        float LLegXRot = MathHelper.cos(f * 0.4F) * 1.1F * f1;
-        float RLegXRot = MathHelper.cos((f * 0.4F) + 3.141593F) * 1.1F * f1;
+        float LLegXRot = MathHelper.cos(limbSwing * 0.4F) * 1.1F * limbSwingAmount;
+        float RLegXRot = MathHelper.cos((limbSwing * 0.4F) + 3.141593F) * 1.1F * limbSwingAmount;
 
         if (hiding) {
             this.Head.rotationPointY = 9.0F;
@@ -804,8 +804,8 @@ public class MoCModelOstrich<T extends Entity> extends EntityModel<T> {
 
         } else {
             this.Head.rotationPointY = 3.0F;
-            this.Head.rotateAngleX = (RLegXRot / 20F) + (-f4 / (180F / (float) Math.PI));
-            this.Head.rotateAngleY = f3 / (180F / (float) Math.PI);
+            this.Head.rotateAngleX = (RLegXRot / 20F) + (-headPitch / (180F / (float) Math.PI));
+            this.Head.rotateAngleY = netHeadYaw / (180F / (float) Math.PI);
         }
 
         if (rider) {
@@ -972,7 +972,7 @@ public class MoCModelOstrich<T extends Entity> extends EntityModel<T> {
         }
 
         //flag
-        float flagF = MathHelper.cos(f * 0.8F) * 0.1F * f1;
+        float flagF = MathHelper.cos(limbSwing * 0.8F) * 0.1F * limbSwingAmount;
 
         switch (this.flagColor) {
             case 1:
@@ -1070,16 +1070,16 @@ public class MoCModelOstrich<T extends Entity> extends EntityModel<T> {
         //wings
         float wingF;
         /*
-         * f = distance walked f1 = speed 0 - 1 f2 = timer
+         * limbSwing = distance walked limbSwingAmount = speed 0 - 1 ageInTicks = timer
          */
         if (this.typeI == 5 || this.typeI == 6) {
 
             if (jumpCounter != 0) {
                 wingF = (-40F / this.radianF) + MathHelper.cos(jumpCounter * 0.3F) * 1.3F;
             } else if (rider && floating) {
-                wingF = MathHelper.cos(f2 * 0.8F) * 0.2F;
+                wingF = MathHelper.cos(ageInTicks * 0.8F) * 0.2F;
             } else {
-                wingF = MathHelper.cos(f * 0.3F) * f1;
+                wingF = MathHelper.cos(limbSwing * 0.3F) * limbSwingAmount;
             }
 
             this.LWingD.rotateAngleZ = (-20F / this.radianF) - wingF;
@@ -1089,7 +1089,7 @@ public class MoCModelOstrich<T extends Entity> extends EntityModel<T> {
             this.RWingE.rotateAngleZ = (20F / this.radianF) + wingF;
 
         } else {
-            wingF = (10F / this.radianF) + MathHelper.cos(f * 0.6F) * 0.2F * f1;
+            wingF = (10F / this.radianF) + MathHelper.cos(limbSwing * 0.6F) * 0.2F * limbSwingAmount;
             if (wing) {
                 wingF += (50 / 57.29578F);
             }
@@ -1131,10 +1131,10 @@ public class MoCModelOstrich<T extends Entity> extends EntityModel<T> {
 
         if (this.typeI == 6) {
             float f6 = 15F;
-            float rotF = MathHelper.cos(f * 0.5F) * 0.3F * f1;
+            float rotF = MathHelper.cos(limbSwing * 0.5F) * 0.3F * limbSwingAmount;
             this.Tail.rotateAngleY = rotF;
             rotF += (rotF / f6);
-            this.Tailpart1.rotateAngleY = rotF;//MathHelper.cos(f * 0.6662F) * 0.7F * f1;
+            this.Tailpart1.rotateAngleY = rotF;//MathHelper.cos(limbSwing * 0.6662F) * 0.7F * limbSwingAmount;
             rotF += (rotF / f6);
             this.Tailpart1.rotateAngleY = rotF;
             rotF += (rotF / f6);

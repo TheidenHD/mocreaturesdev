@@ -5,26 +5,24 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.aquatic.MoCEntityFishy;
 import drzhark.mocreatures.proxy.MoCProxyClient;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.matrixStackIn;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCRenderFishy extends RenderLiving<MoCEntityFishy> {
+public class MoCRenderFishy extends MobRenderer<MoCEntityFishy> {
 
     public MoCRenderFishy(ModelBase modelbase, float f) {
         super(MoCProxyClient.mc.getRenderManager(), modelbase, f);
     }
 
     @Override
-    public void doRender(MoCEntityFishy entityfishy, double d, double d1, double d2, float f, float f1) {
+    public void render(MoCEntityFishy entityfishy, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         if (entityfishy.getTypeMoC() == 0) { // && !MoCreatures.mc.isMultiplayerWorld())
             entityfishy.selectType();
         }
-        super.doRender(entityfishy, d, d1, d2, f, f1);
+        super.render(entityfishy, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
 
     @Override
@@ -45,7 +43,7 @@ public class MoCRenderFishy extends RenderLiving<MoCEntityFishy> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityFishy entityfishy) {
+    public ResourceLocation getEntityTexture(MoCEntityFishy entityfishy) {
         return entityfishy.getTexture();
     }
 }

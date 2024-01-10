@@ -170,7 +170,7 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        //super.render(entity, f, f1, f2, f3, f4, f5);
+        //super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
         MoCEntitySnake entitysnake = (MoCEntitySnake) entity;
         int typeI = entitysnake.getTypeMoC();
         float tongueOff = entitysnake.getfTongue();
@@ -182,7 +182,7 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
         float f6 = entitysnake.bodyswing;
         boolean nearplayer = entitysnake.getNearPlayer();
         boolean picked = entitysnake.pickedUp();
-        setRotationAngles(f3, f4, tongueOff, mouthOff, rattleOff, nearplayer, typeI);
+        setRotationAngles(netHeadYaw, headPitch, tongueOff, mouthOff, rattleOff, nearplayer, typeI);
 
         float sidef;
 
@@ -196,7 +196,7 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
         @SuppressWarnings("unused")
         float A = 0.4F;//0.8F;
         float w = 1.5F;
-        float t = f / 2;
+        float t = limbSwing / 2;
 
         for (int i = 0; i < this.bodyparts; i++) {
             float sideperf = 1F;
@@ -279,8 +279,8 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
              * MathHelper.sin(w * t - 0.3F * (float)i)- (movInt/10F) *
              * MathHelper.sin(-1F * t - 0.25F * (float)i); //TODO reactivate
              * this one? //sidef = A * MathHelper.sin(w * t - 0.3F * (float)j);
-             * //sidef = 0.5F * MathHelper.sin(2F * (f)- 0.25F * (float)j) -
-             * 0.2F * MathHelper.cos(1.2F *f - 0.15F *(float)j); //sidef =
+             * //sidef = 0.5F * MathHelper.sin(2F * (limbSwing)- 0.25F * (float)j) -
+             * 0.2F * MathHelper.cos(1.2F *limbSwing - 0.15F *(float)j); //sidef =
              * MathHelper.sqrt(i/10F); //sidef = sidef * sideperf;
              * //matrixStackIn.translate(sidef, 0.0F, 0.0F); anglef = (8) * (i+1)
              * ;//works well for small snakes //anglef = (6) * (i+1) ; //this
@@ -368,9 +368,9 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f3, float f4, float f6, float f7, float frattle, boolean nearP, int type) {
-        float rAX = (f4 / 57.29578F);// * 1.5F;
-        float rAY = (f3 / 57.29578F);// * 1.5F;
+    public void setRotationAngles(float netHeadYaw, float headPitch, float f6, float f7, float frattle, boolean nearP, int type) {
+        float rAX = (headPitch / 57.29578F);// * 1.5F;
+        float rAY = (netHeadYaw / 57.29578F);// * 1.5F;
         this.Head.rotateAngleX = rAX;
         this.Head.rotateAngleY = rAY;
         this.bodySnake[0].rotateAngleX = rAX * 0.95F;/// 1.5F;
@@ -432,12 +432,12 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
         if (type == 7) //rattlesnake
         {
             if (nearP || frattle != 0.0F) {
-                this.Tail.rotateAngleX = ((MathHelper.cos(f3 * 10F) * 20F) + 90F) / 57.29578F;
-                //Tail.rotateAngleX = ((MathHelper.cos(f3*10F)*20F) + 90F)/57.29578F;
+                this.Tail.rotateAngleX = ((MathHelper.cos(netHeadYaw * 10F) * 20F) + 90F) / 57.29578F;
+                //Tail.rotateAngleX = ((MathHelper.cos(netHeadYaw*10F)*20F) + 90F)/57.29578F;
             } else {
                 this.Tail.rotateAngleX = 0.0F;
             }
         }
-        //super.setRotationAngles(f, f1, f2, f3, f4, f5);
+        //super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
     }
 }

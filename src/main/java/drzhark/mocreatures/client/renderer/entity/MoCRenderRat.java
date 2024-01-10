@@ -5,23 +5,21 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.hostile.MoCEntityRat;
 import drzhark.mocreatures.proxy.MoCProxyClient;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.matrixStackIn;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCRenderRat<T extends MoCEntityRat> extends RenderLiving<T> {
+public class MoCRenderRat<T extends MoCEntityRat> extends MobRenderer<T> {
 
     public MoCRenderRat(ModelBase modelbase, float f) {
         super(MoCProxyClient.mc.getRenderManager(), modelbase, f);
     }
 
     @Override
-    public void doRender(T entityrat, double d, double d1, double d2, float f, float f1) {
-        super.doRender(entityrat, d, d1, d2, f, f1);
+    public void render(T entityrat, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+        super.render(entityrat, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
 
     @Override
@@ -48,7 +46,7 @@ public class MoCRenderRat<T extends MoCEntityRat> extends RenderLiving<T> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(T entityrat) {
+    public ResourceLocation getEntityTexture(T entityrat) {
         return entityrat.getTexture();
     }
 }

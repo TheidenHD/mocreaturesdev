@@ -5,7 +5,6 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.client.model.MoCModelHorse;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
-import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -18,7 +17,7 @@ public class MoCRenderHorse extends MoCRenderMoC<MoCEntityHorse> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityHorse entityhorse) {
+    public ResourceLocation getEntityTexture(MoCEntityHorse entityhorse) {
         return entityhorse.getTexture();
     }
 

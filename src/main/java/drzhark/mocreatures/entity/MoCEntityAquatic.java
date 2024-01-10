@@ -64,7 +64,7 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
     private boolean updateDivingDepth = false;
     private double divingDepth;
 
-    protected MoCEntityAquatic(EntityType<? extends TODO_REPLACE> type, World world) {
+    protected MoCEntityAquatic(EntityType<? extends MoCEntityAquatic> type, World world) {
         super(type, world);
         this.outOfWater = 0;
         setTemper(50);

@@ -28,10 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
@@ -555,7 +552,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
          *
          */
         try {
-            Biome currentbiome = MoCTools.biomeKind(this.world, pos);
+            RegistryKey<Biome> currentbiome = MoCTools.biomeKind(this.world, pos);
             int l = this.rand.nextInt(10);
 
             if (BiomeDictionary.hasType(currentbiome, Type.SNOWY)) {
@@ -649,7 +646,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
+    public void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
         if (isVenomous()) {
             ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 150, 2));
         }

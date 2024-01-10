@@ -3,7 +3,7 @@
  */
 package drzhark.mocreatures.client.renderer.fx;
 
-import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.TexturedParticle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
@@ -11,7 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCEntityFXVacuum extends Particle {
+public class MoCEntityFXVacuum extends TexturedParticle {
 
     private final float portalParticleScale;
     private final double portalPosX;
@@ -29,17 +29,17 @@ public class MoCEntityFXVacuum extends Particle {
         this.motionX = par8;
         this.motionY = par10;
         this.motionZ = par12;
-        this.portalPosX = this.getPosX() = par2;
-        this.portalPosY = this.getPosY() = par4;// + 0.7D;
-        this.portalPosZ = this.getPosZ() = par6;
+        this.portalPosX = this.posX = par2;
+        this.portalPosY = this.posY = par4;// + 0.7D;
+        this.portalPosZ = this.posZ = par6;
         this.portalParticleScale = this.particleScale = this.rand.nextFloat() * 0.2F + 0.5F;
         this.setParticleTextureIndex(partTexture);
-        this.particleMaxAge = (int) (Math.random() * 10.0D) + 30;
+        this.maxAge = (int) (Math.random() * 10.0D) + 30;
     }
 
     @Override
     public void renderParticle(BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, float par3, float par4, float par5, float par6, float par7) {
-        float var8 = (this.particleAge + partialTicks) / this.particleMaxAge;
+        float var8 = (this.age + partialTicks) / this.maxAge;
         var8 = 1.0F - var8;
         var8 *= var8;
         var8 = 1.0F - var8;
@@ -50,7 +50,7 @@ public class MoCEntityFXVacuum extends Particle {
     @Override
     public int getBrightnessForRender(float par1) {
         int var2 = super.getBrightnessForRender(par1);
-        float var3 = (float) this.particleAge / (float) this.particleMaxAge;
+        float var3 = (float) this.age / (float) this.maxAge;
         var3 *= var3;
         var3 *= var3;
         int var4 = var2 & 255;
@@ -67,7 +67,7 @@ public class MoCEntityFXVacuum extends Particle {
     /*@Override
     public float getBrightness(float par1) {
         float var2 = super.getBrightness(par1);
-        float var3 = (float) this.particleAge / (float) this.particleMaxAge;
+        float var3 = (float) this.age / (float) this.maxAge;
         var3 = var3 * var3 * var3 * var3;
         return var2 * (1.0F - var3) + var3;
     }*/
@@ -77,18 +77,18 @@ public class MoCEntityFXVacuum extends Particle {
      */
     @Override
     public void tick() {
-        this.prevPosX = this.getPosX();
-        this.prevPosY = this.getPosY();
-        this.prevPosZ = this.getPosZ();
-        float var1 = (float) this.particleAge / (float) this.particleMaxAge;
+        this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
+        float var1 = (float) this.age / (float) this.maxAge;
         float var2 = var1;
         var1 = -var1 + var1 * var1 * 2.0F;
         var1 = 1.0F - var1;
-        this.getPosX() = this.portalPosX + this.motionX * var1;
-        this.getPosY() = this.portalPosY + this.motionY * var1 + (1.0F - var2);
-        this.getPosZ() = this.portalPosZ + this.motionZ * var1;
+        this.posX = this.portalPosX + this.motionX * var1;
+        this.posY = this.portalPosY + this.motionY * var1 + (1.0F - var2);
+        this.posZ = this.portalPosZ + this.motionZ * var1;
 
-        if (this.particleAge++ >= this.particleMaxAge) {
+        if (this.age++ >= this.maxAge) {
             this.setExpired();
         }
     }

@@ -57,7 +57,6 @@ public class MoCModelFox<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Leg1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Leg2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -69,18 +68,18 @@ public class MoCModelFox<T extends Entity> extends EntityModel<T> {
         this.Ears.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        this.Head.rotateAngleY = f3 / 57.29578F;
-        this.Head.rotateAngleX = f4 / 57.29578F;
-        this.Snout.rotateAngleY = this.Head.rotateAngleY;//f3 / 57.29578F;
-        this.Snout.rotateAngleX = this.Head.rotateAngleX;//f4 / 57.29578F;
-        //Snout.rotationPointX = 0.0F + ((f3 / 57.29578F) * 0.8F);
-        this.Ears.rotateAngleY = this.Head.rotateAngleY;//f3 / 57.29578F;
-        this.Ears.rotateAngleX = this.Head.rotateAngleX;//f4 / 57.29578F;
-        //Ears.rotationPointX = 0.0F + ((f3 / 57.29578F) * 2.5F);
-        this.Leg1.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
-        this.Leg2.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.4F * f1;
-        this.Leg3.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.4F * f1;
-        this.Leg4.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.Head.rotateAngleY = netHeadYaw / 57.29578F;
+        this.Head.rotateAngleX = headPitch / 57.29578F;
+        this.Snout.rotateAngleY = this.Head.rotateAngleY;//netHeadYaw / 57.29578F;
+        this.Snout.rotateAngleX = this.Head.rotateAngleX;//headPitch / 57.29578F;
+        //Snout.rotationPointX = 0.0F + ((netHeadYaw / 57.29578F) * 0.8F);
+        this.Ears.rotateAngleY = this.Head.rotateAngleY;//netHeadYaw / 57.29578F;
+        this.Ears.rotateAngleX = this.Head.rotateAngleX;//headPitch / 57.29578F;
+        //Ears.rotationPointX = 0.0F + ((netHeadYaw / 57.29578F) * 2.5F);
+        this.Leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        this.Leg2.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.4F * limbSwingAmount;
+        this.Leg3.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.4F * limbSwingAmount;
+        this.Leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
     }
 }

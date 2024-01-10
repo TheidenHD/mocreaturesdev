@@ -76,12 +76,11 @@ public class MoCModelTurtle<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        //super.render(entity, f, f1, f2, f3, f4, f5);
+        //super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
         MoCEntityTurtle entityturtle = (MoCEntityTurtle) entity;
         this.TMNT = entityturtle.isTMNT();
         this.turtleHat = entityturtle.getRidingEntity() != null;
         this.isSwimming = entityturtle.isInWater();
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         this.Shell.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.ShellUp.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         if (!this.TMNT) {
@@ -96,8 +95,8 @@ public class MoCModelTurtle<T extends Entity> extends EntityModel<T> {
         this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        //super.setRotationAngles(f, f1, f2, f3, f4, f5);
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        //super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
         if (this.upsidedown) {
             float f25 = this.swingProgress;
             float f26 = f25;
@@ -123,7 +122,7 @@ public class MoCModelTurtle<T extends Entity> extends EntityModel<T> {
             this.Leg4.rotateAngleX = 0F;
             this.Tail.rotateAngleY = 0F;
         } else if (this.isSwimming) {
-            float swimmLegs = MathHelper.cos(f * 0.5F) * 6.0F * f1;
+            float swimmLegs = MathHelper.cos(limbSwing * 0.5F) * 6.0F * limbSwingAmount;
             this.Leg1.rotateAngleX = -1.2F;
             this.Leg1.rotateAngleY = -1.2F + swimmLegs;
             this.Leg2.rotateAngleX = -1.2F;
@@ -132,11 +131,11 @@ public class MoCModelTurtle<T extends Entity> extends EntityModel<T> {
             this.Leg4.rotateAngleX = 1.2F;//swimmLegs;
             this.Tail.rotateAngleY = 0F;
         } else {
-            this.Leg1.rotateAngleX = MathHelper.cos(f * 2.0F) * 2.0F * f1;
-            this.Leg2.rotateAngleX = MathHelper.cos((f * 2.0F) + 3.141593F) * 2.0F * f1;
-            this.Leg3.rotateAngleX = MathHelper.cos((f * 2.0F) + 3.141593F) * 2.0F * f1;
-            this.Leg4.rotateAngleX = MathHelper.cos(f * 2.0F) * 2.0F * f1;
-            this.Tail.rotateAngleY = MathHelper.cos(f * 0.6662F) * 0.7F * f1;
+            this.Leg1.rotateAngleX = MathHelper.cos(limbSwing * 2.0F) * 2.0F * limbSwingAmount;
+            this.Leg2.rotateAngleX = MathHelper.cos((limbSwing * 2.0F) + 3.141593F) * 2.0F * limbSwingAmount;
+            this.Leg3.rotateAngleX = MathHelper.cos((limbSwing * 2.0F) + 3.141593F) * 2.0F * limbSwingAmount;
+            this.Leg4.rotateAngleX = MathHelper.cos(limbSwing * 2.0F) * 2.0F * limbSwingAmount;
+            this.Tail.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F) * 0.7F * limbSwingAmount;
 
             this.Leg1.rotateAngleY = 0F;
             this.Leg2.rotateAngleY = 0F;
@@ -176,8 +175,8 @@ public class MoCModelTurtle<T extends Entity> extends EntityModel<T> {
             //Tail.rotationPointY = 21F;
             this.Tail.rotationPointZ = 2F;
         } else {
-            this.Head.rotateAngleX = f4 / 57.29578F;
-            this.Head.rotateAngleY = f3 / 57.29578F;
+            this.Head.rotateAngleX = headPitch / 57.29578F;
+            this.Head.rotateAngleY = netHeadYaw / 57.29578F;
 
             //Leg1.setRotationPoint(3.5F, 20F, -3.5F);
             this.Leg1.rotationPointX = 3.5F;

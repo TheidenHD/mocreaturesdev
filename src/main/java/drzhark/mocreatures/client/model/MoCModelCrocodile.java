@@ -345,8 +345,6 @@ public class MoCModelCrocodile<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         this.LJaw.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.TailA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.TailB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -396,10 +394,10 @@ public class MoCModelCrocodile<T extends Entity> extends EntityModel<T> {
         this.TeethD1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        //super.setRotationAngles(f, f1, f2, f3, f4, f5);
-        this.Head.rotateAngleX = f4 / 57.29578F;
-        this.Head.rotateAngleY = f3 / 57.29578F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        //super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
+        this.Head.rotateAngleX = headPitch / 57.29578F;
+        this.Head.rotateAngleY = netHeadYaw / 57.29578F;
         this.SpikeEye.rotateAngleX = this.Head.rotateAngleX;
         this.SpikeEye.rotateAngleY = this.Head.rotateAngleY;
         this.SpikeEye1.rotateAngleX = this.Head.rotateAngleX;
@@ -571,10 +569,10 @@ public class MoCModelCrocodile<T extends Entity> extends EntityModel<T> {
             this.Leg4A.rotationPointY = 19F;
             this.Leg4A.rotationPointZ = 9F;
 
-            this.Leg1.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
-            this.Leg2.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.4F * f1;
-            this.Leg3.rotateAngleX = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.4F * f1;
-            this.Leg4.rotateAngleX = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
+            this.Leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+            this.Leg2.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.4F * limbSwingAmount;
+            this.Leg3.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.4F * limbSwingAmount;
+            this.Leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
 
             this.Leg1.rotateAngleY = 0F;
             this.Leg2.rotateAngleY = 0F;
@@ -586,7 +584,7 @@ public class MoCModelCrocodile<T extends Entity> extends EntityModel<T> {
             this.Leg3A.rotateAngleX = this.Leg3.rotateAngleX;
             this.Leg4A.rotateAngleX = this.Leg4.rotateAngleX;
 
-            float latrot = MathHelper.cos(f / (1.919107651F * 1)) * 0.261799387799149F * f1 * 5;
+            float latrot = MathHelper.cos(limbSwing / (1.919107651F * 1)) * 0.261799387799149F * limbSwingAmount * 5;
             this.Leg1.rotateAngleZ = latrot;
             this.Leg1A.rotateAngleZ = latrot;
             this.Leg4.rotateAngleZ = -latrot;
@@ -598,13 +596,13 @@ public class MoCModelCrocodile<T extends Entity> extends EntityModel<T> {
             this.Leg2.rotateAngleZ = -latrot;
             this.Leg2A.rotateAngleZ = -latrot;
 
-            //Leg1.rotateAngleZ = MathHelper.cos(f / (1.919107651F * 1 )) * 0.261799387799149F * f1 *10;
-            //Leg1A.rotateAngleZ = MathHelper.cos(f / (1.919107651F * 1 )) * 0.261799387799149F * f1 *10;
+            //Leg1.rotateAngleZ = MathHelper.cos(limbSwing / (1.919107651F * 1 )) * 0.261799387799149F * limbSwingAmount *10;
+            //Leg1A.rotateAngleZ = MathHelper.cos(limbSwing / (1.919107651F * 1 )) * 0.261799387799149F * limbSwingAmount *10;
 
-            //LArm.rotateAngleY = MathHelper.cos(f / (1.919107651F * 1 )) * -0.349065850398866F * f1 + 0.785398163397448F ;
+            //LArm.rotateAngleY = MathHelper.cos(limbSwing / (1.919107651F * 1 )) * -0.349065850398866F * limbSwingAmount + 0.785398163397448F ;
 
         }
-        this.TailA.rotateAngleY = MathHelper.cos(f * 0.6662F) * 0.7F * f1;
+        this.TailA.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F) * 0.7F * limbSwingAmount;
         this.TailB.rotateAngleY = this.TailA.rotateAngleY;
         this.TailC.rotateAngleY = this.TailA.rotateAngleY;
         this.TailD.rotateAngleY = this.TailA.rotateAngleY;

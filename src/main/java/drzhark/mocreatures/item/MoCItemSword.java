@@ -34,9 +34,7 @@ public class MoCItemSword extends SwordItem {
 
     public MoCItemSword(String name, int meta, IItemTier material) {
         super(material);
-        this.setCreativeTab(MoCreatures.tabMoC);
         this.setRegistryName(MoCConstants.MOD_ID, name);
-        this.setTranslationKey(name);
     }
 
     public MoCItemSword(String name, IItemTier material, int damageType) {

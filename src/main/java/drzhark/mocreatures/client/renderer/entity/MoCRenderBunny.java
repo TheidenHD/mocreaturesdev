@@ -4,8 +4,6 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.passive.MoCEntityBunny;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -18,13 +16,13 @@ public class MoCRenderBunny extends MoCRenderMoC<MoCEntityBunny> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityBunny entitybunny) {
+    public ResourceLocation getEntityTexture(MoCEntityBunny entitybunny) {
         return entitybunny.getTexture();
     }
 
     @Override
-    public void doRender(MoCEntityBunny entitybunny, double d, double d1, double d2, float f, float f1) {
-        super.doRender(entitybunny, d, d1, d2, f, f1);
+    public void render(MoCEntityBunny entitybunny, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+        super.render(entitybunny, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
 
     @Override

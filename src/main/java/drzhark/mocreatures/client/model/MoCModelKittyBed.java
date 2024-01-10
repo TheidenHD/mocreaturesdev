@@ -29,42 +29,42 @@ public class MoCModelKittyBed<T extends Entity> extends EntityModel<T> {
     ModelRenderer Bottom;
 
     public MoCModelKittyBed() {
-        float f = 0.0F;
+        float limbSwing = 0.0F;
         this.TableL = new ModelRenderer(this, 30, 8);
-        this.TableL.addBox(-8F, 0.0F, 7F, 16, 6, 1, f);
+        this.TableL.addBox(-8F, 0.0F, 7F, 16, 6, 1, limbSwing);
         this.TableL.setRotationPoint(0.0F, 18F, 0.0F);
         this.TableR = new ModelRenderer(this, 30, 8);
-        this.TableR.addBox(-8F, 18F, -8F, 16, 6, 1, f);
+        this.TableR.addBox(-8F, 18F, -8F, 16, 6, 1, limbSwing);
         this.TableR.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.Table_B = new ModelRenderer(this, 30, 0);
-        this.Table_B.addBox(-8F, -3F, 0.0F, 16, 6, 1, f);
+        this.Table_B.addBox(-8F, -3F, 0.0F, 16, 6, 1, limbSwing);
         this.Table_B.setRotationPoint(8F, 21F, 0.0F);
         this.Table_B.rotateAngleY = 1.5708F;
         this.FoodT = new ModelRenderer(this, 14, 0);
-        this.FoodT.addBox(1.0F, 1.0F, 1.0F, 4, 1, 4, f);
+        this.FoodT.addBox(1.0F, 1.0F, 1.0F, 4, 1, 4, limbSwing);
         this.FoodT.setRotationPoint(-16F, 22F, 0.0F);
         this.FoodTraySide = new ModelRenderer(this, 0, 0);
-        this.FoodTraySide.addBox(-16F, 21F, 5F, 5, 3, 1, f);
+        this.FoodTraySide.addBox(-16F, 21F, 5F, 5, 3, 1, limbSwing);
         this.FoodTraySide.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.FoodTraySideB = new ModelRenderer(this, 0, 0);
-        this.FoodTraySideB.addBox(-15F, 21F, 0.0F, 5, 3, 1, f);
+        this.FoodTraySideB.addBox(-15F, 21F, 0.0F, 5, 3, 1, limbSwing);
         this.FoodTraySideB.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.FoodTraySideC = new ModelRenderer(this, 0, 0);
-        this.FoodTraySideC.addBox(-3F, -1F, 0.0F, 5, 3, 1, f);
+        this.FoodTraySideC.addBox(-3F, -1F, 0.0F, 5, 3, 1, limbSwing);
         this.FoodTraySideC.setRotationPoint(-16F, 22F, 2.0F);
         this.FoodTraySideC.rotateAngleY = 1.5708F;
         this.FoodTraySideD = new ModelRenderer(this, 0, 0);
-        this.FoodTraySideD.addBox(-3F, -1F, 0.0F, 5, 3, 1, f);
+        this.FoodTraySideD.addBox(-3F, -1F, 0.0F, 5, 3, 1, limbSwing);
         this.FoodTraySideD.setRotationPoint(-11F, 22F, 3F);
         this.FoodTraySideD.rotateAngleY = 1.5708F;
         this.Milk = new ModelRenderer(this, 14, 9);
-        this.Milk.addBox(0.0F, 0.0F, 0.0F, 4, 1, 4, f);
+        this.Milk.addBox(0.0F, 0.0F, 0.0F, 4, 1, 4, limbSwing);
         this.Milk.setRotationPoint(-15F, 21F, 1.0F);
         this.PetFood = new ModelRenderer(this, 0, 9);
-        this.PetFood.addBox(0.0F, 0.0F, 0.0F, 4, 1, 4, f);
+        this.PetFood.addBox(0.0F, 0.0F, 0.0F, 4, 1, 4, limbSwing);
         this.PetFood.setRotationPoint(-15F, 21F, 1.0F);
         this.Bottom = new ModelRenderer(this, 16, 15);
-        this.Bottom.addBox(-10F, 0.0F, -7F, 16, 1, 14, f);
+        this.Bottom.addBox(-10F, 0.0F, -7F, 16, 1, 14, limbSwing);
         this.Bottom.setRotationPoint(2.0F, 23F, 0.0F);
     }
 

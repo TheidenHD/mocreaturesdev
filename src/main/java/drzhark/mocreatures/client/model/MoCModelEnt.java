@@ -206,8 +206,6 @@ public class MoCModelEnt<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.LShoulder.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.LArm.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -259,18 +257,18 @@ public class MoCModelEnt<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        //super.setRotationAngles(f, f1, f2, f3, f4, f5);
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        //super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
         float radianF = 57.29578F;
 
-        float RArmXRot = MathHelper.cos(f * 0.6662F + (float) Math.PI) * 2.0F * f1 * 0.5F;
-        float LArmXRot = MathHelper.cos(f * 0.6662F) * 2.0F * f1 * 0.5F;
-        float RLegXRot = MathHelper.cos(f * 0.6662F) * 1.0F * f1;
-        float LLegXRot = MathHelper.cos(f * 0.6662F + (float) Math.PI) * 1.0F * f1;
+        float RArmXRot = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F;
+        float LArmXRot = MathHelper.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
+        float RLegXRot = MathHelper.cos(limbSwing * 0.6662F) * 1.0F * limbSwingAmount;
+        float LLegXRot = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.0F * limbSwingAmount;
 
-        this.LWrist.rotateAngleZ = (MathHelper.cos(f2 * 0.09F) * 0.05F) - 0.05F;
+        this.LWrist.rotateAngleZ = (MathHelper.cos(ageInTicks * 0.09F) * 0.05F) - 0.05F;
         this.LWrist.rotateAngleX = LArmXRot;
-        this.RWrist.rotateAngleZ = -(MathHelper.cos(f2 * 0.09F) * 0.05F) + 0.05F;
+        this.RWrist.rotateAngleZ = -(MathHelper.cos(ageInTicks * 0.09F) * 0.05F) + 0.05F;
         this.RWrist.rotateAngleX = RArmXRot;
 
         this.LHand.rotateAngleX = this.LFingers.rotateAngleX = this.LArm.rotateAngleX = this.LWrist.rotateAngleX;
@@ -288,8 +286,8 @@ public class MoCModelEnt<T extends Entity> extends EntityModel<T> {
 
         this.LFoot.rotateAngleX = (15F / radianF) + this.LLeg.rotateAngleX;
         this.RFoot.rotateAngleX = (15F / radianF) + this.RLeg.rotateAngleX;
-        this.Neck.rotateAngleY = f3 / radianF; //this moves head to left and right
-        //Neck.rotateAngleX = f4/ radianF;
+        this.Neck.rotateAngleY = netHeadYaw / radianF; //this moves head to left and right
+        //Neck.rotateAngleX = headPitch/ radianF;
 
         this.Mouth.rotateAngleY =
                 this.Face.rotateAngleY = this.Nose.rotateAngleY = this.Head.rotateAngleY = this.TreeBase.rotateAngleY = this.Neck.rotateAngleY;

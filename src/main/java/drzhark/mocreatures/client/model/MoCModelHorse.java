@@ -358,7 +358,7 @@ public class MoCModelHorse<T extends Entity> extends EntityModel<T> {
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         MoCEntityHorse entityhorse = (MoCEntityHorse) entity;
-        //super.render(entity, f, f1, f2, f3, f4, f5);
+        //super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
 
         int type = entityhorse.getTypeMoC();
         int vanishingInt = entityhorse.getVanishC();
@@ -378,7 +378,7 @@ public class MoCModelHorse<T extends Entity> extends EntityModel<T> {
         boolean floating = (entityhorse.getIsGhost() || (entityhorse.isFlyer() && entityhorse.isOnAir()));
         //                || (entityhorse.getRidingEntity() == null && !entityhorse.onGround)
         //                || (entityhorse.isBeingRidden() && !entityhorse.getRidingEntity().onGround));
-        setRotationAngles(f, f1, f2, f3, f4, f5, eating, rider, floating, standing, saddled, moveTail, wings, flapwings, shuffling, type);
+        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, eating, rider, floating, standing, saddled, moveTail, wings, flapwings, shuffling, type);
 
         if (!entityhorse.getIsGhost() && vanishingInt == 0) {
             if (saddled) {
@@ -586,32 +586,32 @@ public class MoCModelHorse<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, boolean eating, boolean rider, boolean floating,
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, boolean eating, boolean rider, boolean floating,
                                   boolean standing, boolean saddled, boolean tail, boolean wings, boolean flapwings, boolean shuffle, int type) {
-        float RLegXRot = MathHelper.cos((f * 0.6662F) + 3.141593F) * 0.8F * f1;
-        float LLegXRot = MathHelper.cos(f * 0.6662F) * 0.8F * f1;
-        float HeadXRot = (f4 / 57.29578F);
-        if (f3 > 20F) {
-            f3 = 20F;
+        float RLegXRot = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
+        float LLegXRot = MathHelper.cos(limbSwing * 0.6662F) * 0.8F * limbSwingAmount;
+        float HeadXRot = (headPitch / 57.29578F);
+        if (netHeadYaw > 20F) {
+            netHeadYaw = 20F;
         }
-        if (f3 < -20F) {
-            f3 = -20F;
+        if (netHeadYaw < -20F) {
+            netHeadYaw = -20F;
         }
 
         /*
-         * f = distance walked f1 = speed 0 - 1 f2 = timer
+         * limbSwing = distance walked limbSwingAmount = speed 0 - 1 ageInTicks = timer
          */
 
         if (shuffle) {
-            HeadXRot = HeadXRot + (MathHelper.cos(f2 * 0.4F) * 0.15F);
-        } else if (f1 > 0.2F && !floating) {
-            HeadXRot = HeadXRot + (MathHelper.cos(f * 0.4F) * 0.15F * f1);
+            HeadXRot = HeadXRot + (MathHelper.cos(ageInTicks * 0.4F) * 0.15F);
+        } else if (limbSwingAmount > 0.2F && !floating) {
+            HeadXRot = HeadXRot + (MathHelper.cos(limbSwing * 0.4F) * 0.15F * limbSwingAmount);
         }
 
         this.Head.rotationPointY = 4.0F;
         this.Head.rotationPointZ = -10F;
         this.Head.rotateAngleX = 0.5235988F + (HeadXRot);
-        this.Head.rotateAngleY = (f3 / 57.29578F);//fixes SMP bug
+        this.Head.rotateAngleY = (netHeadYaw / 57.29578F);//fixes SMP bug
         this.TailA.rotationPointY = 3F;
         this.TailB.rotationPointZ = 14F;
         this.Bag2.rotationPointY = 3F;
@@ -624,7 +624,7 @@ public class MoCModelHorse<T extends Entity> extends EntityModel<T> {
             this.Head.rotationPointZ = -1F;
             this.Head.rotateAngleX = (15 / 57.29578F) + (HeadXRot);
             //120 degrees
-            this.Head.rotateAngleY = (f3 / 57.29578F);
+            this.Head.rotateAngleY = (netHeadYaw / 57.29578F);
             this.TailA.rotationPointY = 9F;
             this.TailB.rotationPointZ = 18F;
             this.Bag2.rotationPointY = 5.5F;
@@ -689,8 +689,8 @@ public class MoCModelHorse<T extends Entity> extends EntityModel<T> {
         this.Unicorn.rotateAngleY = this.Head.rotateAngleY;
 
         //(if chested)
-        this.Bag1.rotateAngleX = RLegXRot / 5F;//(MathHelper.cos(f * 0.6662F) * 1.4F * f2) / 10F;
-        this.Bag2.rotateAngleX = -RLegXRot / 5F;//(MathHelper.cos(f * 0.6662F) * 1.4F * f2) / 10F;
+        this.Bag1.rotateAngleX = RLegXRot / 5F;//(MathHelper.cos(limbSwing * 0.6662F) * 1.4F * ageInTicks) / 10F;
+        this.Bag2.rotateAngleX = -RLegXRot / 5F;//(MathHelper.cos(limbSwing * 0.6662F) * 1.4F * ageInTicks) / 10F;
 
         if (wings) {
             this.InnerWing.rotateAngleX = this.Body.rotateAngleX;
@@ -714,15 +714,15 @@ public class MoCModelHorse<T extends Entity> extends EntityModel<T> {
              */
             float WingRot;
             if (flapwings) {
-                WingRot = MathHelper.cos((f2 * 0.3F) + 3.141593F) * 1.2F;// * f1;
+                WingRot = MathHelper.cos((ageInTicks * 0.3F) + 3.141593F) * 1.2F;// * limbSwingAmount;
             } else
             //cruising
             {
-                //WingRot = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.2F * f1;
-                WingRot = MathHelper.cos((f * 0.5F)) * 0.1F;//* 1.2F * f1;
+                //WingRot = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.2F * limbSwingAmount;
+                WingRot = MathHelper.cos((limbSwing * 0.5F)) * 0.1F;//* 1.2F * limbSwingAmount;
             }
 
-            //float WingRot = MathHelper.cos((f * 0.6662F) + 3.141593F) * f1 * 1.2F;
+            //float WingRot = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * limbSwingAmount * 1.2F;
             //InnerWing.setRotationPoint(5F, 3F, -6F);
             //setRotation(InnerWing, 0F, -0.3490659F, 0F);
             //X dist = 12
@@ -800,32 +800,32 @@ public class MoCModelHorse<T extends Entity> extends EntityModel<T> {
              * buttefly to have two / 3 movs: 1 slow movement when idle on
              * ground has to be random from closing up to horizontal 2 fast wing
              * flapping flying movement, short range close to 0 degree RLegXRot
-             * = MathHelper.cos((f * 0.6662F) + 3.141593F) * 0.8F * f1;
+             * = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
              */
 
             /*
-             * f = distance walked f1 = speed 0 - 1 f2 = timer
+             * limbSwing = distance walked limbSwingAmount = speed 0 - 1 ageInTicks = timer
              */
 
-            float f2a = f2 % 100F;
+            float f2a = ageInTicks % 100F;
             float WingRot = 0F;
 
             if (type != 21) {
                 //for butterfly horses
                 if (flapwings) //when user hits space or randomly
                 {
-                    WingRot = MathHelper.cos((f2 * 0.9F)) * 0.9F;
+                    WingRot = MathHelper.cos((ageInTicks * 0.9F)) * 0.9F;
 
                 } else
                 //default movement
                 {
                     if (floating) //cruising
                     {
-                        WingRot = MathHelper.cos((f2 * 0.6662F)) * 0.5F;
+                        WingRot = MathHelper.cos((ageInTicks * 0.6662F)) * 0.5F;
                     } else {
                         if (f2a > 40 & f2a < 60) //random movement
                         {
-                            WingRot = MathHelper.cos((f2 * 0.15F)) * 1.20F;
+                            WingRot = MathHelper.cos((ageInTicks * 0.15F)) * 1.20F;
                         }
                     }
 
@@ -833,15 +833,15 @@ public class MoCModelHorse<T extends Entity> extends EntityModel<T> {
             } else
             //for ghost horse
             {
-                WingRot = MathHelper.cos((f2 * 0.1F));//* 0.2F;
+                WingRot = MathHelper.cos((ageInTicks * 0.1F));//* 0.2F;
             }
 
             //from regular horse
             /*
-             * if (flapwings) { WingRot = MathHelper.cos((f2 * 0.3F) +
-             * 3.141593F) * 1.2F;// * f1; }else //cruising { //WingRot =
-             * MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.2F * f1; WingRot =
-             * MathHelper.cos((f * 0.5F)) *0.1F ;//* 1.2F * f1; }
+             * if (flapwings) { WingRot = MathHelper.cos((ageInTicks * 0.3F) +
+             * 3.141593F) * 1.2F;// * limbSwingAmount; }else //cruising { //WingRot =
+             * MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.2F * limbSwingAmount; WingRot =
+             * MathHelper.cos((limbSwing * 0.5F)) *0.1F ;//* 1.2F * limbSwingAmount; }
              */
 
             /*
@@ -898,8 +898,8 @@ public class MoCModelHorse<T extends Entity> extends EntityModel<T> {
             this.Leg4A.rotationPointY = this.Leg3A.rotationPointY;
             this.Leg4A.rotationPointZ = this.Leg3A.rotationPointZ;
 
-            RLegXRot = (-60 / 57.29578F) + MathHelper.cos((f2 * 0.4F) + 3.141593F);
-            LLegXRot = (-60 / 57.29578F) + MathHelper.cos(f2 * 0.4F);
+            RLegXRot = (-60 / 57.29578F) + MathHelper.cos((ageInTicks * 0.4F) + 3.141593F);
+            LLegXRot = (-60 / 57.29578F) + MathHelper.cos(ageInTicks * 0.4F);
 
             RLegXRotB = (45 / 57.29578F);
             LLegXRotB = RLegXRotB;
@@ -936,10 +936,10 @@ public class MoCModelHorse<T extends Entity> extends EntityModel<T> {
             this.Leg4A.rotationPointY = this.Leg3A.rotationPointY;
             this.Leg4A.rotationPointZ = this.Leg3A.rotationPointZ;
 
-            if (!floating && f1 > 0.2F) {
+            if (!floating && limbSwingAmount > 0.2F) {
 
-                float RLegXRot2 = MathHelper.cos(((f + 0.1F) * 0.6662F) + 3.141593F) * 0.8F * f1;
-                float LLegXRot2 = MathHelper.cos((f + 0.1F) * 0.6662F) * 0.8F * f1;
+                float RLegXRot2 = MathHelper.cos(((limbSwing + 0.1F) * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
+                float LLegXRot2 = MathHelper.cos((limbSwing + 0.1F) * 0.6662F) * 0.8F * limbSwingAmount;
                 if (RLegXRot > RLegXRot2) // - - >
                 {
                     RLegXRotB = RLegXRot + (55 / 57.29578F);
@@ -1000,16 +1000,16 @@ public class MoCModelHorse<T extends Entity> extends EntityModel<T> {
             this.Leg4A.rotationPointY = this.Leg3A.rotationPointY;
             this.Leg4A.rotationPointZ = this.Leg3A.rotationPointZ;
 
-            if (!floating)//&& f1 > 0.2F)
+            if (!floating)//&& limbSwingAmount > 0.2F)
             {
 
-                //float RLegXRot2 = MathHelper.cos(f2 * 0.4F);//MathHelper.cos(((f+0.1F) * 0.6662F) + 3.141593F) * 1.4F * f1;
-                RLegXRot = MathHelper.cos(f2 * 0.4F);
+                //float RLegXRot2 = MathHelper.cos(ageInTicks * 0.4F);//MathHelper.cos(((limbSwing+0.1F) * 0.6662F) + 3.141593F) * 1.4F * limbSwingAmount;
+                RLegXRot = MathHelper.cos(ageInTicks * 0.4F);
                 if (RLegXRot > 0.1F) {
                     RLegXRot = 0.3F;
                 }
                 //if (RLegXRot < -0.5F) RLegXRotB = RLegXRot + (45/57.29578F);
-                LLegXRot = MathHelper.cos((f2 * 0.4F) + 3.141593F);
+                LLegXRot = MathHelper.cos((ageInTicks * 0.4F) + 3.141593F);
                 if (LLegXRot > 0.1F) {
                     LLegXRot = 0.3F;
                 }
@@ -1022,8 +1022,8 @@ public class MoCModelHorse<T extends Entity> extends EntityModel<T> {
                  */
 
                 /*
-                 * float RLegXRot2 = MathHelper.cos(((f+0.1F) * 0.6662F) +
-                 * 3.141593F) * 1.4F * f1; if (RLegXRot > RLegXRot2) // - - > {
+                 * float RLegXRot2 = MathHelper.cos(((limbSwing+0.1F) * 0.6662F) +
+                 * 3.141593F) * 1.4F * limbSwingAmount; if (RLegXRot > RLegXRot2) // - - > {
                  * RLegXRotB = RLegXRot + (55/57.29578F); LLegXRotB = LLegXRot +
                  * (55/57.29578F); } if (RLegXRot < RLegXRot2) // < - - {
                  * RLegXRotC = RLegXRot - (15/57.29578F); LLegXRotC = LLegXRot -
@@ -1167,16 +1167,16 @@ public class MoCModelHorse<T extends Entity> extends EntityModel<T> {
             }
         }
 
-        //f1 = movement speed!
-        //f2 = timer!
+        //limbSwingAmount = movement speed!
+        //ageInTicks = timer!
 
-        float tailMov = -1.3089F + (f1 * 1.5F);
+        float tailMov = -1.3089F + (limbSwingAmount * 1.5F);
         if (tailMov > 0) {
             tailMov = 0;
         }
 
         if (tail) {
-            this.TailA.rotateAngleY = MathHelper.cos(f2 * 0.7F);
+            this.TailA.rotateAngleY = MathHelper.cos(ageInTicks * 0.7F);
             tailMov = 0;
         } else {
             this.TailA.rotateAngleY = 0F;
@@ -1189,8 +1189,8 @@ public class MoCModelHorse<T extends Entity> extends EntityModel<T> {
         this.TailB.rotationPointZ = this.TailA.rotationPointZ;
         this.TailC.rotationPointZ = this.TailA.rotationPointZ;
 
-        this.TailA.rotateAngleX = tailMov;//-1.3089F+(f1*1.5F);
-        this.TailB.rotateAngleX = tailMov;//-1.3089F+(f1*1.5F);
+        this.TailA.rotateAngleX = tailMov;//-1.3089F+(limbSwingAmount*1.5F);
+        this.TailB.rotateAngleX = tailMov;//-1.3089F+(limbSwingAmount*1.5F);
         this.TailC.rotateAngleX = -0.2618F + tailMov;//-1.5707F -tailMov;
     }
 }

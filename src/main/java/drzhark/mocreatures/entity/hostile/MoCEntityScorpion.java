@@ -234,13 +234,13 @@ public class MoCEntityScorpion extends MoCEntityMob {
         if (!this.world.isRemote && getIsAdult() && getHasBabies()) {
             int k = this.rand.nextInt(5);
             for (int i = 0; i < k; i++) {
-                MoCEntityPetScorpion entityscorpy = new MoCEntityPetScorpion(this.getType(), this.world);
-                entityscorpy.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
-                entityscorpy.setAdult(false);
-                entityscorpy.setAge(20);
-                entityscorpy.setTypeMoC(getTypeMoC);
-                this.world.addEntity(entityscorpy);
-                MoCTools.playCustomSound(entityscorpy, SoundEvents.ENTITY_SLIME_SQUISH);
+//                MoCEntityPetScorpion entityscorpy = new MoCEntityPetScorpion(this.getType(), this.world);//TODO TheidenHD
+//                entityscorpy.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
+//                entityscorpy.setAdult(false);
+//                entityscorpy.setAge(20);
+//                entityscorpy.setTypeMoC(getTypeMoC);
+//                this.world.addEntity(entityscorpy);
+//                MoCTools.playCustomSound(entityscorpy, SoundEvents.ENTITY_SLIME_SQUISH);
             }
         }
     }

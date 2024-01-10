@@ -99,9 +99,7 @@ public class MoCModelTurkey<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
         this.male = ((MoCEntityTurkey) entity).getTypeMoC() == 1;
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         if (this.isChild) {
             // All children rendered as Female
             matrixStackIn.push();
@@ -158,14 +156,14 @@ public class MoCModelTurkey<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 
-        float LLegXRot = MathHelper.cos(f * 0.6662F) * 1.4F * f1;
-        float RLegXRot = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.4F * f1;
-        float wingF = (MathHelper.cos(f * 0.6662F) * 1.4F * f1) / 4F;
+        float LLegXRot = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        float RLegXRot = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.4F * limbSwingAmount;
+        float wingF = (MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount) / 4F;
 
-        this.Head.rotateAngleX = 0.4833219F + f4 / 57.29578F;//(RLegXRot/7F) + (-f4 / (180F / (float)Math.PI)) ;
-        this.Head.rotateAngleY = f3 / (180F / (float) Math.PI);
+        this.Head.rotateAngleX = 0.4833219F + headPitch / 57.29578F;//(RLegXRot/7F) + (-headPitch / (180F / (float)Math.PI)) ;
+        this.Head.rotateAngleY = netHeadYaw / (180F / (float) Math.PI);
         this.Beak.rotateAngleX = 0.2974F + this.Head.rotateAngleX;//0.7807508F - Head.rotateAngleX;
         this.Beak.rotateAngleY = this.Head.rotateAngleY;
 

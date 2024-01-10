@@ -781,7 +781,7 @@ public class MoCModelWyvern<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        //super.render(entity, f, f1, f2, f3, f4, f5);
+        //super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
 
         MoCEntityWyvern wyvern = (MoCEntityWyvern) entity;
         int armor = wyvern.getArmorType();
@@ -795,7 +795,7 @@ public class MoCModelWyvern<T extends Entity> extends EntityModel<T> {
         this.isGhost = wyvern.getIsGhost();
         this.openMouth = wyvern.mouthCounter;
 
-        setRotationAngles(f, f1, f2, f3, f4, f5);//, onAir, flapwings, isRidden, openMouth, diving, isSitting);
+        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);//, onAir, flapwings, isRidden, openMouth, diving, isSitting);
         float yOffset = wyvern.getAdjustedYOffset();
         matrixStackIn.push();
         matrixStackIn.translate(0F, yOffset, 0F);
@@ -828,88 +828,88 @@ public class MoCModelWyvern<T extends Entity> extends EntityModel<T> {
 
         if (isSaddled) {
             this.saddle.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.mouthrod.isHidden = false; //render(f5);
-            this.helmetstrap1.isHidden = false; //render(f5);
-            this.helmetstrap2.isHidden = false; //render(f5);
+            this.mouthrod.showModel = !false; //render(f5);
+            this.helmetstrap1.showModel = !false; //render(f5);
+            this.helmetstrap2.showModel = !false; //render(f5);
             this.chestbelt.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.stomachbelt.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
             if (isRidden) {
-                this.controlrope1.isHidden = false;
-                this.controlrope2.isHidden = false;
+                this.controlrope1.showModel = !false;
+                this.controlrope2.showModel = !false;
             } else {
-                this.controlrope1.isHidden = true;
-                this.controlrope2.isHidden = true;
+                this.controlrope1.showModel = !true;
+                this.controlrope2.showModel = !true;
             }
         } else {
-            this.mouthrod.isHidden = true;
-            this.helmetstrap1.isHidden = true;
-            this.helmetstrap2.isHidden = true;
+            this.mouthrod.showModel = !true;
+            this.helmetstrap1.showModel = !true;
+            this.helmetstrap2.showModel = !true;
         }
 
-        this.ironhelmethorn1.isHidden = true;
-        this.ironhelmethorn2.isHidden = true;
-        this.ironhelmet.isHidden = true;
-        this.ironhelmetsnout.isHidden = true;
-        this.ironrightlegarmor.isHidden = true;
-        this.ironleftlegarmor.isHidden = true;
-        this.ironchestarmor.isHidden = true;
-        this.ironrightshoulderpad.isHidden = true;
-        this.ironleftshoulderpad.isHidden = true;
+        this.ironhelmethorn1.showModel = !true;
+        this.ironhelmethorn2.showModel = !true;
+        this.ironhelmet.showModel = !true;
+        this.ironhelmetsnout.showModel = !true;
+        this.ironrightlegarmor.showModel = !true;
+        this.ironleftlegarmor.showModel = !true;
+        this.ironchestarmor.showModel = !true;
+        this.ironrightshoulderpad.showModel = !true;
+        this.ironleftshoulderpad.showModel = !true;
 
-        this.goldleftshoulder.isHidden = true;
-        this.goldchestarmor.isHidden = true;
-        this.goldrightshoulder.isHidden = true;
-        this.goldleftlegarmor.isHidden = true;
-        this.goldrightlegarmor.isHidden = true;
-        this.goldhelmethorn1.isHidden = true;
-        this.goldhelmethorn2.isHidden = true;
-        this.goldhelmet.isHidden = true;
-        this.goldhelmetsnout.isHidden = true;
+        this.goldleftshoulder.showModel = !true;
+        this.goldchestarmor.showModel = !true;
+        this.goldrightshoulder.showModel = !true;
+        this.goldleftlegarmor.showModel = !true;
+        this.goldrightlegarmor.showModel = !true;
+        this.goldhelmethorn1.showModel = !true;
+        this.goldhelmethorn2.showModel = !true;
+        this.goldhelmet.showModel = !true;
+        this.goldhelmetsnout.showModel = !true;
 
-        this.diamondleftshoulder.isHidden = true;
-        this.diamondrightshoulder.isHidden = true;
-        this.diamondchestarmor.isHidden = true;
-        this.diamondleftlegarmor.isHidden = true;
-        this.diamondrightlegarmor.isHidden = true;
-        this.diamondhelmet.isHidden = true;
-        this.diamondhelmethorn2.isHidden = true;
-        this.diamondhelmethorn1.isHidden = true;
-        this.diamondhelmetsnout.isHidden = true;
+        this.diamondleftshoulder.showModel = !true;
+        this.diamondrightshoulder.showModel = !true;
+        this.diamondchestarmor.showModel = !true;
+        this.diamondleftlegarmor.showModel = !true;
+        this.diamondrightlegarmor.showModel = !true;
+        this.diamondhelmet.showModel = !true;
+        this.diamondhelmethorn2.showModel = !true;
+        this.diamondhelmethorn1.showModel = !true;
+        this.diamondhelmetsnout.showModel = !true;
 
         switch (armor) {
             case 1:
-                this.ironhelmethorn1.isHidden = false;
-                this.ironhelmethorn2.isHidden = false;
-                this.ironhelmet.isHidden = false;
-                this.ironhelmetsnout.isHidden = false;
-                this.ironrightlegarmor.isHidden = false;
-                this.ironleftlegarmor.isHidden = false;
-                this.ironchestarmor.isHidden = false;
-                this.ironrightshoulderpad.isHidden = false;
-                this.ironleftshoulderpad.isHidden = false;
+                this.ironhelmethorn1.showModel = !false;
+                this.ironhelmethorn2.showModel = !false;
+                this.ironhelmet.showModel = !false;
+                this.ironhelmetsnout.showModel = !false;
+                this.ironrightlegarmor.showModel = !false;
+                this.ironleftlegarmor.showModel = !false;
+                this.ironchestarmor.showModel = !false;
+                this.ironrightshoulderpad.showModel = !false;
+                this.ironleftshoulderpad.showModel = !false;
                 break;
             case 2:
-                this.goldleftshoulder.isHidden = false;
-                this.goldchestarmor.isHidden = false;
-                this.goldrightshoulder.isHidden = false;
-                this.goldleftlegarmor.isHidden = false;
-                this.goldrightlegarmor.isHidden = false;
-                this.goldhelmethorn1.isHidden = false;
-                this.goldhelmethorn2.isHidden = false;
-                this.goldhelmet.isHidden = false;
-                this.goldhelmetsnout.isHidden = false;
+                this.goldleftshoulder.showModel = !false;
+                this.goldchestarmor.showModel = !false;
+                this.goldrightshoulder.showModel = !false;
+                this.goldleftlegarmor.showModel = !false;
+                this.goldrightlegarmor.showModel = !false;
+                this.goldhelmethorn1.showModel = !false;
+                this.goldhelmethorn2.showModel = !false;
+                this.goldhelmet.showModel = !false;
+                this.goldhelmetsnout.showModel = !false;
                 break;
             case 3:
-                this.diamondleftshoulder.isHidden = false;
-                this.diamondrightshoulder.isHidden = false;
-                this.diamondchestarmor.isHidden = false;
-                this.diamondleftlegarmor.isHidden = false;
-                this.diamondrightlegarmor.isHidden = false;
-                this.diamondhelmet.isHidden = false;
-                this.diamondhelmethorn2.isHidden = false;
-                this.diamondhelmethorn1.isHidden = false;
-                this.diamondhelmetsnout.isHidden = false;
+                this.diamondleftshoulder.showModel = !false;
+                this.diamondrightshoulder.showModel = !false;
+                this.diamondchestarmor.showModel = !false;
+                this.diamondleftlegarmor.showModel = !false;
+                this.diamondrightlegarmor.showModel = !false;
+                this.diamondhelmet.showModel = !false;
+                this.diamondhelmethorn2.showModel = !false;
+                this.diamondhelmethorn1.showModel = !false;
+                this.diamondhelmetsnout.showModel = !false;
                 break;
 
         }
@@ -940,26 +940,26 @@ public class MoCModelWyvern<T extends Entity> extends EntityModel<T> {
     }
 
     @SuppressWarnings("unused")
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {//, boolean onAir, boolean flapwings, boolean rider, int openMouth, boolean diving, boolean sitting) {
-        float RLegXRot = MathHelper.cos((f * 0.6662F) + 3.141593F) * 0.8F * f1;
-        float LLegXRot = MathHelper.cos(f * 0.6662F) * 0.8F * f1;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {//, boolean onAir, boolean flapwings, boolean rider, int openMouth, boolean diving, boolean sitting) {
+        float RLegXRot = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
+        float LLegXRot = MathHelper.cos(limbSwing * 0.6662F) * 0.8F * limbSwingAmount;
 
-        f3 = MoCTools.realAngle(f3);
+        netHeadYaw = MoCTools.realAngle(netHeadYaw);
 
         float f10 = 60F;
-        if (f3 > f10) {
-            f3 = f10;
+        if (netHeadYaw > f10) {
+            netHeadYaw = f10;
         }
-        if (f3 < -f10) {
-            f3 = -f10;
+        if (netHeadYaw < -f10) {
+            netHeadYaw = -f10;
         }
-        this.neck2.rotateAngleX = -66F / this.radianF + (f4 * 1 / 3F / this.radianF);
-        this.neck1.rotateAngleX = 30F / this.radianF + (f4 * 2 / 3F / this.radianF);
+        this.neck2.rotateAngleX = -66F / this.radianF + (headPitch * 1 / 3F / this.radianF);
+        this.neck1.rotateAngleX = 30F / this.radianF + (headPitch * 2 / 3F / this.radianF);
 
         this.head.rotateAngleX = 45F / this.radianF;
 
-        this.neck2.rotateAngleY = (f3 * 2 / 3F) / this.radianF;
-        this.neck1.rotateAngleY = (f3 * 1 / 3F) / this.radianF;
+        this.neck2.rotateAngleY = (netHeadYaw * 2 / 3F) / this.radianF;
+        this.neck1.rotateAngleY = (netHeadYaw * 1 / 3F) / this.radianF;
 
         this.head.rotateAngleY = 0F;
         this.head.rotateAngleZ = 0F;
@@ -979,17 +979,17 @@ public class MoCModelWyvern<T extends Entity> extends EntityModel<T> {
                 this.neck1.rotateAngleX = 30F / this.radianF + (RLegXRot * 2 / 60F);
             }
         }
-        float TailXRot = MathHelper.cos(f * 0.4F) * 0.2F * f1;
+        float TailXRot = MathHelper.cos(limbSwing * 0.4F) * 0.2F * limbSwingAmount;
         this.tail1.rotateAngleX = (-19F / this.radianF);// - TailXRot;
         this.tail2.rotateAngleX = (-16F / this.radianF);// + TailXRot;
         this.tail3.rotateAngleX = (7F / this.radianF);// + TailXRot;
         this.tail4.rotateAngleX = (11F / this.radianF);// + TailXRot;
         this.tail5.rotateAngleX = (8F / this.radianF);
 
-        float t = f / 2;
+        float t = limbSwing / 2;
 
         /*
-         * if (movetail) { t = f2/4F; }
+         * if (movetail) { t = ageInTicks/4F; }
          */
         float A = 0.15F;//0.8F;
         float w = 0.9F;
@@ -1016,18 +1016,18 @@ public class MoCModelWyvern<T extends Entity> extends EntityModel<T> {
          */
         //float WingRot = 0F;
         if (flapwings && !isGhost) {
-            WingSpread = MathHelper.cos((f2 * 0.3F) + 3.141593F) * 1.2F;// * f1;
+            WingSpread = MathHelper.cos((ageInTicks * 0.3F) + 3.141593F) * 1.2F;// * limbSwingAmount;
         } else
         //cruising
         {
-            //WingRot = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.2F * f1;
-            WingSpread = MathHelper.cos((f * 0.5F)) * 0.1F;//* 1.2F * f1;
+            //WingRot = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.2F * limbSwingAmount;
+            WingSpread = MathHelper.cos((limbSwing * 0.5F)) * 0.1F;//* 1.2F * limbSwingAmount;
         }
 
         if (onAir || isGhost) {
             //rightfing1a.rotateAngleY = -70F/radianF+ WingSpread;
 
-            float speedMov = (f1 * 0.5F);
+            float speedMov = (limbSwingAmount * 0.5F);
             if (isGhost) {
                 speedMov = 0.5F;
             }
@@ -1120,8 +1120,8 @@ public class MoCModelWyvern<T extends Entity> extends EntityModel<T> {
             this.rightupleg.rotateAngleX = 45F / this.radianF + RLegXRot;
             this.leftmidleg.rotateAngleX = 30F;
             this.rightmidleg.rotateAngleX = 30F;
-            this.neck2.rotateAngleX = -36F / this.radianF + (f4 * 1 / 3F / this.radianF);
-            this.neck1.rotateAngleX = 30F / this.radianF + (f4 * 2 / 3F / this.radianF);
+            this.neck2.rotateAngleX = -36F / this.radianF + (headPitch * 1 / 3F / this.radianF);
+            this.neck1.rotateAngleX = 30F / this.radianF + (headPitch * 2 / 3F / this.radianF);
         }
         if (diving) {
             this.leftuparm.rotateAngleZ = -40F / this.radianF;

@@ -6,13 +6,13 @@ package drzhark.mocreatures.client.renderer.entity;
 import drzhark.mocreatures.client.model.MoCModelLitterBox;
 import drzhark.mocreatures.entity.item.MoCEntityLitterBox;
 import drzhark.mocreatures.proxy.MoCProxyClient;
-import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCRenderLitterBox extends RenderLiving<MoCEntityLitterBox> {
+public class MoCRenderLitterBox extends MobRenderer<MoCEntityLitterBox> {
 
     public MoCModelLitterBox litterbox;
 
@@ -27,7 +27,7 @@ public class MoCRenderLitterBox extends RenderLiving<MoCEntityLitterBox> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityLitterBox entitylitterbox) {
+    public ResourceLocation getEntityTexture(MoCEntityLitterBox entitylitterbox) {
         return entitylitterbox.getTexture();
     }
 }

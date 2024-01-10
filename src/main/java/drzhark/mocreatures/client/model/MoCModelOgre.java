@@ -592,7 +592,7 @@ public class MoCModelOgre<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        //super.render(entity, f, f1, f2, f3, f4, f5);
+        //super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
         MoCEntityOgre entityogre = (MoCEntityOgre) entity;
         this.type = entityogre.getTypeMoC();
         //int leftAttack = entityogre.attackCounterLeft;
@@ -601,7 +601,7 @@ public class MoCModelOgre<T extends Entity> extends EntityModel<T> {
         this.headMoving = entityogre.getMovingHead();
         this.armToAnimate = entityogre.armToAnimate;
 
-        setRotationAngles(f, f1, f2, f3, f4, f5);
+        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
 
         if (type == 1) {
             this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -629,7 +629,7 @@ public class MoCModelOgre<T extends Entity> extends EntityModel<T> {
             this.LftHorn.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.LftHornTip.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-            this.LftWeaponRoot.isHidden = true;
+            this.LftWeaponRoot.showModel = !true;
         } else {
             this.Head3RgtEar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.Head3LftEar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -658,7 +658,7 @@ public class MoCModelOgre<T extends Entity> extends EntityModel<T> {
             this.Head2LftHorn.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.Head2DiamondHorn.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-            this.LftWeaponRoot.isHidden = false;
+            this.LftWeaponRoot.showModel = !false;
         }
 
         this.NeckRest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -679,13 +679,13 @@ public class MoCModelOgre<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        float hRotY = f3 / 57.29578F;
-        float hRotX = f4 / 57.29578F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        float hRotY = netHeadYaw / 57.29578F;
+        float hRotX = headPitch / 57.29578F;
 
-        float RLegXRot = MathHelper.cos((f * 0.6662F) + 3.141593F) * 0.8F * f1;
-        float LLegXRot = MathHelper.cos(f * 0.6662F) * 0.8F * f1;
-        float ClothRot = MathHelper.cos(f * 0.9F) * 0.6F * f1;
+        float RLegXRot = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
+        float LLegXRot = MathHelper.cos(limbSwing * 0.6662F) * 0.8F * limbSwingAmount;
+        float ClothRot = MathHelper.cos(limbSwing * 0.9F) * 0.6F * limbSwingAmount;
 
         float RLegXRotB = RLegXRot;
         float LLegXRotB = LLegXRot;
@@ -693,9 +693,9 @@ public class MoCModelOgre<T extends Entity> extends EntityModel<T> {
         this.RgtThigh.rotateAngleX = RLegXRot;
         this.LftThigh.rotateAngleX = LLegXRot;
 
-        float RLegXRot2 = MathHelper.cos(((f + 0.1F) * 0.6662F) + 3.141593F) * 0.8F * f1;
-        float LLegXRot2 = MathHelper.cos((f + 0.1F) * 0.6662F) * 0.8F * f1;
-        if (f1 > 0.15F) {
+        float RLegXRot2 = MathHelper.cos(((limbSwing + 0.1F) * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
+        float LLegXRot2 = MathHelper.cos((limbSwing + 0.1F) * 0.6662F) * 0.8F * limbSwingAmount;
+        if (limbSwingAmount > 0.15F) {
             if (RLegXRot > RLegXRot2) // - - >
             {
                 RLegXRotB = RLegXRot + (25 / 57.29578F);
@@ -729,7 +729,7 @@ public class MoCModelOgre<T extends Entity> extends EntityModel<T> {
             this.LftHand.rotateAngleX = (-45F / this.radianF);
         } else //normal left arm movement
         {
-            this.LftShoulder.rotateAngleZ = (MathHelper.cos(f2 * 0.09F) * 0.05F) - 0.05F;
+            this.LftShoulder.rotateAngleZ = (MathHelper.cos(ageInTicks * 0.09F) * 0.05F) - 0.05F;
             this.LftShoulder.rotateAngleX = RLegXRot;
             this.LftHand.rotateAngleX = 0F;
         }
@@ -741,7 +741,7 @@ public class MoCModelOgre<T extends Entity> extends EntityModel<T> {
             this.RgtHand.rotateAngleX = (-45F / this.radianF);
         } else //normal right arm movement
         {
-            this.RgtShoulder.rotateAngleZ = -(MathHelper.cos(f2 * 0.09F) * 0.05F) + 0.05F;
+            this.RgtShoulder.rotateAngleZ = -(MathHelper.cos(ageInTicks * 0.09F) * 0.05F) + 0.05F;
             this.RgtShoulder.rotateAngleX = LLegXRot;
             this.RgtHand.rotateAngleX = 0F;
         }

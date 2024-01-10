@@ -7,25 +7,23 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.aquatic.MoCEntityDolphin;
 import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.matrixStackIn;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCRenderDolphin extends RenderLiving<MoCEntityDolphin> {
+public class MoCRenderDolphin extends MobRenderer<MoCEntityDolphin> {
 
     public MoCRenderDolphin(ModelBase modelbase, float f) {
         super(MoCProxyClient.mc.getRenderManager(), modelbase, f);
     }
 
     @Override
-    public void render(MoCEntityDolphin entitydolphin, double d, double d1, double d2, float f, float f1) {
-        super.render(entitydolphin, d, d1, d2, f, f1);
+    public void render(MoCEntityDolphin entitydolphin, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+        super.render(entitydolphin, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         boolean flag = MoCreatures.proxy.getDisplayPetName() && !(entitydolphin.getPetName().isEmpty());
         boolean flag1 = MoCreatures.proxy.getDisplayPetHealth();
         //boolean flag2 = MoCreatures.proxy.getdisplayPetIcons();
@@ -95,8 +93,8 @@ public class MoCRenderDolphin extends RenderLiving<MoCEntityDolphin> {
         }
     }
 
-    public void doRender2(MoCEntityDolphin entitydolphin, double d, double d1, double d2, float f, float f1) {
-        super.doRender(entitydolphin, d, d1, d2, f, f1);
+    public void doRender2(MoCEntityDolphin entitydolphin, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+        super.render(entitydolphin, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         if (entitydolphin.getIsTamed()) {
             float f2 = 1.6F;
             float f3 = 0.01666667F * f2;
@@ -163,7 +161,7 @@ public class MoCRenderDolphin extends RenderLiving<MoCEntityDolphin> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityDolphin entitydolphin) {
+    public ResourceLocation getEntityTexture(MoCEntityDolphin entitydolphin) {
         return entitydolphin.getTexture();
     }
 }

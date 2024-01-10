@@ -3,12 +3,13 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import drzhark.mocreatures.entity.passive.MoCEntityFilchLizard;
 import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.LivingEntity;
@@ -16,7 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 // Courtesy of Daveyx0, permission given
-public class MoCRenderFilchLizard extends RenderLiving<MoCEntityFilchLizard> {
+public class MoCRenderFilchLizard extends MobRenderer<MoCEntityFilchLizard> {
 
     public MoCRenderFilchLizard(ModelBase modelBase, float f) {
         super(MoCProxyClient.mc.getRenderManager(), modelBase, f);
@@ -24,7 +25,7 @@ public class MoCRenderFilchLizard extends RenderLiving<MoCEntityFilchLizard> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityFilchLizard entity) {
+    public ResourceLocation getEntityTexture(MoCEntityFilchLizard entity) {
         return entity.getTexture();
     }
 
@@ -35,7 +36,7 @@ public class MoCRenderFilchLizard extends RenderLiving<MoCEntityFilchLizard> {
             this.livingEntityRenderer = livingEntityRendererIn;
         }
 
-        public void doRenderLayer(MoCEntityFilchLizard entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, MoCEntityFilchLizard entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             ItemStack itemStack = entity.getHeldItemMainhand();
             if (!itemStack.isEmpty()) {
                 matrixStackIn.push();
@@ -45,13 +46,13 @@ public class MoCRenderFilchLizard extends RenderLiving<MoCEntityFilchLizard> {
                     matrixStackIn.scale(0.5F, 0.5F, 0.5F);
                 }
                 if (!entity.getHeldItemMainhand().isEmpty()) {
-                    this.renderHeldItemLizard(entity, itemStack, ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND);
+                    this.renderHeldItemLizard(matrixStackIn, entity, itemStack, ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND);
                 }
                 matrixStackIn.pop();
             }
         }
 
-        public void renderHeldItemLizard(LivingEntity entity, ItemStack itemStack, ItemCameraTransforms.TransformType transformType) {
+        public void renderHeldItemLizard(MatrixStack matrixStackIn, LivingEntity entity, ItemStack itemStack, ItemCameraTransforms.TransformType transformType) {
             if (!itemStack.isEmpty()) {
                 matrixStackIn.push();
                 if (entity.isSneaking()) {

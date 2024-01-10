@@ -108,13 +108,13 @@ public class MoCModelMiniGolem<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
+        super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
 
         MoCEntityMiniGolem minigolem = (MoCEntityMiniGolem) entity;
         boolean angry = minigolem.getIsAngry();
         boolean hasRock = minigolem.getHasRock();
 
-        setRotationAngles(f, f1, f2, f3, f4, f5, hasRock);
+        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, hasRock);
 
         if (angry) {
             this.HeadRed.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -144,10 +144,10 @@ public class MoCModelMiniGolem<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, boolean hasRock) {
-        float hRotY = f3 / 57.29578F;
-        float RLegXRot = MathHelper.cos((f * 0.6662F) + 3.141593F) * 0.8F * f1;
-        float LLegXRot = MathHelper.cos(f * 0.6662F) * 0.8F * f1;
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, boolean hasRock) {
+        float hRotY = netHeadYaw / 57.29578F;
+        float RLegXRot = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
+        float LLegXRot = MathHelper.cos(limbSwing * 0.6662F) * 0.8F * limbSwingAmount;
 
         this.RightLeg.rotateAngleX = RLegXRot;
         this.RightFoot.rotateAngleX = RLegXRot;
@@ -163,9 +163,9 @@ public class MoCModelMiniGolem<T extends Entity> extends EntityModel<T> {
             this.RightShoulder.rotateAngleZ = 0F;
             this.RightShoulder.rotateAngleX = -180F / this.radianF;
         } else {
-            this.LeftShoulder.rotateAngleZ = (MathHelper.cos(f2 * 0.09F) * 0.05F) - 0.05F;
+            this.LeftShoulder.rotateAngleZ = (MathHelper.cos(ageInTicks * 0.09F) * 0.05F) - 0.05F;
             this.LeftShoulder.rotateAngleX = RLegXRot;
-            this.RightShoulder.rotateAngleZ = -(MathHelper.cos(f2 * 0.09F) * 0.05F) + 0.05F;
+            this.RightShoulder.rotateAngleZ = -(MathHelper.cos(ageInTicks * 0.09F) * 0.05F) + 0.05F;
             this.RightShoulder.rotateAngleX = LLegXRot;
         }
 
@@ -175,6 +175,6 @@ public class MoCModelMiniGolem<T extends Entity> extends EntityModel<T> {
         this.LeftArm.rotateAngleX = this.LeftArmRingA.rotateAngleX = this.LeftArmRingB.rotateAngleX = this.LeftShoulder.rotateAngleX;
         this.LeftArm.rotateAngleZ = this.LeftArmRingA.rotateAngleZ = this.LeftArmRingB.rotateAngleZ = this.LeftShoulder.rotateAngleZ;
 
-        //super.setRotationAngles(f, f1, f2, f3, f4, f5);
+        //super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
     }
 }

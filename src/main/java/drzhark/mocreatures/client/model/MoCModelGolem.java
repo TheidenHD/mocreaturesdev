@@ -199,7 +199,7 @@ public class MoCModelGolem<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        //super.render(entity, f, f1, f2, f3, f4, f5);
+        //super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
         MoCEntityGolem entityG = (MoCEntityGolem) entity;
         boolean openChest = entityG.openChest();
         boolean isSummoning = entityG.isMissingCubes();
@@ -210,7 +210,7 @@ public class MoCModelGolem<T extends Entity> extends EntityModel<T> {
             this.blocksText[i] = entityG.getBlockText(i);
         }
         float yOffset = entityG.getAdjustedYOffset();
-        setRotationAngles(f, f1, f2, f3, f4, f5, openChest, isSummoning, throwing);
+        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, openChest, isSummoning, throwing);
         matrixStackIn.push();
         matrixStackIn.translate(0F, yOffset, 0F);
         for (int i = 0; i < 23; i++) {
@@ -244,18 +244,18 @@ public class MoCModelGolem<T extends Entity> extends EntityModel<T> {
     }
 
     public void
-    setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, boolean openChest, boolean isSummoning, boolean throwing) {
-        float RLegXRot = MathHelper.cos((f * 0.6662F) + 3.141593F) * 1.2F * f1;
-        float LLegXRot = MathHelper.cos(f * 0.6662F) * 1.2F * f1;
-        float RArmZRot = -(MathHelper.cos(f2 * 0.09F) * 0.05F) + 0.05F;
-        float LArmZRot = (MathHelper.cos(f2 * 0.09F) * 0.05F) - 0.05F;
+    setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, boolean openChest, boolean isSummoning, boolean throwing) {
+        float RLegXRot = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.2F * limbSwingAmount;
+        float LLegXRot = MathHelper.cos(limbSwing * 0.6662F) * 1.2F * limbSwingAmount;
+        float RArmZRot = -(MathHelper.cos(ageInTicks * 0.09F) * 0.05F) + 0.05F;
+        float LArmZRot = (MathHelper.cos(ageInTicks * 0.09F) * 0.05F) - 0.05F;
 
-        this.head.rotateAngleY = (45F + f3) / this.radianF;
-        this.headb.rotateAngleY = (45F + f3) / this.radianF;
+        this.head.rotateAngleY = (45F + netHeadYaw) / this.radianF;
+        this.headb.rotateAngleY = (45F + netHeadYaw) / this.radianF;
 
         if (isSummoning) {
-            this.chest.rotateAngleY = (45F / this.radianF) + (f2 / 2F);
-            this.chestb.rotateAngleY = (45F / this.radianF) + (f2 / 2F);
+            this.chest.rotateAngleY = (45F / this.radianF) + (ageInTicks / 2F);
+            this.chestb.rotateAngleY = (45F / this.radianF) + (ageInTicks / 2F);
         } else {
             this.chest.rotateAngleY = 45F / this.radianF;
             this.chestb.rotateAngleY = 45F / this.radianF;

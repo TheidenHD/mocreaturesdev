@@ -246,7 +246,7 @@ public class MoCModelCrab<T extends Entity> extends EntityModel<T> {
 
         MoCEntityCrab crab = (MoCEntityCrab) entity;
         this.fleeing = crab.isFleeing();
-        setRotationAngles(f, f1, f2, f3, f4, f5);
+        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
 
         this.Shell.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.ShellRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -274,9 +274,9 @@ public class MoCModelCrab<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         /*
-         * f = distance walked f1 = speed 0 - 1 f2 = timer
+         * limbSwing = distance walked limbSwingAmount = speed 0 - 1 ageInTicks = timer
          */
         if (fleeing) {
             //LeftArmA.rotateAngleY = 45F/radianF;
@@ -288,7 +288,7 @@ public class MoCModelCrab<T extends Entity> extends EntityModel<T> {
             this.RightArmA.rotateAngleX = 0F;
         }
 
-        if (f1 < 0.1F) {
+        if (limbSwingAmount < 0.1F) {
             this.RightArmA.rotateAngleY = -30F / this.radianF;
             this.RightArmB.rotateAngleY = -120F / this.radianF;
 
@@ -299,7 +299,7 @@ public class MoCModelCrab<T extends Entity> extends EntityModel<T> {
              */
             float lHand = 0F;
 
-            float f2a = f2 % 100F;
+            float f2a = ageInTicks % 100F;
             if (f2a > 0 & f2a < 10) {
                 lHand = (f2a * 2F) / this.radianF;
             }
@@ -311,7 +311,7 @@ public class MoCModelCrab<T extends Entity> extends EntityModel<T> {
              * RHand random animation
              */
             float RHand = 0F;
-            float f2b = f2 % 75F;
+            float f2b = ageInTicks % 75F;
             if (f2b > 30 & f2b < 40) {
                 RHand = (f2b - 29) * 2F / this.radianF;
             }
@@ -322,14 +322,14 @@ public class MoCModelCrab<T extends Entity> extends EntityModel<T> {
         /*
          * floats used for the leg animations
          */
-        float f9 = -(MathHelper.cos(f * 5F)) * f1 * 2F;
-        float f10 = -(MathHelper.cos(f * 5F + 3.141593F)) * f1 * 2F;
-        float f11 = -(MathHelper.cos(f * 5.0F + 1.570796F)) * f1 * 2F;
-        float f12 = -(MathHelper.cos(f * 5.0F + 4.712389F)) * f1 * 2F;
-        float f13 = Math.abs(MathHelper.sin(f * 0.6662F + 0.0F) * 0.4F) * f1 * 5F;
-        float f14 = Math.abs(MathHelper.sin(f * 0.6662F + 3.141593F) * 0.4F) * f1;
-        float f15 = Math.abs(MathHelper.sin(f * 0.6662F + 1.570796F) * 0.4F) * f1;
-        float f16 = Math.abs(MathHelper.sin(f * 0.6662F + 4.712389F) * 0.4F) * f1;
+        float f9 = -(MathHelper.cos(limbSwing * 5F)) * limbSwingAmount * 2F;
+        float f10 = -(MathHelper.cos(limbSwing * 5F + 3.141593F)) * limbSwingAmount * 2F;
+        float f11 = -(MathHelper.cos(limbSwing * 5.0F + 1.570796F)) * limbSwingAmount * 2F;
+        float f12 = -(MathHelper.cos(limbSwing * 5.0F + 4.712389F)) * limbSwingAmount * 2F;
+        float f13 = Math.abs(MathHelper.sin(limbSwing * 0.6662F + 0.0F) * 0.4F) * limbSwingAmount * 5F;
+        float f14 = Math.abs(MathHelper.sin(limbSwing * 0.6662F + 3.141593F) * 0.4F) * limbSwingAmount;
+        float f15 = Math.abs(MathHelper.sin(limbSwing * 0.6662F + 1.570796F) * 0.4F) * limbSwingAmount;
+        float f16 = Math.abs(MathHelper.sin(limbSwing * 0.6662F + 4.712389F) * 0.4F) * limbSwingAmount;
 
         this.RightLeg1A.rotateAngleY = -0.1745329F;
         this.RightLeg1A.rotateAngleZ = -0.418879F;

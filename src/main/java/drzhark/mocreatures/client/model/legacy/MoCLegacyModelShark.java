@@ -90,7 +90,6 @@ public class MoCLegacyModelShark<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.PTail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.UHead.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -104,8 +103,8 @@ public class MoCLegacyModelShark<T extends Entity> extends EntityModel<T> {
         this.RightFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        this.UpperTailFin.rotateAngleY = MathHelper.cos(f * 0.6662F) * f1;
-        this.LowerTailFin.rotateAngleY = MathHelper.cos(f * 0.6662F) * f1;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.UpperTailFin.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
+        this.LowerTailFin.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
     }
 }

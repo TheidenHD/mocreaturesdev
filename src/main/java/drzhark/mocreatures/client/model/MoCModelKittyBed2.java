@@ -15,9 +15,9 @@ public class MoCModelKittyBed2<T extends Entity> extends EntityModel<T> {
     ModelRenderer Sheet;
 
     public MoCModelKittyBed2() {
-        float f = 0.0F;
+        float limbSwing = 0.0F;
         this.Sheet = new ModelRenderer(this, 0, 15);
-        this.Sheet.addBox(0.0F, 0.0F, 0.0F, 16, 3, 14, f);
+        this.Sheet.addBox(0.0F, 0.0F, 0.0F, 16, 3, 14, limbSwing);
         this.Sheet.setRotationPoint(-8F, 21F, -7F);
     }
 

@@ -113,7 +113,7 @@ public class MoCModelFirefly<T extends Entity> extends EntityModel<T> {
         MoCEntityFirefly entityfirefly = (MoCEntityFirefly) entity;
         boolean isFlying = (entityfirefly.getIsFlying() || entityfirefly.getMotion().getY() < -0.1D);
 
-        setRotationAngles(f, f1, f2, f3, f4, f5, isFlying);
+        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, isFlying);
         this.Antenna.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.RearLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.MidLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -162,22 +162,22 @@ public class MoCModelFirefly<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, boolean isFlying) {
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, boolean isFlying) {
         float legMov;
         float legMovB;
 
         float frontLegAdj = 0F;
         if (isFlying) {
-            float WingRot = MathHelper.cos((f2 * 1.8F)) * 0.8F;
+            float WingRot = MathHelper.cos((ageInTicks * 1.8F)) * 0.8F;
             this.RightWing.rotateAngleZ = WingRot;
             this.LeftWing.rotateAngleZ = -WingRot;
-            legMov = (f1 * 1.5F);
+            legMov = (limbSwingAmount * 1.5F);
             legMovB = legMov;
             frontLegAdj = 1.4F;
 
         } else {
-            legMov = MathHelper.cos((f * 1.5F) + 3.141593F) * 2.0F * f1;
-            legMovB = MathHelper.cos(f * 1.5F) * 2.0F * f1;
+            legMov = MathHelper.cos((limbSwing * 1.5F) + 3.141593F) * 2.0F * limbSwingAmount;
+            legMovB = MathHelper.cos(limbSwing * 1.5F) * 2.0F * limbSwingAmount;
         }
         this.FrontLegs.rotateAngleX = -0.8328009F + frontLegAdj + legMov;
         this.MidLegs.rotateAngleX = 1.070744F + legMovB;

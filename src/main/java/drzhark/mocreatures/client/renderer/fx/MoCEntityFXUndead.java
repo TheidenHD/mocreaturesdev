@@ -4,27 +4,29 @@
 package drzhark.mocreatures.client.renderer.fx;
 
 import drzhark.mocreatures.MoCreatures;
-import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.TexturedParticle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCEntityFXUndead extends Particle {
+public class MoCEntityFXUndead extends TexturedParticle {
 
     public MoCEntityFXUndead(World par1World, double par2, double par4, double par6) {
         super(par1World, par2, par4, par6, 0.0D, 0.0D, 0.0D);
-        this.getMotion().getX() *= 0.8D;
-        this.getMotion().getY() *= 0.8D;
-        this.getMotion().getZ() *= 0.8D;
-        this.getMotion().getY() = this.rand.nextFloat() * 0.4F + 0.05F;
+        this.motionX *= 0.8D;
+        this.motionY *= 0.8D;
+        this.motionZ *= 0.8D;
+        this.motionY = this.rand.nextFloat() * 0.4F + 0.05F;
 
         this.setSize(0.01F, 0.01F);
         this.particleGravity = 0.06F;
-        this.particleMaxAge = (int) (32.0D / (Math.random() * 0.8D + 0.2D));
+        this.maxAge = (int) (32.0D / (Math.random() * 0.8D + 0.2D));
         this.particleScale *= 0.8F;
     }
 
@@ -44,23 +46,23 @@ public class MoCEntityFXUndead extends Particle {
      */
     @Override
     public void tick() {
-        this.prevPosX = this.getPosX();
-        this.prevPosY = this.getPosY();
-        this.prevPosZ = this.getPosZ();
+        this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
 
-        this.getMotion().getY() -= 0.03D;
-        this.move(this.getMotion().getX(), this.getMotion().getY(), this.getMotion().getZ());
+        this.motionY -= 0.03D;
+        this.move(this.motionX, this.motionY, this.getMotion().getZ());
 
-        this.getMotion().getX() *= 0.8D;
-        this.getMotion().getY() *= 0.5D;
-        this.getMotion().getZ() *= 0.8D;
+        this.motionX *= 0.8D;
+        this.motionY *= 0.5D;
+        this.motionZ *= 0.8D;
 
         if (this.onGround) {
-            this.getMotion().getX() *= 0.7D;
-            this.getMotion().getZ() *= 0.7D;
+            this.motionX *= 0.7D;
+            this.motionZ *= 0.7D;
         }
 
-        if (this.particleMaxAge-- <= 0) {
+        if (this.maxAge-- <= 0) {
             this.setExpired();
         }
     }
@@ -75,10 +77,11 @@ public class MoCEntityFXUndead extends Particle {
     @Override
     public void renderParticle(BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, float par3, float par4, float par5, float par6, float par7) {
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(MoCreatures.proxy.getMiscTexture(getCurrentTexture()));
+        Vector3d vector3d = renderInfo.getProjectedView();
         float sizeFactor = 0.1F * this.particleScale;
-        float var13 = (float) (this.prevPosX + (this.getPosX() - this.prevPosX) * partialTicks - interpPosX);
-        float var14 = (float) (this.prevPosY + (this.getPosY() - this.prevPosY) * partialTicks - interpPosY);
-        float var15 = (float) (this.prevPosZ + (this.getPosZ() - this.prevPosZ) * partialTicks - interpPosZ);
+        float var13 = (float)(MathHelper.lerp((double)partialTicks, this.prevPosX, this.posX) - vector3d.getX());
+        float var14 = (float)(MathHelper.lerp((double)partialTicks, this.prevPosY, this.posY) - vector3d.getY());
+        float var15 = (float)(MathHelper.lerp((double)partialTicks, this.prevPosZ, this.posZ) - vector3d.getZ());
         float var16 = 1F;
         int i = this.getBrightnessForRender(partialTicks);
         int j = i >> 16 & 65535;

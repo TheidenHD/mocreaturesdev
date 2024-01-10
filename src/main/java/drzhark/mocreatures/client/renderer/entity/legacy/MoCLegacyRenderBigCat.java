@@ -3,6 +3,7 @@
  */
 package drzhark.mocreatures.client.renderer.entity.legacy;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.client.model.legacy.MoCLegacyModelBigCat1;
 import drzhark.mocreatures.client.model.legacy.MoCLegacyModelBigCat2;
@@ -10,17 +11,17 @@ import drzhark.mocreatures.entity.hunter.MoCEntityBigCat;
 import drzhark.mocreatures.entity.hunter.MoCEntityLion;
 import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCLegacyRenderBigCat extends RenderLiving<MoCEntityBigCat> {
+public class MoCLegacyRenderBigCat extends MobRenderer<MoCEntityBigCat> {
 
     public MoCLegacyModelBigCat2 bigcat1;
 
@@ -31,13 +32,13 @@ public class MoCLegacyRenderBigCat extends RenderLiving<MoCEntityBigCat> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityBigCat entitybigcat) {
+    public ResourceLocation getEntityTexture(MoCEntityBigCat entitybigcat) {
         return entitybigcat.getTexture();
     }
 
     @Override
-    public void doRender(MoCEntityBigCat entitybigcat, double d, double d1, double d2, float f, float f1) {
-        super.doRender(entitybigcat, d, d1, d2, f, f1);
+    public void render(MoCEntityBigCat entitybigcat, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+        super.render(entitybigcat, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         boolean flag = MoCreatures.proxy.getDisplayPetName() && !(entitybigcat.getPetName()).isEmpty();
         boolean flag1 = MoCreatures.proxy.getDisplayPetHealth();
 
@@ -146,7 +147,7 @@ public class MoCLegacyRenderBigCat extends RenderLiving<MoCEntityBigCat> {
             this.mocRenderer = render;
         }
 
-        public void doRenderLayer(MoCEntityBigCat entitybigcat, float f, float f1, float f2, float f3, float f4, float f5, float f6) {
+        public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, MoCEntityBigCat entitybigcat, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if (entitybigcat instanceof MoCEntityLion && entitybigcat.hasMane()) {
                 if (entitybigcat.getTypeMoC() == 7) {
                     bindTexture(MoCreatures.proxy.getModelTexture("big_cat_white_lion_legacy_layer.png"));
@@ -157,7 +158,7 @@ public class MoCLegacyRenderBigCat extends RenderLiving<MoCEntityBigCat> {
                 bindTexture(MoCreatures.proxy.getModelTexture("big_cat_lion_legacy_layer_female.png"));
             }
             this.mocModel.setModelAttributes(this.mocRenderer.getMainModel());
-            this.mocModel.setLivingAnimations(entitybigcat, f, f1, f2);
+            this.mocModel.setLivingAnimations(entitybigcat, limbSwing, limbSwingAmount, partialTicks);
             this.mocModel.render(entitybigcat, f, f1, f3, f4, f5, f6);
         }
 

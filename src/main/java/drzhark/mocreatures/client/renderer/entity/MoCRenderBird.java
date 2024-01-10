@@ -4,8 +4,6 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.passive.MoCEntityBird;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -20,13 +18,13 @@ public class MoCRenderBird extends MoCRenderMoC<MoCEntityBird> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MobEntity par1Entity) {
+    public ResourceLocation getEntityTexture(MobEntity par1Entity) {
         return ((MoCEntityBird) par1Entity).getTexture();
     }
 
     @Override
-    public void doRender(MoCEntityBird entitybird, double d, double d1, double d2, float f, float f1) {
-        super.doRender(entitybird, d, d1, d2, f, f1);
+    public void render(MoCEntityBird entitybird, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+        super.render(entitybird, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
 
     @Override

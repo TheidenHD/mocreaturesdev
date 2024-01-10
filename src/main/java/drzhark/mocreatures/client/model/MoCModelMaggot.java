@@ -43,20 +43,20 @@ public class MoCModelMaggot<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        //super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5);
+        //super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
+        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
 
-        //f1 = movement speed!
-        //f2 = timer!
-        //System.out.println("f2 = " + f2);
+        //limbSwingAmount = movement speed!
+        //ageInTicks = timer!
+        //System.out.println("ageInTicks = " + ageInTicks);
 
         matrixStackIn.push();
         matrixStackIn.enableBlend();
         //float transparency = 0.9F;
         matrixStackIn.blendFunc(770, 771);
         //matrixStackIn.color(1.2F, 1.2F, 1.2F, transparency);
-        float f9 = -(MathHelper.cos(f * 3F)) * f1 * 2F;
-        //matrixStackIn.scale(1.0F, 1.0F, 1.0F + (f1 * 3F));
+        float f9 = -(MathHelper.cos(limbSwing * 3F)) * limbSwingAmount * 2F;
+        //matrixStackIn.scale(1.0F, 1.0F, 1.0F + (limbSwingAmount * 3F));
         matrixStackIn.scale(1.0F, 1.0F, 1.0F + (f9));
 
         this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -75,6 +75,6 @@ public class MoCModelMaggot<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
     }
 }

@@ -78,10 +78,10 @@ public class MoCModelSnail extends EntityModel<MoCEntitySnail> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(MoCEntitySnail entityIn, float f, float f1, float f2, float f3, float f4) {
-        //super.setRotationAngles(f, f1, f2, f3, f4, f5);
-        float tailMov = MathHelper.cos((f2 * 0.3F)) * 0.8F;
-        if (f1 < 0.1F) {
+    public void setRotationAngles(MoCEntitySnail entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        //super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
+        float tailMov = MathHelper.cos((ageInTicks * 0.3F)) * 0.8F;
+        if (limbSwingAmount < 0.1F) {
             tailMov = 0F;
         }
         this.Tail.rotationPointZ = 2F + tailMov;

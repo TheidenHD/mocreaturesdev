@@ -578,7 +578,6 @@ public class MoCModelBigCat<T extends Entity> extends EntityModel<T> {
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         updateAnimationModifiers(entity);
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         renderSaddle(this.isSaddled);
         renderMane(this.hasMane);
         renderCollar(this.isTamed);
@@ -629,31 +628,31 @@ public class MoCModelBigCat<T extends Entity> extends EntityModel<T> {
     }
 
     private void renderTeeth(boolean flag) {
-        this.LeftFang.isHidden = !flag;
-        this.RightFang.isHidden = !flag;
+        this.LeftFang.showModel = flag;
+        this.RightFang.showModel = flag;
     }
 
     private void renderCollar(boolean flag) {
-        this.Collar.isHidden = !flag;
+        this.Collar.showModel = flag;
     }
 
     private void renderSaddle(boolean flag) {
-        this.NeckHarness.isHidden = !flag;
-        this.HarnessStick.isHidden = !flag;
-        this.Saddle.isHidden = !flag;
+        this.NeckHarness.showModel = flag;
+        this.HarnessStick.showModel = flag;
+        this.Saddle.showModel = flag;
     }
 
     private void renderMane(boolean flag) {
-        this.Mane.isHidden = !flag;
-        this.LeftChinBeard.isHidden = !flag;
-        this.RightChinBeard.isHidden = !flag;
-        this.ForeheadHair.isHidden = !flag;
-        this.NeckHair.isHidden = !flag;
-        this.ChinHair.isHidden = !flag;
+        this.Mane.showModel = flag;
+        this.LeftChinBeard.showModel = flag;
+        this.RightChinBeard.showModel = flag;
+        this.ForeheadHair.showModel = flag;
+        this.NeckHair.showModel = flag;
+        this.ChinHair.showModel = flag;
     }
 
     private void renderChest(boolean flag) {
-        this.StorageChest.isHidden = !flag;
+        this.StorageChest.showModel = flag;
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {
@@ -662,22 +661,22 @@ public class MoCModelBigCat<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 
-        //f = time
-        //f1 = movement speed!
-        //f2 = ??timer!
-        //f3 = Head Y movement or rotation yaw
-        //f4 = Head X movement or rotation Pitch
+        //limbSwing = time
+        //limbSwingAmount = movement speed!
+        //ageInTicks = ??timer!
+        //netHeadYaw = Head Y movement or rotation yaw
+        //headPitch = Head X movement or rotation Pitch
         //f5 = ?
 
         // Interpolation factor for smoother animations
         float interpolationFactor = 0.1F;
 
-        float RLegXRot = MathHelper.cos((f * 0.8F) + 3.141593F) * 0.8F * f1;
-        float LLegXRot = MathHelper.cos(f * 0.8F) * 0.8F * f1;
-        float gallopRLegXRot = MathHelper.cos((f * 0.6F) + 3.141593F) * 0.8F * f1;
-        float gallopLLegXRot = MathHelper.cos(f * 0.6F) * 0.8F * f1;
+        float RLegXRot = MathHelper.cos((limbSwing * 0.8F) + 3.141593F) * 0.8F * limbSwingAmount;
+        float LLegXRot = MathHelper.cos(limbSwing * 0.8F) * 0.8F * limbSwingAmount;
+        float gallopRLegXRot = MathHelper.cos((limbSwing * 0.6F) + 3.141593F) * 0.8F * limbSwingAmount;
+        float gallopLLegXRot = MathHelper.cos(limbSwing * 0.6F) * 0.8F * limbSwingAmount;
 
         float stingYOffset;
         float stingZOffset;
@@ -686,7 +685,7 @@ public class MoCModelBigCat<T extends Entity> extends EntityModel<T> {
         float targetTailAngle;
         if (this.movingTail) {
             // Set the desired tail swing angle when the tail is moving
-            targetTailAngle = MathHelper.cos(f2 * 0.3F);
+            targetTailAngle = MathHelper.cos(ageInTicks * 0.3F);
         } else {
             // Set the target angle to 0 when the tail is not moving
             targetTailAngle = 0F;
@@ -745,12 +744,12 @@ public class MoCModelBigCat<T extends Entity> extends EntityModel<T> {
             } else {
                 this.Collar.rotationPointY = 6F;
             }
-            this.Collar.rotateAngleX = (20F / this.radianF) + MathHelper.cos(f * 0.8F) * 0.5F * f1;
+            this.Collar.rotateAngleX = (20F / this.radianF) + MathHelper.cos(limbSwing * 0.8F) * 0.5F * limbSwingAmount;
 
-            boolean galloping = (f1 >= 0.97F);
+            boolean galloping = (limbSwingAmount >= 0.97F);
             if (this.onAir || this.isGhost) {
-                if (this.isGhost || (this.isFlyer && f1 > 0)) {
-                    float speedMov = (f1 * 0.5F);
+                if (this.isGhost || (this.isFlyer && limbSwingAmount > 0)) {
+                    float speedMov = (limbSwingAmount * 0.5F);
                     this.RightUpperLeg.rotateAngleX = (45F / this.radianF) + speedMov;
                     this.LeftUpperLeg.rotateAngleX = (45F / this.radianF) + speedMov;
                     this.RightHindUpperLeg.rotateAngleX = (10F / this.radianF) + speedMov;
@@ -775,7 +774,7 @@ public class MoCModelBigCat<T extends Entity> extends EntityModel<T> {
                     this.LeftUpperLeg.rotateAngleX = (15F / this.radianF) + LLegXRot;
                     this.RightHindUpperLeg.rotateAngleX = (-25F / this.radianF) + LLegXRot;
                     if (!this.hasStinger) {
-                        this.Abdomen.rotateAngleY = MathHelper.cos(f * 0.3F) * 0.25F * f1;
+                        this.Abdomen.rotateAngleY = MathHelper.cos(limbSwing * 0.3F) * 0.25F * limbSwingAmount;
                     }
                 }
             }
@@ -791,7 +790,7 @@ public class MoCModelBigCat<T extends Entity> extends EntityModel<T> {
                 this.RightFootHarness.rotateAngleZ = -RLegXRot / 5F;
             }
 
-            float TailXRot = MathHelper.cos(f * 0.4F) * 0.15F * f1;
+            float TailXRot = MathHelper.cos(limbSwing * 0.4F) * 0.15F * limbSwingAmount;
             this.TailRoot.rotateAngleX = (87F / this.radianF) + TailXRot;
             this.Tail2.rotateAngleX = (-30F / this.radianF) + TailXRot;
             this.Tail3.rotateAngleX = (-17F / this.radianF) + TailXRot;
@@ -800,10 +799,10 @@ public class MoCModelBigCat<T extends Entity> extends EntityModel<T> {
             this.TailTusk.rotateAngleX = (21F / this.radianF) + TailXRot;
         }
 
-        float HeadXRot = (f4 / 57.29578F);
+        float HeadXRot = (headPitch / 57.29578F);
 
         this.HeadBack.rotateAngleX = 14F / this.radianF + HeadXRot;
-        this.HeadBack.rotateAngleY = (f3 / 57.29578F);
+        this.HeadBack.rotateAngleY = (netHeadYaw / 57.29578F);
 
         // Calculate the target mouth movement angle based on the openMouthCounter
         float targetMouthAngle;
@@ -841,9 +840,9 @@ public class MoCModelBigCat<T extends Entity> extends EntityModel<T> {
              */
             float WingRot;
             if (this.flapwings) {
-                WingRot = MathHelper.cos((f2 * 0.3F) + 3.141593F) * 1.2F;
+                WingRot = MathHelper.cos((ageInTicks * 0.3F) + 3.141593F) * 1.2F;
             } else {
-                WingRot = MathHelper.cos((f * 0.5F)) * 0.1F;
+                WingRot = MathHelper.cos((limbSwing * 0.5F)) * 0.1F;
             }
 
             if (this.floating) {

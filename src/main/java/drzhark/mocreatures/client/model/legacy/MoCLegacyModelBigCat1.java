@@ -3,13 +3,15 @@
  */
 package drzhark.mocreatures.client.model.legacy;
 
+import drzhark.mocreatures.entity.hunter.MoCEntityBigCat;
 import net.minecraft.client.model.ModelQuadruped;
+import net.minecraft.client.renderer.entity.model.QuadrupedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCLegacyModelBigCat1 extends ModelQuadruped {
+public class MoCLegacyModelBigCat1<T extends MoCEntityBigCat> extends QuadrupedModel<T> {
 
     public MoCLegacyModelBigCat1() {
         super(12, 0.0F);

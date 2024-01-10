@@ -6,8 +6,7 @@ package drzhark.mocreatures.client.renderer.entity;
 import drzhark.mocreatures.client.model.MoCModelCrocodile;
 import drzhark.mocreatures.entity.hunter.MoCEntityCrocodile;
 import drzhark.mocreatures.proxy.MoCProxyClient;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.matrixStackIn;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ResourceLocation;
@@ -16,7 +15,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCRenderCrocodile extends RenderLiving<MoCEntityCrocodile> {
+public class MoCRenderCrocodile extends MobRenderer<MoCEntityCrocodile> {
 
     public MoCModelCrocodile croc;
 
@@ -26,13 +25,13 @@ public class MoCRenderCrocodile extends RenderLiving<MoCEntityCrocodile> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityCrocodile entitycrocodile) {
+    public ResourceLocation getEntityTexture(MoCEntityCrocodile entitycrocodile) {
         return entitycrocodile.getTexture();
     }
 
     @Override
-    public void doRender(MoCEntityCrocodile entitycrocodile, double d, double d1, double d2, float f, float f1) {
-        super.doRender(entitycrocodile, d, d1, d2, f, f1);
+    public void render(MoCEntityCrocodile entitycrocodile, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+        super.render(entitycrocodile, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
 
     @Override

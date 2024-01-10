@@ -34,9 +34,7 @@ public class MoCItemAxe extends AxeItem {
 
     public MoCItemAxe(String name, int meta, IItemTier material, float damage, float speed) {
         super(material, damage - 1.0F, speed - 4.0F);
-        this.setCreativeTab(MoCreatures.tabMoC);
         this.setRegistryName(MoCConstants.MOD_ID, name);
-        this.setTranslationKey(name);
     }
 
     public MoCItemAxe(String name, IItemTier material, float damage, float speed, int damageType) {

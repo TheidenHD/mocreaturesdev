@@ -4,8 +4,6 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.ambient.MoCEntityButterfly;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -34,7 +32,7 @@ public class MoCRenderButterfly extends MoCRenderInsect<MoCEntityButterfly> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityButterfly entitybutterfly) {
+    public ResourceLocation getEntityTexture(MoCEntityButterfly entitybutterfly) {
         return entitybutterfly.getTexture();
     }
 }

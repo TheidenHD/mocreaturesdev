@@ -6,9 +6,7 @@ package drzhark.mocreatures.client.renderer.entity;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.client.model.MoCModelKitty;
 import drzhark.mocreatures.entity.neutral.MoCEntityKitty;
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.matrixStackIn;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -25,13 +23,13 @@ public class MoCRenderKitty extends MoCRenderMoC<MoCEntityKitty> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MoCEntityKitty entitykitty) {
+    public ResourceLocation getEntityTexture(MoCEntityKitty entitykitty) {
         return entitykitty.getTexture();
     }
 
     @Override
-    public void doRender(MoCEntityKitty entitykitty, double d, double d1, double d2, float f, float f1) {
-        super.doRender(entitykitty, d, d1, d2, f, f1);
+    public void render(MoCEntityKitty entitykitty, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+        super.render(entitykitty, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         boolean displayPetIcons = MoCreatures.proxy.getDisplayPetIcons();
         if (entitykitty.getIsTamed()) {
             float f2 = 1.6F;

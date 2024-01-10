@@ -160,8 +160,6 @@ public class MoCModelRaccoon<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5);
         this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Snout.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.RightEar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -192,9 +190,9 @@ public class MoCModelRaccoon<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5) {
-        this.Head.rotateAngleY = f3 / 57.29578F;
-        this.Head.rotateAngleX = f4 / 57.29578F;
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.Head.rotateAngleY = netHeadYaw / 57.29578F;
+        this.Head.rotateAngleX = headPitch / 57.29578F;
         this.Snout.rotateAngleY = this.Head.rotateAngleY;
         this.Snout.rotateAngleX = this.Head.rotateAngleX;
         this.RightEar.rotateAngleX = this.Head.rotateAngleX;
@@ -206,8 +204,8 @@ public class MoCModelRaccoon<T extends Entity> extends EntityModel<T> {
         //LeftSideburn.rotateAngleX = Head.rotateAngleX;
         //LeftSideburn.rotateAngleY = (30F/radianF) + Head.rotateAngleY;
 
-        float RLegXRot = MathHelper.cos((f) + 3.141593F) * 0.8F * f1;
-        float LLegXRot = MathHelper.cos(f) * 0.8F * f1;
+        float RLegXRot = MathHelper.cos((limbSwing) + 3.141593F) * 0.8F * limbSwingAmount;
+        float LLegXRot = MathHelper.cos(limbSwing) * 0.8F * limbSwingAmount;
 
         this.RightFrontLegA.rotateAngleX = (30F / this.radianF) + RLegXRot;
         this.LeftFrontLegA.rotateAngleX = (30F / this.radianF) + LLegXRot;
@@ -224,7 +222,7 @@ public class MoCModelRaccoon<T extends Entity> extends EntityModel<T> {
         this.LeftRearLegB.rotateAngleX = (53F / this.radianF) + RLegXRot;
         this.LeftRearFoot.rotateAngleX = RLegXRot;
 
-        this.TailA.rotateAngleY = MathHelper.cos(f * 0.6662F) * 0.7F * f1;
+        this.TailA.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F) * 0.7F * limbSwingAmount;
         this.TailB.rotateAngleY = this.TailA.rotateAngleY;
     }
 }
