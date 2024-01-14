@@ -8,11 +8,10 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.passive.MoCEntityTurtle;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
 
-public class MoCModelTurtle<T extends Entity> extends EntityModel<T> {
+public class MoCModelTurtle<T extends MoCEntityTurtle> extends EntityModel<T> {
 
     public boolean isHiding;
     public boolean upsidedown;
@@ -74,13 +73,14 @@ public class MoCModelTurtle<T extends Entity> extends EntityModel<T> {
 
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.TMNT = entityIn.isTMNT();
+        this.turtleHat = entityIn.getRidingEntity() != null;
+        this.isSwimming = entityIn.isInWater();
+    }
+
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        //super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
-        MoCEntityTurtle entityturtle = (MoCEntityTurtle) entity;
-        this.TMNT = entityturtle.isTMNT();
-        this.turtleHat = entityturtle.getRidingEntity() != null;
-        this.isSwimming = entityturtle.isInWater();
         this.Shell.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.ShellUp.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         if (!this.TMNT) {

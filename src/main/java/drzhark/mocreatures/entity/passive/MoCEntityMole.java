@@ -10,13 +10,11 @@ import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.Pose;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -34,7 +32,7 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
 
     private static final DataParameter<Integer> MOLE_STATE = EntityDataManager.createKey(MoCEntityMole.class, DataSerializers.VARINT);
 
-    public MoCEntityMole(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityMole(EntityType<? extends MoCEntityMole> type, World world) {
         super(type, world);
         setSize(1F, 0.5F);
     }

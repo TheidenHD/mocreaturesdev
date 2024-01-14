@@ -3,9 +3,6 @@
  */
 package drzhark.mocreatures.item;
 
-import com.mojang.datafixers.util.Pair;
-import drzhark.mocreatures.MoCConstants;
-import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Food;

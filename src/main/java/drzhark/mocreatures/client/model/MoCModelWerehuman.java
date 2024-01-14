@@ -13,6 +13,6 @@ public class MoCModelWerehuman<T extends MoCEntityWerewolf> extends BipedModel<T
 
     public MoCModelWerehuman() {
         //TODO 4.1 FIX
-        super(0.0F, 0.0F, 64, 32);
+        super(0.0F);
     }
 }

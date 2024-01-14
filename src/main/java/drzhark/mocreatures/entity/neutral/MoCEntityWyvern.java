@@ -23,6 +23,7 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.HurtByTargetGoal;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -65,7 +66,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     private float fTransparency;
 
 
-    public MoCEntityWyvern(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityWyvern(EntityType<? extends MoCEntityWyvern> type, World world) {
         super(type, world);
         setSize(1.45F, 1.55F);
         setAdult(true);
@@ -408,7 +409,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -420,7 +421,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             return true;
         }
 
-        if (!stack.isEmpty() && !getIsRideable() && getAge() > 90 && this.getIsTamed() && (stack.getItem() instanceof ItemSaddle || stack.getItem() == MoCItems.horsesaddle)) {
+        if (!stack.isEmpty() && !getIsRideable() && getAge() > 90 && this.getIsTamed() && (stack.getItem() instanceof SaddleItem || stack.getItem() == MoCItems.horsesaddle)) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             setRideable(true);
             return true;
@@ -469,7 +470,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
                 this.localchest = new MoCAnimalChest("WyvernChest", 9);
             }
             if (!this.world.isRemote) {
-                player.displayGUIChest(this.localchest);
+                player.openContainer(this.localchest);
             }
             return true;
         }
@@ -563,7 +564,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             return true;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     /**

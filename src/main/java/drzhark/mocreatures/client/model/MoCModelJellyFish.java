@@ -4,16 +4,18 @@
 package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.aquatic.MoCEntityJellyFish;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelJellyFish<T extends Entity> extends EntityModel<T> {
+public class MoCModelJellyFish<T extends MoCEntityJellyFish> extends EntityModel<T> {
 
     ModelRenderer Top;
     ModelRenderer Head;
@@ -38,6 +40,9 @@ public class MoCModelJellyFish<T extends Entity> extends EntityModel<T> {
     ModelRenderer Leg7;
     ModelRenderer Leg8;
     ModelRenderer Leg9;
+    private boolean glowing;
+    private boolean outOfWater;
+    private float limbSwingAmount;
 
     public MoCModelJellyFish() {
         this.textureWidth = 64;
@@ -147,25 +152,27 @@ public class MoCModelJellyFish<T extends Entity> extends EntityModel<T> {
         setRotation(this.Leg9, 0F, 0.7853982F, 0F);
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.glowing = entityIn.isGlowing();
+        this.outOfWater = !entityIn.isInWater();
+        this.limbSwingAmount = limbSwingAmount;
+    }
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        MoCEntityJellyFish jellyfish = (MoCEntityJellyFish) entity;
-        boolean glowing = jellyfish.isGlowing();
-        boolean outOfWater = !jellyfish.isInWater();
         matrixStackIn.push();
         if (outOfWater) {
             matrixStackIn.translate(0F, 0.6F, -0.3F);
         } else {
             matrixStackIn.translate(0F, 0.2F, 0F);
-            matrixStackIn.rotate((float) (limbSwingAmount * -60D), -1F, 0.0F, 0.0F);
+            matrixStackIn.rotate(Vector3f.XN.rotationDegrees(this.limbSwingAmount * -60F));
         }
-        matrixStackIn.enableBlend();
+        RenderSystem.enableBlend();
         if (!glowing || outOfWater) {
             float transparency = 0.7F;
-            matrixStackIn.blendFunc(770, 771);
-            matrixStackIn.color(0.8F, 0.8F, 0.8F, transparency);
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.color4f(0.8F, 0.8F, 0.8F, transparency);
         } else {
-            matrixStackIn.blendFunc(770, 1);
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
         }
         this.Top.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -190,7 +197,7 @@ public class MoCModelJellyFish<T extends Entity> extends EntityModel<T> {
         this.Leg7.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Leg8.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Leg9.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        matrixStackIn.disableBlend();
+        RenderSystem.disableBlend();
         matrixStackIn.pop();
     }
 

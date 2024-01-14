@@ -8,13 +8,12 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.neutral.MoCEntityKitty;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelKitty<T extends Entity> extends EntityModel<T> {
+public class MoCModelKitty<T extends MoCEntityKitty> extends EntityModel<T> {
 
     private final ModelRenderer body;
     public boolean isSitting;
@@ -94,13 +93,15 @@ public class MoCModelKitty<T extends Entity> extends EntityModel<T> {
         this.tail.setRotationPoint(0.0F, -0.5F + limbSwingAmount, 7.5F);
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.isSitting = entityIn.getIsSitting();
+        this.isSwinging = entityIn.getIsSwinging();
+        this.swingProgress = entityIn.swingProgress;
+        this.kittystate = entityIn.getKittyState();
+    }
+
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        MoCEntityKitty kitty = (MoCEntityKitty) entity;
-        this.isSitting = kitty.getIsSitting();
-        this.isSwinging = kitty.getIsSwinging();
-        this.swingProgress = kitty.swingProgress;
-        this.kittystate = kitty.getKittyState();
         matrixStackIn.push();
         if (this.isSitting) {
             matrixStackIn.translate(0.0F, 0.25F, 0.0F);

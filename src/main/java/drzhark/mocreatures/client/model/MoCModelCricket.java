@@ -4,17 +4,17 @@
 package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.ambient.MoCEntityCricket;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelCricket<T extends Entity> extends EntityModel<T> {
+public class MoCModelCricket<T extends MoCEntityCricket> extends EntityModel<T> {
 
     ModelRenderer Head;
     ModelRenderer Antenna;
@@ -33,6 +33,7 @@ public class MoCModelCricket<T extends Entity> extends EntityModel<T> {
     ModelRenderer LegLeftB;
     ModelRenderer LegRight;
     ModelRenderer LegRightB;
+    private boolean flying;
 
     public MoCModelCricket() {
         this.textureWidth = 32;
@@ -122,11 +123,11 @@ public class MoCModelCricket<T extends Entity> extends EntityModel<T> {
         setRotation(this.LegRightB, 1.249201F, 0F, 0F);
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.flying = (entityIn.getIsFlying() || entityIn.getMotion().getY() < -0.1D);
+    }
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        MoCEntityCricket entitycricket = (MoCEntityCricket) entity;
-        boolean isFlying = (entitycricket.getIsFlying() || entitycricket.getMotion().getY() < -0.1D);
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, isFlying);
         this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Antenna.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.AntennaB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -137,7 +138,7 @@ public class MoCModelCricket<T extends Entity> extends EntityModel<T> {
         this.FrontLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.MidLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        if (!isFlying) {
+        if (!this.flying) {
             this.ThighLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.ThighRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.LegLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -149,11 +150,11 @@ public class MoCModelCricket<T extends Entity> extends EntityModel<T> {
             this.LegLeftB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.LegRightB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             matrixStackIn.push();
-            matrixStackIn.enableBlend();
+            RenderSystem.enableBlend();
             float transparency = 0.6F;
-            matrixStackIn.blendFunc(770, 771);
-            matrixStackIn.color(0.8F, 0.8F, 0.8F, transparency);
-            matrixStackIn.disableBlend();
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.color4f(0.8F, 0.8F, 0.8F, transparency);
+            RenderSystem.disableBlend();
             matrixStackIn.pop();
         }
     }
@@ -164,14 +165,14 @@ public class MoCModelCricket<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, boolean isFlying) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 
         float legMov;
         float legMovB;
 
         float frontLegAdj = 0F;
 
-        if (isFlying) {
+        if (this.flying) {
             legMov = (limbSwingAmount * 1.5F);
             legMovB = legMov;
             frontLegAdj = 1.4F;

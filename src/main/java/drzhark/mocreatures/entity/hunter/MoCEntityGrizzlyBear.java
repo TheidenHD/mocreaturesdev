@@ -10,11 +10,13 @@ import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -23,13 +25,13 @@ import javax.annotation.Nullable;
 
 public class MoCEntityGrizzlyBear extends MoCEntityBear {
 
-    public MoCEntityGrizzlyBear(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityGrizzlyBear(EntityType<? extends MoCEntityGrizzlyBear> type, World world) {
         super(type, world);
-        setSize(1.125F, 1.57F);
+        //setSize(1.125F, 1.57F);
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 40.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+        return MoCEntityBear.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 40.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
@@ -74,8 +76,8 @@ public class MoCEntityGrizzlyBear extends MoCEntityBear {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -93,7 +95,7 @@ public class MoCEntityGrizzlyBear extends MoCEntityBear {
             if (!this.world.isRemote && !getIsAdult() && (getAge() < 100)) {
                 setAge(getAge() + 1);
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
         if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.whip)) {
             if (getBearState() == 0) {
@@ -101,7 +103,7 @@ public class MoCEntityGrizzlyBear extends MoCEntityBear {
             } else {
                 setBearState(0);
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
         if (this.getIsRideable() && this.getIsAdult() && (!this.getIsChested() || !player.isSneaking()) && !this.isBeingRidden()) {
             if (!this.world.isRemote && player.startRiding(this)) {
@@ -109,10 +111,10 @@ public class MoCEntityGrizzlyBear extends MoCEntityBear {
                 player.rotationPitch = this.rotationPitch;
                 setBearState(0);
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Nullable

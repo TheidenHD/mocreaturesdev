@@ -10,13 +10,11 @@ import drzhark.mocreatures.entity.item.MoCEntityEgg;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
 import drzhark.mocreatures.init.MoCLootTables;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.Pose;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -29,10 +27,10 @@ import java.util.List;
 
 public class MoCEntityShark extends MoCEntityTameableAquatic {
 
-    public MoCEntityShark(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityShark(EntityType<? extends MoCEntityShark> type, World world) {
         super(type, world);
         this.texture = "shark.png";
-        setSize(1.65F, 0.9F);
+        //setSize(1.65F, 0.9F);
         setAdult(true);
         // TODO: Make hitboxes adjust depending on size
         //setAge(60 + this.rand.nextInt(100));
@@ -48,9 +46,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes();
-        getEntityAttribute(Attributes.MAX_HEALTH, 30.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.55D);
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.0D).createMutableAttribute(Attributes.FOLLOW_RANGE, 32.0D);
+        return MoCEntityTameableAquatic.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 30.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.55D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.0D).createMutableAttribute(Attributes.FOLLOW_RANGE, 32.0D);
     }
 
     @Override
@@ -135,7 +131,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public void remove(keepData) {
+    public void remove(boolean keepData) {
         if (!this.world.isRemote && getIsTamed() && (getHealth() > 0)) {
         } else {
             super.remove(keepData);

@@ -10,14 +10,12 @@ import drzhark.mocreatures.entity.ai.EntityAIFollowAdult;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.Pose;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -30,7 +28,7 @@ import javax.annotation.Nullable;
 
 public class MoCEntityBoar extends MoCEntityAnimal {
 
-    public MoCEntityBoar(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityBoar(EntityType<? extends MoCEntityBoar> type, World world) {
         super(type, world);
         setSize(0.9F, 0.9F);
         setAdult(this.rand.nextInt(4) != 0);
@@ -51,9 +49,7 @@ public class MoCEntityBoar extends MoCEntityAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes();
-        getEntityAttribute(Attributes.MAX_HEALTH, 10.0D);
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 2.5D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D);
+        return MoCEntityAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 10.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 2.5D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D);
     }
 
     @Override

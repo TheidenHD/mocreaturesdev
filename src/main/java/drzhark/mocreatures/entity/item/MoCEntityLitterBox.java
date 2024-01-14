@@ -8,6 +8,7 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.hostile.MoCEntityOgre;
 import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
@@ -36,7 +37,7 @@ public class MoCEntityLitterBox extends MobEntity {
     private static final DataParameter<Boolean> USED_LITTER = EntityDataManager.createKey(MoCEntityLitterBox.class, DataSerializers.BOOLEAN);
     public int litterTime;
 
-    public MoCEntityLitterBox(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityLitterBox(EntityType<? extends MoCEntityLitterBox> type, World world) {
         super(type, world);
         setSize(1.0F, 0.15F);
         setNoAI(true);
@@ -112,7 +113,7 @@ public class MoCEntityLitterBox extends MobEntity {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    public boolean getEntityInteractionResult(PlayerEntity player, Hand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && stack.getItem() == Item.getItemFromBlock(Blocks.SAND)) {
             MoCTools.playCustomSound(this, SoundEvents.BLOCK_SAND_PLACE);
@@ -173,7 +174,7 @@ public class MoCEntityLitterBox extends MobEntity {
             setUsedLitter(false);
             this.litterTime = 0;
         }
-        if (this.isRiding()) MoCTools.dismountSneakingPlayer(this);
+        if (this.isPassenger()) MoCTools.dismountSneakingPlayer(this);
     }
 
     @Override

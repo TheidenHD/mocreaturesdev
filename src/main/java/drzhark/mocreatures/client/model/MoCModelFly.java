@@ -4,17 +4,17 @@
 package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.ambient.MoCEntityFly;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelFly<T extends Entity> extends EntityModel<T> {
+public class MoCModelFly<T extends MoCEntityFly> extends EntityModel<T> {
 
     ModelRenderer FrontLegs;
     ModelRenderer RearLegs;
@@ -26,6 +26,7 @@ public class MoCModelFly<T extends Entity> extends EntityModel<T> {
     ModelRenderer RightWing;
     ModelRenderer Thorax;
     ModelRenderer LeftWing;
+    private boolean flying;
 
     public MoCModelFly() {
         this.textureWidth = 32;
@@ -90,11 +91,12 @@ public class MoCModelFly<T extends Entity> extends EntityModel<T> {
 
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.flying = (entityIn.getIsFlying() || entityIn.getMotion().getY() < -0.1D);
+    }
+
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        MoCEntityFly fly = (MoCEntityFly) entity;
-        boolean isFlying = (fly.getIsFlying() || fly.getMotion().getY() < -0.1D);
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, !isFlying);
         this.FrontLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.RearLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.MidLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -103,17 +105,17 @@ public class MoCModelFly<T extends Entity> extends EntityModel<T> {
         this.Abdomen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Thorax.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        if (!isFlying) {
+        if (!this.flying) {
             this.FoldedWings.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else {
             matrixStackIn.push();
-            matrixStackIn.enableBlend();
+            RenderSystem.enableBlend();
             float transparency = 0.6F;
-            matrixStackIn.blendFunc(770, 771);
-            matrixStackIn.color(0.8F, 0.8F, 0.8F, transparency);
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.color4f(0.8F, 0.8F, 0.8F, transparency);
             this.LeftWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.RightWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            matrixStackIn.disableBlend();
+            RenderSystem.disableBlend();
             matrixStackIn.pop();
         }
     }
@@ -134,7 +136,7 @@ public class MoCModelFly<T extends Entity> extends EntityModel<T> {
      * 1.070744F + legMov; }
      */
 
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, boolean onGround) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         //super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
         float WingRot = MathHelper.cos((ageInTicks * 3.0F)) * 0.7F;
         this.RightWing.rotateAngleZ = WingRot;
@@ -142,7 +144,7 @@ public class MoCModelFly<T extends Entity> extends EntityModel<T> {
         float legMov;
         float legMovB;
 
-        if (!onGround) {
+        if (this.flying) {
             legMov = (limbSwingAmount * 1.5F);
             legMovB = legMov;
         } else {

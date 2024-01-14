@@ -4,21 +4,24 @@
 package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.ambient.MoCEntityMaggot;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelMaggot<T extends Entity> extends EntityModel<T> {
+public class MoCModelMaggot<T extends MoCEntityMaggot> extends EntityModel<T> {
 
     ModelRenderer Head;
     ModelRenderer Body;
     ModelRenderer Tail;
     ModelRenderer Tailtip;
+    private float limbSwing;
+    private float limbSwingAmount;
 
     public MoCModelMaggot() {
         this.textureWidth = 32;
@@ -41,21 +44,22 @@ public class MoCModelMaggot<T extends Entity> extends EntityModel<T> {
         this.Tailtip.setRotationPoint(0F, 23F, 4F);
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.limbSwing = limbSwing;
+        this.limbSwingAmount = limbSwingAmount;
+    }
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        //super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
-
         //limbSwingAmount = movement speed!
         //ageInTicks = timer!
         //System.out.println("ageInTicks = " + ageInTicks);
 
         matrixStackIn.push();
-        matrixStackIn.enableBlend();
+        RenderSystem.enableBlend();
         //float transparency = 0.9F;
-        matrixStackIn.blendFunc(770, 771);
-        //matrixStackIn.color(1.2F, 1.2F, 1.2F, transparency);
-        float f9 = -(MathHelper.cos(limbSwing * 3F)) * limbSwingAmount * 2F;
+        RenderSystem.defaultBlendFunc();
+        //RenderSystem.color4f(1.2F, 1.2F, 1.2F, transparency);
+        float f9 = -(MathHelper.cos(this.limbSwing * 3F)) * this.limbSwingAmount * 2F;
         //matrixStackIn.scale(1.0F, 1.0F, 1.0F + (limbSwingAmount * 3F));
         matrixStackIn.scale(1.0F, 1.0F, 1.0F + (f9));
 
@@ -63,7 +67,7 @@ public class MoCModelMaggot<T extends Entity> extends EntityModel<T> {
         this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Tailtip.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        matrixStackIn.disableBlend();
+        RenderSystem.disableBlend();
         matrixStackIn.pop();
 
     }

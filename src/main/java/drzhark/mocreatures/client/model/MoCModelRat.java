@@ -5,13 +5,13 @@ package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.hostile.MoCEntityRat;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
 
-public class MoCModelRat<T extends Entity> extends EntityModel<T> {
+public class MoCModelRat<T extends MoCEntityRat> extends EntityModel<T> {
 
     public ModelRenderer Head;
 

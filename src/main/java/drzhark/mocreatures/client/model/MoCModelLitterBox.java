@@ -5,12 +5,12 @@ package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.item.MoCEntityLitterBox;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 
 
-public class MoCModelLitterBox<T extends Entity> extends EntityModel<T> {
+public class MoCModelLitterBox<T extends MoCEntityLitterBox> extends EntityModel<T> {
 
     public boolean usedlitter;
     ModelRenderer Table1;
@@ -46,6 +46,11 @@ public class MoCModelLitterBox<T extends Entity> extends EntityModel<T> {
         this.Bottom = new ModelRenderer(this, 16, 15);
         this.Bottom.addBox(-10F, 0.0F, -7F, 16, 1, 14, limbSwing);
         this.Bottom.setRotationPoint(2.0F, 23F, 0.0F);
+    }
+
+    @Override
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+
     }
 
     @Override

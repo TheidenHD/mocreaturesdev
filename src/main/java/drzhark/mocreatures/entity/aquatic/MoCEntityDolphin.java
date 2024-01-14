@@ -8,14 +8,13 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.ai.EntityAIPanicMoC;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
+import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageHeart;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.Pose;
+import drzhark.mocreatures.util.MoCTags;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.item.ItemEntity;
@@ -38,9 +37,9 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     private static final DataParameter<Boolean> HAS_EATEN = EntityDataManager.createKey(MoCEntityDolphin.class, DataSerializers.BOOLEAN);
     public int gestationtime;
 
-    public MoCEntityDolphin(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityDolphin(EntityType<? extends MoCEntityDolphin> type, World world) {
         super(type, world);
-        setSize(1.3F, 0.605F);
+        //setSize(1.3F, 0.605F);
         setAdult(true);
         // TODO: Make hitboxes adjust depending on size
         //setAge(60 + this.rand.nextInt(100));
@@ -54,8 +53,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 15.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.5D);
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.5D);
+        return MoCEntityTameableAquatic.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 15.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.5D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.5D);
     }
 
     @Override
@@ -250,14 +248,14 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
 
         final ItemStack stack = player.getHeldItem(hand);
-        if (!stack.isEmpty() && (stack.getItem() == Items.FISH)) {
+        if (!stack.isEmpty() && MoCTags.Items.RAW_FISHES.contains(stack.getItem())) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (!this.world.isRemote) {
                 setTemper(getTemper() + 25);
@@ -276,28 +274,28 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
 
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
-        if (!stack.isEmpty() && (stack.getItem() == Items.COOKED_FISH) && getIsTamed() && getIsAdult()) {
+        if (!stack.isEmpty() && MoCTags.Items.COOKED_FISHES.contains(stack.getItem()) && getIsTamed() && getIsAdult()) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             if ((getHealth() + 25) > getMaxHealth()) {
                 this.setHealth(getMaxHealth());
             }
             setHasEaten(true);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
-            return true;
+            return ActionResultType.SUCCESS;
         }
         if (!this.isBeingRidden()) {
             if (!this.world.isRemote && player.startRiding(this)) {
                 player.rotationYaw = this.rotationYaw;
                 player.rotationPitch = this.rotationPitch;
-                player.getPosY() = this.getPosY();
+                player.setPosition(player.getPosX(), this.getPosY(), player.getPosZ());
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Override
@@ -325,7 +323,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
                     ItemEntity entityitem1 = getClosestFish(this, 2D);
                     if ((this.rand.nextInt(20) == 0) && (entityitem1 != null) && (this.deathTime == 0)) {
 
-                        entityitem1.remove(keepData);
+                        entityitem1.remove();
                         setTemper(getTemper() + 25);
                         if (getTemper() > getMaxTemper()) {
                             setTemper(getMaxTemper() - 1);
@@ -366,7 +364,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
                 if (this.gestationtime <= 50) {
                     continue;
                 }
-                MoCEntityDolphin babydolphin = new MoCEntityDolphin(this.world);
+                MoCEntityDolphin babydolphin = MoCEntities.DOLPHIN.create(this.world);
                 babydolphin.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
                 if (this.world.addEntity(babydolphin)) {
                     MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
@@ -401,7 +399,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public void remove(keepData) {
+    public void remove(boolean keepData) {
         if (!this.world.isRemote && getIsTamed() && (getHealth() > 0)) {
         } else {
             super.remove(keepData);

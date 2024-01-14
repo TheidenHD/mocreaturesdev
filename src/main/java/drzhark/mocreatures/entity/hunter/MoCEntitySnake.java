@@ -17,6 +17,7 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
@@ -59,7 +60,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     private int movInt;
     private boolean isNearPlayer;
 
-    public MoCEntitySnake(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntitySnake(EntityType<? extends MoCEntitySnake> type, World world) {
         super(type, world);
         setSize(1.4F, 0.5F);
         this.bodyswing = 2F;
@@ -163,7 +164,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -181,7 +182,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
             return true;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Override

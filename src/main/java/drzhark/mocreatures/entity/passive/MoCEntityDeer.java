@@ -13,10 +13,12 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -29,7 +31,7 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
 
     private int readyToJumpTimer;
 
-    public MoCEntityDeer(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityDeer(EntityType<? extends MoCEntityDeer> type, World world) {
         super(type, world);
         setAge(75);
         setSize(0.9F, 1.425F);

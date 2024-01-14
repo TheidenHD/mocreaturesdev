@@ -8,13 +8,12 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.passive.MoCEntityTurkey;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelTurkey<T extends Entity> extends EntityModel<T> {
+public class MoCModelTurkey<T extends MoCEntityTurkey> extends EntityModel<T> {
 
     ModelRenderer Beak;
     ModelRenderer Head;
@@ -97,17 +96,20 @@ public class MoCModelTurkey<T extends Entity> extends EntityModel<T> {
 
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.male = entityIn.getTypeMoC() == 1;
+    }
+
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        this.male = ((MoCEntityTurkey) entity).getTypeMoC() == 1;
         if (this.isChild) {
             // All children rendered as Female
             matrixStackIn.push();
-            matrixStackIn.translate(0.0F, 5.0F * f5, 2.0F * f5);
+            matrixStackIn.translate(0.0F, 5.0F, 2.0F);
             matrixStackIn.pop();
             matrixStackIn.push();
             matrixStackIn.scale(0.5F, 0.5F, 0.5F);
-            matrixStackIn.translate(0.0F, 24.0F * f5, 0.0F);
+            matrixStackIn.translate(0.0F, 24.0F, 0.0F);
             this.Beak.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.Neck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);

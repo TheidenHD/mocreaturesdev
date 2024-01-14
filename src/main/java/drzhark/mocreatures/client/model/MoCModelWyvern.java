@@ -4,18 +4,18 @@
 package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.neutral.MoCEntityWyvern;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelWyvern<T extends Entity> extends EntityModel<T> {
+public class MoCModelWyvern<T extends MoCEntityWyvern> extends EntityModel<T> {
 
     private final float radianF = 57.29578F;
     ModelRenderer back4;
@@ -136,6 +136,7 @@ public class MoCModelWyvern<T extends Entity> extends EntityModel<T> {
     ModelRenderer rightwingflap1;
     ModelRenderer rightwingflap2;
     ModelRenderer rightwingflap3;
+    private int armor;
     private boolean isRidden;
     private boolean isChested;
     private boolean isSaddled;
@@ -145,6 +146,8 @@ public class MoCModelWyvern<T extends Entity> extends EntityModel<T> {
     private boolean isSitting;
     private boolean isGhost;
     private int openMouth;
+    private float yOffset;
+    private float transparency;
 
     public MoCModelWyvern() {
         this.textureWidth = 128;
@@ -779,32 +782,30 @@ public class MoCModelWyvern<T extends Entity> extends EntityModel<T> {
         setRotation(this.diamondchestarmor, -0.2602503F, 0F, 0F);
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.armor = entityIn.getArmorType();
+        this.isRidden = (entityIn.isBeingRidden());
+        this.isChested = entityIn.getIsChested();
+        this.isSaddled = entityIn.getIsRideable();
+        this.flapwings = (entityIn.wingFlapCounter != 0);
+        this.onAir = entityIn.isOnAir() || entityIn.getIsFlying();
+        this.diving = (entityIn.diveCounter != 0);
+        this.isSitting = entityIn.getIsSitting();
+        this.isGhost = entityIn.getIsGhost();
+        this.openMouth = entityIn.mouthCounter;
+        this.yOffset = entityIn.getAdjustedYOffset();
+        this.transparency = entityIn.tFloat();
+    }
+
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        //super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
-
-        MoCEntityWyvern wyvern = (MoCEntityWyvern) entity;
-        int armor = wyvern.getArmorType();
-        this.isRidden = (wyvern.isBeingRidden());
-        this.isChested = wyvern.getIsChested();
-        this.isSaddled = wyvern.getIsRideable();
-        this.flapwings = (wyvern.wingFlapCounter != 0);
-        this.onAir = wyvern.isOnAir() || wyvern.getIsFlying();
-        this.diving = (wyvern.diveCounter != 0);
-        this.isSitting = wyvern.getIsSitting();
-        this.isGhost = wyvern.getIsGhost();
-        this.openMouth = wyvern.mouthCounter;
-
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);//, onAir, flapwings, isRidden, openMouth, diving, isSitting);
-        float yOffset = wyvern.getAdjustedYOffset();
         matrixStackIn.push();
         matrixStackIn.translate(0F, yOffset, 0F);
 
         if (isGhost) {
-            float transparency = wyvern.tFloat();
-            matrixStackIn.enableBlend();
-            matrixStackIn.blendFunc(770, 771);
-            matrixStackIn.color(0.8F, 0.8F, 0.8F, transparency);
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.color4f(0.8F, 0.8F, 0.8F, transparency);
             //matrixStackIn.scale(1.3F, 1.0F, 1.3F);
         }
         this.back1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -928,7 +929,7 @@ public class MoCModelWyvern<T extends Entity> extends EntityModel<T> {
         this.diamondrightshoulder.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.diamondchestarmor.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         if (isGhost) {
-            matrixStackIn.disableBlend();
+            RenderSystem.disableBlend();
         }
         matrixStackIn.pop();
     }
@@ -940,7 +941,7 @@ public class MoCModelWyvern<T extends Entity> extends EntityModel<T> {
     }
 
     @SuppressWarnings("unused")
-    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {//, boolean onAir, boolean flapwings, boolean rider, int openMouth, boolean diving, boolean sitting) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         float RLegXRot = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
         float LLegXRot = MathHelper.cos(limbSwing * 0.6662F) * 0.8F * limbSwingAmount;
 

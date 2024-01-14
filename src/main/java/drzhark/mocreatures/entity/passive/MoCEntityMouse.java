@@ -11,6 +11,7 @@ import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -35,7 +36,7 @@ import javax.annotation.Nullable;
 public class MoCEntityMouse extends MoCEntityAnimal {
     private static final DataParameter<Boolean> CLIMBING = EntityDataManager.createKey(MoCEntityMouse.class, DataSerializers.BOOLEAN);
 
-    public MoCEntityMouse(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityMouse(EntityType<? extends MoCEntityMouse> type, World world) {
         super(type, world);
         setSize(0.45F, 0.3F);
     }
@@ -151,7 +152,7 @@ public class MoCEntityMouse extends MoCEntityAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    public boolean getEntityInteractionResult(PlayerEntity player, Hand hand) {
         if (this.getRidingEntity() == null) {
             if (this.startRiding(player)) {
                 this.rotationYaw = player.rotationYaw;
@@ -160,7 +161,7 @@ public class MoCEntityMouse extends MoCEntityAnimal {
             return true;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Override

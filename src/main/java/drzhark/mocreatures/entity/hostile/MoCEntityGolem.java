@@ -179,7 +179,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
                 this.world.addEntity(entityitem);
             }
         }
-        this.remove(keepData);
+        this.remove();
     }
 
     @Override

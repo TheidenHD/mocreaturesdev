@@ -6,13 +6,11 @@ package drzhark.mocreatures.entity.hunter;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.init.MoCLootTables;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.Pose;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -21,7 +19,7 @@ import javax.annotation.Nullable;
 
 public class MoCEntityLither extends MoCEntityBigCat {
 
-    public MoCEntityLither(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityLither(EntityType<? extends MoCEntityLither> type, World world) {
         super(type, world);
         setSize(1.175F, 1.17F);
     }
@@ -45,7 +43,7 @@ public class MoCEntityLither extends MoCEntityBigCat {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -61,7 +59,7 @@ public class MoCEntityLither extends MoCEntityBigCat {
             return true;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Nullable

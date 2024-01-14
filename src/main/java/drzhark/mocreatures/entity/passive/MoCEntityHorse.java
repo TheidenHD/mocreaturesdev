@@ -81,7 +81,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     private boolean hasReproduced;
     private int nightmareInt;
 
-    public MoCEntityHorse(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityHorse(EntityType<? extends MoCEntityHorse> type, World world) {
         super(type, world);
         setSize(1.3964844F, 1.6F);
         this.gestationTime = 0;
@@ -1249,7 +1249,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
 
         if (tameResult != null) return tameResult;
@@ -1257,7 +1257,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         if (this.getTypeMoC() == 60 && !getIsTamed() && isZebraRunning()) return false;
 
         final ItemStack stack = player.getHeldItem(hand);
-        if (!stack.isEmpty() && !getIsRideable() && (stack.getItem() instanceof ItemSaddle || stack.getItem() == MoCItems.horsesaddle)) {
+        if (!stack.isEmpty() && !getIsRideable() && (stack.getItem() instanceof SaddleItem || stack.getItem() == MoCItems.horsesaddle)) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             setRideable(true);
             return true;
@@ -1546,7 +1546,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             // if first time opening horse chest, we must initialize it
             if (this.localChest == null) this.localChest = new MoCAnimalChest("HorseChest", getInventorySize());// , new
             // only open this chest on server side
-            if (!this.world.isRemote) player.displayGUIChest(this.localChest);
+            if (!this.world.isRemote) player.openContainer(this.localChest);
             return true;
 
         }
@@ -1581,7 +1581,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             return true;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     /**

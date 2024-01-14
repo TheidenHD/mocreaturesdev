@@ -8,13 +8,12 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.passive.MoCEntityMole;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelMole<T extends Entity> extends EntityModel<T> {
+public class MoCModelMole<T extends MoCEntityMole> extends EntityModel<T> {
 
     ModelRenderer Nose;
     ModelRenderer Head;
@@ -27,6 +26,7 @@ public class MoCModelMole<T extends Entity> extends EntityModel<T> {
     ModelRenderer RFingers;
     ModelRenderer LRearLeg;
     ModelRenderer RRearLeg;
+    private float yOffset;
 
     public MoCModelMole() {
         this.textureWidth = 64;
@@ -85,10 +85,12 @@ public class MoCModelMole<T extends Entity> extends EntityModel<T> {
         setRotation(this.RRearLeg, -0.2792527F, -0.5235988F, 0F);
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.yOffset = entityIn.getAdjustedYOffset();
+    }
+
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        MoCEntityMole mole = (MoCEntityMole) entity;
-        float yOffset = mole.getAdjustedYOffset();
         matrixStackIn.push();
         matrixStackIn.translate(0F, yOffset, 0F);
         this.Nose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);

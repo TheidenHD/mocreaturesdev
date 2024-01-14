@@ -8,13 +8,12 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.hunter.MoCEntitySnake;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
+public class MoCModelSnake<T extends MoCEntitySnake> extends EntityModel<T> {
 
     //public ModelRenderer WingL[];
     //public ModelRenderer WingR[];
@@ -39,6 +38,17 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
     ModelRenderer Wing4L;
     ModelRenderer Wing5L;
     ModelRenderer Wing5R;
+    private int typeI;
+    private float tongueOff;
+    private float mouthOff;
+    private float rattleOff;
+    private boolean climbing;
+    private boolean isresting;
+    private int movInt;
+    private float f6;
+    private boolean nearplayer;
+    private boolean picked;
+    private float limbSwing;
 
     public MoCModelSnake() {
         this.textureWidth = 64;
@@ -168,22 +178,22 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
 
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.typeI = entityIn.getTypeMoC();
+        this.tongueOff = entityIn.getfTongue();
+        this.mouthOff = entityIn.getfMouth();
+        this.rattleOff = entityIn.getfRattle();
+        this.climbing = entityIn.isClimbing();
+        this.isresting = entityIn.isResting();
+        this.movInt = entityIn.getMovInt();
+        this.f6 = entityIn.bodyswing;
+        this.nearplayer = entityIn.getNearPlayer();
+        this.picked = entityIn.pickedUp();
+        this.limbSwing = limbSwing;
+    }
+
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        //super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
-        MoCEntitySnake entitysnake = (MoCEntitySnake) entity;
-        int typeI = entitysnake.getTypeMoC();
-        float tongueOff = entitysnake.getfTongue();
-        float mouthOff = entitysnake.getfMouth();
-        float rattleOff = entitysnake.getfRattle();
-        boolean climbing = entitysnake.isClimbing();
-        boolean isresting = entitysnake.isResting();
-        int movInt = entitysnake.getMovInt();
-        float f6 = entitysnake.bodyswing;
-        boolean nearplayer = entitysnake.getNearPlayer();
-        boolean picked = entitysnake.pickedUp();
-        setRotationAngles(netHeadYaw, headPitch, tongueOff, mouthOff, rattleOff, nearplayer, typeI);
-
         float sidef;
 
         // y = A * sin(w * t - k *x)
@@ -368,7 +378,7 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float netHeadYaw, float headPitch, float f6, float f7, float frattle, boolean nearP, int type) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         float rAX = (headPitch / 57.29578F);// * 1.5F;
         float rAY = (netHeadYaw / 57.29578F);// * 1.5F;
         this.Head.rotateAngleX = rAX;
@@ -379,15 +389,15 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
         this.bodySnake[3].rotateAngleX = rAX * 0.80F;/// 3.0F;
         this.bodySnake[4].rotateAngleX = rAX * 0.75F;/// 3.5F;
 
-        float f8 = (MathHelper.cos(f6 * 10F) / 40F);
+        float f8 = (MathHelper.cos(tongueOff * 10F) / 40F);
 
-        this.Nose.rotateAngleX = this.Head.rotateAngleX - f7;
-        this.LNose.rotateAngleX = this.Head.rotateAngleX + f7;
+        this.Nose.rotateAngleX = this.Head.rotateAngleX - mouthOff;
+        this.LNose.rotateAngleX = this.Head.rotateAngleX + mouthOff;
         this.Tongue1.rotateAngleX = this.Head.rotateAngleX + f8;
         this.Tongue.rotateAngleX = this.Head.rotateAngleX + f8;
         this.Tongue0.rotateAngleX = this.LNose.rotateAngleX;
-        this.TeethUR.rotateAngleX = this.Head.rotateAngleX - f7;
-        this.TeethUL.rotateAngleX = this.Head.rotateAngleX - f7;
+        this.TeethUR.rotateAngleX = this.Head.rotateAngleX - mouthOff;
+        this.TeethUL.rotateAngleX = this.Head.rotateAngleX - mouthOff;
         this.bodySnake[0].rotateAngleY = 0.0F + (rAY * 0.85F);/// 1.5F;
         this.bodySnake[1].rotateAngleY = 0.0F + (rAY * 0.65F);/// 2.0F;
         this.bodySnake[2].rotateAngleY = 0.0F + (rAY * 0.45F);/// 2.5F;
@@ -401,7 +411,7 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
         this.TeethUR.rotateAngleY = this.Head.rotateAngleY;
         this.TeethUL.rotateAngleY = this.Head.rotateAngleY;
 
-        if (type == 6) //cobra
+        if (typeI == 6) //cobra
         {
             this.Wing1L.rotateAngleX = this.bodySnake[1].rotateAngleX;
             this.Wing1L.rotateAngleY = this.bodySnake[1].rotateAngleY;
@@ -429,9 +439,9 @@ public class MoCModelSnake<T extends Entity> extends EntityModel<T> {
             this.Wing5R.rotateAngleY = this.bodySnake[4].rotateAngleY;
         }
 
-        if (type == 7) //rattlesnake
+        if (typeI == 7) //rattlesnake
         {
-            if (nearP || frattle != 0.0F) {
+            if (nearplayer || rattleOff != 0.0F) {
                 this.Tail.rotateAngleX = ((MathHelper.cos(netHeadYaw * 10F) * 20F) + 90F) / 57.29578F;
                 //Tail.rotateAngleX = ((MathHelper.cos(netHeadYaw*10F)*20F) + 90F)/57.29578F;
             } else {

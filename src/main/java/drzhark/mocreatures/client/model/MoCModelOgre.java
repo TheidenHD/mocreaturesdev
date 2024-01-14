@@ -8,13 +8,12 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.hostile.MoCEntityOgre;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelOgre<T extends Entity> extends EntityModel<T> {
+public class MoCModelOgre<T extends MoCEntityOgre> extends EntityModel<T> {
 
     private final float radianF = 57.29578F;
     ModelRenderer Head;
@@ -590,19 +589,17 @@ public class MoCModelOgre<T extends Entity> extends EntityModel<T> {
         setRotation(this.Head2DiamondHorn, 0.0872665F, 0F, 0F);
     }
 
-    @Override
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        //super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
-        MoCEntityOgre entityogre = (MoCEntityOgre) entity;
-        this.type = entityogre.getTypeMoC();
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.type = entityIn.getTypeMoC();
         //int leftAttack = entityogre.attackCounterLeft;
         //int rightAttack = entityogre.attackCounterRight;
-        this.attackCounter = entityogre.attackCounter;
-        this.headMoving = entityogre.getMovingHead();
-        this.armToAnimate = entityogre.armToAnimate;
+        this.attackCounter = entityIn.attackCounter;
+        this.headMoving = entityIn.getMovingHead();
+        this.armToAnimate = entityIn.armToAnimate;
+    }
 
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
-
+    @Override
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         if (type == 1) {
             this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.Brow.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);

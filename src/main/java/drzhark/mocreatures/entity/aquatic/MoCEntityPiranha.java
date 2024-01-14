@@ -7,10 +7,12 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.ai.EntityAIFollowHerd;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -20,7 +22,7 @@ import javax.annotation.Nullable;
 
 public class MoCEntityPiranha extends MoCEntitySmallFish {
 
-    public MoCEntityPiranha(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityPiranha(EntityType<? extends MoCEntityPiranha> type, World world) {
         super(type, world);
         experienceValue = 3;
     }
@@ -33,9 +35,7 @@ public class MoCEntityPiranha extends MoCEntitySmallFish {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes();
-        getEntityAttribute(Attributes.MAX_HEALTH, 5.0D);
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.5D);
+        return MoCEntitySmallFish.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 5.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.5D);
     }
 
     @Override

@@ -9,6 +9,7 @@ import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -29,9 +30,9 @@ public class MoCEntityJellyFish extends MoCEntityTameableAquatic {
     private static final DataParameter<Boolean> GLOWS = EntityDataManager.createKey(MoCEntityJellyFish.class, DataSerializers.BOOLEAN);
     private int poisoncounter;
 
-    public MoCEntityJellyFish(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityJellyFish(EntityType<? extends MoCEntityJellyFish> type, World world) {
         super(type, world);
-        setSize(0.45F, 0.575F);
+        //setSize(0.45F, 0.575F);
         // TODO: Make hitboxes adjust depending on size
         //setAge(50 + (this.rand.nextInt(50)));
         setAge(100);
@@ -43,8 +44,7 @@ public class MoCEntityJellyFish extends MoCEntityTameableAquatic {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes();
-        getEntityAttribute(Attributes.MAX_HEALTH, 6.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.15D);
+        return MoCEntityTameableAquatic.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 6.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.15D);
     }
 
     @Override

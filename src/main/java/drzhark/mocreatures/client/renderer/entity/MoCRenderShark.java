@@ -3,22 +3,27 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import drzhark.mocreatures.MoCreatures;
+import drzhark.mocreatures.client.model.MoCModelShark;
 import drzhark.mocreatures.entity.aquatic.MoCEntityShark;
-import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCRenderShark extends MobRenderer<MoCEntityShark> {
+public class MoCRenderShark extends MobRenderer<MoCEntityShark, MoCModelShark<MoCEntityShark>> {
 
-    public MoCRenderShark(ModelBase modelbase, float f) {
-        super(MoCProxyClient.mc.getRenderManager(), modelbase, f);
+    public MoCRenderShark(EntityRendererManager renderManagerIn, MoCModelShark modelbase, float f) {
+        super(renderManagerIn, modelbase, f);
     }
 
     @Override
@@ -29,16 +34,16 @@ public class MoCRenderShark extends MobRenderer<MoCEntityShark> {
         if (entityshark.getIsTamed()) {
             float f2 = 1.6F;
             float f3 = 0.01666667F * f2;
-            float f4 = entityshark.getDistance(this.renderManager.renderViewEntity);
+            float f4 = entityshark.getDistance(this.renderManager.info.getRenderViewEntity());
             if (f4 < 16F) {
                 String s = "";
                 s = s + entityshark.getPetName();
                 float f5 = 0.1F;
                 FontRenderer fontrenderer = getFontRendererFromRenderManager();
                 matrixStackIn.push();
-                matrixStackIn.translate((float) d + 0.0F, (float) d1 + f5, (float) d2);
-                matrixStackIn.glNormal3f(0.0F, 1.0F, 0.0F);
-                matrixStackIn.rotate(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+                matrixStackIn.translate(0.0F, f5, 0.0F);
+                RenderSystem.normal3f(0.0F, 1.0F, 0.0F);
+                matrixStackIn.rotate(Vector3f.YP.rotationDegrees(-this.renderManager.info.getYaw()));
                 matrixStackIn.scale(-f3, -f3, f3);
 
                 Tessellator tessellator = Tessellator.getInstance();
@@ -66,10 +71,10 @@ public class MoCRenderShark extends MobRenderer<MoCEntityShark> {
 
                 }
                 if (flag) {
-                    matrixStackIn.depthMask(false);
-                    matrixStackIn.disableDepth();
-                    matrixStackIn.enableBlend();
-                    matrixStackIn.blendFunc(770, 771);
+                    RenderSystem.depthMask(false);
+                    RenderSystem.disableDepthTest();
+                    RenderSystem.enableBlend();
+                    RenderSystem.defaultBlendFunc();
 
                     tessellator.getBuffer().begin(7, DefaultVertexFormats.POSITION_COLOR);
                     int i = fontrenderer.getStringWidth(s) / 2;
@@ -79,12 +84,12 @@ public class MoCRenderShark extends MobRenderer<MoCEntityShark> {
                     tessellator.getBuffer().pos(i + 1, -1 + byte0, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
                     tessellator.draw();
 
-                    fontrenderer.drawString(s, -fontrenderer.getStringWidth(s) / 2, byte0, 0x20ffffff);
-                    matrixStackIn.enableDepth();
-                    matrixStackIn.depthMask(true);
-                    fontrenderer.drawString(s, -fontrenderer.getStringWidth(s) / 2, byte0, -1);
-                    matrixStackIn.disableBlend();
-                    matrixStackIn.color(1.0F, 1.0F, 1.0F, 1.0F);
+                    fontrenderer.drawString(matrixStackIn, s, -fontrenderer.getStringWidth(s) / 2, byte0, 0x20ffffff);
+                    RenderSystem.enableDepthTest();
+                    RenderSystem.depthMask(true);
+                    fontrenderer.drawString(matrixStackIn, s, -fontrenderer.getStringWidth(s) / 2, byte0, -1);
+                    RenderSystem.disableBlend();
+                    RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                 }
 
                 matrixStackIn.pop();
@@ -93,12 +98,12 @@ public class MoCRenderShark extends MobRenderer<MoCEntityShark> {
     }
 
     @Override
-    protected float handleRotationFloat(MoCEntityShark entityshark, float f) {
-        stretch(entityshark);
-        return entityshark.ticksExisted + f;
+    protected void preRenderCallback(MoCEntityShark entityshark, MatrixStack matrixStackIn, float partialTickTime) {
+        stretch(entityshark, matrixStackIn);
     }
 
-    protected void stretch(MoCEntityShark entityshark) {
+
+    protected void stretch(MoCEntityShark entityshark, MatrixStack matrixStackIn) {
         matrixStackIn.scale((entityshark.getAge() * 0.01F) / 2, (entityshark.getAge() * 0.01F) / 2, (entityshark.getAge() * 0.01F) / 2);
     }
 

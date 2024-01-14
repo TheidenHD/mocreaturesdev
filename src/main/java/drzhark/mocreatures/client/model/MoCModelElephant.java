@@ -8,13 +8,12 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.neutral.MoCEntityElephant;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelElephant<T extends Entity> extends EntityModel<T> {
+public class MoCModelElephant<T extends MoCEntityElephant> extends EntityModel<T> {
 
     ModelRenderer Head;
     ModelRenderer Neck;
@@ -111,6 +110,7 @@ public class MoCModelElephant<T extends Entity> extends EntityModel<T> {
     ModelRenderer FortBackRightWall;
     ModelRenderer StorageUpLeft;
     ModelRenderer StorageUpRight;
+    private MoCEntityElephant elephant;
 
     float radianF = 57.29578F;
     int tusks;
@@ -577,21 +577,21 @@ public class MoCModelElephant<T extends Entity> extends EntityModel<T> {
         setRotation(this.StorageUpRight, 0F, 0F, 0.3839724F);
     }
 
-    @Override
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        //super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
-        MoCEntityElephant elephant = (MoCEntityElephant) entity;
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.elephant = entityIn;
         this.tusks = elephant.getTusks();
-        int type = elephant.getTypeMoC();
         this.tailCounter = elephant.tailCounter;
         this.earCounter = elephant.earCounter;
         this.trunkCounter = elephant.trunkCounter;
+        this.isSitting = (elephant.sitCounter != 0);
+    }
+    @Override
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        int type = elephant.getTypeMoC();
         int harness = elephant.getArmorType();
         int storage = elephant.getStorage();
-        this.isSitting = (elephant.sitCounter != 0);
         //boolean moveTail = (elephant.tailCounter != 0);
 
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
 
         if (tusks == 0) {
             this.LeftTuskB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);

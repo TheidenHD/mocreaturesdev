@@ -3,7 +3,6 @@
  */
 package drzhark.mocreatures.block;
 
-import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.dimension.worldgen.MoCWorldGenBigTree;
 import drzhark.mocreatures.init.MoCBlocks;
 import net.minecraft.block.*;

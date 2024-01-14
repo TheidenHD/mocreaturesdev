@@ -5,15 +5,15 @@ package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.neutral.MoCEntityGoat;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelGoat<T extends Entity> extends EntityModel<T> {
+public class MoCModelGoat<T extends MoCEntityGoat> extends EntityModel<T> {
 
     public int typeInt;
     public int attacking;

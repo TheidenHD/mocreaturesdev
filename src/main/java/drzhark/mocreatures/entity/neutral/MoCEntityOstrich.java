@@ -21,6 +21,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -62,7 +63,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     private int hidingCounter;
 
 
-    public MoCEntityOstrich(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityOstrich(EntityType<? extends MoCEntityOstrich> type, World world) {
         super(type, world);
         setSize(0.8F, 2.225F);
         setAdult(true);
@@ -517,14 +518,14 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
 
         final ItemStack stack = player.getHeldItem(hand);
-        if (getIsTamed() && (getTypeMoC() > 1) && !stack.isEmpty() && !getIsRideable() && (stack.getItem() == MoCItems.horsesaddle || stack.getItem() instanceof ItemSaddle)) {
+        if (getIsTamed() && (getTypeMoC() > 1) && !stack.isEmpty() && !getIsRideable() && (stack.getItem() == MoCItems.horsesaddle || stack.getItem() instanceof SaddleItem)) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
             setRideable(true);
@@ -636,7 +637,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                 this.localchest = new MoCAnimalChest("OstrichChest", 9);
             }
             if (!this.world.isRemote) {
-                player.displayGUIChest(this.localchest);
+                player.openContainer(this.localchest);
             }
             return true;
         }
@@ -689,7 +690,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             }
             return true;
         }
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     /**
@@ -747,7 +748,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
+    protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         boolean flag = (this.rand.nextInt(100) < MoCreatures.proxy.rareItemDropChance);
         if (flag && (this.getTypeMoC() == 8)) // unicorn
         {

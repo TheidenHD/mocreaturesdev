@@ -10,23 +10,34 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelHorseMob extends MoCModelHorse {
+public class MoCModelHorseMob<T extends MoCEntityHorseMob> extends MoCModelAbstractHorse<T> {
+
+    private int typeMob;
+    private boolean openMouth;
+    private boolean flyer;
+    private boolean isUnicorned;
+
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        type = 0;
+        typeMob = entityIn.getTypeMoC();
+        wings = (entityIn.isFlyer());
+        eating = (entityIn.eatingCounter != 0);//entityhorse.getEating();
+        standing = (entityIn.standCounter != 0 && entityIn.getRidingEntity() == null);
+        openMouth = (entityIn.mouthCounter != 0);
+        moveTail = (entityIn.tailCounter != 0);
+        flapwings = (entityIn.wingFlapCounter != 0);
+        rider = (entityIn.isBeingRidden());
+        floating = (entityIn.isFlyer() && entityIn.isOnAir());
+        flyer = entityIn.isFlyer();
+        isUnicorned = entityIn.isUnicorned();
+        saddled = false;
+        shuffling = false;
+    }
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        MoCEntityHorseMob entityhorse = (MoCEntityHorseMob) entity;
 
-        int type = entityhorse.getTypeMoC();
-        boolean wings = (entityhorse.isFlyer());
-        boolean eating = (entityhorse.eatingCounter != 0);//entityhorse.getEating();
-        boolean standing = (entityhorse.standCounter != 0 && entityhorse.getRidingEntity() == null);
-        boolean openMouth = (entityhorse.mouthCounter != 0);
-        boolean moveTail = (entityhorse.tailCounter != 0);
-        boolean flapwings = (entityhorse.wingFlapCounter != 0);
-        boolean rider = (entityhorse.isBeingRidden());
-        boolean floating = (entityhorse.isFlyer() && entityhorse.isOnAir());
 
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, eating, rider, floating, standing, false, moveTail, wings, flapwings, false, 0);
         this.Ear1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Ear2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Neck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -60,10 +71,10 @@ public class MoCModelHorseMob extends MoCModelHorse {
         this.Leg4B.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Leg4C.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        if (entityhorse.isUnicorned()) {
+        if (isUnicorned) {
             this.Unicorn.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
-        if (entityhorse.isFlyer() && type != 34 && type != 36)//pegasus
+        if (flyer && typeMob != 34 && typeMob != 36)//pegasus
         {
             this.MidWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.InnerWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);

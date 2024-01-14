@@ -6,6 +6,7 @@ package drzhark.mocreatures.entity.aquatic;
 import drzhark.mocreatures.entity.ai.EntityAIFleeFromEntityMoC;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
+import drzhark.mocreatures.init.MoCEntities;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
@@ -22,7 +23,7 @@ public class MoCEntityMediumFish extends MoCEntityTameableAquatic {
 
     public MoCEntityMediumFish(EntityType<? extends MoCEntityMediumFish> type, World world) {
         super(type, world);
-        setSize(0.7f, 0.45f);
+        //setSize(0.7f, 0.45f);
         // TODO: Make hitboxes adjust depending on size
         //setAge(30 + this.rand.nextInt(70));
         setAge(100);
@@ -30,16 +31,15 @@ public class MoCEntityMediumFish extends MoCEntityTameableAquatic {
 
     public static MoCEntityMediumFish createEntity(World world, int type) {
         if (type == 1) {
-            return new MoCEntitySalmon(world);
+            return MoCEntities.SALMON.create(world);
         }
         if (type == 2) {
-            return new MoCEntityCod(world);
+            return MoCEntities.COD.create(world);
         }
         if (type == 3) {
-            return new MoCEntityBass(world);
+            return MoCEntities.BASS.create(world);
         }
-
-        return new MoCEntitySalmon(world);
+        return MoCEntities.SALMON.create(world);
     }
 
     @Override

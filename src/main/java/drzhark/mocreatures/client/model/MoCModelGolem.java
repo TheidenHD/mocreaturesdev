@@ -8,13 +8,12 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelGolem<T extends Entity> extends EntityModel<T> {
+public class MoCModelGolem<T extends MoCEntityGolem> extends EntityModel<T> {
 
     ModelRenderer[][] blocks;
     ModelRenderer head;
@@ -26,6 +25,8 @@ public class MoCModelGolem<T extends Entity> extends EntityModel<T> {
     float radianF = 57.29578F;
     int w = 32;
     int h = 16;
+    private MoCEntityGolem entityG;
+    private boolean angry;
 
     public MoCModelGolem() {
         this.blocks = new ModelRenderer[23][28];
@@ -197,20 +198,18 @@ public class MoCModelGolem<T extends Entity> extends EntityModel<T> {
 
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.entityG = entityIn;
+        this.angry = entityIn.getGolemState() > 1;
+    }
+
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        //super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
-        MoCEntityGolem entityG = (MoCEntityGolem) entity;
-        boolean openChest = entityG.openChest();
-        boolean isSummoning = entityG.isMissingCubes();
-        boolean angry = entityG.getGolemState() > 1;
-        boolean throwing = (entityG.tCounter > 25);
 
         for (int i = 0; i < 23; i++) {
             this.blocksText[i] = entityG.getBlockText(i);
         }
         float yOffset = entityG.getAdjustedYOffset();
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, openChest, isSummoning, throwing);
         matrixStackIn.push();
         matrixStackIn.translate(0F, yOffset, 0F);
         for (int i = 0; i < 23; i++) {
@@ -220,7 +219,7 @@ public class MoCModelGolem<T extends Entity> extends EntityModel<T> {
             }
         }
 
-        if (angry) {
+        if (this.angry) {
             this.headb.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.chestb.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else {
@@ -244,7 +243,10 @@ public class MoCModelGolem<T extends Entity> extends EntityModel<T> {
     }
 
     public void
-    setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, boolean openChest, boolean isSummoning, boolean throwing) {
+    setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        boolean openChest = entityIn.openChest();
+        boolean isSummoning = entityIn.isMissingCubes();
+        boolean throwing = (entityIn.tCounter > 25);
         float RLegXRot = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.2F * limbSwingAmount;
         float LLegXRot = MathHelper.cos(limbSwing * 0.6662F) * 1.2F * limbSwingAmount;
         float RArmZRot = -(MathHelper.cos(ageInTicks * 0.09F) * 0.05F) + 0.05F;

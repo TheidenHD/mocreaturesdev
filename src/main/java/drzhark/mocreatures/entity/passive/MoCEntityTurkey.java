@@ -14,11 +14,13 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.EntityAITempt;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -37,7 +39,7 @@ import java.util.Set;
 public class MoCEntityTurkey extends MoCEntityTameableAnimal {
     private static final Set<Item> TEMPTATION_ITEMS = Sets.newHashSet(Items.WHEAT_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS);
 
-    public MoCEntityTurkey(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityTurkey(EntityType<? extends MoCEntityTurkey> type, World world) {
         super(type, world);
         setSize(0.6F, 0.9F);
         setAdult(true);
@@ -128,7 +130,7 @@ public class MoCEntityTurkey extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         ItemStack itemstack = player.getHeldItem(hand);
 
         if (!itemstack.isEmpty()) {
@@ -164,7 +166,7 @@ public class MoCEntityTurkey extends MoCEntityTameableAnimal {
             return true;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Override

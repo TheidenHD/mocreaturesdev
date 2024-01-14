@@ -11,11 +11,13 @@ import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -25,7 +27,7 @@ import javax.annotation.Nullable;
 
 public class MoCEntityPandaBear extends MoCEntityBear {
 
-    public MoCEntityPandaBear(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityPandaBear(EntityType<? extends MoCEntityPandaBear> type, World world) {
         super(type, world);
         setSize(0.8F, 1.05F);
     }
@@ -74,23 +76,23 @@ public class MoCEntityPandaBear extends MoCEntityBear {
 
     @Override
     public boolean isMyFavoriteFood(ItemStack stack) {
-        return this.getTypeMoC() == 3 && !stack.isEmpty() && stack.getItem() == Items.REEDS;
+        return this.getTypeMoC() == 3 && !stack.isEmpty() && stack.getItem() == Items.SUGAR_CANE;
     }
 
     @Override
     public boolean isMyHealFood(ItemStack stack) {
-        return this.getTypeMoC() == 3 && !stack.isEmpty() && stack.getItem() == Items.REEDS;
+        return this.getTypeMoC() == 3 && !stack.isEmpty() && stack.getItem() == Items.SUGAR_CANE;
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
 
         final ItemStack stack = player.getHeldItem(hand);
-        if (!stack.isEmpty() && (stack.getItem() == MoCItems.sugarlump || stack.getItem() == Items.REEDS)) {
+        if (!stack.isEmpty() && (stack.getItem() == MoCItems.sugarlump || stack.getItem() == Items.SUGAR_CANE)) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
 
             if (!this.world.isRemote) {
@@ -123,7 +125,7 @@ public class MoCEntityPandaBear extends MoCEntityBear {
             return true;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Nullable

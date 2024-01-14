@@ -8,13 +8,12 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.ambient.MoCEntityCrab;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelCrab<T extends Entity> extends EntityModel<T> {
+public class MoCModelCrab<T extends MoCEntityCrab> extends EntityModel<T> {
 
     private final float radianF = 57.29578F;
     ModelRenderer Shell;
@@ -51,7 +50,6 @@ public class MoCModelCrab<T extends Entity> extends EntityModel<T> {
     ModelRenderer RightLeg4A;
     ModelRenderer RightLeg4B;
     ModelRenderer RightLeg4C;
-    private boolean fleeing;
 
     public MoCModelCrab() {
         this.textureWidth = 64;
@@ -243,11 +241,6 @@ public class MoCModelCrab<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-
-        MoCEntityCrab crab = (MoCEntityCrab) entity;
-        this.fleeing = crab.isFleeing();
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
-
         this.Shell.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.ShellRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.ShellLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -278,7 +271,7 @@ public class MoCModelCrab<T extends Entity> extends EntityModel<T> {
         /*
          * limbSwing = distance walked limbSwingAmount = speed 0 - 1 ageInTicks = timer
          */
-        if (fleeing) {
+        if (entityIn.isFleeing()) {
             //LeftArmA.rotateAngleY = 45F/radianF;
             this.LeftArmA.rotateAngleX = -90F / this.radianF;
             this.RightArmA.rotateAngleX = -90F / this.radianF;

@@ -4,18 +4,20 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.IMoCEntity;
-import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -26,8 +28,8 @@ public class MoCRenderMoC<T extends MobEntity, M extends EntityModel<T>> extends
     private float prevRoll;
     private float prevYaw;
 
-    public MoCRenderMoC(M modelbase, float f) {
-        super(MoCProxyClient.mc.getRenderManager(), modelbase, f);
+    public MoCRenderMoC(EntityRendererManager renderManagerIn, M modelbase, float f) {
+        super(renderManagerIn, modelbase, f);
     }
 
     @Override
@@ -49,9 +51,9 @@ public class MoCRenderMoC<T extends MobEntity, M extends EntityModel<T>> extends
                 float f7 = 0.1F;
                 FontRenderer fontrenderer = getFontRendererFromRenderManager();
                 matrixStackIn.push();
-                matrixStackIn.translate((float) d + 0.0F, (float) d1 + f7, (float) d2);
-                matrixStackIn.glNormal3f(0.0F, 1.0F, 0.0F);
-                matrixStackIn.rotate(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+                matrixStackIn.translate(0.0F, f7, 0.0F);
+                RenderSystem.normal3f(0.0F, 1.0F, 0.0F);
+                matrixStackIn.rotate(Vector3f.YP.rotationDegrees(-this.renderManager.info.getYaw()));
                 matrixStackIn.scale(-f3, -f3, f3);
                 Tessellator tessellator1 = Tessellator.getInstance();
                 int yOff = entityMoC.nameYOffset();
@@ -78,10 +80,10 @@ public class MoCRenderMoC<T extends MobEntity, M extends EntityModel<T>> extends
 
                 }
                 if (flag) {
-                    matrixStackIn.depthMask(false);
-                    matrixStackIn.disableDepth();
-                    matrixStackIn.enableBlend();
-                    matrixStackIn.blendFunc(770, 771);
+                    RenderSystem.depthMask(false);
+                    RenderSystem.disableDepthTest();
+                    RenderSystem.enableBlend();
+                    RenderSystem.defaultBlendFunc();
 
                     tessellator1.getBuffer().begin(7, DefaultVertexFormats.POSITION_COLOR);
                     int i = fontrenderer.getStringWidth(s) / 2;
@@ -91,11 +93,11 @@ public class MoCRenderMoC<T extends MobEntity, M extends EntityModel<T>> extends
                     tessellator1.getBuffer().pos(i + 1, -1 + yOff, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
                     tessellator1.draw();
                     fontrenderer.drawString(matrixStackIn, s, -fontrenderer.getStringWidth(s) / 2, yOff, 0x20ffffff);
-                    matrixStackIn.enableDepth();
-                    matrixStackIn.depthMask(true);
+                    RenderSystem.enableDepthTest();
+                    RenderSystem.depthMask(true);
                     fontrenderer.drawString(matrixStackIn, s, -fontrenderer.getStringWidth(s) / 2, yOff, -1);
-                    matrixStackIn.disableBlend();
-                    matrixStackIn.color(1.0F, 1.0F, 1.0F, 1.0F);
+                    RenderSystem.disableBlend();
+                    RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                 }
                 matrixStackIn.pop();
             }
@@ -122,13 +124,13 @@ public class MoCRenderMoC<T extends MobEntity, M extends EntityModel<T>> extends
         float interpolatedYaw = prevYaw + (mocreature.yawRotationOffset() - prevYaw) * interpolationFactor;
         // Apply the interpolated transformations
         if (interpolatedPitch != 0) {
-            matrixStackIn.rotate(interpolatedPitch, -1.0F, 0.0F, 0.0F);
+            matrixStackIn.rotate(Vector3f.XN.rotationDegrees(interpolatedPitch));
         }
         if (interpolatedRoll != 0) {
-            matrixStackIn.rotate(interpolatedRoll, 0F, 0F, -1.0F);
+            matrixStackIn.rotate(Vector3f.ZN.rotationDegrees(interpolatedRoll));
         }
         if (interpolatedYaw != 0) {
-            matrixStackIn.rotate(interpolatedYaw, 0.0F, -1.0F, 0.0F);
+            matrixStackIn.rotate(Vector3f.YN.rotationDegrees(interpolatedYaw));
         }
         // Save the current values for the next frame's interpolation
         prevPitch = interpolatedPitch;
@@ -147,7 +149,7 @@ public class MoCRenderMoC<T extends MobEntity, M extends EntityModel<T>> extends
         float f = mocreature.pitchRotationOffset();
 
         if (f != 0) {
-            matrixStackIn.rotate(f, -1F, 0.0F, 0.0F);
+            matrixStackIn.rotate(Vector3f.XN.rotationDegrees(f));
         }
     }
 
@@ -158,14 +160,14 @@ public class MoCRenderMoC<T extends MobEntity, M extends EntityModel<T>> extends
         float f = mocreature.rollRotationOffset();
 
         if (f != 0) {
-            matrixStackIn.rotate(f, 0F, 0F, -1F);
+            matrixStackIn.rotate(Vector3f.ZN.rotationDegrees(f));
         }
     }
 
     protected void adjustYaw(IMoCEntity mocreature, MatrixStack matrixStackIn) {
         float f = mocreature.yawRotationOffset();
         if (f != 0) {
-            matrixStackIn.rotate(f, 0.0F, -1.0F, 0.0F);
+            matrixStackIn.rotate(Vector3f.YN.rotationDegrees(f));
         }
     }
 

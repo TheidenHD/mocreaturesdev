@@ -15,6 +15,7 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageHeart;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -38,9 +39,9 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
     private static final DataParameter<Boolean> HAS_EATEN = EntityDataManager.createKey(MoCEntityFishy.class, DataSerializers.BOOLEAN);
     public int gestationtime;
 
-    public MoCEntityFishy(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityFishy(EntityType<? extends MoCEntityFishy> type, World world) {
         super(type, world);
-        setSize(0.5f, 0.3f);
+        //setSize(0.5f, 0.3f);
         setAdult(true);
         //setAge(50 + this.rand.nextInt(50));
         setAge(100);
@@ -54,8 +55,7 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes();
-        getEntityAttribute(Attributes.MAX_HEALTH, 3.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.5D);
+        return MoCEntityTameableAquatic.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 3.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.5D);
     }
 
     @Override

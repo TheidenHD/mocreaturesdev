@@ -26,14 +26,14 @@ public class MoCPetData {
 
     public MoCPetData(IMoCTameable pet) {
         this.ownerData.put("TamedList", this.tamedList);
-        this.ownerUniqueId = MoCreatures.isServer() ? pet.getOwnerId() : Minecraft.getMinecraft().player.getUniqueID();
+        this.ownerUniqueId = MoCreatures.isServer() ? pet.getOwnerId() : Minecraft.getInstance().player.getUniqueID();
     }
 
     public MoCPetData(CompoundNBT nbt, UUID owner) {
         this.ownerData = nbt;
         this.tamedList = nbt.getList("TamedList", 10);
         this.ownerUniqueId = owner;
-        this.loadPetDataMap(nbt.getCompoundTag("PetIdData"));
+        this.loadPetDataMap(nbt.getCompound("PetIdData"));
     }
 
     public int addPet(IMoCTameable pet) {
@@ -46,7 +46,7 @@ public class MoCPetData {
             petData.putInt("ChunkX", coords.getX());
             petData.putInt("ChunkY", coords.getY());
             petData.putInt("ChunkZ", coords.getZ());
-            petData.putInt("Dimension", ((Entity) pet).world.provider.getDimensionType().getId());
+            petData.putString("Dimension", ((Entity) pet).world.getDimensionType().getEffects().toString());
             this.tamedList.add(petData);
             this.ownerData.put("PetIdData", savePetDataMap());
             return id;
@@ -143,7 +143,7 @@ public class MoCPetData {
             }
             data[i] = val;
         }
-        dataMap.setIntArray("PetIdArray", data);
+        dataMap.putIntArray("PetIdArray", data);
         return dataMap;
     }
 

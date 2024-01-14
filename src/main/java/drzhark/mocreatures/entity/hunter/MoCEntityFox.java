@@ -10,10 +10,7 @@ import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.Pose;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
@@ -33,9 +30,9 @@ import javax.annotation.Nullable;
 
 public class MoCEntityFox extends MoCEntityTameableAnimal {
 
-    public MoCEntityFox(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityFox(EntityType<? extends MoCEntityFox> type, World world) {
         super(type, world);
-        setSize(0.7F, 0.85F);
+        //setSize(0.7F, 0.85F);
         setAge(this.rand.nextInt(15) + 50);
         setAdult(this.rand.nextInt(3) != 0);
     }
@@ -54,8 +51,7 @@ public class MoCEntityFox extends MoCEntityTameableAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 8.0D);
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D);
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 8.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D);
     }
 
     @Override
@@ -100,8 +96,8 @@ public class MoCEntityFox extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -119,10 +115,10 @@ public class MoCEntityFox extends MoCEntityTameableAnimal {
                 setAge(getAge() + 1);
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Override

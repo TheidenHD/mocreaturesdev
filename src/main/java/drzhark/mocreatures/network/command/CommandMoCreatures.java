@@ -19,6 +19,9 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.server.ServerWorld;
@@ -311,7 +314,7 @@ public class CommandMoCreatures {
                     CompoundNBT nbt = ownerPetData.getTamedList().getCompound(i);
                     if (nbt.contains("PetId") && nbt.getInt("PetId") == petId) {
                         String petName = nbt.getString("Name");
-                        ServerWorld world = DimensionManager.getWorld(nbt.getInt("Dimension"));
+                        ServerWorld world = server.getWorld(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(nbt.getString("Dimension"))));
                         if (!teleportLoadedPet(world, player, petId, petName, sender)) {
                             double posX = nbt.getList("Pos", 10).getDouble(0);
                             double posY = nbt.getList("Pos", 10).getDouble(1);

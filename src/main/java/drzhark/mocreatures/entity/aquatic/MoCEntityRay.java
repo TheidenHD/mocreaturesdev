@@ -5,13 +5,15 @@ package drzhark.mocreatures.entity.aquatic;
 
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
 public class MoCEntityRay extends MoCEntityTameableAquatic {
 
-    public MoCEntityRay(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityRay(EntityType<? extends MoCEntityRay> type, World world) {
         super(type, world);
     }
 
@@ -25,8 +27,8 @@ public class MoCEntityRay extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -35,13 +37,13 @@ public class MoCEntityRay extends MoCEntityTameableAquatic {
             if (!this.world.isRemote && player.startRiding(this)) {
                 player.rotationYaw = this.rotationYaw;
                 player.rotationPitch = this.rotationPitch;
-                player.getPosY() = this.getPosY();
+                player.setPosition(player.getPosX(), this.getPosY(), player.getPosZ());
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Override

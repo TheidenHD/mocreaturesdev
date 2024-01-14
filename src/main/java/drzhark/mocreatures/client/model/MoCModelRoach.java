@@ -4,17 +4,17 @@
 package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.ambient.MoCEntityRoach;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelRoach<T extends Entity> extends EntityModel<T> {
+public class MoCModelRoach<T extends MoCEntityRoach> extends EntityModel<T> {
 
     private final float radianF = 57.29578F;
     ModelRenderer Head;
@@ -35,6 +35,7 @@ public class MoCModelRoach<T extends Entity> extends EntityModel<T> {
     ModelRenderer RShellOpen;
     ModelRenderer LeftWing;
     ModelRenderer RightWing;
+    private boolean flying;
 
     public MoCModelRoach() {
         this.textureWidth = 32;
@@ -150,12 +151,12 @@ public class MoCModelRoach<T extends Entity> extends EntityModel<T> {
         setRotation(this.RightWing, 0F, 1.047198F, 0.4363323F);
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.flying = (entityIn.getIsFlying() || entityIn.getMotion().getY() < -0.1D);
+    }
+
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        MoCEntityRoach entityroach = (MoCEntityRoach) entity;
-        boolean isFlying = (entityroach.getIsFlying() || entityroach.getMotion().getY() < -0.1D);
-
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, isFlying);
         this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         //LAnthenna.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         //LAnthennaB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -169,20 +170,20 @@ public class MoCModelRoach<T extends Entity> extends EntityModel<T> {
         this.TailL.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.TailR.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        if (!isFlying) {
+        if (!this.flying) {
             this.LShellClosed.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.RShellClosed.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else {
             this.LShellOpen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.RShellOpen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             matrixStackIn.push();
-            matrixStackIn.enableBlend();
+            RenderSystem.enableBlend();
             float transparency = 0.6F;
-            matrixStackIn.blendFunc(770, 771);
-            matrixStackIn.color(0.8F, 0.8F, 0.8F, transparency);
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.color4f(0.8F, 0.8F, 0.8F, transparency);
             this.LeftWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.RightWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            matrixStackIn.disableBlend();
+            RenderSystem.disableBlend();
             matrixStackIn.pop();
         }
     }
@@ -193,7 +194,7 @@ public class MoCModelRoach<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, boolean isFlying) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.Head.rotateAngleX = -2.171231F + (headPitch / 57.29578F);
         //Head.rotateAngleY = netHeadYaw / 57.29578F;
 
@@ -210,7 +211,7 @@ public class MoCModelRoach<T extends Entity> extends EntityModel<T> {
 
         float frontLegAdj = 0F;
 
-        if (isFlying) {
+        if (this.flying) {
             float WingRot = MathHelper.cos((ageInTicks * 2.0F)) * 0.7F;
             this.RightWing.rotateAngleY = 1.047198F + WingRot;
             this.LeftWing.rotateAngleY = -1.047198F - WingRot;

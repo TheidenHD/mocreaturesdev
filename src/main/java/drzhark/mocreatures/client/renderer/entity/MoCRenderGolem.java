@@ -4,19 +4,23 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.client.model.MoCModelGolem;
 import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCRenderGolem extends MoCRenderMoC<MoCEntityGolem> {
+public class MoCRenderGolem extends MoCRenderMoC<MoCEntityGolem, MoCModelGolem<MoCEntityGolem>> {
 
-    public MoCRenderGolem(ModelBase modelbase, float f) {
-        super(modelbase, f);
+    public MoCRenderGolem(EntityRendererManager renderManagerIn, MoCModelGolem modelbase, float f) {
+        super(renderManagerIn, modelbase, f);
         this.addLayer(new LayerMoCGolem(this));
     }
 
@@ -25,49 +29,27 @@ public class MoCRenderGolem extends MoCRenderMoC<MoCEntityGolem> {
         return par1Entity.getTexture();
     }
 
-    private class LayerMoCGolem implements LayerRenderer<MoCEntityGolem> {
+    private class LayerMoCGolem extends LayerRenderer<MoCEntityGolem, MoCModelGolem<MoCEntityGolem>> {
 
         private final MoCRenderGolem mocRenderer;
         private final MoCModelGolem mocModel = new MoCModelGolem();
 
         public LayerMoCGolem(MoCRenderGolem render) {
+            super(render);
             this.mocRenderer = render;
         }
 
         @Override
         public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, MoCEntityGolem entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-
             ResourceLocation effectTexture = entity.getEffectTexture();
             if (effectTexture != null) {
-                matrixStackIn.depthMask(false);
-                float var4 = entity.ticksExisted + limbSwingAmount;
-                bindTexture(effectTexture);
-                matrixStackIn.matrixMode(5890);
-                matrixStackIn.loadIdentity();
-                float var5 = var4 * 0.01F;
-                float var6 = var4 * 0.01F;
-                matrixStackIn.translate(var5, var6, 0.0F);
-                matrixStackIn.matrixMode(5888);
-                matrixStackIn.enableBlend();
-                float var7 = 0.5F;
-                matrixStackIn.color(var7, var7, var7, 1.0F);
-
-                matrixStackIn.blendFunc(1, 1);
-                this.mocModel.setModelAttributes(this.mocRenderer.getMainModel());
+                float f = (float) entity.ticksExisted + partialTicks;
                 this.mocModel.setLivingAnimations(entity, limbSwing, limbSwingAmount, partialTicks);
-                this.mocModel.render(entity, f, f1, f3, f4, f5, f6);
-                matrixStackIn.matrixMode(5890);
-                matrixStackIn.loadIdentity();
-                matrixStackIn.matrixMode(5888);
-
-                matrixStackIn.disableBlend();
-                matrixStackIn.depthMask(true);
+                this.getEntityModel().copyModelAttributesTo(this.mocModel);
+                IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEnergySwirl(effectTexture, f * 0.01F, f * 0.01F));
+                this.mocModel.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+                this.mocModel.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 0.5F, 0.5F, 0.5F, 1.0F);
             }
-        }
-
-        @Override
-        public boolean shouldCombineTextures() {
-            return true;
         }
     }
 }

@@ -11,16 +11,12 @@ import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.Pose;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -42,7 +38,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
     private boolean twistright;
     private int flopcounter;
 
-    public MoCEntityTurtle(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityTurtle(EntityType<? extends MoCEntityTurtle> type, World world) {
         super(type, world);
         setSize(0.6F, 0.425F);
         setAdult(true);
@@ -127,7 +123,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -148,7 +144,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
 
         flipflop(!getIsUpsideDown());
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Override
@@ -186,7 +182,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
 
                     setIsHiding(false);
                     if (!hasPath() && this.rand.nextInt(50) == 0) {
-                        ItemEntity entityitem = getClosestItem(this, 10D, Items.MELON, Items.REEDS);
+                        ItemEntity entityitem = getClosestItem(this, 10D, Items.MELON, Items.SUGAR_CANE);
                         if (entityitem != null) {
                             float f = entityitem.getDistance(this);
                             if (f > 2.0F) {
@@ -392,7 +388,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
 
     @Override
     public boolean isMyHealFood(ItemStack stack) {
-        return !stack.isEmpty() && (stack.getItem() == Items.REEDS || stack.getItem() == Items.MELON);
+        return !stack.isEmpty() && (stack.getItem() == Items.SUGAR_CANE || stack.getItem() == Items.MELON);
     }
 
     @Override

@@ -4,17 +4,17 @@
 package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.ambient.MoCEntityButterfly;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelButterfly<T extends Entity> extends EntityModel<T> {
+public class MoCModelButterfly<T extends MoCEntityButterfly> extends EntityModel<T> {
 
     ModelRenderer Abdomen;
     ModelRenderer FrontLegs;
@@ -116,9 +116,6 @@ public class MoCModelButterfly<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        MoCEntityButterfly butterfly = (MoCEntityButterfly) entity;
-        boolean flying = (butterfly.getIsFlying() || butterfly.getMotion().getY() < -0.1D);
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, !flying);
         this.Abdomen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.FrontLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.RightAntenna.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -131,10 +128,10 @@ public class MoCModelButterfly<T extends Entity> extends EntityModel<T> {
         this.Mouth.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         matrixStackIn.push();
-        matrixStackIn.enableBlend();
+        RenderSystem.enableBlend();
         float transparency = 0.8F;
-        matrixStackIn.blendFunc(770, 771);
-        matrixStackIn.color(0.8F, 0.8F, 0.8F, transparency);
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.color4f(0.8F, 0.8F, 0.8F, transparency);
         //matrixStackIn.scale(1.3F, 1.0F, 1.3F);
         this.WingRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.WingLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -142,7 +139,7 @@ public class MoCModelButterfly<T extends Entity> extends EntityModel<T> {
         this.WingLeftFront.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.WingRightBack.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.WingLeftBack.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        matrixStackIn.disableBlend();
+        RenderSystem.disableBlend();
         matrixStackIn.pop();
     }
 
@@ -152,7 +149,7 @@ public class MoCModelButterfly<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, boolean onGround) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 
         /*
          * butterfly to have two / 3 moves: 1 slow movement when idle on ground
@@ -170,7 +167,7 @@ public class MoCModelButterfly<T extends Entity> extends EntityModel<T> {
         float legMov;
         float legMovB;
 
-        if (!onGround) //flying
+        if (entityIn.getIsFlying() || entityIn.getMotion().getY() < -0.1D) //flying
         {
             WingRot = MathHelper.cos((ageInTicks * 0.9F)) * 0.9F;
 

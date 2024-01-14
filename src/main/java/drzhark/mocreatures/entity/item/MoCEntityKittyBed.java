@@ -9,6 +9,7 @@ import drzhark.mocreatures.entity.neutral.MoCEntityKitty;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
@@ -35,7 +36,7 @@ public class MoCEntityKittyBed extends MobEntity {
     private static final DataParameter<Integer> SHEET_COLOR = EntityDataManager.createKey(MoCEntityKittyBed.class, DataSerializers.VARINT);
     public float milkLevel;
 
-    public MoCEntityKittyBed(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityKittyBed(EntityType<? extends MoCEntityKittyBed> type, World world) {
         super(type, world);
         setSize(1.0F, 0.15F);
         setNoAI(true);
@@ -143,7 +144,7 @@ public class MoCEntityKittyBed extends MobEntity {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    public boolean getEntityInteractionResult(PlayerEntity player, Hand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && !getHasFood() && !getHasMilk()) {
             if (stack.getItem() == MoCItems.petfood) {
@@ -200,7 +201,7 @@ public class MoCEntityKittyBed extends MobEntity {
                 }
             }
         }
-        if (this.isRiding()) MoCTools.dismountSneakingPlayer(this);
+        if (this.isPassenger()) MoCTools.dismountSneakingPlayer(this);
     }
 
     @Override

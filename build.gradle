@@ -21,7 +21,7 @@ java {
 minecraft {
     mappings channel: 'snapshot', version: '20210309-1.16.5'
 
-    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    accessTransformer = file('src/main/resources/META-INF/mocreatures_at.cfg')
     runs {
         client {
             workingDirectory project.file('run')

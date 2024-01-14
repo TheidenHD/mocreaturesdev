@@ -8,13 +8,12 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.hostile.MoCEntityWWolf;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelWolf<T extends Entity> extends EntityModel<T> {
+public class MoCModelWolf<T extends MoCEntityWWolf> extends EntityModel<T> {
 
     ModelRenderer Head;
     ModelRenderer MouthB;
@@ -55,6 +54,7 @@ public class MoCModelWolf<T extends Entity> extends EntityModel<T> {
     ModelRenderer Leg1A;
     ModelRenderer Leg1B;
     ModelRenderer Leg1C;
+    private boolean openMouth;
 
     public MoCModelWolf() {
         this.textureWidth = 64;
@@ -228,13 +228,12 @@ public class MoCModelWolf<T extends Entity> extends EntityModel<T> {
 
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.openMouth = entityIn.mouthCounter != 0;
+    }
+
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        MoCEntityWWolf WolfEntity = (MoCEntityWWolf) entity;
-        boolean openMouth = (WolfEntity.mouthCounter != 0);
-        boolean moveTail = (WolfEntity.tailCounter != 0);
-
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, moveTail);
         this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         this.Nose2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -284,7 +283,7 @@ public class MoCModelWolf<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, boolean tail) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 
         this.Head.rotateAngleX = headPitch / 57.29578F;
         this.Head.rotateAngleY = netHeadYaw / 57.29578F;
@@ -336,7 +335,7 @@ public class MoCModelWolf<T extends Entity> extends EntityModel<T> {
 
         float tailMov = -1.3089F + (limbSwingAmount * 1.5F);
 
-        if (tail) {
+        if (entityIn.tailCounter != 0) {
             this.TailA.rotateAngleY = MathHelper.cos(ageInTicks * 0.5F);
             tailMov = 0;
         } else {

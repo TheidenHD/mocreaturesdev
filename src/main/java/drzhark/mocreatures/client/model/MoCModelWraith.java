@@ -8,7 +8,6 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.hostile.MoCEntityWraith;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -17,10 +16,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class MoCModelWraith<T extends MoCEntityWraith> extends BipedModel<T> {
 
     private int attackCounter;
+    private boolean isSneaking;
 
     public MoCModelWraith() {
-        textureWidth = 64;
-        textureHeight = 40;
+        super(0.0F, 0.0F, 64, 40);
         this.bipedHead = new ModelRenderer(this, 0, 0);
         this.bipedHead.addBox(-4F, -8F, -4F, 8, 8, 8, 0.0F);
         this.bipedHead.setRotationPoint(0.0F, 0.0F, 0.0F);
@@ -36,19 +35,23 @@ public class MoCModelWraith<T extends MoCEntityWraith> extends BipedModel<T> {
         this.bipedLeftArm.setRotationPoint(5.0F, 2.0F, 0.0F);
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.isSneaking = entityIn.isSneaking();
+    }
+
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         matrixStackIn.push();
         if (this.isChild) {
             matrixStackIn.scale(0.75F, 0.75F, 0.75F);
-            matrixStackIn.translate(0.0F, 16.0F * scale, 0.0F);
+            matrixStackIn.translate(0.0F, 16.0F, 0.0F);
             this.bipedHead.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             matrixStackIn.pop();
             matrixStackIn.push();
             matrixStackIn.scale(0.5F, 0.5F, 0.5F);
-            matrixStackIn.translate(0.0F, 24.0F * scale, 0.0F);
+            matrixStackIn.translate(0.0F, 24.0F, 0.0F);
         } else {
-            if (entityIn.isSneaking()) {
+            if (isSneaking) {
                 matrixStackIn.translate(0.0F, 0.2F, 0.0F);
             }
             this.bipedHead.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);

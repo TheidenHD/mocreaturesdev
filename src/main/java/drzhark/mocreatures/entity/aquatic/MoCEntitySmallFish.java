@@ -8,7 +8,9 @@ import drzhark.mocreatures.entity.ai.EntityAIFleeFromEntityMoC;
 import drzhark.mocreatures.entity.ai.EntityAIPanicMoC;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
+import drzhark.mocreatures.init.MoCEntities;
 import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -21,9 +23,9 @@ public class MoCEntitySmallFish extends MoCEntityTameableAquatic {
 
     public static final String[] fishNames = {"Anchovy", "Angelfish", "Angler", "Clownfish", "Goldfish", "Hippo Tang", "Mandarinfish"};
 
-    public MoCEntitySmallFish(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntitySmallFish(EntityType<? extends MoCEntitySmallFish> type, World world) {
         super(type, world);
-        setSize(0.5f, 0.3f);
+        //setSize(0.5f, 0.3f);
         // TODO: Make hitboxes adjust depending on size
         //setAge(70 + this.rand.nextInt(30));
         setAge(100);
@@ -31,28 +33,27 @@ public class MoCEntitySmallFish extends MoCEntityTameableAquatic {
 
     public static MoCEntitySmallFish createEntity(World world, int type) {
         if (type == 1) {
-            return new MoCEntityAnchovy(world);
+            return MoCEntities.ANCHOVY.create(world);
         }
         if (type == 2) {
-            return new MoCEntityAngelFish(world);
+            return MoCEntities.ANGELFISH.create(world);
         }
         if (type == 3) {
-            return new MoCEntityAngler(world);
+            return MoCEntities.ANGLER.create(world);
         }
         if (type == 4) {
-            return new MoCEntityClownFish(world);
+            return MoCEntities.CLOWNFISH.create(world);
         }
         if (type == 5) {
-            return new MoCEntityGoldFish(world);
+            return MoCEntities.GOLDFISH.create(world);
         }
         if (type == 6) {
-            return new MoCEntityHippoTang(world);
+            return MoCEntities.HIPPOTANG.create(world);
         }
         if (type == 7) {
-            return new MoCEntityManderin(world);
+            return MoCEntities.MANDERIN.create(world);
         }
-
-        return new MoCEntityClownFish(world);
+        return MoCEntities.CLOWNFISH.create(world);
     }
 
     @Override
@@ -63,8 +64,7 @@ public class MoCEntitySmallFish extends MoCEntityTameableAquatic {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes();
-        getEntityAttribute(Attributes.MAX_HEALTH, 4.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.5D);
+        return MoCEntitySmallFish.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 4.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.5D);
     }
 
     @Override

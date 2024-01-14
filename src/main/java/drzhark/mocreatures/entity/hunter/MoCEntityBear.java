@@ -11,29 +11,28 @@ import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemSaddle;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.SaddleItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -50,9 +49,9 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     private int attackCounter;
     private int standingCounter;
 
-    public MoCEntityBear(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityBear(EntityType<? extends MoCEntityBear> type, World world) {
         super(type, world);
-        setSize(1.2F, 1.5F);
+        //setSize(1.2F, 1.5F);
         setAge(55);
         setAdult(this.rand.nextInt(4) != 0);
         stepHeight = 1.0F;
@@ -73,8 +72,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes();
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.FOLLOW_RANGE, 20.0D);
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.FOLLOW_RANGE, 20.0D);
     }
 
     /**
@@ -219,7 +217,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
         }
         //TODO move to AI
         if (!this.world.isRemote && getTypeMoC() == 3 && (this.deathTime == 0) && getBearState() != 2) {
-            ItemEntity entityitem = getClosestItem(this, 12D, Items.REEDS, Items.SUGAR);
+            ItemEntity entityitem = getClosestItem(this, 12D, Items.SUGAR_CANE, Items.SUGAR);
             if (entityitem != null) {
 
                 float f = entityitem.getDistance(this);
@@ -227,7 +225,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
                     setPathToEntity(entityitem, f);
                 }
                 if (f < 2.0F && this.deathTime == 0) {
-                    entityitem.remove(keepData);
+                    entityitem.remove();
                     MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
                     this.setHealth(getMaxHealth());
                 }
@@ -260,7 +258,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
 
     // TODO: Add unique sound event
     @Override
-    protected void playStepSound(BlockPos pos, Block blockIn) {
+    protected void playStepSound(BlockPos pos, BlockState blockIn) {
         this.playSound(SoundEvents.ENTITY_POLAR_BEAR_STEP, 0.15F, 1.0F);
     }
 
@@ -313,18 +311,18 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
 
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && getIsTamed() && !getIsRideable() && (getAge() > 80)
-                && (stack.getItem() instanceof ItemSaddle || stack.getItem() == MoCItems.horsesaddle)) {
+                && (stack.getItem() instanceof SaddleItem || stack.getItem() == MoCItems.horsesaddle)) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             setRideable(true);
-            return true;
+            return ActionResultType.SUCCESS;
         }
         if (!stack.isEmpty() && getIsTamed() && (MoCTools.isItemEdibleforCarnivores(stack.getItem()))) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
@@ -332,25 +330,25 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
             setIsHunting(false);
             setHasEaten(true);
-            return true;
+            return ActionResultType.SUCCESS;
         }
         if (!stack.isEmpty() && getIsTamed() && getIsAdult() && !getIsChested() && (stack.getItem() == Item.getItemFromBlock(Blocks.CHEST))) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             setIsChested(true);
             MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
-            return true;
+            return ActionResultType.SUCCESS;
         }
         if (getIsChested() && player.isSneaking()) {
             if (this.localchest == null) {
                 this.localchest = new MoCAnimalChest("BigBearChest", 18);
             }
             if (!this.world.isRemote) {
-                player.displayGUIChest(this.localchest);
+                player.openContainer(this.localchest);
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Override
@@ -412,6 +410,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
         nbttagcompound.putBoolean("Ghost", getIsGhost());
         nbttagcompound.putInt("BearState", getBearState());
         if (getIsChested() && this.localchest != null) {
+            this.localchest.write(nbttagcompound);
             ListNBT nbttaglist = new ListNBT();
             for (int i = 0; i < this.localchest.getSizeInventory(); i++) {
                 // grab the current item stack
@@ -419,7 +418,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
                 if (!this.localstack.isEmpty()) {
                     CompoundNBT nbttagcompound1 = new CompoundNBT();
                     nbttagcompound1.putByte("Slot", (byte) i);
-                    this.localstack.writeToNBT(nbttagcompound1);
+                    this.localstack.write(nbttagcompound1);
                     nbttaglist.add(nbttagcompound1);
                 }
             }
@@ -438,11 +437,12 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
         if (getIsChested()) {
             ListNBT nbttaglist = nbttagcompound.getList("Items", 10);
             this.localchest = new MoCAnimalChest("BigBearChest", 18);
+            this.localchest.read(nbttagcompound);
             for (int i = 0; i < nbttaglist.size(); i++) {
                 CompoundNBT nbttagcompound1 = nbttaglist.getCompound(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
                 if (j < this.localchest.getSizeInventory()) {
-                    this.localchest.setInventorySlotContents(j, new ItemStack(nbttagcompound1));
+                    this.localchest.setInventorySlotContents(j, ItemStack.read(nbttagcompound1));
                 }
             }
         }

@@ -12,7 +12,6 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -85,11 +84,6 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
     @Nullable
     protected ResourceLocation getLootTable() {
         return MoCLootTables.CRAB;
-    }
-
-    @Override
-    public boolean isCreatureType(EntityClassification type, boolean forSpawnCount) {
-        return type == EntityClassification.AMBIENT;
     }
 
     @Override

@@ -8,13 +8,12 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.aquatic.MoCEntityFishy;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelFishy<T extends Entity> extends EntityModel<T> {
+public class MoCModelFishy<T extends MoCEntityFishy> extends EntityModel<T> {
 
     public ModelRenderer Body;
     public ModelRenderer UpperFin;
@@ -22,6 +21,7 @@ public class MoCModelFishy<T extends Entity> extends EntityModel<T> {
     public ModelRenderer RightFin;
     public ModelRenderer LeftFin;
     public ModelRenderer Tail;
+    private MoCEntityFishy smallFish;
 
     public MoCModelFishy() {
         this.Body = new ModelRenderer(this, 0, 0);
@@ -34,14 +34,15 @@ public class MoCModelFishy<T extends Entity> extends EntityModel<T> {
         this.Tail.rotateAngleX = 0.7853981F;
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.smallFish = entityIn;
+    }
+
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        float scale = 0.0865F;
-
-        MoCEntityFishy smallFish = (MoCEntityFishy) entity;
-        float yOffset = smallFish.getAdjustedYOffset();
-        float xOffset = smallFish.getAdjustedXOffset();
-        float zOffset = smallFish.getAdjustedZOffset();
+        float yOffset = this.smallFish.getAdjustedYOffset();
+        float xOffset = this.smallFish.getAdjustedXOffset();
+        float zOffset = this.smallFish.getAdjustedZOffset();
         matrixStackIn.push();
         matrixStackIn.translate(xOffset, yOffset, zOffset);
         this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);

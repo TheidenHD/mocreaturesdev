@@ -5,12 +5,12 @@ package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.aquatic.MoCEntityShark;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
-public class MoCModelShark<T extends Entity> extends EntityModel<T> {
+public class MoCModelShark<T extends MoCEntityShark> extends EntityModel<T> {
     private final ModelRenderer body;
     private final ModelRenderer torso_1;
     private final ModelRenderer neck;

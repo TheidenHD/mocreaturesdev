@@ -3,15 +3,17 @@
  */
 package drzhark.mocreatures.client.model.legacy;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.hostile.MoCEntityScorpion;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCLegacyModelScorpion<T extends Entity> extends EntityModel<T> {
+public class MoCLegacyModelScorpion<T extends MoCEntityScorpion> extends EntityModel<T> {
     public boolean attacking;
     public boolean isSwinging;
     public float swingProgress;
@@ -150,8 +152,7 @@ public class MoCLegacyModelScorpion<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void render(final Entity entity, final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float f5) {
-        this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.RearEnd.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Leg8.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -176,7 +177,7 @@ public class MoCLegacyModelScorpion<T extends Entity> extends EntityModel<T> {
         this.Tail5.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
-    public void setRotationAngles(final float limbSwing, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float headPitch, final float f5) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         final float f6 = 0.7853982f;
         this.Leg1.rotateAngleZ = -f6;
         this.Leg2.rotateAngleZ = f6;

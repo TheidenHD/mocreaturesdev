@@ -8,11 +8,10 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.passive.MoCEntityFilchLizard;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
 // Courtesy of Daveyx0, permission given
-public class MoCModelFilchLizard<T extends Entity> extends EntityModel<T> {
+public class MoCModelFilchLizard<T extends MoCEntityFilchLizard> extends EntityModel<T> {
 
     public ModelRenderer Body;
     public ModelRenderer Head;
@@ -32,6 +31,7 @@ public class MoCModelFilchLizard<T extends Entity> extends EntityModel<T> {
     public ModelRenderer Filch5;
     public ModelRenderer Filch4;
     public ModelRenderer Filch6;
+    private boolean heldItem;
 
     public MoCModelFilchLizard() {
         textureWidth = 64;
@@ -121,10 +121,12 @@ public class MoCModelFilchLizard<T extends Entity> extends EntityModel<T> {
         Head.addChild(Filch5);
         Head.addChild(Filch6);
     }
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.heldItem = !entityIn.getHeldItemMainhand().isEmpty();
+    }
 
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        MoCEntityFilchLizard lizard = (MoCEntityFilchLizard) entity;
-        if (!lizard.getHeldItemMainhand().isEmpty()) {
+        if (this.heldItem) {
             Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else {
             FoldHead.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -145,10 +147,8 @@ public class MoCModelFilchLizard<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, Entity entity) {
-        super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, entity);
-        MoCEntityFilchLizard lizard = (MoCEntityFilchLizard) entity;
-        if (!lizard.getHeldItemMainhand().isEmpty()) {
+    public void setRotationAngles(T entityIn,float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        if (this.heldItem) {
             Leg1.setRotationPoint(-2F, 13F, -1F);
             setRotation(Leg1, 0F, 1.047198F, 0.6981317F);
             Leg2.setRotationPoint(2F, 13F, -1F);

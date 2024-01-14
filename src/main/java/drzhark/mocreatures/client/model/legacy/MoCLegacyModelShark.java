@@ -5,15 +5,15 @@ package drzhark.mocreatures.client.model.legacy;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.aquatic.MoCEntityShark;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCLegacyModelShark<T extends Entity> extends EntityModel<T> {
+public class MoCLegacyModelShark<T extends MoCEntityShark> extends EntityModel<T> {
 
     public ModelRenderer LHead;
 

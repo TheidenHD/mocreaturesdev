@@ -4,17 +4,17 @@
 package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.ambient.MoCEntityDragonfly;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelDragonfly<T extends Entity> extends EntityModel<T> {
+public class MoCModelDragonfly<T extends MoCEntityDragonfly> extends EntityModel<T> {
 
     ModelRenderer Abdomen;
     ModelRenderer FrontLegs;
@@ -102,12 +102,6 @@ public class MoCModelDragonfly<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
-
-        MoCEntityDragonfly dragonfly = (MoCEntityDragonfly) entity;
-        //boolean onGround = dragonfly.onGround;
-        boolean isFlying = (dragonfly.getIsFlying() || dragonfly.getMotion().getY() < -0.1D);
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, isFlying);
         this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Abdomen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.FrontLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -119,16 +113,16 @@ public class MoCModelDragonfly<T extends Entity> extends EntityModel<T> {
         this.Thorax.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         matrixStackIn.push();
-        matrixStackIn.enableBlend();
+        RenderSystem.enableBlend();
         float transparency = 0.6F;
-        matrixStackIn.blendFunc(770, 771);
-        matrixStackIn.color(0.8F, 0.8F, 0.8F, transparency);
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.color4f(0.8F, 0.8F, 0.8F, transparency);
         //matrixStackIn.scale(1.3F, 1.0F, 1.3F);
         this.WingRearRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.WingFrontRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.WingFrontLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.WingRearLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        matrixStackIn.disableBlend();
+        RenderSystem.disableBlend();
         matrixStackIn.pop();
 
     }
@@ -139,7 +133,7 @@ public class MoCModelDragonfly<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, boolean flying) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         //super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
 
         /*
@@ -150,7 +144,7 @@ public class MoCModelDragonfly<T extends Entity> extends EntityModel<T> {
         float legMov;
         float legMovB;
 
-        if (flying) {
+        if (entityIn.getIsFlying() || entityIn.getMotion().getY() < -0.1D) {
             WingRot = MathHelper.cos((ageInTicks * 2.0F)) * 0.5F;
             legMov = (limbSwingAmount * 1.5F);
             legMovB = legMov;

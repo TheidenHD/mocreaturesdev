@@ -105,7 +105,7 @@ public class CommandMoCPets extends CommandBase {
                     unloadedCount++;
                     double getPosX () = nbt.getList("Pos", 6).getDouble(0);
                     double getPosY () = nbt.getList("Pos", 6).getDouble(1);
-                    double getPosZ () = nbt.getList("Pos", 6).getDouble(2);
+                    double posZ  = nbt.getList("Pos", 6).getDouble(2);
                     if (nbt.getBoolean("InAmulet")) {
                         tamedlist.add(TextFormatting.WHITE + "Found unloaded pet in " + TextFormatting.DARK_PURPLE + "AMULET"
                                 + TextFormatting.WHITE + " with " + TextFormatting.DARK_AQUA + "Type" + TextFormatting.WHITE + ":"
@@ -124,7 +124,7 @@ public class CommandMoCPets extends CommandBase {
                                 + ", Dimension" + TextFormatting.WHITE + ":" + TextFormatting.GREEN + nbt.getInt("Dimension")
                                 + TextFormatting.DARK_AQUA + ", Pos" + TextFormatting.WHITE + ":" + TextFormatting.LIGHT_PURPLE
                                 + Math.round(getPosX()) + TextFormatting.WHITE + ", " + TextFormatting.LIGHT_PURPLE + Math.round(getPosY())
-                                + TextFormatting.WHITE + ", " + TextFormatting.LIGHT_PURPLE + Math.round(getPosZ()));
+                                + TextFormatting.WHITE + ", " + TextFormatting.LIGHT_PURPLE + Math.round(posZ));
                     }
                 }
             }

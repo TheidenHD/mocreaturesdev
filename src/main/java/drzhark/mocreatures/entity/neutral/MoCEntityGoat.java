@@ -11,15 +11,13 @@ import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.Pose;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -53,7 +51,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
     private int earcount; // 20 to 40 default = 30
     private int eatcount;
 
-    public MoCEntityGoat(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityGoat(EntityType<? extends MoCEntityGoat> type, World world) {
         super(type, world);
         // TODO: Separate hitbox for female goats
         setSize(0.8F, 0.9F);
@@ -502,7 +500,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -539,7 +537,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
             return true;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
 
     }
 

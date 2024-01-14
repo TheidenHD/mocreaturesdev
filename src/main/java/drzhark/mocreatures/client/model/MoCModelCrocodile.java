@@ -5,12 +5,12 @@ package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.hunter.MoCEntityCrocodile;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
-public class MoCModelCrocodile<T extends Entity> extends EntityModel<T> {
+public class MoCModelCrocodile<T extends MoCEntityCrocodile> extends EntityModel<T> {
 
     public float biteProgress;
     public boolean swimming;

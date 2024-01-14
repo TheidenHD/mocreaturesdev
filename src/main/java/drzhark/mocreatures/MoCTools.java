@@ -773,15 +773,15 @@ public class MoCTools {
      * for taming, increase the taming count of the player, add the
      * player.getName() as the owner of the entity, and name the entity.
      */
-    public static boolean tameWithName(PlayerEntity ep, IMoCTameable storedCreature) {
+    public static ActionResultType tameWithName(PlayerEntity ep, IMoCTameable storedCreature) {
         if (ep == null) {
-            return false;
+            return ActionResultType.PASS;
         }
 
         if (MoCreatures.proxy.enableOwnership) {
             if (storedCreature == null) {
                 ep.sendMessage(new TranslationTextComponent(TextFormatting.RED + "ERROR:" + TextFormatting.WHITE + "The stored creature is NULL and could not be created. Report to admin."));
-                return false;
+                return ActionResultType.FAIL;
             }
             int max;
             max = MoCreatures.proxy.maxTamed;
@@ -794,7 +794,7 @@ public class MoCTools {
                 if (count >= max) {
                     String message = "\2474" + ep.getName() + " can not tame more creatures, limit of " + max + " reached";
                     ep.sendMessage(new TranslationTextComponent(message));
-                    return false;
+                    return ActionResultType.PASS;
                 }
             }
         }

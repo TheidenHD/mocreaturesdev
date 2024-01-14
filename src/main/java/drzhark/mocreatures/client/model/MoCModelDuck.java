@@ -3,13 +3,14 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.passive.MoCEntityDuck;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
-public class MoCModelDuck<T extends Entity> extends EntityModel<T> {
+public class MoCModelDuck<T extends MoCEntityDuck> extends EntityModel<T> {
 
     public ModelRenderer head;
     public ModelRenderer body;
@@ -52,19 +53,15 @@ public class MoCModelDuck<T extends Entity> extends EntityModel<T> {
      * Sets the models various rotation angles then renders the model.
      */
     @Override
-    public void render(Entity par1Entity, float par2, float par3, float par4, float par5, float par6, float par7) {
-        MoCEntityDuck entityDuck = (MoCEntityDuck) par1Entity;
-        boolean fly = !entityDuck.onGround;
-        this.setRotationAngles(par2, par3, par4, par5, par6, par7, fly);
-
-        this.head.render(par7);
-        this.bill.render(par7);
-        this.chin.render(par7);
-        this.body.render(par7);
-        this.rightLeg.render(par7);
-        this.leftLeg.render(par7);
-        this.rightWing.render(par7);
-        this.leftWing.render(par7);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.bill.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.chin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.rightLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.leftLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.rightWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.leftWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
     }
 
@@ -74,18 +71,18 @@ public class MoCModelDuck<T extends Entity> extends EntityModel<T> {
      * the time(so that arms and legs swing back and forth) and par2 represents
      * how "far" arms and legs can swing at most.
      */
-    public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float par6, boolean fly) {
-        this.head.rotateAngleX = -(par5 / (180F / (float) Math.PI));
-        this.head.rotateAngleY = par4 / (180F / (float) Math.PI);
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.head.rotateAngleX = -(headPitch / (180F / (float) Math.PI));
+        this.head.rotateAngleY = netHeadYaw / (180F / (float) Math.PI);
         this.bill.rotateAngleX = this.head.rotateAngleX;
         this.bill.rotateAngleY = this.head.rotateAngleY;
         this.chin.rotateAngleX = this.head.rotateAngleX;
         this.chin.rotateAngleY = this.head.rotateAngleY;
         this.body.rotateAngleX = ((float) Math.PI / 2F);
-        this.rightLeg.rotateAngleX = MathHelper.cos(par1 * 0.6662F) * 1.4F * par2;
-        this.leftLeg.rotateAngleX = MathHelper.cos(par1 * 0.6662F + (float) Math.PI) * 1.4F * par2;
-        if (fly) {
-            float WingRot = MathHelper.cos((par3 * 1.4F) + 3.141593F) * 0.6F;
+        this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+        if (!entityIn.isOnGround()) {
+            float WingRot = MathHelper.cos((ageInTicks * 1.4F) + 3.141593F) * 0.6F;
             this.rightWing.rotateAngleZ = 0.5F + WingRot;
             this.leftWing.rotateAngleZ = -0.5F - WingRot;
         } else {

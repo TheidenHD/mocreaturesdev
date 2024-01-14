@@ -44,7 +44,6 @@ public class MoCEventHooks {
             if (data == null) {
                 data = new MoCPetMapData(MoCConstants.MOD_ID);
             }
-
             DimensionManager.getWorld(0).getMapStorage().setData(MoCConstants.MOD_ID, data);
             DimensionManager.getWorld(0).getMapStorage().saveAllData();
             MoCreatures.instance.mapData = data;

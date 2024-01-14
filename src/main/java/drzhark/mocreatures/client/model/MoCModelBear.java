@@ -8,13 +8,12 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.hunter.MoCEntityBear;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelBear<T extends Entity> extends EntityModel<T> {
+public class MoCModelBear<T extends MoCEntityBear> extends EntityModel<T> {
 
     public ModelRenderer Saddle;
     public ModelRenderer SaddleBack;
@@ -96,6 +95,8 @@ public class MoCModelBear<T extends Entity> extends EntityModel<T> {
 
     private int bearstate;
     private float attackSwing;
+
+    private MoCEntityBear entitybear;
 
     public MoCModelBear() {
         this.textureWidth = 128;
@@ -465,12 +466,15 @@ public class MoCModelBear<T extends Entity> extends EntityModel<T> {
         SaddleFrontSitted.rotateAngleX = -1.151917F;
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.entitybear = entityIn;
+        this.bearstate = entitybear.getBearState();
+        this.attackSwing = entitybear.getAttackSwing();
+    }
+
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        MoCEntityBear entitybear = (MoCEntityBear) entity;
-        this.bearstate = entitybear.getBearState();
         boolean openMouth = (entitybear.mouthCounter != 0);
-        this.attackSwing = entitybear.getAttackSwing();
         boolean chested = entitybear.getIsChested();
         boolean saddled = entitybear.getIsRideable();
 

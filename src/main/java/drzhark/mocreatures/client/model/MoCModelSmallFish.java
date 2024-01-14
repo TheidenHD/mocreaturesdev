@@ -8,13 +8,13 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.aquatic.MoCEntitySmallFish;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelSmallFish<T extends Entity> extends EntityModel<T> {
+public class MoCModelSmallFish<T extends MoCEntitySmallFish> extends EntityModel<T> {
 
     ModelRenderer BodyFlat;
     ModelRenderer BodyRomboid;
@@ -26,6 +26,7 @@ public class MoCModelSmallFish<T extends Entity> extends EntityModel<T> {
     ModelRenderer LowerFinB;
     ModelRenderer LowerFinC;
     ModelRenderer Tail;
+    private MoCEntitySmallFish smallFish;
 
     public MoCModelSmallFish() {
         this.textureWidth = 32;
@@ -76,17 +77,18 @@ public class MoCModelSmallFish<T extends Entity> extends EntityModel<T> {
         setRotation(this.Tail, 0F, 0F, -0.7853982F);
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.smallFish = entityIn;
+    }
+
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        float scale = 0.0715F;
-
-        MoCEntitySmallFish smallFish = (MoCEntitySmallFish) entity;
         float yOffset = smallFish.getAdjustedYOffset();
         float xOffset = smallFish.getAdjustedXOffset();
         float zOffset = smallFish.getAdjustedZOffset();
         matrixStackIn.push();
         matrixStackIn.translate(xOffset, yOffset, zOffset);
-        matrixStackIn.rotate(90.0F, 0.0F, 1.0F, 0.0F);
+        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(90.0F));
         this.BodyFlat.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.BodyRomboid.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.MidBodyFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);

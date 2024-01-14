@@ -14,10 +14,7 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.Pose;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
@@ -55,7 +52,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
     private boolean fleeing;
     private int jumpTimer;
 
-    public MoCEntityBird(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityBird(EntityType<? extends MoCEntityBird> type, World world) {
         super(type, world);
         setSize(0.5F, 0.9F);
         this.collidedVertically = true;
@@ -304,7 +301,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -330,7 +327,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
             return true;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     // TODO: Add updated flap ai based on vanilla's parrot

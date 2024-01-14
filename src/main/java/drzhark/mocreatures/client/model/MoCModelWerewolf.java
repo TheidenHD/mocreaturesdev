@@ -5,15 +5,15 @@ package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.hostile.MoCEntityWerewolf;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelWerewolf<T extends Entity> extends EntityModel<T> {
+public class MoCModelWerewolf<T extends MoCEntityWerewolf> extends EntityModel<T> {
 
     public boolean hunched;
     ModelRenderer Head;

@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
 
-public class MoCModelDolphin extends EntityModel<MoCEntityDolphin> {
+public class MoCModelDolphin<T extends MoCEntityDolphin> extends EntityModel<T> {
 
     public ModelRenderer UHead;
     public ModelRenderer DHead;
@@ -75,7 +75,7 @@ public class MoCModelDolphin extends EntityModel<MoCEntityDolphin> {
         this.RightFin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
-    public void setRotationAngles(MoCEntityDolphin entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.RTailFin.rotateAngleX = MathHelper.cos(limbSwing * 0.4F) * limbSwingAmount;
         this.LTailFin.rotateAngleX = MathHelper.cos(limbSwing * 0.4F) * limbSwingAmount;
     }

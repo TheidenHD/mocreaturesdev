@@ -9,10 +9,7 @@ import drzhark.mocreatures.entity.ai.*;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.Pose;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
@@ -42,7 +39,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     private int bunnyReproduceTickerB;
     private int jumpTimer;
 
-    public MoCEntityBunny(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityBunny(EntityType<? extends MoCEntityBunny> type, World world) {
         super(type, world);
         setAdult(true);
         setTamed(false);
@@ -169,7 +166,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -193,7 +190,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
             return true;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Override

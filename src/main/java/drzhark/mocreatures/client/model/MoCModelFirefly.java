@@ -4,6 +4,7 @@
 package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.ambient.MoCEntityFirefly;
 import net.minecraft.client.renderer.entity.model.EntityModel;
@@ -132,27 +133,27 @@ public class MoCModelFirefly<T extends Entity> extends EntityModel<T> {
             this.LeftShellOpen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
             matrixStackIn.push();
-            matrixStackIn.enableBlend();
+            RenderSystem.enableBlend();
             float transparency = 0.6F;
-            matrixStackIn.blendFunc(770, 771);
-            matrixStackIn.color(0.8F, 0.8F, 0.8F, transparency);
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.color4f(0.8F, 0.8F, 0.8F, transparency);
             this.LeftWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.RightWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            matrixStackIn.disableBlend();
+            RenderSystem.disableBlend();
             matrixStackIn.pop();
         }
 
         boolean flag = !entityfirefly.getEntityWorld().isDaytime();
         matrixStackIn.push();
-        matrixStackIn.enableBlend();
+        RenderSystem.enableBlend();
         if (!flag) {
             float transparency = 0.4F;
-            matrixStackIn.blendFunc(770, 771);
-            matrixStackIn.color(0.8F, 0.8F, 0.8F, transparency);
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.color4f(0.8F, 0.8F, 0.8F, transparency);
         } else {
             matrixStackIn.blendFunc(770, 1);
         }
-        matrixStackIn.disableBlend();
+        RenderSystem.disableBlend();
         matrixStackIn.pop();
     }
 

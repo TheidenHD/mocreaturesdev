@@ -8,10 +8,7 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.Pose;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.util.DamageSource;
@@ -26,17 +23,16 @@ public class MoCEntityStingRay extends MoCEntityRay {
     private int poisoncounter;
     private int tailCounter;
 
-    public MoCEntityStingRay(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityStingRay(EntityType<? extends MoCEntityStingRay> type, World world) {
         super(type, world);
-        setSize(0.7F, 0.3F);
+        //setSize(0.7F, 0.3F);
         // TODO: Make hitboxes adjust depending on size
         //setAge(50 + (this.rand.nextInt(40)));
         setAge(90);
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes();
-        getEntityAttribute(Attributes.MAX_HEALTH, 8.0D);
+        return MoCEntityRay.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 8.0D);
     }
 
     @Override

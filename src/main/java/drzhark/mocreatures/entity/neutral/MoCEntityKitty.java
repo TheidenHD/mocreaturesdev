@@ -22,6 +22,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -58,7 +59,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
     private boolean onTree;
     private ItemEntity itemAttackTarget;
 
-    public MoCEntityKitty(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityKitty(EntityType<? extends MoCEntityKitty> type, World world) {
         super(type, world);
         setSize(0.8F, 0.8F);
         setAdult(true);
@@ -413,7 +414,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         // Only process one hand to prevent double interactions
         if (hand != Hand.MAIN_HAND) {
             return false;
@@ -494,7 +495,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
             changeKittyState(7);
             return true;
         }
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Override
@@ -607,17 +608,17 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                         MoCEntityKittyBed kittyBed1 = (MoCEntityKittyBed) this.getRidingEntity();
                         if (kittyBed1 != null && !kittyBed1.getHasMilk() && !kittyBed1.getHasFood()) {
                             this.setHealth(getMaxHealth());
-                            this.dismountRidingEntity();
+                            this.dismount();
                             changeKittyState(5);
                         }
                     } else {
                         this.setHealth(getMaxHealth());
-                        this.dismountRidingEntity();
+                        this.dismount();
                         changeKittyState(5);
                     }
                     if (this.rand.nextInt(2500) < 1) {
                         this.setHealth(getMaxHealth());
-                        this.dismountRidingEntity();
+                        this.dismount();
                         changeKittyState(7);
                     }
                     break;
@@ -657,7 +658,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                         litterBox1.setUsedLitter(true);
                         litterBox1.litterTime = 0;
                     }
-                    this.dismountRidingEntity();
+                    this.dismount();
                     changeKittyState(7);
                     break;
                 case 7: // Idling
@@ -823,7 +824,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                 case 12: // Lying down to sleep at night
                     this.kittyTimer++;
                     if (this.world.isDaytime() || (this.kittyTimer > 500 && this.rand.nextInt(500) < 1)) {
-                        this.dismountRidingEntity();
+                        this.dismount();
                         changeKittyState(7);
                         break;
                     }
@@ -1007,7 +1008,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                         kitty1.setAdult(false);
                         kitty1.changeKittyState(10);
                     }
-                    this.dismountRidingEntity();
+                    this.dismount();
                     changeKittyState(21);
                     break;
                 case 21: // Defending kittens
@@ -1038,7 +1039,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
             super.livingTick();
         }
         // Dismount player on both sides to prevent desyncs
-        if (this.isRiding()) MoCTools.dismountSneakingPlayer(this);
+        if (this.isPassenger()) MoCTools.dismountSneakingPlayer(this);
     }
 
     public boolean onMaBack() {

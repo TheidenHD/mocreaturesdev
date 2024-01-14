@@ -8,13 +8,12 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.hostile.MoCEntityMiniGolem;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelMiniGolem<T extends Entity> extends EntityModel<T> {
+public class MoCModelMiniGolem<T extends MoCEntityMiniGolem> extends EntityModel<T> {
 
     private final float radianF = 57.29578F;
     ModelRenderer Head;
@@ -33,6 +32,7 @@ public class MoCModelMiniGolem<T extends Entity> extends EntityModel<T> {
     ModelRenderer RightFoot;
     ModelRenderer LeftLeg;
     ModelRenderer LeftFoot;
+    private boolean angry;
 
     public MoCModelMiniGolem() {
         this.textureWidth = 64;
@@ -106,16 +106,12 @@ public class MoCModelMiniGolem<T extends Entity> extends EntityModel<T> {
 
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.angry = entityIn.isAggressive();
+    }
+
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
-
-        MoCEntityMiniGolem minigolem = (MoCEntityMiniGolem) entity;
-        boolean angry = minigolem.getIsAngry();
-        boolean hasRock = minigolem.getHasRock();
-
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, hasRock);
-
         if (angry) {
             this.HeadRed.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.BodyRed.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -144,7 +140,7 @@ public class MoCModelMiniGolem<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, boolean hasRock) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         float hRotY = netHeadYaw / 57.29578F;
         float RLegXRot = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 0.8F * limbSwingAmount;
         float LLegXRot = MathHelper.cos(limbSwing * 0.6662F) * 0.8F * limbSwingAmount;
@@ -157,7 +153,7 @@ public class MoCModelMiniGolem<T extends Entity> extends EntityModel<T> {
         this.Head.rotateAngleY = -0.7853982F + hRotY;
         this.HeadRed.rotateAngleY = -0.7853982F + hRotY;
 
-        if (hasRock) {
+        if (entityIn.getHasRock()) {
             this.LeftShoulder.rotateAngleZ = 0F;
             this.LeftShoulder.rotateAngleX = -180F / this.radianF;
             this.RightShoulder.rotateAngleZ = 0F;

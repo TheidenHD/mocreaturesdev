@@ -19,6 +19,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -67,7 +68,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     private byte temper;
 
 
-    public MoCEntityElephant(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityElephant(EntityType<? extends MoCEntityElephant> type, World world) {
         super(type, world);
         setAdult(true);
         setTamed(false);
@@ -296,7 +297,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -425,14 +426,14 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
             initChest();
             if (getStorage() == 1) {
                 if (!this.world.isRemote) {
-                    player.displayGUIChest(this.localelephantchest);
+                    player.openContainer(this.localelephantchest);
                 }
                 return true;
             }
             if (getStorage() == 2) {
                 DoubleSidedInventory doubleChest = new DoubleSidedInventory(this.localelephantchest, this.localelephantchest2);
                 if (!this.world.isRemote) {
-                    player.displayGUIChest(doubleChest);
+                    player.openContainer(doubleChest);
                 }
                 return true;
             }
@@ -440,7 +441,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
                 DoubleSidedInventory doubleChest = new DoubleSidedInventory("ElephantChest", this.localelephantchest, this.localelephantchest2);
                 DoubleSidedInventory tripleChest = new DoubleSidedInventory("ElephantChest", doubleChest, this.localelephantchest3);
                 if (!this.world.isRemote) {
-                    player.displayGUIChest(tripleChest);
+                    player.openContainer(tripleChest);
                 }
                 return true;
             }
@@ -449,7 +450,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
                 DoubleSidedInventory doubleChestb = new DoubleSidedInventory("ElephantChest", this.localelephantchest3, this.localelephantchest4);
                 DoubleSidedInventory fourChest = new DoubleSidedInventory("ElephantChest", doubleChest, doubleChestb);
                 if (!this.world.isRemote) {
-                    player.displayGUIChest(fourChest);
+                    player.openContainer(fourChest);
                 }
                 return true;
             }
@@ -471,7 +472,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
             return true;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     private void initChest() {
@@ -730,7 +731,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
                         sit();
                     }
                     if (this.sitCounter >= 50) {
-                        entityplayer.dismountRidingEntity();
+                        entityplayer.dismount();
                     }
 
                 }
@@ -833,7 +834,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
+    protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         return MoCItems.animalHide;
     }
 

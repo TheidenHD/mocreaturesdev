@@ -8,13 +8,12 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.hunter.MoCEntityKomodo;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelKomodo<T extends Entity> extends EntityModel<T> {
+public class MoCModelKomodo<T extends MoCEntityKomodo> extends EntityModel<T> {
 
     private final float radianF = 57.29578F;
     //ModelRenderer TongueDown;
@@ -50,6 +49,7 @@ public class MoCModelKomodo<T extends Entity> extends EntityModel<T> {
     ModelRenderer SaddleA;
     ModelRenderer SaddleC;
     ModelRenderer SaddleB;
+    private boolean isRideable;
 
     public MoCModelKomodo() {
         this.textureWidth = 64;
@@ -216,19 +216,11 @@ public class MoCModelKomodo<T extends Entity> extends EntityModel<T> {
         setRotation(this.SaddleB, 0F, 0F, 0F);
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.isRideable = entityIn.getIsRideable();
+    }
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        MoCEntityKomodo komodo = (MoCEntityKomodo) entity;
-        //int type = komodo.getTypeMoC();
-        //byte harness = komodo.getHarness();
-        //byte storage = komodo.getStorage();
-        boolean mouth = (komodo.mouthCounter != 0);
-        boolean sitting = (komodo.getIsSitting());
-        boolean swimming = (komodo.isSwimming());
-        boolean moveTail = (komodo.tailCounter != 0);
-        boolean tongue = (komodo.tongueCounter != 0);
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, sitting, moveTail, tongue, mouth, swimming);
-
         this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Chest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -238,7 +230,7 @@ public class MoCModelKomodo<T extends Entity> extends EntityModel<T> {
         this.LegBackRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Abdomen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        if (komodo.getIsRideable()) {
+        if (this.isRideable) {
             this.SaddleA.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.SaddleC.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.SaddleB.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -269,8 +261,13 @@ public class MoCModelKomodo<T extends Entity> extends EntityModel<T> {
         this.SaddleC.rotationPointY = limbSwing + 12F;
     }
 
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, boolean sitting, boolean movetail, boolean tongue,
-                                  boolean mouth, boolean swimming) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        boolean mouth = (entityIn.mouthCounter != 0);
+        boolean sitting = (entityIn.getIsSitting());
+        boolean swimming = (entityIn.isSwimming());
+        boolean moveTail = (entityIn.tailCounter != 0);
+        boolean tongue = (entityIn.tongueCounter != 0);
+
         float TailXRot = MathHelper.cos(limbSwing * 0.4F) * 0.2F * limbSwingAmount;
         float LLegXRot = MathHelper.cos(limbSwing * 1.2F) * 1.2F * limbSwingAmount;
         float RLegXRot = MathHelper.cos((limbSwing * 1.2F) + 3.141593F) * 1.2F * limbSwingAmount;
@@ -380,7 +377,7 @@ public class MoCModelKomodo<T extends Entity> extends EntityModel<T> {
 
         float t = limbSwing / 2;
 
-        if (movetail) {
+        if (moveTail) {
             t = ageInTicks / 4F;
         }
         float A = 0.35F;//0.8F;

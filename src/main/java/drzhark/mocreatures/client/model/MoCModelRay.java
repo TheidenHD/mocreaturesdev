@@ -8,13 +8,12 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.aquatic.MoCEntityRay;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelRay<T extends Entity> extends EntityModel<T> {
+public class MoCModelRay<T extends MoCEntityRay> extends EntityModel<T> {
 
     //public int typeInt;
     public boolean isMantaRay;
@@ -143,12 +142,13 @@ public class MoCModelRay<T extends Entity> extends EntityModel<T> {
         this.REye.setRotationPoint(0F, 21F, -4F);
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.attacking = entityIn.isPoisoning();
+        this.isMantaRay = entityIn.isMantaRay();
+    }
+
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        MoCEntityRay ray = (MoCEntityRay) entity;
-        this.attacking = ray.isPoisoning();
-        this.isMantaRay = ray.isMantaRay();
-
         this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.BodyU.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);

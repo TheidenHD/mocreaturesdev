@@ -11,14 +11,12 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.Pose;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -40,7 +38,7 @@ import java.util.List;
 
 public class MoCEntityEnt extends MoCEntityAnimal {
 
-    public MoCEntityEnt(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityEnt(EntityType<? extends MoCEntityEnt> type, World world) {
         super(type, world);
         setSize(1.4F, 7F);
         this.stepHeight = 2F;

@@ -14,6 +14,7 @@ import drzhark.mocreatures.entity.neutral.MoCEntityOstrich;
 import drzhark.mocreatures.entity.neutral.MoCEntityWyvern;
 import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -36,7 +37,7 @@ public class MoCEntityEgg extends MobEntity {
         this.eggType = type;
     }
 
-    public MoCEntityEgg(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityEgg(EntityType<? extends MoCEntityEgg> type, World world) {
         super(type, world);
         setSize(0.25F, 0.25F);
         this.tCounter = 0;
@@ -185,7 +186,7 @@ public class MoCEntityEgg extends MobEntity {
                         }
                     }
                     MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
-                    remove(keepData);
+                    remove();
                 }
             } else if (!isInWater() && getEggType() > 20 && (this.rand.nextInt(20) == 0)) // non aquatic creatures
             {

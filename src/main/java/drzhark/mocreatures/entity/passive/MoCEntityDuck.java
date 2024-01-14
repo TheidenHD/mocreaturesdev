@@ -9,10 +9,12 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -32,7 +34,7 @@ public class MoCEntityDuck extends MoCEntityAnimal {
     public float field_70888_h;
     public float field_70889_i = 1.0F;
 
-    public MoCEntityDuck(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityDuck(EntityType<? extends MoCEntityDuck> type, World world) {
         super(type, world);
         this.texture = "duck.png";
         setSize(0.4F, 0.7F);

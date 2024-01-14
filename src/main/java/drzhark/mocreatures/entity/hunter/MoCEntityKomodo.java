@@ -14,16 +14,13 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.Pose;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemSaddle;
+import net.minecraft.item.SaddleItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -31,10 +28,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -48,9 +42,9 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
     public int mouthCounter;
     private int sitCounter;
 
-    public MoCEntityKomodo(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityKomodo(EntityType<? extends MoCEntityKomodo> type, World world) {
         super(type, world);
-        setSize(1.25F, 0.9F);
+        //setSize(1.25F, 0.9F);
         this.texture = "komodo_dragon.png";
         setTamed(false);
         setAdult(true);
@@ -78,8 +72,7 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 25.0D).createMutableAttribute(Attributes.ARMOR, 5.0D);
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.5D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.18D);
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 25.0D).createMutableAttribute(Attributes.ARMOR, 5.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.5D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.18D);
     }
 
     @Override
@@ -201,18 +194,18 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
 
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && getIsTamed() && (getAge() > 90 || getIsAdult()) && !getIsRideable()
-                && (stack.getItem() instanceof ItemSaddle || stack.getItem() == MoCItems.horsesaddle)) {
+                && (stack.getItem() instanceof SaddleItem || stack.getItem() == MoCItems.horsesaddle)) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             setRideable(true);
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         if (getIsRideable() && getIsTamed() && getAge() > 90 && (!this.isBeingRidden())) {
@@ -221,10 +214,10 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
                 player.rotationPitch = this.rotationPitch;
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Override
@@ -336,7 +329,7 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
+    public void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
         ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.POISON, 150, 0));
         super.applyEnchantments(entityLivingBaseIn, entityIn);
     }

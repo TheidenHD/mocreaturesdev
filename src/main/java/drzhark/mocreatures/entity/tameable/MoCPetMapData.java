@@ -3,21 +3,15 @@
  */
 package drzhark.mocreatures.entity.tameable;
 
-import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.DoubleNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.NBTTagDouble;
-import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldSavedData;
-import net.minecraftforge.common.DimensionManager;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.Map;
 import java.util.UUID;
 
@@ -52,7 +46,7 @@ public class MoCPetMapData extends WorldSavedData {
     public void updateOwnerPet(IMoCTameable pet) {
         this.markDirty();
         if (pet.getOwnerPetId() == -1 || this.petMap.get(pet.getOwnerId()) == null) {
-            UUID owner = MoCreatures.isServer() ? pet.getOwnerId() : Minecraft.getMinecraft().player.getUniqueID();
+            UUID owner = MoCreatures.isServer() ? pet.getOwnerId() : Minecraft.getInstance().player.getUniqueID();
             MoCPetData petData;
             int id;
             if (this.petMap.containsKey(owner)) {
@@ -82,7 +76,7 @@ public class MoCPetMapData extends WorldSavedData {
                     nbt.putInt("ChunkX", ((Entity) pet).chunkCoordX);
                     nbt.putInt("ChunkY", ((Entity) pet).chunkCoordY);
                     nbt.putInt("ChunkZ", ((Entity) pet).chunkCoordZ);
-                    nbt.putInt("Dimension", ((Entity) pet).world.provider.getDimensionType().getId());
+                    nbt.putString("Dimension", ((Entity) pet).world.getDimensionType().getEffects().toString());
                     nbt.putInt("PetId", pet.getOwnerPetId());
                 }
             }
@@ -92,7 +86,7 @@ public class MoCPetMapData extends WorldSavedData {
     protected ListNBT newDoubleNBTList(double... par1ArrayOfDouble) {
         ListNBT nbttaglist = new ListNBT();
         for (double d1 : par1ArrayOfDouble) {
-            nbttaglist.add(new NBTTagDouble(d1));
+            nbttaglist.add(DoubleNBT.valueOf(d1));
         }
         return nbttaglist;
     }
@@ -112,31 +106,13 @@ public class MoCPetMapData extends WorldSavedData {
         return false;
     }
 
-    public void forceSave() {
-        if (DimensionManager.getWorld(0) != null) {
-            ISaveHandler saveHandler = DimensionManager.getWorld(0).getSaveHandler();
-            try {
-                File file1 = saveHandler.getMapFileFromName(MoCConstants.MOD_ID);
-                CompoundNBT nbttagcompound = new CompoundNBT();
-                this.writeToNBT(nbttagcompound);
-                CompoundNBT nbttagcompound1 = new CompoundNBT();
-                nbttagcompound1.put("data", nbttagcompound);
-                FileOutputStream fileoutputstream = new FileOutputStream(file1);
-                CompressedStreamTools.writeCompressed(nbttagcompound1, fileoutputstream);
-                fileoutputstream.close();
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        }
-    }
-
     /**
      * reads in data from the CompoundNBT into this MapDataBase
      */
     @Override
-    public void readFromNBT(CompoundNBT par1NBTTagCompound) {
-        for (String s : par1NBTTagCompound.getKeySet()) {
-            CompoundNBT nbt = (CompoundNBT) par1NBTTagCompound.getTag(s);
+    public void read(CompoundNBT par1NBTTagCompound) {
+        for (String s : par1NBTTagCompound.keySet()) {
+            CompoundNBT nbt = (CompoundNBT) par1NBTTagCompound.getCompound(s);
             UUID ownerUniqueId = UUID.fromString(s);
             if (!this.petMap.containsKey(ownerUniqueId)) {
                 this.petMap.put(ownerUniqueId, new MoCPetData(nbt, ownerUniqueId));
@@ -149,7 +125,7 @@ public class MoCPetMapData extends WorldSavedData {
      * and TileEntities
      */
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT par1NBTTagCompound) {
+    public CompoundNBT write(CompoundNBT par1NBTTagCompound) {
         for (Map.Entry<UUID, MoCPetData> ownerEntry : this.petMap.entrySet()) {
             try {
                 if (ownerEntry.getKey() != null) {

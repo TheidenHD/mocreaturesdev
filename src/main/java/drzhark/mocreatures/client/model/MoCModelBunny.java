@@ -5,12 +5,12 @@ package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.passive.MoCEntityBunny;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
-public class MoCModelBunny<T extends Entity> extends EntityModel<T> {
+public class MoCModelBunny<T extends MoCEntityBunny> extends EntityModel<T> {
 
     public ModelRenderer part1;
     public ModelRenderer part2;
@@ -23,7 +23,6 @@ public class MoCModelBunny<T extends Entity> extends EntityModel<T> {
     public ModelRenderer part9;
     public ModelRenderer part10;
     public ModelRenderer part11;
-    private boolean bunnyHat;
 
     public MoCModelBunny() {
         byte byte0 = 16;
@@ -64,7 +63,6 @@ public class MoCModelBunny<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        this.bunnyHat = entity.getRidingEntity() != null;
         this.part1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.part8.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.part9.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -92,7 +90,7 @@ public class MoCModelBunny<T extends Entity> extends EntityModel<T> {
         this.part11.rotateAngleY = this.part1.rotateAngleY;
         this.part2.rotateAngleX = 1.570796F;
         this.part3.rotateAngleX = 1.570796F;
-        if (!this.bunnyHat) {
+        if (entityIn.getRidingEntity() == null) {
             this.part4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.0F * limbSwingAmount;
             this.part6.rotateAngleX = MathHelper.cos((limbSwing * 0.6662F) + 3.141593F) * 1.2F * limbSwingAmount;
             this.part5.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.0F * limbSwingAmount;

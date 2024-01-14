@@ -9,6 +9,7 @@ import drzhark.mocreatures.entity.hostile.MoCEntitySilverSkeleton;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -37,6 +38,8 @@ public class MoCModelSilverSkeleton<T extends MoCEntitySilverSkeleton> extends E
     ModelRenderer LeftKnee;
     ModelRenderer LeftLeg;
     ModelRenderer LeftFoot;
+    private  float limbSwingAmount;
+    private boolean sprinting;
     private int leftAttack;
     private int rightAttack;
     private boolean riding;
@@ -135,17 +138,20 @@ public class MoCModelSilverSkeleton<T extends MoCEntitySilverSkeleton> extends E
         this.LeftLeg.addChild(this.LeftFoot);
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.limbSwingAmount = limbSwingAmount;
+        this.sprinting = entityIn.isSprinting();
+        this.leftAttack = entityIn.attackCounterLeft;
+        this.rightAttack = entityIn.attackCounterRight;
+        this.riding = entityIn.getRidingEntity() != null;
+    }
+
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        MoCEntitySilverSkeleton samurai = (MoCEntitySilverSkeleton) entity;
-        boolean sprinting = samurai.isSprinting();
-        this.leftAttack = samurai.attackCounterLeft;
-        this.rightAttack = samurai.attackCounterRight;
-        this.riding = samurai.getRidingEntity() != null;
         matrixStackIn.push();
         if (sprinting && limbSwingAmount > 0.3F) {
             //matrixStackIn.push();
-            matrixStackIn.rotate((float) (limbSwingAmount * -20D), -1F, 0.0F, 0.0F);
+            matrixStackIn.rotate(Vector3f.XN.rotationDegrees (limbSwingAmount * -20F));
             //renderParts(f5);
             //matrixStackIn.pop();
         }
@@ -157,7 +163,7 @@ public class MoCModelSilverSkeleton<T extends MoCEntitySilverSkeleton> extends E
         }
         //renderParts(f5);
 
-        renderParts(f5);
+        renderParts(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         matrixStackIn.pop();
     }
 

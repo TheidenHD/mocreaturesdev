@@ -3,7 +3,6 @@
  */
 package drzhark.mocreatures.entity.tameable;
 
-import com.google.common.base.Optional;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
@@ -26,11 +25,9 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -41,6 +38,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTameable {
@@ -58,7 +56,7 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
     @Override
     protected void registerData() {
         super.registerData();
-        this.dataManager.register(OWNER_UNIQUE_ID, Optional.absent());
+        this.dataManager.register(OWNER_UNIQUE_ID, Optional.empty());
         this.dataManager.register(PET_ID, -1);
         this.dataManager.register(TAMED, false);
     }
@@ -75,11 +73,11 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
 
     @Nullable
     public UUID getOwnerId() {
-        return this.dataManager.get(OWNER_UNIQUE_ID).orNull();
+        return this.dataManager.get(OWNER_UNIQUE_ID).orElse(null);
     }
 
     public void setOwnerId(@Nullable UUID uniqueId) {
-        this.dataManager.set(OWNER_UNIQUE_ID, Optional.fromNullable(uniqueId));
+        this.dataManager.set(OWNER_UNIQUE_ID, Optional.ofNullable(uniqueId));
     }
 
     @Override
@@ -129,7 +127,7 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
                 ((ServerPlayerEntity) player).sendAllContents(player.openContainer, player.openContainer.getInventory());
                 ITextComponent message = new TranslationTextComponent("msg.mocreatures.foreignpet");
                 message.getStyle().setFormatting(TextFormatting.RED);
-                player.sendMessage(message);
+                player.sendMessage(message, player.getUniqueID());
             }
             return false;
         }
@@ -138,7 +136,7 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
         if (MoCreatures.proxy.enableOwnership && this.getOwnerId() != null && !player.getUniqueID().equals(this.getOwnerId())) {
             ITextComponent message = new TranslationTextComponent("msg.mocreatures.foreignpet");
             message.getStyle().setFormatting(TextFormatting.RED);
-            player.sendMessage(message);
+            player.sendMessage(message, player.getUniqueID());
             return false;
         }
 
@@ -146,19 +144,19 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     // This should always run first for all tameable animals
-    public Boolean processTameInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType processTameInteract(PlayerEntity player, Hand hand) {
         if (!this.checkOwnership(player, hand)) {
-            return false;
+            return ActionResultType.PASS;
         }
 
         final ItemStack stack = player.getHeldItem(hand);
@@ -172,7 +170,7 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
                 }
                 this.setOwnerId(null);
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
         //changes name
         if (!this.world.isRemote && !stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.medallion || stack.getItem() == Items.BOOK || stack.getItem() == Items.NAME_TAG)) {
@@ -195,11 +193,11 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
                     kitty.changeKittyState(1);
                 }
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         //stores in fishnet
-        if (stack.getItem() == MoCItems.fishnet && stack.getItemDamage() == 0 && this.canBeTrappedInNet()) {
+        if (stack.getItem() == MoCItems.fishnet && this.canBeTrappedInNet()) {
             player.setHeldItem(hand, ItemStack.EMPTY);
             if (!this.world.isRemote) {
                 MoCPetData petData = MoCreatures.instance.mapData.getPetData(this.getOwnerId());
@@ -210,7 +208,7 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
                 this.removed = true;
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         //removes owner, any other player can claim it by renaming it
@@ -223,11 +221,11 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
                 }
                 this.setOwnerId(null);
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         //stores in petAmulet
-        if (!stack.isEmpty() && stack.getItem() == MoCItems.petamulet && stack.getItemDamage() == 0 && this.canBeTrappedInNet()) {
+        if (!stack.isEmpty() && stack.getItem() == MoCItems.petamulet && this.canBeTrappedInNet()) {
             player.setHeldItem(hand, ItemStack.EMPTY);
             if (!this.world.isRemote) {
                 MoCPetData petData = MoCreatures.instance.mapData.getPetData(this.getOwnerId());
@@ -239,7 +237,7 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
                 this.removed = true;
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == Items.SHEARS) {
@@ -247,7 +245,7 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
                 dropMyStuff();
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         //heals
@@ -257,7 +255,7 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
             if (!this.world.isRemote) {
                 this.setHealth(getMaxHealth());
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         return null;
@@ -265,7 +263,7 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
 
     // Fixes despawn issue when chunks unload and duplicated mounts when disconnecting on servers
     @Override
-    public void remove(keepData) {
+    public void remove(boolean keepData) {
         if (!this.world.isRemote && getIsTamed() && getHealth() > 0 && !isRiderDisconnecting()) {
             return;
         }
@@ -278,7 +276,7 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
      */
     @Override
     public void playTameEffect(boolean par1) {
-        ParticleTypes particleType = ParticleTypes.HEART;
+        BasicParticleType particleType = ParticleTypes.HEART;
 
         if (!par1) {
             particleType = ParticleTypes.SMOKE;
@@ -335,7 +333,7 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
                             // entity was cloned
                             nbt.remove("Cloned"); // clear flag
                             this.setTamed(false);
-                            this.remove(keepData);
+                            this.remove();
                         }
                     }
                 }
@@ -430,13 +428,13 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
         if (this.getIsFlying()) {
             // Safety checks to prevent 'moving too fast' checks
             if (this.getMotion().getX() > 0.5) {
-                this.getMotion().getX() = 0.5;
+                this.setMotion(0.5, this.getMotion().getY(), this.getMotion().getZ());
             }
             if (this.getMotion().getY() > 0.5) {
-                this.getMotion().getY() = 0.5;
+                this.setMotion(this.getMotion().getX(), 0.5, this.getMotion().getZ());
             }
             if (this.getMotion().getZ() > 2.5) {
-                this.getMotion().getZ() = 2.5;
+                this.setMotion(this.getMotion().getX(), this.getMotion().getY(), 2.5);
             }
         }
     }
@@ -485,7 +483,7 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
 
                 String offspringName = this.getOffspringClazz((IMoCTameable) mate);
 
-                MobEntity offspring = (MobEntity) EntityList.createEntityByIDFromName(new ResourceLocation(MoCConstants.MOD_PREFIX + offspringName.toLowerCase()), this.world);
+                MobEntity offspring = (MobEntity) EntityType.byKey(new ResourceLocation(MoCConstants.MOD_PREFIX + offspringName.toLowerCase()).toString()).get().create(this.world);
                 if (offspring instanceof IMoCTameable) {
                     IMoCTameable baby = (IMoCTameable) offspring;
                     ((MobEntity) baby).setPosition(this.getPosX(), this.getPosY(), this.getPosZ());

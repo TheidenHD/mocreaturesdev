@@ -18,13 +18,12 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.neutral.MoCEntityOstrich;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelOstrich<T extends Entity> extends EntityModel<T> {
+public class MoCModelOstrich<T extends MoCEntityOstrich> extends EntityModel<T> {
 
     private final float radianF = 57.29578F;
     ModelRenderer UBeak;
@@ -117,6 +116,10 @@ public class MoCModelOstrich<T extends Entity> extends EntityModel<T> {
     ModelRenderer Tailpart3;
     ModelRenderer Tailpart4;
     ModelRenderer Tailpart5;
+    private boolean openMouth;
+    private boolean isSaddled;
+    private boolean bagged;
+    private boolean rider;
     private int helmet;
     private byte typeI;
     private int flagColor;
@@ -581,25 +584,18 @@ public class MoCModelOstrich<T extends Entity> extends EntityModel<T> {
      * ((EntitySheep)entityliving).func_44003_c(par4) * 9.0F; this.field_44016_o
      * = ((EntitySheep)entityliving).func_44002_d(par4); }
      */
+
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.typeI = (byte) entityIn.getTypeMoC();
+        this.openMouth = (entityIn.mouthCounter != 0);
+        this.isSaddled = entityIn.getIsRideable();
+        this.bagged = entityIn.getIsChested();
+        this.rider = (entityIn.isBeingRidden());
+        this.helmet = entityIn.getHelmet();
+        this.flagColor = entityIn.getFlagColor();
+    }
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-
-        MoCEntityOstrich entityostrich = (MoCEntityOstrich) entity;
-        this.typeI = (byte) entityostrich.getTypeMoC();
-        boolean openMouth = (entityostrich.mouthCounter != 0);
-        boolean isSaddled = entityostrich.getIsRideable();
-        boolean isHiding = entityostrich.getHiding();
-        boolean wingFlap = (entityostrich.wingCounter != 0);
-        boolean bagged = entityostrich.getIsChested();
-        boolean rider = (entityostrich.isBeingRidden());
-        int jumpCounter = entityostrich.jumpCounter;
-        boolean floating = (entityostrich.isFlyer() && entityostrich.isOnAir());
-
-        this.helmet = entityostrich.getHelmet();
-        this.flagColor = entityostrich.getFlagColor();
-        //super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, isHiding, wingFlap, rider, jumpCounter, floating);
-
         this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         this.NeckU.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -792,12 +788,15 @@ public class MoCModelOstrich<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, boolean hiding, boolean wing, boolean rider,
-                                  int jumpCounter, boolean floating) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        boolean isHiding = entityIn.getHiding();
+        boolean wingFlap = (entityIn.wingCounter != 0);
+        int jumpCounter = entityIn.jumpCounter;
+        boolean floating = (entityIn.isFlyer() && entityIn.isOnAir());
         float LLegXRot = MathHelper.cos(limbSwing * 0.4F) * 1.1F * limbSwingAmount;
         float RLegXRot = MathHelper.cos((limbSwing * 0.4F) + 3.141593F) * 1.1F * limbSwingAmount;
 
-        if (hiding) {
+        if (isHiding) {
             this.Head.rotationPointY = 9.0F;
             this.Head.rotateAngleX = 2.61799F;
             this.Head.rotateAngleY = 0.0F;
@@ -1090,7 +1089,7 @@ public class MoCModelOstrich<T extends Entity> extends EntityModel<T> {
 
         } else {
             wingF = (10F / this.radianF) + MathHelper.cos(limbSwing * 0.6F) * 0.2F * limbSwingAmount;
-            if (wing) {
+            if (wingFlap) {
                 wingF += (50 / 57.29578F);
             }
             this.LWingB.rotateAngleY = 0.0872665F + wingF;

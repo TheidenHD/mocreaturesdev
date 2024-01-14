@@ -14,6 +14,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -108,7 +109,7 @@ public class EntityAIMateMoC extends Goal {
      * Spawns a baby animal of the same type.
      */
     private void spawnBaby() {
-        AgeableEntity entityageable = this.animal.createChild(this.targetMate);
+        AgeableEntity entityageable = this.animal.createChild((ServerWorld)this.world, this.targetMate);
 
         if (entityageable != null) {
             ServerPlayerEntity entityplayermp = this.animal.getLoveCause();

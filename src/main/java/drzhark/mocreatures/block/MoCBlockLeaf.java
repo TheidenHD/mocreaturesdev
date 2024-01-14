@@ -52,7 +52,7 @@ public class MoCBlockLeaf extends LeavesBlock {
 
     @OnlyIn(Dist.CLIENT)
     public boolean shouldSideBeRendered(BlockState blockState, IBlockAccess blockAccess, BlockPos pos, Direction side) {
-        if (!Minecraft.getMinecraft().gameSettings.fancyGraphics) {
+        if (!Minecraft.getInstance().gameSettings.fancyGraphics) {
             return !(blockAccess.getBlockState(pos.offset(side)).getBlock() instanceof LeavesBlock);
         }
         return true;

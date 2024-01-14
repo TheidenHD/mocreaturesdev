@@ -5,12 +5,12 @@ package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import drzhark.mocreatures.entity.item.MoCEntityKittyBed;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 
 
-public class MoCModelKittyBed<T extends Entity> extends EntityModel<T> {
+public class MoCModelKittyBed<T extends MoCEntityKittyBed> extends EntityModel<T> {
 
     public boolean hasMilk;
     public boolean hasFood;
@@ -66,6 +66,11 @@ public class MoCModelKittyBed<T extends Entity> extends EntityModel<T> {
         this.Bottom = new ModelRenderer(this, 16, 15);
         this.Bottom.addBox(-10F, 0.0F, -7F, 16, 1, 14, limbSwing);
         this.Bottom.setRotationPoint(2.0F, 23F, 0.0F);
+    }
+
+    @Override
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+
     }
 
     @Override

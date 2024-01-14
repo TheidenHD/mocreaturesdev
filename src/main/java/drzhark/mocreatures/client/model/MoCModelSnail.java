@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
 
 
-public class MoCModelSnail extends EntityModel<MoCEntitySnail> {
+public class MoCModelSnail<T extends MoCEntitySnail> extends EntityModel<T> {
 
     ModelRenderer Head;
     ModelRenderer Antenna;
@@ -79,7 +79,6 @@ public class MoCModelSnail extends EntityModel<MoCEntitySnail> {
     }
 
     public void setRotationAngles(MoCEntitySnail entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        //super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5);
         float tailMov = MathHelper.cos((ageInTicks * 0.3F)) * 0.8F;
         if (limbSwingAmount < 0.1F) {
             tailMov = 0F;

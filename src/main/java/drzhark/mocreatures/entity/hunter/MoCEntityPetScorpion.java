@@ -24,7 +24,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemSaddle;
+import net.minecraft.item.SaddleItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -390,7 +390,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
 
     // TODO: Make it not give items in creative
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -398,7 +398,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
 
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && getIsAdult() && !getIsRideable()
-                && (stack.getItem() instanceof ItemSaddle || stack.getItem() == MoCItems.horsesaddle)) {
+                && (stack.getItem() instanceof SaddleItem || stack.getItem() == MoCItems.horsesaddle)) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             setRideable(true);
             return true;
@@ -410,7 +410,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
         }
 
         // Transformations
-        if (!stack.isEmpty() && this.getIsTamed() && !this.isBeingRidden() && !this.isRiding() && this.transformCounter < 1) {
+        if (!stack.isEmpty() && this.getIsTamed() && !this.isBeingRidden() && !this.isPassenger() && this.transformCounter < 1) {
 
             // Fire Scorpion (Essence of Fire)
             if (stack.getItem() == MoCItems.essencefire && this.getTypeMoC() != 3) {
@@ -426,7 +426,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
             }
 
             // Undead Scorpion (Essence of Undead)
-            if (!stack.isEmpty() && this.getIsTamed() && !this.isBeingRidden() && !this.isRiding() && this.transformCounter < 1 && stack.getItem() == MoCItems.essenceundead && this.getTypeMoC() != 5) {
+            if (!stack.isEmpty() && this.getIsTamed() && !this.isBeingRidden() && !this.isPassenger() && this.transformCounter < 1 && stack.getItem() == MoCItems.essenceundead && this.getTypeMoC() != 5) {
                 if (!player.abilities.isCreativeMode) stack.shrink(1);
                 if (stack.isEmpty()) {
                     player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
@@ -439,7 +439,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
             }
         }
 
-        if (!stack.isEmpty() && this.getIsTamed() && !this.isBeingRidden() && !this.isRiding() && stack.getItem() == MoCItems.essencedarkness) {
+        if (!stack.isEmpty() && this.getIsTamed() && !this.isBeingRidden() && !this.isPassenger() && stack.getItem() == MoCItems.essencedarkness) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (stack.isEmpty()) {
                 player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
@@ -470,7 +470,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
             return true;
         } else if (this.getRidingEntity() != null) {
             MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
-            this.dismountRidingEntity();
+            this.dismount();
             this.getMotion().getX() = player.getMotion().getX() * 5D;
             this.getMotion().getY() = (player.getMotion().getY() / 2D) + 0.5D;
             this.getMotion().getZ() = player.getMotion().getZ() * 5D;
@@ -487,7 +487,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
             return true;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Override

@@ -7,15 +7,17 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import drzhark.mocreatures.client.model.MoCModelMouse;
 import drzhark.mocreatures.entity.passive.MoCEntityMouse;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class MoCRenderMouse extends MoCRenderMoC<MoCEntityMouse, MoCModelMouse<MoCEntityMouse>> {
 
-    public MoCRenderMouse(MoCModelMouse modelbase, float f) {
-        super(modelbase, f);
+    public MoCRenderMouse(EntityRendererManager renderManagerIn, MoCModelMouse modelbase, float f) {
+        super(renderManagerIn, modelbase, f);
     }
 
     @Override
@@ -24,13 +26,8 @@ public class MoCRenderMouse extends MoCRenderMoC<MoCEntityMouse, MoCModelMouse<M
     }
 
     @Override
-    protected float handleRotationFloat(MoCEntityMouse entitymouse, float f) {
-        stretch(entitymouse);
-        return entitymouse.ticksExisted + f;
-    }
-
-    @Override
     protected void preRenderCallback(MoCEntityMouse entitymouse, MatrixStack matrixStackIn, float partialTickTime) {
+        stretch(matrixStackIn);
         // When mice are picked up
         if (entitymouse.upsideDown()) {
             upsideDown(matrixStackIn);
@@ -42,7 +39,7 @@ public class MoCRenderMouse extends MoCRenderMoC<MoCEntityMouse, MoCModelMouse<M
     }
 
     protected void rotateAnimal(MatrixStack matrixStackIn) {
-        matrixStackIn.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+        matrixStackIn.rotate(Vector3f.XN.rotationDegrees(90.0F));
         matrixStackIn.translate(0.0F, 0.4F, 0.0F);
     }
 
@@ -52,7 +49,7 @@ public class MoCRenderMouse extends MoCRenderMoC<MoCEntityMouse, MoCModelMouse<M
     }
 
     protected void upsideDown(MatrixStack matrixStackIn) {
-        matrixStackIn.rotate(-90.0F, -1.0F, 0.0F, 0.0F);
+        matrixStackIn.rotate(Vector3f.XN.rotationDegrees(-90.0F));
         matrixStackIn.translate(-0.55F, 0.0F, 0.0F);
     }
 

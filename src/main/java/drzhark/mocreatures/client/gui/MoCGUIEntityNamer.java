@@ -3,6 +3,7 @@
  */
 package drzhark.mocreatures.client.gui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
@@ -64,7 +65,7 @@ public class MoCGUIEntityNamer extends GuiScreen {
     @Override
     public void drawScreen(int i, int j, float f) {
         drawDefaultBackground();
-        matrixStackIn.color(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         textureManager.bindTexture(TEXTURE_MOCNAME);
         int l = (this.width - this.xSize) / 2;
         int i1 = (this.height - (this.ySize + 16)) / 2;

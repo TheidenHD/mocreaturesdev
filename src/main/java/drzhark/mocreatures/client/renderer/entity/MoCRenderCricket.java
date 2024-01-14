@@ -3,31 +3,35 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import drzhark.mocreatures.client.model.MoCModelCricket;
 import drzhark.mocreatures.entity.ambient.MoCEntityCricket;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCRenderCricket extends MoCRenderMoC<MoCEntityCricket> {
+public class MoCRenderCricket extends MoCRenderMoC<MoCEntityCricket, MoCModelCricket<MoCEntityCricket>> {
 
-    public MoCRenderCricket(ModelBase modelbase) {
-        super(modelbase, 0.0F);
+    public MoCRenderCricket(EntityRendererManager renderManagerIn, MoCModelCricket modelbase) {
+        super(renderManagerIn, modelbase, 0.0F);
     }
 
     @Override
-    protected void preRenderCallback(MoCEntityCricket entitycricket, float par2) {
-        rotateCricket(entitycricket);
+    protected void preRenderCallback(MoCEntityCricket entitycricket, MatrixStack matrixStackIn, float par2) {
+        rotateCricket(entitycricket, matrixStackIn);
     }
 
-    protected void rotateCricket(MoCEntityCricket entitycricket) {
-        if (!entitycricket.onGround) {
+    protected void rotateCricket(MoCEntityCricket entitycricket, MatrixStack matrixStackIn) {
+        if (!entitycricket.isOnGround()) {
             if (entitycricket.getMotion().getY() > 0.5D) {
-                matrixStackIn.rotate(35F, -1F, 0.0F, 0.0F);
+                matrixStackIn.rotate(Vector3f.XN.rotationDegrees(35F));
             } else if (entitycricket.getMotion().getY() < -0.5D) {
-                matrixStackIn.rotate(-35F, -1F, 0.0F, 0.0F);
+                matrixStackIn.rotate(Vector3f.XN.rotationDegrees(-35F));
             } else {
-                matrixStackIn.rotate((float) (entitycricket.getMotion().getY() * 70D), -1F, 0.0F, 0.0F);
+                matrixStackIn.rotate(Vector3f.XN.rotationDegrees((float) (entitycricket.getMotion().getY() * 70D)));
             }
         }
     }

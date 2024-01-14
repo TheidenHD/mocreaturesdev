@@ -11,9 +11,9 @@ import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.HurtByTargetGoal;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.HurtByTargetGoal;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,10 +38,10 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     public int spinInt;
     private boolean waterbound;
 
-    public MoCEntityCrocodile(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityCrocodile(EntityType<? extends MoCEntityCrocodile> type, World world) {
         super(type, world);
         this.texture = "crocodile.png";
-        setSize(0.9F, 0.5F);
+        //setSize(0.9F, 0.5F);
         setAdult(true);
         // TODO: Make hitboxes adjust depending on size
         //setAge(50 + this.rand.nextInt(50));
@@ -63,8 +63,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 25.0D).createMutableAttribute(Attributes.ARMOR, 6.0D);
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 25.0D).createMutableAttribute(Attributes.ARMOR, 6.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
@@ -112,7 +111,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
                 return;
             }
 
-            this.getMotion().getY() = 0.3D;
+            this.setMotion(this.getMotion().getX(), 0.3D, this.getMotion().getZ());
             this.isAirBorne = true;
 
         } else if (this.getAttackTarget() != null || getHasCaughtPrey()) {
@@ -364,7 +363,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
                 ((LivingEntity) this.getRidingEntity()).deathTime = 0;
             }
 
-            this.dismountRidingEntity();
+            this.dismount();
             setHasCaughtPrey(false);
         }
     }

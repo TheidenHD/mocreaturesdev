@@ -13,19 +13,17 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
 public class MoCEntityRaccoon extends MoCEntityTameableAnimal {
 
-    public MoCEntityRaccoon(EntityType<? extends TODO_REPLACE> type, World world) {
+    public MoCEntityRaccoon(EntityType<? extends MoCEntityRaccoon> type, World world) {
         super(type, world);
         setSize(0.6F, 0.525F);
         this.texture = "raccoon.png";
@@ -71,7 +69,7 @@ public class MoCEntityRaccoon extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         final Boolean tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -94,7 +92,7 @@ public class MoCEntityRaccoon extends MoCEntityTameableAnimal {
             return true;
         }
 
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(player, hand);
     }
 
     @Override

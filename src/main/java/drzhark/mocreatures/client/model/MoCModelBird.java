@@ -8,10 +8,9 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.passive.MoCEntityBird;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
-public class MoCModelBird<T extends Entity> extends EntityModel<T> {
+public class MoCModelBird<T extends MoCEntityBird> extends EntityModel<T> {
 
     public ModelRenderer head;
     public ModelRenderer body;
@@ -21,7 +20,6 @@ public class MoCModelBird<T extends Entity> extends EntityModel<T> {
     public ModelRenderer lwing;
     public ModelRenderer beak;
     public ModelRenderer tail;
-    private boolean isOnAir;
 
     public MoCModelBird() {
         byte byte0 = 16;
@@ -55,8 +53,6 @@ public class MoCModelBird<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        MoCEntityBird bird = (MoCEntityBird) entity;
-        this.isOnAir = bird.isOnAir() && bird.getRidingEntity() == null;
         this.head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.beak.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -68,13 +64,13 @@ public class MoCModelBird<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, Entity entity) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.head.rotateAngleX = -(headPitch / 2.0F / 57.29578F);
         //head.rotateAngleY = netHeadYaw / 2.0F / 57.29578F; //fixed SMP bug
         this.head.rotateAngleY = netHeadYaw / 57.29578F;
         this.beak.rotateAngleY = this.head.rotateAngleY;
 
-        if (this.isOnAir) {
+        if (entityIn.isOnAir() && entityIn.getRidingEntity() == null) {
             this.leftleg.rotateAngleX = 1.4F;
             this.rightleg.rotateAngleX = 1.4F;
         } else {
