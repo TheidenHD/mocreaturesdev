@@ -25,7 +25,7 @@ public class MoCEntityRaccoon extends MoCEntityTameableAnimal {
 
     public MoCEntityRaccoon(EntityType<? extends MoCEntityRaccoon> type, World world) {
         super(type, world);
-        setSize(0.6F, 0.525F);
+        //setSize(0.6F, 0.525F);
         this.texture = "raccoon.png";
         // TODO: Make hitboxes adjust depending on size
         //setAge(50 + this.rand.nextInt(15));
@@ -48,8 +48,7 @@ public class MoCEntityRaccoon extends MoCEntityTameableAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 8.0D);
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 2.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D);
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 8.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 2.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D);
     }
 
     @Override
@@ -70,7 +69,7 @@ public class MoCEntityRaccoon extends MoCEntityTameableAnimal {
 
     @Override
     public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -89,7 +88,7 @@ public class MoCEntityRaccoon extends MoCEntityTameableAnimal {
                 setAge(getAge() + 1);
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         return super.getEntityInteractionResult(player, hand);
@@ -148,7 +147,7 @@ public class MoCEntityRaccoon extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean canAttackTarget(MobEntity entity) {
+    public boolean canAttackTarget(LivingEntity entity) {
         return !(entity instanceof MoCEntityRaccoon) && super.canAttackTarget(entity);
     }
 

@@ -21,11 +21,11 @@ public class MoCEntityPanthard extends MoCEntityBigCat {
 
     public MoCEntityPanthard(EntityType<? extends MoCEntityPanthard> type, World world) {
         super(type, world);
-        setSize(1.14F, 1.063175F);
+        //setSize(1.14F, 1.063175F);
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 25.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0D);
+        return MoCEntityBigCat.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 25.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0D);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class MoCEntityPanthard extends MoCEntityBigCat {
 
     @Override
     public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -57,7 +57,7 @@ public class MoCEntityPanthard extends MoCEntityBigCat {
                 setSitting(false);
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         return super.getEntityInteractionResult(player, hand);

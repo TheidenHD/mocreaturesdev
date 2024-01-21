@@ -21,10 +21,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
@@ -38,20 +36,13 @@ public class MoCEntityKittyBed extends MobEntity {
 
     public MoCEntityKittyBed(EntityType<? extends MoCEntityKittyBed> type, World world) {
         super(type, world);
-        setSize(1.0F, 0.15F);
+        //setSize(1.0F, 0.15F);
         setNoAI(true);
         this.milkLevel = 0.0F;
     }
 
-    public MoCEntityKittyBed(World world, double d, double d1, double d2) {
-        super(world);
-        setSize(1.0F, 0.15F);
-        setNoAI(true);
-        this.milkLevel = 0.0F;
-    }
-
-    public MoCEntityKittyBed(World world, int i) {
-        this(world);
+    public MoCEntityKittyBed(EntityType<? extends MoCEntityKittyBed> type, World world, int i) {
+        this(type, world);
         setSheetColor(i);
     }
 
@@ -60,7 +51,7 @@ public class MoCEntityKittyBed extends MobEntity {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 20.0D);
+        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 20.0D);
     }
 
     @Override
@@ -115,13 +106,13 @@ public class MoCEntityKittyBed extends MobEntity {
     }
 
     @Override
-    protected boolean canDespawn() {
+    public boolean canDespawn(double distanceToClosestPlayer) {
         return false;
     }
 
     @Override
     public boolean canEntityBeSeen(Entity entity) {
-        return this.world.rayTraceBlocks(new Vector3d(this.getPosX(), this.getPosY() + getEyeHeight(), this.getPosZ()), new Vector3d(entity.getPosX(), entity.getPosY() + entity.getEyeHeight(), entity.getPosZ())) == null;
+        return this.world.rayTraceBlocks(new RayTraceContext(new Vector3d(this.getPosX(), this.getPosY() + getEyeHeight(), this.getPosZ()), new Vector3d(entity.getPosX(), entity.getPosY() + entity.getEyeHeight(), entity.getPosZ()), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE,this)) == null;
     }
 
     @Override
@@ -144,7 +135,7 @@ public class MoCEntityKittyBed extends MobEntity {
     }
 
     @Override
-    public boolean getEntityInteractionResult(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && !getHasFood() && !getHasMilk()) {
             if (stack.getItem() == MoCItems.petfood) {
@@ -158,7 +149,7 @@ public class MoCEntityKittyBed extends MobEntity {
                 setHasMilk(true);
                 setHasFood(false);
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
         if (this.getRidingEntity() == null) {
             if (player.isSneaking()) {
@@ -167,20 +158,20 @@ public class MoCEntityKittyBed extends MobEntity {
                 if (getHasFood()) player.inventory.addItemStackToInventory(new ItemStack(MoCItems.petfood, 1));
                 else if (getHasMilk()) player.inventory.addItemStackToInventory(new ItemStack(Items.MILK_BUCKET, 1));
                 MoCTools.playCustomSound(this, SoundEvents.ENTITY_ITEM_PICKUP, 0.2F);
-                remove(keepData);
+                remove();
             } else {
                 setRotationYawHead((float) MoCTools.roundToNearest90Degrees(this.rotationYawHead) + 90.0F);
-                MoCTools.playCustomSound(this, SoundEvents.ENTITY_ITEMFRAME_ROTATE_ITEM);
+                MoCTools.playCustomSound(this, SoundEvents.ENTITY_ITEM_FRAME_ROTATE_ITEM);
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
-        return true;
+        return ActionResultType.SUCCESS;
     }
 
     @Override
-    public void move(MoverType type, double d, double d1, double d2) {
+    public void move(MoverType type, Vector3d pos) {
         if (!this.world.isRemote && (this.getRidingEntity() != null || !this.onGround || !MoCreatures.proxy.staticBed)) {
-            super.move(type, d, d1, d2);
+            super.move(type, pos);
         }
     }
 

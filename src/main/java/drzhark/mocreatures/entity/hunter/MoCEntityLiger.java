@@ -24,11 +24,11 @@ public class MoCEntityLiger extends MoCEntityBigCat {
 
     public MoCEntityLiger(EntityType<? extends MoCEntityLiger> type, World world) {
         super(type, world);
-        setSize(1.35F, 1.43525F);
+        //setSize(1.35F, 1.43525F);
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 35.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0D);
+        return MoCEntityBigCat.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 35.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0D);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class MoCEntityLiger extends MoCEntityBigCat {
                 player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
             }
             setTypeMoC(getTypeMoC() + 1);
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         if (this.getIsRideable() && this.getIsAdult() && (!this.getIsChested() || !player.isSneaking()) && !this.isBeingRidden()) {
@@ -71,7 +71,7 @@ public class MoCEntityLiger extends MoCEntityBigCat {
                 setSitting(false);
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         return super.getEntityInteractionResult(player, hand);

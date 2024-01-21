@@ -7,56 +7,27 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.entity.tameable.MoCPetData;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.ServerWorld;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CommandMoCTP extends CommandBase {
+public class CommandMoCTP {
 
-    private static final List<String> commands = new ArrayList<>();
-    private static final List<String> aliases = new ArrayList<>();
 
     static {
         commands.add("/moctp <entityid> <playername>");
         commands.add("/moctp <petname> <playername>");
         aliases.add("moctp");
         //tabCompletionStrings.add("moctp");
-    }
-
-    @Override
-    public String getName() {
-        return "moctp";
-    }
-
-    @Override
-    public List<String> getAliases() {
-        return aliases;
-    }
-
-    /**
-     * Return the required permission level for this command.
-     */
-    @Override
-    public int getRequiredPermissionLevel() {
-        return 2;
-    }
-
-    @Override
-    public String getUsage(ICommandSender par1ICommandSender) {
-        return "commands.moctp.usage";
     }
 
     @Override
@@ -161,12 +132,5 @@ public class CommandMoCTP extends CommandBase {
             }
         }
         return false;
-    }
-
-    public void sendCommandHelp(ICommandSender sender) {
-        sender.sendMessage(new TranslationTextComponent("§2Listing MoCreatures commands"));
-        for (String command : commands) {
-            sender.sendMessage(new TranslationTextComponent(command));
-        }
     }
 }

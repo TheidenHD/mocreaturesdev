@@ -9,7 +9,7 @@ import drzhark.mocreatures.entity.ai.EntityAIFleeFromPlayer;
 import drzhark.mocreatures.entity.ai.EntityAIFollowAdult;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -30,7 +30,7 @@ public class MoCEntityBoar extends MoCEntityAnimal {
 
     public MoCEntityBoar(EntityType<? extends MoCEntityBoar> type, World world) {
         super(type, world);
-        setSize(0.9F, 0.9F);
+        //setSize(0.9F, 0.9F);
         setAdult(this.rand.nextInt(4) != 0);
         // TODO: Make hitboxes adjust depending on size
         //setAge(this.rand.nextInt(15) + 45);
@@ -99,7 +99,7 @@ public class MoCEntityBoar extends MoCEntityAnimal {
 
     // TODO: Add unique sound event
     @Override
-    protected void playStepSound(BlockPos pos, Block blockIn) {
+    protected void playStepSound(BlockPos pos, BlockState blockIn) {
         this.playSound(SoundEvents.ENTITY_PIG_STEP, 0.15F, 1.0F);
     }
 

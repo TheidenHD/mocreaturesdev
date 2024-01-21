@@ -74,7 +74,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         setTamed(false);
         setAge(50);
         // TODO: Different hitboxes for each elephant type
-        setSize(1.1F, 3F);
+        //setSize(1.1F, 3F);
         this.stepHeight = 1.0F;
 
         if (!this.world.isRemote) {
@@ -94,8 +94,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 30.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2D);
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 8.0D).createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1.0D);
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 30.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 8.0D).createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1.0D);
     }
 
     @Override
@@ -104,7 +103,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         if (getTypeMoC() == 0) {
             setTypeMoC(this.rand.nextInt(2) + 1);
         }
-        this.getEntityAttribute(Attributes.MAX_HEALTH, calculateMaxHealth());
+        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(calculateMaxHealth());
         this.setHealth(getMaxHealth());
     }
 
@@ -219,14 +218,14 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
             }
 
             if (MoCreatures.proxy.elephantBulldozer && getIsTamed() && (this.isBeingRidden()) && (getTusks() > 0)) {
-                int getHeight() = 2;
+                int height = 2;
                 if (getTypeMoC() == 3) {
-                    getHeight() = 3;
+                    height = 3;
                 }
                 if (getTypeMoC() == 4) {
-                    getHeight() = 3;
+                    height = 3;
                 }
-                int dmg = MoCTools.destroyBlocksInFront(this, 2D, this.getTusks(), getHeight());
+                int dmg = MoCTools.destroyBlocksInFront(this, 2D, this.getTusks(), height);
                 checkTusks(dmg);
 
             }
@@ -298,7 +297,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
 
     @Override
     public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }

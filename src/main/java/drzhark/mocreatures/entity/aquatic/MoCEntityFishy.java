@@ -9,6 +9,7 @@ import drzhark.mocreatures.entity.ai.EntityAIFleeFromEntityMoC;
 import drzhark.mocreatures.entity.ai.EntityAIPanicMoC;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
+import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.network.MoCMessageHandler;
@@ -25,6 +26,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
@@ -106,14 +108,14 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
     }
 
     @Override
-    protected void dropFewItems(boolean flag, int x) {
+    protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         int i = this.rand.nextInt(100);
         if (i < 70) {
             //entityDropItem(new ItemStack(Items.FISH, 1, 0), 0.0F);
         } else {
             int j = this.rand.nextInt(2);
             for (int k = 0; k < j; k++) {
-                entityDropItem(new ItemStack(MoCItems.mocegg, 1, getTypeMoC()), 0.0F);
+                entityDropItem(new ItemStack(MoCItems.mocegg[getTypeMoC()], 1), 0.0F);
             }
 
         }
@@ -178,7 +180,7 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
                 }
                 int l = this.rand.nextInt(3) + 1;
                 for (int i1 = 0; i1 < l; i1++) {
-                    MoCEntityFishy entityfishy1 = new MoCEntityFishy(this.world);
+                    MoCEntityFishy entityfishy1 = MoCEntities.FISHY.create(this.world);
                     entityfishy1.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
                     this.world.addEntity(entityfishy1);
                     MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);

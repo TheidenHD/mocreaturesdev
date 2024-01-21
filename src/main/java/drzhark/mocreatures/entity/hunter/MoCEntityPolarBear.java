@@ -27,11 +27,11 @@ public class MoCEntityPolarBear extends MoCEntityBear {
 
     public MoCEntityPolarBear(EntityType<? extends MoCEntityPolarBear> type, World world) {
         super(type, world);
-        setSize(1.5F, 1.834F);
+        //setSize(1.5F, 1.834F);
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 45.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.5D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+        return MoCEntityBear.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 45.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.5D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class MoCEntityPolarBear extends MoCEntityBear {
 
     @Override
     public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -96,7 +96,7 @@ public class MoCEntityPolarBear extends MoCEntityBear {
                 setAge(getAge() + 1);
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
         if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.whip)) {
             if (getBearState() == 0) {
@@ -104,7 +104,7 @@ public class MoCEntityPolarBear extends MoCEntityBear {
             } else {
                 setBearState(0);
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
         if (this.getIsRideable() && this.getIsAdult() && (!this.getIsChested() || !player.isSneaking()) && !this.isBeingRidden()) {
             if (!this.world.isRemote && player.startRiding(this)) {
@@ -113,7 +113,7 @@ public class MoCEntityPolarBear extends MoCEntityBear {
                 setBearState(0);
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         return super.getEntityInteractionResult(player, hand);

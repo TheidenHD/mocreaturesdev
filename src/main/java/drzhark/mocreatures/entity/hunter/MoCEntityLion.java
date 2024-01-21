@@ -25,11 +25,11 @@ public class MoCEntityLion extends MoCEntityBigCat {
     public MoCEntityLion(EntityType<? extends MoCEntityLion> type, World world) {
         super(type, world);
         // TODO: Separate hitbox for the lioness
-        setSize(1.25F, 1.275F);
+        //setSize(1.25F, 1.275F);
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+        return MoCEntityBigCat.registerAttributes().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
@@ -41,8 +41,10 @@ public class MoCEntityLion extends MoCEntityBigCat {
                 setTypeMoC(rand.nextInt(2) + 1);
             }
         }
-        super.selectType().createMutableAttribute(Attributes.MAX_HEALTH, calculateMaxHealth());
-        this.setHealth(getMaxHealth()).createMutableAttribute(Attributes.ATTACK_DAMAGE, calculateAttackDmg());
+        super.selectType();
+        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(calculateMaxHealth());
+        this.setHealth(getMaxHealth());
+        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(calculateAttackDmg());
     }
 
     @Override
@@ -82,7 +84,7 @@ public class MoCEntityLion extends MoCEntityBigCat {
 
     @Override
     public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -96,7 +98,7 @@ public class MoCEntityLion extends MoCEntityBigCat {
                 player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
             }
             setTypeMoC(getTypeMoC() + 1);
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         if (this.getIsRideable() && this.getIsAdult() && (!this.getIsChested() || !player.isSneaking()) && !this.isBeingRidden()) {
@@ -106,7 +108,7 @@ public class MoCEntityLion extends MoCEntityBigCat {
                 setSitting(false);
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         return super.getEntityInteractionResult(player, hand);

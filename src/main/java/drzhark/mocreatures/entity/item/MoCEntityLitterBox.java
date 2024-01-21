@@ -7,13 +7,14 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.hostile.MoCEntityOgre;
 import drzhark.mocreatures.init.MoCItems;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -23,10 +24,8 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -39,7 +38,7 @@ public class MoCEntityLitterBox extends MobEntity {
 
     public MoCEntityLitterBox(EntityType<? extends MoCEntityLitterBox> type, World world) {
         super(type, world);
-        setSize(1.0F, 0.15F);
+        //setSize(1.0F, 0.15F);
         setNoAI(true);
     }
 
@@ -48,7 +47,7 @@ public class MoCEntityLitterBox extends MobEntity {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 20.0D);
+        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 20.0D);
     }
 
     @Override
@@ -89,7 +88,7 @@ public class MoCEntityLitterBox extends MobEntity {
     }
 
     @Override
-    protected boolean canDespawn() {
+    public boolean canDespawn(double distanceToClosestPlayer) {
         return false;
     }
 
@@ -113,33 +112,33 @@ public class MoCEntityLitterBox extends MobEntity {
     }
 
     @Override
-    public boolean getEntityInteractionResult(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && stack.getItem() == Item.getItemFromBlock(Blocks.SAND)) {
             MoCTools.playCustomSound(this, SoundEvents.BLOCK_SAND_PLACE);
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             setUsedLitter(false);
             this.litterTime = 0;
-            return true;
+            return ActionResultType.SUCCESS;
         }
         if (this.getRidingEntity() == null) {
             if (player.isSneaking()) {
                 player.inventory.addItemStackToInventory(new ItemStack(MoCItems.litterbox));
                 MoCTools.playCustomSound(this, SoundEvents.ENTITY_ITEM_PICKUP, 0.2F);
-                remove(keepData);
+                remove();
             } else {
                 setRotationYawHead((float) MoCTools.roundToNearest90Degrees(this.rotationYawHead) + 90.0F);
-                MoCTools.playCustomSound(this, SoundEvents.ENTITY_ITEMFRAME_ROTATE_ITEM);
+                MoCTools.playCustomSound(this, SoundEvents.ENTITY_ITEM_FRAME_ROTATE_ITEM);
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
-        return true;
+        return ActionResultType.SUCCESS;
     }
 
     @Override
-    public void move(MoverType type, double d, double d1, double d2) {
+    public void move(MoverType type, Vector3d pos) {
         if (!this.world.isRemote && (getRidingEntity() != null || !this.onGround || !MoCreatures.proxy.staticLitter)) {
-            super.move(type, d, d1, d2);
+            super.move(type, pos);
         }
     }
 
@@ -159,8 +158,8 @@ public class MoCEntityLitterBox extends MobEntity {
                     }
                     MonsterEntity entityMob = (MonsterEntity) entity;
                     entityMob.setAttackTarget(this);
-                    if (entityMob instanceof EntityCreeper) {
-                        ((EntityCreeper) entityMob).setCreeperState(-1);
+                    if (entityMob instanceof CreeperEntity) {
+                        ((CreeperEntity) entityMob).setCreeperState(-1);
                     }
                     if (entityMob instanceof MoCEntityOgre) {
                         ((MoCEntityOgre) entityMob).smashCounter = 0;

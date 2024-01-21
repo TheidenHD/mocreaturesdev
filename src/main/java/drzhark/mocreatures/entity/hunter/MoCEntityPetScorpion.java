@@ -15,7 +15,7 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -24,9 +24,9 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.SaddleItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.SaddleItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -55,7 +55,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
 
     public MoCEntityPetScorpion(EntityType<? extends MoCEntityPetScorpion> type, World world) {
         super(type, world);
-        setSize(1.4F, 0.9F);
+        //setSize(1.4F, 0.9F);
         this.poisontimer = 0;
         setAdult(false);
         setAge(20);
@@ -79,8 +79,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
 
     // TODO: Varied stats depending on type
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes();
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.MAX_HEALTH, 20.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.0D);
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 20.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.0D);
     }
 
     @Override
@@ -296,7 +295,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
+    public void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
         if (!getIsPoisoning() && this.rand.nextInt(5) == 0 && entityIn instanceof LivingEntity) {
             setPoisoning(true);
             if (getTypeMoC() <= 1) // Dirt Scorpion
@@ -362,7 +361,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void playStepSound(BlockPos pos, Block blockIn) {
+    protected void playStepSound(BlockPos pos, BlockState blockIn) {
         this.playSound(SoundEvents.ENTITY_SPIDER_STEP, 0.15F, 1.5F);
     }
 
@@ -391,7 +390,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     // TODO: Make it not give items in creative
     @Override
     public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -401,12 +400,12 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
                 && (stack.getItem() instanceof SaddleItem || stack.getItem() == MoCItems.horsesaddle)) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             setRideable(true);
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         if (!stack.isEmpty() && (stack.getItem() == MoCItems.whip) && getIsTamed() && (!this.isBeingRidden())) {
             setSitting(!getIsSitting());
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         // Transformations
@@ -422,7 +421,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
                 }
 
                 transform(3);
-                return true;
+                return ActionResultType.SUCCESS;
             }
 
             // Undead Scorpion (Essence of Undead)
@@ -435,7 +434,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
                 }
 
                 transform(5);
-                return true;
+                return ActionResultType.SUCCESS;
             }
         }
 
@@ -452,11 +451,9 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
                 MoCEntityEgg entityegg = new MoCEntityEgg(this.world, i);
                 entityegg.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
                 player.world.addEntity(entityegg);
-                entityegg.getMotion().getY() += this.world.rand.nextFloat() * 0.05F;
-                entityegg.getMotion().getX() += (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.3F;
-                entityegg.getMotion().getZ() += (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.3F;
+                entityegg.setMotion(entityegg.getMotion().add((this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.3F, this.world.rand.nextFloat() * 0.05F, (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.3F));
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         if (this.getRidingEntity() == null && this.getAge() < 60 && !getIsAdult()) {
@@ -467,14 +464,12 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
                 }
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         } else if (this.getRidingEntity() != null) {
             MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
             this.dismount();
-            this.getMotion().getX() = player.getMotion().getX() * 5D;
-            this.getMotion().getY() = (player.getMotion().getY() / 2D) + 0.5D;
-            this.getMotion().getZ() = player.getMotion().getZ() * 5D;
-            return true;
+            this.setMotion(player.getMotion().getX() * 5D, (player.getMotion().getY() / 2D) + 0.5D, player.getMotion().getZ() * 5D);
+            return ActionResultType.SUCCESS;
         }
 
         if (getIsRideable() && getIsTamed() && getIsAdult() && (!this.isBeingRidden())) {
@@ -484,7 +479,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
                 player.startRiding(this);
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         return super.getEntityInteractionResult(player, hand);

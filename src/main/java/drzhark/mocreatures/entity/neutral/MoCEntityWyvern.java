@@ -127,7 +127,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected boolean canDespawn() {
+    public boolean canDespawn(double distanceToClosestPlayer) {
         return this.world.provider.getDimension() != MoCreatures.proxy.wyvernDimension;
     }
 
