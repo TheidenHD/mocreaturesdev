@@ -40,8 +40,7 @@ public class MoCEntityMantaRay extends MoCEntityRay {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.MANTA_RAY;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.MANTA_RAY;
     }
 
     @Override

@@ -84,8 +84,7 @@ public class MoCEntityCricket extends MoCEntityAmbient {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.CRICKET;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.CRICKET;
     }
 
     @Override

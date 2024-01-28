@@ -28,7 +28,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 
@@ -42,6 +41,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
     private boolean transforming;
     private int tcounter;
     private int textCounter;
+    private boolean isImmuneToFire;
 
     public MoCEntityWerewolf(EntityType<? extends MoCEntityWerewolf> type, World world) {
         super(type, world);
@@ -93,8 +93,6 @@ public class MoCEntityWerewolf extends MoCEntityMob {
                 setTypeMoC(3);
             } else {
                 setTypeMoC(4);
-                //TODO TheidenHD
-                //this.isImmuneToFire = true;
             }
         }
     }
@@ -231,8 +229,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        if (getIsHumanForm()) {
+    protected ResourceLocation getLootTable() {        if (getIsHumanForm()) {
             return MoCLootTables.WEREHUMAN;
         }
 
@@ -355,15 +352,19 @@ public class MoCEntityWerewolf extends MoCEntityMob {
         return 0.2F;
     }
 
-    @Override
-    public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
-        if (getTypeMoC() == 4) {
-            //this.isImmuneToFire = true;//TODO TheidenHD
-        }
-        return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-    }
 
     protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return getIsHumanForm() ? this.getHeight() * 0.885F : this.getHeight();
+    }
+
+    @Override
+    public void setTypeMoC(int i) {
+        this.isImmuneToFire = i == 4;
+        super.setTypeMoC(i);
+    }
+
+    @Override
+    public boolean isImmuneToFire() {
+        return this.isImmuneToFire ? true : super.isImmuneToFire();
     }
 }

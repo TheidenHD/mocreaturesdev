@@ -24,7 +24,6 @@ public class MoCEntityBass extends MoCEntityMediumFish {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.BASS;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.BASS;
     }
 }

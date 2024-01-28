@@ -24,7 +24,6 @@ public class MoCEntityCod extends MoCEntityMediumFish {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.COD;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.COD;
     }
 }

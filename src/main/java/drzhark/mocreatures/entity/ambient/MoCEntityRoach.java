@@ -88,7 +88,6 @@ public class MoCEntityRoach extends MoCEntityInsect {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.ROACH;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.ROACH;
     }
 }

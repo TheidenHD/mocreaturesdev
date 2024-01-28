@@ -54,7 +54,6 @@ public class MoCEntityDarkManticore extends MoCEntityManticore {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.DARK_MANTICORE;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.DARK_MANTICORE;
     }
 }

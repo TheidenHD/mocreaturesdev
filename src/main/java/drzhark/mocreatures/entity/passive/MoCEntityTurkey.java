@@ -3,71 +3,71 @@
  */
 package drzhark.mocreatures.entity.passive;
 
-import com.google.common.collect.Sets;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.ai.EntityAIMateMoC;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
+import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
-import net.minecraft.entity.ai.EntityAITempt;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import java.util.Set;
 
 public class MoCEntityTurkey extends MoCEntityTameableAnimal {
-    private static final Set<Item> TEMPTATION_ITEMS = Sets.newHashSet(Items.WHEAT_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS);
 
     public MoCEntityTurkey(EntityType<? extends MoCEntityTurkey> type, World world) {
         super(type, world);
-        setSize(0.6F, 0.9F);
+        //setSize(0.6F, 0.9F);
         setAdult(true);
     }
 
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new SwimGoal(this));
-        this.goalSelector.addGoal(1, new EntityAIPanic(this, 1.4D));
+        this.goalSelector.addGoal(1, new PanicGoal(this, 1.4D));
         this.goalSelector.addGoal(2, new EntityAIMateMoC(this, 1.0D));
-        this.goalSelector.addGoal(3, new EntityAITempt(this, 1.0D, false, TEMPTATION_ITEMS));
+        this.goalSelector.addGoal(3, new TemptGoal(this, 1.0D, false, TEMPTATION_ITEMS));
         this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 1.0D));
         this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 6.0F));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes();
-        getEntityAttribute(Attributes.MAX_HEALTH, 8.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 8.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
     public boolean isBreedingItem(ItemStack stack) {
-        return TEMPTATION_ITEMS.contains(stack.getItem());
+        return TEMPTATION_ITEMS.test(stack);
     }
 
     @Override
-    public AgeableEntity createChild(AgeableEntity entity) {
-        return new MoCEntityTurkey(entity.world);
+    public AgeableEntity createChild(ServerWorld world, AgeableEntity entity) {
+        return MoCEntities.TURKEY.create(world);
     }
 
     @Override
@@ -103,16 +103,12 @@ public class MoCEntityTurkey extends MoCEntityTameableAnimal {
 
     // TODO: Add unique sound event
     @Override
-    protected void playStepSound(BlockPos pos, Block blockIn) {
+    protected void playStepSound(BlockPos pos, BlockState blockIn) {
         this.playSound(SoundEvents.ENTITY_CHICKEN_STEP, 0.15F, 1.0F);
     }
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.TURKEY;
     }
 
@@ -134,25 +130,25 @@ public class MoCEntityTurkey extends MoCEntityTameableAnimal {
         ItemStack itemstack = player.getHeldItem(hand);
 
         if (!itemstack.isEmpty()) {
-            if (this.isBreedingItem(itemstack) && this.getGrowingAge() == 0 && this.inLove <= 0) {
+            if (this.isBreedingItem(itemstack) && this.getGrowingAge() == 0 && this.func_234178_eO_() <= 0) {
                 this.consumeItemFromStack(player, itemstack);
                 this.setInLove(player);
 
                 // Extend mating period for Males
                 if (this.getTypeMoC() == 1) {
-                    this.inLove = 1800;
+                    this.setInLove(1800);
                 }
-                return true;
+                return ActionResultType.SUCCESS;
             }
 
             if (this.isChild() && this.isBreedingItem(itemstack)) {
                 this.consumeItemFromStack(player, itemstack);
                 this.ageUp((int) ((float) (-this.getGrowingAge() / 20) * 0.1F), true);
-                return true;
+                return ActionResultType.SUCCESS;
             }
         }
 
-        final Boolean tameResult = this.processTameInteract(player, hand);
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -163,7 +159,7 @@ public class MoCEntityTurkey extends MoCEntityTameableAnimal {
                 MoCTools.tameWithName(player, this);
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         return super.getEntityInteractionResult(player, hand);
@@ -174,21 +170,7 @@ public class MoCEntityTurkey extends MoCEntityTameableAnimal {
         super.livingTick();
 
         if (!this.onGround && this.getMotion().getY() < 0.0D) {
-            this.getMotion().getY() *= 0.8D;
-        }
-        if (this.getGrowingAge() != 0) {
-            this.inLove = 0;
-        }
-
-        if (this.inLove > 0) {
-            --this.inLove;
-
-            if (this.inLove % 10 == 0) {
-                double d0 = this.rand.nextGaussian() * 0.02D;
-                double d1 = this.rand.nextGaussian() * 0.02D;
-                double d2 = this.rand.nextGaussian() * 0.02D;
-                this.world.addParticle(ParticleTypes.HEART, this.getPosX() + (double) (this.rand.nextFloat() * this.getWidth() * 2.0F) - (double) this.getWidth(), this.getPosY() + 0.5D + (double) (this.rand.nextFloat() * this.getHeight()), this.getPosZ() + (double) (this.rand.nextFloat() * this.getWidth() * 2.0F) - (double) this.getWidth(), d0, d1, d2);
-            }
+            this.setMotion(this.getMotion().mul(1.0D, 0.8D, 1.0D));
         }
     }
 

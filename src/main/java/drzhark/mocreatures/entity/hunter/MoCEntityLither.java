@@ -64,10 +64,6 @@ public class MoCEntityLither extends MoCEntityBigCat {
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.LITHER;
     }
 

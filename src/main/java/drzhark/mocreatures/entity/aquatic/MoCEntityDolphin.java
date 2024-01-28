@@ -243,8 +243,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.DOLPHIN;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.DOLPHIN;
     }
 
     @Override

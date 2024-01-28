@@ -9,14 +9,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -109,7 +106,7 @@ public class ItemOgreHammer extends MoCItem {
             }
             Item itemTemp = slotStack.getItem();
             int metadata = slotStack.getItemDamage();
-            if (itemTemp instanceof ItemBlock) {
+            if (itemTemp instanceof BlockItem) {
                 if (remove && !player.abilities.isCreativeMode) {
                     slotStack.shrink(1);
                     if (slotStack.isEmpty()) {

@@ -35,11 +35,11 @@ public class MoCMessageAttachedEntity {
 
     public static boolean onMessage(MoCMessageAttachedEntity message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().setPacketHandled(true);
-        Object var2 = Minecraft.getInstance().player.world.getEntityByID(message.sourceEntityId);
+        Entity var2 = Minecraft.getInstance().player.world.getEntityByID(message.sourceEntityId);
         Entity var3 = Minecraft.getInstance().player.world.getEntityByID(message.targetEntityId);
 
         if (var2 != null) {
-            ((Entity) var2).startRiding(var3);
+            (var2).startRiding(var3);
         }
         return true;
     }

@@ -16,6 +16,7 @@ import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
@@ -38,20 +39,20 @@ public class MoCEntityMouse extends MoCEntityAnimal {
 
     public MoCEntityMouse(EntityType<? extends MoCEntityMouse> type, World world) {
         super(type, world);
-        setSize(0.45F, 0.3F);
+        //setSize(0.45F, 0.3F);
     }
 
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EntityAIFleeFromPlayer(this, 1.2D, 4D));
-        this.goalSelector.addGoal(2, new EntityAIPanic(this, 1.4D));
+        this.goalSelector.addGoal(2, new PanicGoal(this, 1.4D));
         this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 1.0D));
         this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 6.0F));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 8.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.35D);
+        return MoCEntityAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 8.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.35D);
     }
 
     @Override
@@ -124,8 +125,7 @@ public class MoCEntityMouse extends MoCEntityAnimal {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.MOUSE;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.MOUSE;
     }
 
     @Override
@@ -152,13 +152,13 @@ public class MoCEntityMouse extends MoCEntityAnimal {
     }
 
     @Override
-    public boolean getEntityInteractionResult(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         if (this.getRidingEntity() == null) {
             if (this.startRiding(player)) {
                 this.rotationYaw = player.rotationYaw;
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         return super.getEntityInteractionResult(player, hand);

@@ -36,8 +36,7 @@ public class MoCEntityFlameWraith extends MoCEntityWraith implements IMob {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.FLAME_WRAITH;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.FLAME_WRAITH;
     }
 
     @Override

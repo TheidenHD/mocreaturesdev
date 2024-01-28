@@ -337,10 +337,6 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.CROCODILE;
     }
 

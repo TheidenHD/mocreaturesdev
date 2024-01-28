@@ -37,7 +37,6 @@ public class MoCEntityGreenOgre extends MoCEntityOgre {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.GREEN_OGRE;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.GREEN_OGRE;
     }
 }

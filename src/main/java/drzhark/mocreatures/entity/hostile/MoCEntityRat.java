@@ -166,8 +166,7 @@ public class MoCEntityRat extends MoCEntityMob {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.RAT;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.RAT;
     }
 
     @Override

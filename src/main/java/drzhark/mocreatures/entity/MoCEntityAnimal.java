@@ -22,8 +22,8 @@ import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -46,10 +46,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity {
 
@@ -359,7 +359,7 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
         return isAmphibian();
     }
 
-    public ItemEntity getClosestItem(Entity entity, double d, Predicate<Item> item, Predicate<Item> item1) {
+    public ItemEntity getClosestItem(Entity entity, double d, Ingredient... items) {
         double d1 = -1D;
         ItemEntity entityitem = null;
         List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(d));
@@ -368,7 +368,7 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
                 continue;
             }
             ItemEntity entityitem1 = (ItemEntity) entity1;
-            if (!item.test(entityitem1.getItem().getItem()) && !item1.test(entityitem1.getItem().getItem())) {
+            if (items.length > 0 && Arrays.stream(items).noneMatch(item -> item.test(entityitem1.getItem()))) {
                 continue;
             }
             double d2 = entityitem1.getDistanceSq(entity.getPosX(), entity.getPosY(), entity.getPosZ());

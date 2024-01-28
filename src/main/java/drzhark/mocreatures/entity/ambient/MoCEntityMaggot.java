@@ -47,8 +47,7 @@ public class MoCEntityMaggot extends MoCEntityAmbient {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.MAGGOT;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.MAGGOT;
     }
 
     @Override

@@ -20,15 +20,17 @@ public class MoCAnimalChest extends Inventory implements INamedContainerProvider
 
     private LockCode lockCode = LockCode.EMPTY_CODE;
     private ITextComponent name;
+    private Size size;
 
-    public MoCAnimalChest(String name, int size) {
-        super(size);
+    public MoCAnimalChest(String name, Size size) {
+        super(size.numSlots);
         this.name = new StringTextComponent(name);
+        this.size = size;
     }
 
     @Override
     public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity playerIn) {
-        return LockableTileEntity.canUnlock(playerIn, this.lockCode, this.getDisplayName()) ? new ChestContainer(ContainerType.GENERIC_9X2, id, playerInventory, this, 2) : null;
+        return LockableTileEntity.canUnlock(playerIn, this.lockCode, this.getDisplayName()) ? new ChestContainer(this.size.getType(), id, playerInventory, this, this.size.getRows()) : null;
     }
 
     public void write(CompoundNBT nbttagcompound) {
@@ -41,5 +43,36 @@ public class MoCAnimalChest extends Inventory implements INamedContainerProvider
     @Override
     public ITextComponent getDisplayName() {
         return name;
+    }
+
+    public static enum Size {
+
+        tiny(9, 1, ContainerType.GENERIC_9X1),
+        small(18, 2, ContainerType.GENERIC_9X2),
+        medium(27, 3, ContainerType.GENERIC_9X3),
+        large(36, 4, ContainerType.GENERIC_9X4),
+        huge(45, 5, ContainerType.GENERIC_9X5),
+        gigantic(54, 6, ContainerType.GENERIC_9X6);
+        private final int numSlots;
+        private final int rows;
+        private final ContainerType type;
+
+        private Size(int numSlots, int rows, ContainerType type){
+            this.numSlots = numSlots;
+            this.rows = rows;
+            this.type = type;
+        }
+
+        public int getNumSlots() {
+            return numSlots;
+        }
+
+        public int getRows() {
+            return rows;
+        }
+
+        public ContainerType getType() {
+            return type;
+        }
     }
 }

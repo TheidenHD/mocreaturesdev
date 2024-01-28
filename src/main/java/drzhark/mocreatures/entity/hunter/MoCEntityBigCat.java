@@ -36,6 +36,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.SaddleItem;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -320,7 +321,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
         }
 
         if ((this.deathTime == 0) && !isMovementCeased()) {
-            ItemEntity entityitem = getClosestItem(this, 12D, (item) -> item == Items.PORKCHOP, (item) -> MoCTags.Items.RAW_FISHES.contains(item));
+            ItemEntity entityitem = getClosestItem(this, 12D, Ingredient.fromItems(Items.PORKCHOP), Ingredient.fromTag(MoCTags.Items.RAW_FISHES));
             if (entityitem != null) {
                 float f = entityitem.getDistance(this);
                 if (f > 2.0F) {
@@ -406,7 +407,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
         setHasAmulet(nbttagcompound.getBoolean("Amulet"));
         if (getIsChested()) {
             ListNBT nbttaglist = nbttagcompound.getList("Items", 10);
-            this.localchest = new MoCAnimalChest("BigCatChest", 18);
+            this.localchest = new MoCAnimalChest("BigCatChest", MoCAnimalChest.Size.small);
             this.localchest.read(nbttagcompound);
             for (int i = 0; i < nbttaglist.size(); i++) {
                 CompoundNBT nbttagcompound1 = nbttaglist.getCompound(i);
@@ -489,7 +490,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
 
         if (getIsChested() && player.isSneaking()) {
             if (this.localchest == null) {
-                this.localchest = new MoCAnimalChest(this.chestName, 18);
+                this.localchest = new MoCAnimalChest(this.chestName, MoCAnimalChest.Size.small);
             }
             if (!this.world.isRemote) {
                 player.openContainer(this.localchest);

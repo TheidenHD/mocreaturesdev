@@ -39,10 +39,6 @@ public class MoCEntityDirtScorpion extends MoCEntityScorpion {
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.DIRT_SCORPION;
     }
 }

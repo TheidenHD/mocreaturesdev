@@ -24,7 +24,6 @@ public class MoCEntityManderin extends MoCEntitySmallFish {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.MANDARINFISH;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.MANDARINFISH;
     }
 }

@@ -783,8 +783,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.BIG_GOLEM;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.BIG_GOLEM;
     }
 
     public static boolean getCanSpawnHere(EntityType<? extends MoCEntityMob> type, IServerWorld world, SpawnReason reason, BlockPos pos, Random randomIn) {

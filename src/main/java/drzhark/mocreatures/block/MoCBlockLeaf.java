@@ -8,6 +8,7 @@ import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.SoundType;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,7 +33,7 @@ public class MoCBlockLeaf extends LeavesBlock {
     public boolean flammable;
     public int saplingDropChance;
 
-    public MoCBlockLeaf(MapColor mapColor, boolean flammable, int saplingDropChance) {
+    public MoCBlockLeaf(MaterialColor mapColor, boolean flammable, int saplingDropChance) {
         this.mapColor = mapColor;
         this.flammable = flammable;
         this.saplingDropChance = saplingDropChance;

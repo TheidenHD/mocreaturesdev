@@ -172,10 +172,6 @@ public class MoCEntityWWolf extends MoCEntityMob {
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.WILD_WOLF;
     }
 

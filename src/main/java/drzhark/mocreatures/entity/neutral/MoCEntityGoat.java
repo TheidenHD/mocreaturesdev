@@ -54,7 +54,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
     public MoCEntityGoat(EntityType<? extends MoCEntityGoat> type, World world) {
         super(type, world);
         // TODO: Separate hitbox for female goats
-        setSize(0.8F, 0.9F);
+        //setSize(0.8F, 0.9F);
         setAdult(true);
         setAge(70);
     }
@@ -70,8 +70,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 10.0D).createMutableAttribute(Attributes.ARMOR, 1.0D);
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 2.5D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 10.0D).createMutableAttribute(Attributes.ARMOR, 1.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 2.5D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
@@ -160,20 +159,19 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
     @Override
     protected void jump() {
         if (getTypeMoC() == 1) {
-            this.getMotion().getY() = 0.41D;
+            this.setMotion(this.getMotion().getX(), 0.41D, this.getMotion().getZ());
         } else if (getTypeMoC() < 5) {
-            this.getMotion().getY() = 0.45D;
+            this.setMotion(this.getMotion().getX(), 0.45D, this.getMotion().getZ());
         } else {
-            this.getMotion().getY() = 0.5D;
+            this.setMotion(this.getMotion().getX(), 0.5D, this.getMotion().getZ());
         }
 
         if (isPotionActive(Effects.JUMP_BOOST)) {
-            this.getMotion().getY() += (getActivePotionEffect(Effects.JUMP_BOOST).getAmplifier() + 1) * 0.1F;
+            this.setMotion(this.getMotion().add(0.0D, (getActivePotionEffect(Effects.JUMP_BOOST).getAmplifier() + 1) * 0.1F, 0.0D));
         }
         if (isSprinting()) {
             float f = this.rotationYaw * 0.01745329F;
-            this.getMotion().getX() -= MathHelper.sin(f) * 0.2F;
-            this.getMotion().getZ() += MathHelper.cos(f) * 0.2F;
+            this.setMotion(this.getMotion().add(MathHelper.sin(f) * -0.2F, 0.0D, MathHelper.sin(f) * 0.2F));
         }
         this.isAirBorne = true;
     }
@@ -274,7 +272,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
                         MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EATING);
                         setEating(true);
 
-                        entityitem.remove(keepData);
+                        entityitem.remove();
                         return;
                     }
                 }
@@ -501,7 +499,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
 
     @Override
     public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -511,22 +509,22 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
             if (getTypeMoC() > 4) {
                 setUpset(true);
                 setAttackTarget(player);
-                return false;
+                return ActionResultType.FAIL;
             }
             if (getTypeMoC() == 1) {
-                return false;
+                return ActionResultType.FAIL;
             }
 
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             player.addItemStackToInventory(new ItemStack(Items.MILK_BUCKET));
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         if (getIsTamed() && !stack.isEmpty() && (MoCTools.isItemEdible(stack.getItem()))) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             this.setHealth(getMaxHealth());
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EATING);
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         if (!getIsTamed() && !stack.isEmpty() && MoCTools.isItemEdible(stack.getItem())) {
@@ -534,7 +532,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
                 MoCTools.tameWithName(player, this);
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         return super.getEntityInteractionResult(player, hand);
@@ -588,10 +586,6 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.GOAT;
     }
 

@@ -24,7 +24,6 @@ public class MoCEntityAngelFish extends MoCEntitySmallFish {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.ANGELFISH;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.ANGELFISH;
     }
 }

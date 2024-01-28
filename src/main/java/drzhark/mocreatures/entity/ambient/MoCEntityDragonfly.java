@@ -93,8 +93,7 @@ public class MoCEntityDragonfly extends MoCEntityInsect {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.DRAGONFLY;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.DRAGONFLY;
     }
 
     @Override

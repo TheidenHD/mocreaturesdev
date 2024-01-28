@@ -37,7 +37,7 @@ public class MoCMessageHealth {
     public static boolean onMessage(MoCMessageHealth message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().setPacketHandled(true);
         Entity ent = Minecraft.getInstance().player.world.getEntityByID(message.entityId);
-        if (ent.getEntityId() == message.entityId && ent instanceof MobEntity) {
+        if (ent instanceof MobEntity) {
             ((MobEntity) ent).setHealth(message.health);
         }
         return true;

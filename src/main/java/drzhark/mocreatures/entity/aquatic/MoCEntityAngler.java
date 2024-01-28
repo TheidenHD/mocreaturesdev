@@ -24,7 +24,6 @@ public class MoCEntityAngler extends MoCEntitySmallFish {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.ANGLERFISH;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.ANGLERFISH;
     }
 }

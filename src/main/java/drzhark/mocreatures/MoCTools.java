@@ -20,6 +20,7 @@ import drzhark.mocreatures.network.message.MoCMessageNameGUI;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.JukeboxBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.ItemEntity;
@@ -35,6 +36,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.tileentity.JukeboxTileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -243,7 +245,7 @@ public class MoCTools {
         entity.playSound(customSound, volume, 1.0F + ((entity.world.rand.nextFloat() - entity.world.rand.nextFloat()) * 0.2F));
     }
 
-    public static TileEntityJukebox nearJukeBoxRecord(Entity entity, Double dist) {
+    public static JukeboxTileEntity nearJukeBoxRecord(Entity entity, Double dist) {
         AxisAlignedBB axisalignedbb = entity.getBoundingBox().grow(dist, dist / 2D, dist);
         int i = MathHelper.floor(axisalignedbb.minX);
         int j = MathHelper.floor(axisalignedbb.maxX + 1.0D);
@@ -256,8 +258,8 @@ public class MoCTools {
                 for (int i2 = i1; i2 < j1; i2++) {
                     BlockPos pos = new BlockPos(k1, l1, i2);
                     BlockState blockstate = entity.world.getBlockState(pos);
-                    if (!entity.world.isAirBlock(pos) && blockstate.getBlock() instanceof BlockJukebox) {
-                        return (TileEntityJukebox) entity.world.getTileEntity(pos);
+                    if (!entity.world.isAirBlock(pos) && blockstate.getBlock() instanceof JukeboxBlock) {
+                        return (JukeboxTileEntity) entity.world.getTileEntity(pos);
                     }
                 }
             }

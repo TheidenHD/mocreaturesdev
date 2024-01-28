@@ -9,21 +9,18 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
-import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.pathfinding.PathNavigateGround;
+import net.minecraft.loot.*;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.pathfinding.GroundPathNavigator;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
@@ -31,11 +28,10 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.ServerWorld;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.BiomeDictionary;
 
 import javax.annotation.Nullable;
@@ -47,11 +43,11 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
 
     protected ItemStack[] stealItems;
 
-    public MoCEntityFilchLizard(World worldIn) {
-        super(worldIn);
+    public MoCEntityFilchLizard(EntityType<? extends MoCEntityFilchLizard> type, World worldIn) {
+        super(type, worldIn);
         this.inventoryHandsDropChances[0] = 0f;
         this.inventoryHandsDropChances[1] = 0f;
-        this.setSize(0.6f, 0.5f);
+        //this.setSize(0.6f, 0.5f);
         this.experienceValue = 3;
     }
 
@@ -59,11 +55,11 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
     protected void registerGoals() {
         stealItems = getCustomLootItems(this, this.getStealLootTable(), new ItemStack(Items.IRON_INGOT));
         this.goalSelector.addGoal(0, new SwimGoal(this));
-        this.goalSelector.addGoal(1, new EntityAIPanic(this, 1.25D));
+        this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
         this.goalSelector.addGoal(2, new EntityAIGrabItemFromFloor(this, 1.2D, Sets.newHashSet(stealItems), true));
         this.goalSelector.addGoal(3, new EntityAIStealFromPlayer(this, 0.8D, Sets.newHashSet(stealItems), true));
         this.goalSelector.addGoal(4, new MoCEntityFilchLizard.AIAvoidWhenNasty(this, PlayerEntity.class, 16.0F, 1.0D, 1.33D));
-        this.goalSelector.addGoal(5, new EntityAIWander(this, 1.0D));
+        this.goalSelector.addGoal(5, new RandomWalkingGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 6.0F));
         this.goalSelector.addGoal(7, new LookRandomlyGoal(this));
     }
@@ -95,7 +91,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
             setTypeMoC(2);
         } else if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.MESA)) {
             setTypeMoC(3);
-        } else if (this.dimension == MoCreatures.proxy.wyvernDimension) {
+        } else if (this.world.getDimensionKey() == MoCreatures.proxy.wyvernDimension) {
             setTypeMoC(4);
         } else {
             setTypeMoC(1);
@@ -104,12 +100,11 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
     }
 
     @Override
-    public void livingTick() {
-        super.livingTick();
+    public EntitySize getSize(Pose poseIn) {
         if (!this.getHeldItemMainhand().isEmpty()) {
-            this.setSize(0.6f, 0.75f);
+            return super.getSize(poseIn).scale(1.0F, 2.5F);
         } else {
-            this.setSize(0.6f, 0.3f);
+            return super.getSize(poseIn);
         }
     }
 
@@ -129,7 +124,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 8.0D).createMutableAttribute(Attributes.ARMOR, 2.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+        return MoCEntityAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 8.0D).createMutableAttribute(Attributes.ARMOR, 2.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
@@ -138,13 +133,13 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
     }
 
     @Override
-    public ILivingEntityData onInitialSpawn(DifficultyInstance difficulty, @Nullable ILivingEntityData livingdata) {
+    public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
         if (rand.nextInt(100 / MoCreatures.proxy.filchLizardSpawnItemChance) == 0) {
             while (this.getHeldItemMainhand().isEmpty() && !getEntityWorld().isRemote) {
                 this.setItemStackToSlot(EquipmentSlotType.MAINHAND, getCustomLootItem(this, this.getSpawnLootTable(), new ItemStack(Items.IRON_INGOT)));
             }
         }
-        return super.onInitialSpawn(difficulty, livingdata);
+        return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
     public void dropItemStack(ItemStack itemIn, float offsetY) {
@@ -158,7 +153,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         }
         ItemStack stack = this.getHeldItemMainhand();
         if (!stack.isEmpty() && !getEntityWorld().isRemote) {
-            ItemStack newStack = new ItemStack(stack.getItem(), 1, stack.getMetadata());
+            ItemStack newStack = new ItemStack(stack.getItem(), 1);
             this.dropItemStack(newStack, 1);
             this.setItemStackToSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
         }
@@ -168,9 +163,9 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
     @Nullable
     public ItemStack getCustomLootItem(Entity entityIn, ResourceLocation resourceLootTable, ItemStack defaultItem) {
         if (resourceLootTable != null) {
-            LootTable loottable = entityIn.world.getLootTableManager().getLootTableFromLocation(resourceLootTable);
-            LootContext.Builder lootContextBuilder = (new LootContext.Builder((ServerWorld) entityIn.world)).withLootedEntity(entityIn);
-            for (ItemStack itemstack : loottable.generateLootForPools(entityIn.getEntityWorld().rand, lootContextBuilder.build())) {
+            LootTable loottable = entityIn.world.getServer().getLootTableManager().getLootTableFromLocation(resourceLootTable);
+            LootContext.Builder lootContextBuilder = (new LootContext.Builder((ServerWorld) entityIn.world)).withParameter(LootParameters.ORIGIN, entityIn.getPositionVec()).withParameter(LootParameters.THIS_ENTITY, entityIn);
+            for (ItemStack itemstack : loottable.generate(lootContextBuilder.build(LootParameterSets.SELECTOR))) {
                 return itemstack;
             }
         }
@@ -181,9 +176,9 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
     public ItemStack[] getCustomLootItems(Entity entityIn, ResourceLocation resourceLootTable, ItemStack defaultItem) {
         ItemStack[] arrayOfItems = null;
         if (resourceLootTable != null) {
-            LootTable loottable = entityIn.world.getLootTableManager().getLootTableFromLocation(resourceLootTable);
-            LootContext.Builder lootContextBuilder = (new LootContext.Builder((ServerWorld) entityIn.world)).withLootedEntity(entityIn);
-            List<ItemStack> listOfItems = loottable.generateLootForPools(entityIn.getEntityWorld().rand, lootContextBuilder.build());
+            LootTable loottable = entityIn.world.getServer().getLootTableManager().getLootTableFromLocation(resourceLootTable);
+            LootContext.Builder lootContextBuilder = (new LootContext.Builder((ServerWorld) entityIn.world)).withParameter(LootParameters.ORIGIN, entityIn.getPositionVec()).withParameter(LootParameters.THIS_ENTITY, entityIn);
+            List<ItemStack> listOfItems = loottable.generate(lootContextBuilder.build(LootParameterSets.SELECTOR));
             arrayOfItems = new ItemStack[listOfItems.size()];
             int i = 0;
             for (ItemStack itemstack : listOfItems) {
@@ -203,11 +198,10 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.FILCH_LIZARD;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.FILCH_LIZARD;
     }
 
-    static class AIAvoidWhenNasty extends EntityAIAvoidEntity {
+    static class AIAvoidWhenNasty extends AvoidEntityGoal {
         public AIAvoidWhenNasty(CreatureEntity theEntityIn, Class classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn) {
             super(theEntityIn, classToAvoidIn, avoidDistanceIn, farSpeedIn, nearSpeedIn);
         }
@@ -260,7 +254,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
             this.speed = speedIn;
             this.temptItem = temptItemIn;
             this.canGetScared = canGetScared;
-            if (!(temptedEntityIn.getNavigator() instanceof PathNavigateGround)) {
+            if (!(temptedEntityIn.getNavigator() instanceof GroundPathNavigator)) {
                 throw new IllegalArgumentException("Unsupported mob type for TemptGoal");
             }
         }
@@ -301,7 +295,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         protected boolean isTempting(ItemStack stack) {
             if (!stack.isEmpty()) {
                 for (ItemStack item : temptItem) {
-                    if (item != null && item.getItem() == stack.getItem() && item.getMetadata() == stack.getMetadata()) {
+                    if (item != null && item.getItem() == stack.getItem()) {
                         return true;
                     }
                 }
@@ -346,7 +340,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
             if (this.temptedEntity.getDistanceSq(this.temptingItem) < 1.0D) {
                 this.temptedEntity.getNavigator().clearPath();
                 ItemStack loot = temptingItem.getItem().copy();
-                temptingItem.remove(keepData);
+                temptingItem.remove();
                 this.temptedEntity.setItemStackToSlot(EquipmentSlotType.MAINHAND, loot);
             } else {
                 this.temptedEntity.getNavigator().tryMoveToEntityLiving(this.temptingItem, this.speed);
@@ -401,7 +395,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
             this.speed = speedIn;
             this.temptItem = temptItemIn;
             this.canGetScared = canGetScared;
-            if (!(temptedEntityIn.getNavigator() instanceof PathNavigateGround)) {
+            if (!(temptedEntityIn.getNavigator() instanceof GroundPathNavigator)) {
                 throw new IllegalArgumentException("Unsupported mob type for TemptGoal");
             }
         }
@@ -438,7 +432,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         protected boolean isTempting(ItemStack stack) {
             if (!stack.isEmpty()) {
                 for (ItemStack item : temptItem) {
-                    if (item != null && item.getItem() == stack.getItem() && item.getMetadata() == stack.getMetadata()) {
+                    if (item != null && item.getItem() == stack.getItem()) {
                         return true;
                     }
                 }
@@ -487,7 +481,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
                     ItemStack item = this.temptingPlayer.inventory.getStackInSlot(i);
                     if (!item.isEmpty()) {
                         for (ItemStack itemstack : temptItem) {
-                            if (itemstack != null && !itemstack.isEmpty() && itemstack.getItem() == item.getItem() && itemstack.getMetadata() == item.getMetadata()) {
+                            if (itemstack != null && !itemstack.isEmpty() && itemstack.getItem() == item.getItem()) {
                                 MoCTools.playCustomSound(this.temptedEntity, SoundEvents.ENTITY_ITEM_PICKUP);
                                 ItemStack loot = item.copy();
                                 this.temptedEntity.setItemStackToSlot(EquipmentSlotType.MAINHAND, loot);

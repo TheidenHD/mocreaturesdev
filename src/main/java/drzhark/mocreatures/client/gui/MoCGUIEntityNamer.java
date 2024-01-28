@@ -10,16 +10,18 @@ import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageUpdatePetName;
 import drzhark.mocreatures.proxy.MoCProxyClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.io.IOException;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCGUIEntityNamer extends GuiScreen {
+public class MoCGUIEntityNamer extends Screen {
 
     private static final TextureManager textureManager = MoCProxyClient.mc.getTextureManager();
     private static final ResourceLocation TEXTURE_MOCNAME = MoCreatures.proxy.getGuiTexture("pet_naming.png");
@@ -32,6 +34,7 @@ public class MoCGUIEntityNamer extends GuiScreen {
     private String nameToSet;
 
     public MoCGUIEntityNamer(IMoCEntity mocanimal, String s) {
+        super(new StringTextComponent(("Choose your Pet's name:")));
         this.xSize = 256;
         this.ySize = 181;
         this.screenTitle = "Choose your Pet's name:";

@@ -44,7 +44,6 @@ public class MoCEntityPlainManticore extends MoCEntityManticore {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.PLAIN_MANTICORE;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.PLAIN_MANTICORE;
     }
 }

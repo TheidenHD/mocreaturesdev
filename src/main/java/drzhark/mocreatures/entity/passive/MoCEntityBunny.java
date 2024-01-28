@@ -7,6 +7,7 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.ai.*;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
+import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.*;
@@ -17,6 +18,7 @@ import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -24,6 +26,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
@@ -47,7 +50,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
         if (this.rand.nextInt(4) == 0) {
             setAdult(false);
         }
-        setSize(0.5F, 0.5F);
+        //setSize(0.5F, 0.5F);
         this.bunnyReproduceTickerA = this.rand.nextInt(64);
         this.bunnyReproduceTickerB = 0;
     }
@@ -64,7 +67,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 4.0D).createMutableAttribute(Attributes.ARMOR, 1.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.35D);
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 4.0D).createMutableAttribute(Attributes.ARMOR, 1.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.35D);
     }
 
     @Override
@@ -74,14 +77,14 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public ILivingEntityData onInitialSpawn(DifficultyInstance difficulty, ILivingEntityData par1EntityLivingData) {
-        if (this.world.provider.getDimension() == MoCreatures.proxy.wyvernDimension) this.enablePersistence();
-        return super.onInitialSpawn(difficulty, par1EntityLivingData);
+    public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
+        if (this.world.getDimensionKey() == MoCreatures.proxy.wyvernDimension) this.enablePersistence();
+        return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
     @Override
     public boolean canDespawn(double distanceToClosestPlayer) {
-        return this.world.provider.getDimension() != MoCreatures.proxy.wyvernDimension;
+        return this.world.getDimensionKey() != MoCreatures.proxy.wyvernDimension;
     }
 
     public boolean getHasEaten() {
@@ -158,16 +161,12 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.BUNNY;
     }
 
     @Override
     public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -177,7 +176,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             setHasEaten(true);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
-            return true;
+            return ActionResultType.SUCCESS;
         }
         if (this.getRidingEntity() == null) {
             if (this.startRiding(player)) {
@@ -187,7 +186,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
                 }
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         return super.getEntityInteractionResult(player, hand);
@@ -203,7 +202,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
         if (!this.world.isRemote) {
 
             if (--this.jumpTimer <= 0 && this.onGround && ((this.getMotion().getX() > 0.05D) || (this.getMotion().getZ() > 0.05D) || (this.getMotion().getX() < -0.05D) || (this.getMotion().getZ() < -0.05D))) {
-                this.getMotion().getY() = 0.3D;
+                this.setMotion(this.getMotion().getX(), 0.3D, this.getMotion().getZ());
                 this.jumpTimer = 15;
             }
 
@@ -224,7 +223,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
                     if ((entitybunny.getRidingEntity() != null) || (entitybunny.bunnyReproduceTickerA < 1023) || !entitybunny.getIsAdult() || !entitybunny.getHasEaten()) {
                         continue;
                     }
-                    MoCEntityBunny entitybunny1 = new MoCEntityBunny(this.world);
+                    MoCEntityBunny entitybunny1 = MoCEntities.BUNNY.create(this.world);
                     entitybunny1.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
                     entitybunny1.setAdult(false);
                     int babytype = this.getTypeMoC();

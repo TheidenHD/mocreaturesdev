@@ -46,10 +46,6 @@ public class MoCEntityUndeadScorpion extends MoCEntityScorpion {
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.UNDEAD_SCORPION;
     }
 }

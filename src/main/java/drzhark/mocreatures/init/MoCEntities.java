@@ -42,7 +42,7 @@ public class MoCEntities {
     /**
      * Animal
      */
-    public static EntityType<MoCEntityBird> BIRD = createEntityEntry(MoCEntityBird.class, "Bird", 37109, 4609629, EntitySpawnPlacementRegistry.PlacementType.IN_AIR);
+    public static EntityType<MoCEntityBird> BIRD = createEntityEntry(MoCEntityBird.class, "Bird", 37109, 4609629, EntitySpawnPlacementRegistry.PlacementType.NO_RESTRICTIONS);
     public static EntityType<MoCEntityBlackBear> BEAR = createEntityEntry(MoCEntityBlackBear.class, "BlackBear", 986897, 8609347, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND);
     public static EntityType<MoCEntityBoar> BOAR = createEntityEntry(MoCEntityBoar.class, "Boar", 2037783, 4995892, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND);
     public static EntityType<MoCEntityBunny> BUNNY = createEntityEntry(MoCEntityBunny.class, "Bunny", 8741934, 14527570, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND);
@@ -130,13 +130,13 @@ public class MoCEntities {
      * Ambient
      */
     public static EntityType<MoCEntityAnt> ANT = createEntityEntry(MoCEntityAnt.class, "Ant", 5915945, 2693905, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND);
-    public static EntityType<MoCEntityBee> BEE = createEntityEntry(MoCEntityBee.class, "Bee", 15912747, 526604, EntitySpawnPlacementRegistry.PlacementType.IN_AIR);
-    public static EntityType<MoCEntityButterfly> BUTTERFLY = createEntityEntry(MoCEntityButterfly.class, "ButterFly", 12615169, 2956801, EntitySpawnPlacementRegistry.PlacementType.IN_AIR);
+    public static EntityType<MoCEntityBee> BEE = createEntityEntry(MoCEntityBee.class, "Bee", 15912747, 526604, EntitySpawnPlacementRegistry.PlacementType.NO_RESTRICTIONS);
+    public static EntityType<MoCEntityButterfly> BUTTERFLY = createEntityEntry(MoCEntityButterfly.class, "ButterFly", 12615169, 2956801, EntitySpawnPlacementRegistry.PlacementType.NO_RESTRICTIONS);
     public static EntityType<MoCEntityCrab> CRAB = createEntityEntry(MoCEntityCrab.class, "Crab", 11880978, 15514213, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND);
     public static EntityType<MoCEntityCricket> CRICKET = createEntityEntry(MoCEntityCricket.class, "Cricket", 4071430, 8612672, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND);
-    public static EntityType<MoCEntityDragonfly> DRAGONFLY = createEntityEntry(MoCEntityDragonfly.class, "DragonFly", 665770, 2207231, EntitySpawnPlacementRegistry.PlacementType.IN_AIR);
-    public static EntityType<MoCEntityFirefly> FIREFLY = createEntityEntry(MoCEntityFirefly.class, "Firefly", 2102294, 8501028, EntitySpawnPlacementRegistry.PlacementType.IN_AIR);
-    public static EntityType<MoCEntityFly> FLY = createEntityEntry(MoCEntityFly.class, "Fly", 1184284, 11077640, EntitySpawnPlacementRegistry.PlacementType.IN_AIR);
+    public static EntityType<MoCEntityDragonfly> DRAGONFLY = createEntityEntry(MoCEntityDragonfly.class, "DragonFly", 665770, 2207231, EntitySpawnPlacementRegistry.PlacementType.NO_RESTRICTIONS);
+    public static EntityType<MoCEntityFirefly> FIREFLY = createEntityEntry(MoCEntityFirefly.class, "Firefly", 2102294, 8501028, EntitySpawnPlacementRegistry.PlacementType.NO_RESTRICTIONS);
+    public static EntityType<MoCEntityFly> FLY = createEntityEntry(MoCEntityFly.class, "Fly", 1184284, 11077640, EntitySpawnPlacementRegistry.PlacementType.NO_RESTRICTIONS);
     public static EntityType<MoCEntityGrasshopper> GRASSHOPPER = createEntityEntry(MoCEntityGrasshopper.class, "Grasshopper", 7830593, 3747075, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND);
     public static EntityType<MoCEntityMaggot> MAGGOT = createEntityEntry(MoCEntityMaggot.class, "Maggot", 14076037, 6839592, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND);
     public static EntityType<MoCEntitySnail> SNAIL = createEntityEntry(MoCEntitySnail.class, "Snail", 10850932, 7225384, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND);

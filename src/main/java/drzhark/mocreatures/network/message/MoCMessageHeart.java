@@ -3,7 +3,7 @@
  */
 package drzhark.mocreatures.network.message;
 
-import drzhark.mocreatures.entity.IMoCTameable;
+import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;

@@ -10,6 +10,7 @@ import drzhark.mocreatures.entity.ai.EntityAIFollowOwnerPlayer;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.item.MoCEntityEgg;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
+import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
@@ -367,10 +368,6 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         switch (getTypeMoC()) {
             case 1:
                 return MoCLootTables.DIRT_SCORPION;
@@ -448,7 +445,8 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
             this.setHealth(getMaxHealth());
             if (!this.world.isRemote) {
                 int i = getTypeMoC() + 40;
-                MoCEntityEgg entityegg = new MoCEntityEgg(this.world, i);
+                MoCEntityEgg entityegg = MoCEntities.EGG.create(this.world);
+                entityegg.setEggType(i);
                 entityegg.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
                 player.world.addEntity(entityegg);
                 entityegg.setMotion(entityegg.getMotion().add((this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.3F, this.world.rand.nextFloat() * 0.05F, (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.3F));

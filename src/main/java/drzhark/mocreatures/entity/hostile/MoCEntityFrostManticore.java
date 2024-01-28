@@ -44,7 +44,6 @@ public class MoCEntityFrostManticore extends MoCEntityManticore {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.FROST_MANTICORE;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.FROST_MANTICORE;
     }
 }

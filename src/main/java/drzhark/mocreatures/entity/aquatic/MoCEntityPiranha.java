@@ -86,7 +86,6 @@ public class MoCEntityPiranha extends MoCEntitySmallFish {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.PIRANHA;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.PIRANHA;
     }
 }

@@ -17,6 +17,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
@@ -29,11 +30,11 @@ public class MoCEntityPandaBear extends MoCEntityBear {
 
     public MoCEntityPandaBear(EntityType<? extends MoCEntityPandaBear> type, World world) {
         super(type, world);
-        setSize(0.8F, 1.05F);
+        //setSize(0.8F, 1.05F);
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 20.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+        return MoCEntityBear.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 20.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
@@ -86,7 +87,7 @@ public class MoCEntityPandaBear extends MoCEntityBear {
 
     @Override
     public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -105,7 +106,7 @@ public class MoCEntityPandaBear extends MoCEntityBear {
                 setAge(getAge() + 1);
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.whip) {
             if (getBearState() == 0) {
@@ -113,7 +114,7 @@ public class MoCEntityPandaBear extends MoCEntityBear {
             } else {
                 setBearState(0);
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
         if (this.getIsRideable() && this.getIsAdult() && (!this.getIsChested() || !player.isSneaking()) && !this.isBeingRidden()) {
             if (!this.world.isRemote && player.startRiding(this)) {
@@ -122,7 +123,7 @@ public class MoCEntityPandaBear extends MoCEntityBear {
                 setBearState(0);
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         return super.getEntityInteractionResult(player, hand);
@@ -130,10 +131,6 @@ public class MoCEntityPandaBear extends MoCEntityBear {
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.PANDA_BEAR;
     }
 

@@ -45,10 +45,6 @@ public class MoCEntityFireScorpion extends MoCEntityScorpion {
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.FIRE_SCORPION;
     }
 }

@@ -178,8 +178,7 @@ public class MoCEntityMiniGolem extends MoCEntityMob {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.MINI_GOLEM;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.MINI_GOLEM;
     }
 
     protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {

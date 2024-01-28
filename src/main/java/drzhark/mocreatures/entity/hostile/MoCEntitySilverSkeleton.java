@@ -138,8 +138,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.SILVER_SKELETON;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.SILVER_SKELETON;
     }
 
     @Override

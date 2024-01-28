@@ -51,7 +51,6 @@ public class MoCEntityCaveOgre extends MoCEntityOgre {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.CAVE_OGRE;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.CAVE_OGRE;
     }
 }

@@ -131,8 +131,7 @@ public class MoCEntityJellyFish extends MoCEntityTameableAquatic {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.JELLYFISH;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.JELLYFISH;
     }
 
     @Override

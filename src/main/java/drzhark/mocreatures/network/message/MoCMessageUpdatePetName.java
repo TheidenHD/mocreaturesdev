@@ -22,13 +22,6 @@ public class MoCMessageUpdatePetName {
     public String name;
     public int entityId;
 
-    public MoCMessageUpdatePetName() {
-    }
-
-    public MoCMessageUpdatePetName(int entityId) {
-        this.entityId = entityId;
-    }
-
     public MoCMessageUpdatePetName(int entityId, String name) {
         this.entityId = entityId;
         this.name = name;
@@ -37,7 +30,6 @@ public class MoCMessageUpdatePetName {
     public void encode(ByteBuf buffer) {
         buffer.writeInt(name.length());
         buffer.writeCharSequence(this.name, StandardCharsets.UTF_8);
-        ;
         buffer.writeInt(this.entityId);
     }
 

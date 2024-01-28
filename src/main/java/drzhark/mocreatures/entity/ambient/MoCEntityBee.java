@@ -66,8 +66,7 @@ public class MoCEntityBee extends MoCEntityInsect {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.BEE;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.BEE;
     }
 
     @Override

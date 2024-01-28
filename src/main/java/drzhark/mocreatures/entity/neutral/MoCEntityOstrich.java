@@ -3,6 +3,8 @@
  */
 package drzhark.mocreatures.entity.neutral;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.EnumHashBiMap;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.ai.EntityAIFollowAdult;
@@ -10,6 +12,7 @@ import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.inventory.MoCAnimalChest;
 import drzhark.mocreatures.entity.item.MoCEntityEgg;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
+import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
@@ -25,15 +28,14 @@ import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.Path;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.*;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
@@ -43,6 +45,24 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class MoCEntityOstrich extends MoCEntityTameableAnimal {
+    private static final BiMap<DyeColor, IItemProvider> WOOL_BY_COLOR = Util.make(EnumHashBiMap.create(DyeColor.class), (p_203402_0_) -> {
+        p_203402_0_.put(DyeColor.WHITE, Items.WHITE_WOOL);
+        p_203402_0_.put(DyeColor.ORANGE, Items.ORANGE_WOOL);
+        p_203402_0_.put(DyeColor.MAGENTA, Items.MAGENTA_WOOL);
+        p_203402_0_.put(DyeColor.LIGHT_BLUE, Items.LIGHT_BLUE_WOOL);
+        p_203402_0_.put(DyeColor.YELLOW, Items.YELLOW_WOOL);
+        p_203402_0_.put(DyeColor.LIME, Items.LIME_WOOL);
+        p_203402_0_.put(DyeColor.PINK, Items.PINK_WOOL);
+        p_203402_0_.put(DyeColor.GRAY, Items.GRAY_WOOL);
+        p_203402_0_.put(DyeColor.LIGHT_GRAY, Items.LIGHT_GRAY_WOOL);
+        p_203402_0_.put(DyeColor.CYAN, Items.CYAN_WOOL);
+        p_203402_0_.put(DyeColor.PURPLE, Items.PURPLE_WOOL);
+        p_203402_0_.put(DyeColor.BLUE, Items.BLUE_WOOL);
+        p_203402_0_.put(DyeColor.BROWN, Items.BROWN_WOOL);
+        p_203402_0_.put(DyeColor.GREEN, Items.GREEN_WOOL);
+        p_203402_0_.put(DyeColor.RED, Items.RED_WOOL);
+        p_203402_0_.put(DyeColor.BLACK, Items.BLACK_WOOL);
+    });
 
     private static final DataParameter<Boolean> RIDEABLE = EntityDataManager.createKey(MoCEntityOstrich.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> EGG_WATCH = EntityDataManager.createKey(MoCEntityOstrich.class, DataSerializers.BOOLEAN);
@@ -61,11 +81,12 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     public ItemStack localstack;
     private int eggCounter;
     private int hidingCounter;
+    private boolean isImmuneToFire;
 
 
     public MoCEntityOstrich(EntityType<? extends MoCEntityOstrich> type, World world) {
         super(type, world);
-        setSize(0.8F, 2.225F);
+        //setSize(0.8F, 2.225F);
         setAdult(true);
         setAge(35);
         this.eggCounter = this.rand.nextInt(1000) + 1000;
@@ -82,8 +103,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 16.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.0D);
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 16.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.0D);
     }
 
     @Override
@@ -95,7 +115,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         this.dataManager.register(IS_HIDING, Boolean.FALSE);
         this.dataManager.register(FERTILE, Boolean.FALSE);
         this.dataManager.register(HELMET_TYPE, 0);
-        this.dataManager.register(FLAG_COLOR, 0);
+        this.dataManager.register(FLAG_COLOR, -1);
     }
 
     @Override
@@ -132,11 +152,20 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         this.dataManager.set(HELMET_TYPE, i);
     }
 
-    public int getFlagColor() {
+    public DyeColor getFlagColor() {
+        int i = this.dataManager.get(FLAG_COLOR);
+        return i == -1 ? null : DyeColor.byId(i);
+    }
+
+    public void setFlagColor(@Nullable DyeColor color) {
+        this.dataManager.set(FLAG_COLOR, color == null ? -1 : color.getId());
+    }
+
+    private int getFlagColorRaw() {
         return this.dataManager.get(FLAG_COLOR);
     }
 
-    public void setFlagColor(int i) {
+    private void setFlagColorRaw(@Nullable int i) {
         this.dataManager.set(FLAG_COLOR, i);
     }
 
@@ -268,7 +297,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                 setTypeMoC(4);
             }
         }
-        this.getEntityAttribute(Attributes.MAX_HEALTH, calculateMaxHealth());
+        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(calculateMaxHealth());
         this.setHealth(getMaxHealth());
     }
 
@@ -329,7 +358,6 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             ostrichSpeed = 1.3D;
         } else if (getTypeMoC() == 5) {
             ostrichSpeed = 1.4D;
-            this.isImmuneToFire = true;
         }
         if (this.sprintCounter > 0 && this.sprintCounter < 200) {
             ostrichSpeed *= 1.5D;
@@ -452,7 +480,8 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                 int ostrichEggType = 30;
                 MoCEntityOstrich maleOstrich = getClosestMaleOstrich(this, 8D);
                 if (maleOstrich != null && this.rand.nextInt(100) < MoCreatures.proxy.ostrichEggDropChance) {
-                    MoCEntityEgg entityegg = new MoCEntityEgg(this.world, ostrichEggType);
+                    MoCEntityEgg entityegg = MoCEntities.EGG.create(this.world);
+                    entityegg.setEggType(ostrichEggType);
                     entityegg.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
                     this.world.addEntity(entityegg);
 
@@ -474,7 +503,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                 //look for and protect eggs and move close
                 MoCEntityEgg myEgg = (MoCEntityEgg) getBoogey(8D);
                 if (myEgg != null && MoCTools.getSqDistanceTo(myEgg, this.getPosX(), this.getPosY(), this.getPosZ()) > 4D) {
-                    Path pathEntity = this.navigator.getPathToPos(myEgg.getPosition());
+                    Path pathEntity = this.navigator.getPathToPos(myEgg.getPosition(), 0);
                     this.navigator.setPath(pathEntity, 2D);
                 }
                 //didn't find egg
@@ -519,7 +548,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
 
     @Override
     public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -529,7 +558,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
             setRideable(true);
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         if (!getIsFertile() && !stack.isEmpty() && getTypeMoC() == 2 && stack.getItem() == Items.MELON_SEEDS) {
@@ -538,13 +567,13 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             openMouth();
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
             setFertile(true);
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         //makes the ostrich stay by hiding their heads
         if (!stack.isEmpty() && (stack.getItem() == MoCItems.whip) && getIsTamed() && (!this.isBeingRidden())) {
             setHiding(!getHiding());
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         if (!stack.isEmpty() && this.getIsTamed() && getTypeMoC() > 1 && stack.getItem() == MoCItems.essencedarkness) {
@@ -560,7 +589,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                 transform(6);
             }
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_DRINKING);
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         if (!stack.isEmpty() && this.getIsTamed() && getTypeMoC() > 1 && stack.getItem() == MoCItems.essenceundead) {
@@ -576,7 +605,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                 transform(7);
             }
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_DRINKING);
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         if (!stack.isEmpty() && this.getIsTamed() && getTypeMoC() > 1 && stack.getItem() == MoCItems.essencelight) {
@@ -592,7 +621,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                 transform(8);
             }
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_DRINKING);
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         if (!stack.isEmpty() && this.getIsTamed() && getTypeMoC() > 1 && stack.getItem() == MoCItems.essencefire) {
@@ -608,18 +637,14 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                 transform(5);
             }
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_DRINKING);
-            return true;
+            return ActionResultType.SUCCESS;
         }
-        if (getIsTamed() && getIsChested() && (getTypeMoC() > 1) && !stack.isEmpty() && stack.getItem() == Item.getItemFromBlock(Blocks.WOOL)) {
-            int colorInt = (stack.getItemDamage());
-            if (colorInt == 0) {
-                colorInt = 16;
-            }
+        if (getIsTamed() && getIsChested() && (getTypeMoC() > 1) && !stack.isEmpty() && ItemTags.WOOL.contains(stack.getItem())) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
             dropFlag();
-            setFlagColor((byte) colorInt);
-            return true;
+            setFlagColor(WOOL_BY_COLOR.inverse().get(stack.getItem()));
+            return ActionResultType.SUCCESS;
         }
 
         if (!stack.isEmpty() && (getTypeMoC() > 1) && getIsTamed() && !getIsChested() && (stack.getItem() == Item.getItemFromBlock(Blocks.CHEST))) {
@@ -628,25 +653,25 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             //entityplayer.inventory.addItemStackToInventory(new ItemStack(MoCreatures.key));
             setIsChested(true);
             MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         if (player.isSneaking() && getIsChested()) {
             // if first time opening a chest, we must initialize it
             if (this.localchest == null) {
-                this.localchest = new MoCAnimalChest("OstrichChest", 9);
+                this.localchest = new MoCAnimalChest("OstrichChest", MoCAnimalChest.Size.tiny);
             }
             if (!this.world.isRemote) {
                 player.openContainer(this.localchest);
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         if (getIsTamed() && (getTypeMoC() > 1) && !stack.isEmpty()) {
 
             Item item = stack.getItem();
-            if (item instanceof ItemArmor && ((ItemArmor) item).armorType == EquipmentSlotType.HEAD) {
-                final ItemArmor itemArmor = (ItemArmor) stack.getItem();
+            if (item instanceof ArmorItem && ((ArmorItem) item).getEquipmentSlot() == EquipmentSlotType.HEAD) {
+                final ArmorItem itemArmor = (ArmorItem) stack.getItem();
                 byte helmetType = 0;
                 if (stack.getItem() == Items.LEATHER_HELMET) {
                     helmetType = 1;
@@ -675,10 +700,10 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                 if (helmetType != 0) {
                     player.setHeldItem(hand, ItemStack.EMPTY);
                     dropArmor();
-                    this.setItemStackToSlot(itemArmor.armorType, stack);
+                    this.setItemStackToSlot(itemArmor.getEquipmentSlot(), stack);
                     MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_OFF);
                     setHelmet(helmetType);
-                    return true;
+                    return ActionResultType.SUCCESS;
                 }
             }
         }
@@ -688,7 +713,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                 player.rotationPitch = this.rotationPitch;
                 setHiding(false);
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
         return super.getEntityInteractionResult(player, hand);
     }
@@ -697,15 +722,12 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
      * Drops a block of the color of the flag if carrying one
      */
     private void dropFlag() {
-        if (!this.world.isRemote && getFlagColor() != 0) {
-            int color = getFlagColor();
-            if (color == 16) {
-                color = 0;
-            }
-            ItemEntity entityitem = new ItemEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), new ItemStack(Blocks.WOOL, 1, color));
+        if (!this.world.isRemote && getFlagColor() != null) {
+            DyeColor color = getFlagColor();
+            ItemEntity entityitem = new ItemEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), new ItemStack(WOOL_BY_COLOR.get(color), 1));
             entityitem.setDefaultPickupDelay();
             this.world.addEntity(entityitem);
-            setFlagColor((byte) 0);
+            setFlagColor(null);
         }
     }
 
@@ -740,35 +762,35 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.OSTRICH;
     }
 
     @Override
     protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         boolean flag = (this.rand.nextInt(100) < MoCreatures.proxy.rareItemDropChance);
+        int i = this.rand.nextInt(3);
+
+        if (looting > 0)
+        {
+            i += this.rand.nextInt(looting + 1);
+        }
         if (flag && (this.getTypeMoC() == 8)) // unicorn
         {
-            return MoCItems.unicornhorn;
+            this.entityDropItem(new ItemStack(MoCItems.unicornhorn, i));
         }
         if (this.getTypeMoC() == 5 && flag) {
-            return MoCItems.heartfire;
+            this.entityDropItem(new ItemStack(MoCItems.heartfire, i));
         }
         if (this.getTypeMoC() == 6 && flag) // bat horse
         {
-            return MoCItems.heartdarkness;
+            this.entityDropItem(new ItemStack(MoCItems.heartdarkness, i));
         }
         if (this.getTypeMoC() == 7) {
             if (flag) {
-                return MoCItems.heartundead;
+                this.entityDropItem(new ItemStack(MoCItems.heartundead, i));
             }
-            return Items.ROTTEN_FLESH;
+            this.entityDropItem(new ItemStack(Items.ROTTEN_FLESH, i));
         }
-
-        return null;
     }
 
     @Override
@@ -778,18 +800,18 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         setEggWatching(nbttagcompound.getBoolean("EggWatch"));
         setHiding(nbttagcompound.getBoolean("Hiding"));
         setHelmet(nbttagcompound.getInt("Helmet"));
-        setFlagColor(nbttagcompound.getInt("FlagColor"));
+        setFlagColorRaw(nbttagcompound.getInt("FlagColor"));
         setIsChested(nbttagcompound.getBoolean("Bagged"));
         setFertile(nbttagcompound.getBoolean("Fertile"));
 
         if (getIsChested()) {
             ListNBT nbttaglist = nbttagcompound.getList("Items", 10);
-            this.localchest = new MoCAnimalChest("OstrichChest", 18);
+            this.localchest = new MoCAnimalChest("OstrichChest", MoCAnimalChest.Size.small);
             for (int i = 0; i < nbttaglist.size(); i++) {
                 CompoundNBT nbttagcompound1 = nbttaglist.getCompound(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
                 if (j < this.localchest.getSizeInventory()) {
-                    this.localchest.setInventorySlotContents(j, new ItemStack(nbttagcompound1));
+                    this.localchest.setInventorySlotContents(j, ItemStack.read(nbttagcompound1));
                 }
             }
         }
@@ -802,7 +824,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         nbttagcompound.putBoolean("EggWatch", getEggWatching());
         nbttagcompound.putBoolean("Hiding", getHiding());
         nbttagcompound.putInt("Helmet", getHelmet());
-        nbttagcompound.putInt("FlagColor", getFlagColor());
+        nbttagcompound.putInt("FlagColor", getFlagColorRaw());
         nbttagcompound.putBoolean("Bagged", getIsChested());
         nbttagcompound.putBoolean("Fertile", getIsFertile());
 
@@ -813,7 +835,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                 if (!this.localstack.isEmpty()) {
                     CompoundNBT nbttagcompound1 = new CompoundNBT();
                     nbttagcompound1.putByte("Slot", (byte) i);
-                    this.localstack.writeToNBT(nbttagcompound1);
+                    this.localstack.write(nbttagcompound1);
                     nbttaglist.add(nbttagcompound1);
                 }
             }
@@ -866,7 +888,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     public void dropArmor() {
         if (!this.world.isRemote) {
             final ItemStack itemStack = this.getItemStackFromSlot(EquipmentSlotType.HEAD);
-            if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemArmor) {
+            if (!itemStack.isEmpty() && itemStack.getItem() instanceof ArmorItem) {
                 final ItemEntity entityitem = new ItemEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), itemStack.copy());
                 entityitem.setDefaultPickupDelay();
                 this.world.addEntity(entityitem);
@@ -885,7 +907,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         if (isFlyer()) {
             return false;
         }
-        return super.onLivingFall(f, f1);
+        return super.onLivingFall(distance, damageMultiplier);
     }
 
     @Override
@@ -946,5 +968,16 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
 
     protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.945F;
+    }
+
+    @Override
+    public void setTypeMoC(int i) {
+        this.isImmuneToFire = i == 5;
+        super.setTypeMoC(i);
+    }
+
+    @Override
+    public boolean isImmuneToFire() {
+        return this.isImmuneToFire ? true : super.isImmuneToFire();
     }
 }

@@ -24,7 +24,6 @@ public class MoCEntityHippoTang extends MoCEntitySmallFish {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.HIPPO_TANG;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.HIPPO_TANG;
     }
 }

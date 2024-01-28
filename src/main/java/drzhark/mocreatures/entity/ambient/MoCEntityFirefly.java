@@ -57,8 +57,7 @@ public class MoCEntityFirefly extends MoCEntityInsect {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.FIREFLY;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.FIREFLY;
     }
 
     @Override

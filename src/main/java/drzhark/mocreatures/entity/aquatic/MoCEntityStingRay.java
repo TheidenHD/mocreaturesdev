@@ -41,8 +41,7 @@ public class MoCEntityStingRay extends MoCEntityRay {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.STINGRAY;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.STINGRAY;
     }
 
     @Override

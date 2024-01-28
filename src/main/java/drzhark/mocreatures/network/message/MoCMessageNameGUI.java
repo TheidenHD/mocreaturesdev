@@ -3,9 +3,9 @@
  */
 package drzhark.mocreatures.network.message;
 
-import drzhark.mocreatures.MoCProxy;
-import drzhark.mocreatures.client.gui.helpers.MoCGUIEntityNamer;
+import drzhark.mocreatures.client.gui.MoCGUIEntityNamer;
 import drzhark.mocreatures.entity.IMoCEntity;
+import drzhark.mocreatures.proxy.MoCProxyClient;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -35,7 +35,7 @@ public class MoCMessageNameGUI {
     public static boolean onMessage(MoCMessageNameGUI message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().setPacketHandled(true);
         Entity ent = Minecraft.getInstance().player.world.getEntityByID(message.entityId);
-        MoCProxy.mc.displayGuiScreen(new MoCGUIEntityNamer(((IMoCEntity) ent), ((IMoCEntity) ent).getPetName()));
+        MoCProxyClient.mc.displayGuiScreen(new MoCGUIEntityNamer(((IMoCEntity) ent), ((IMoCEntity) ent).getPetName()));
         return true;
     }
 

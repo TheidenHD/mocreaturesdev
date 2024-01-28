@@ -19,6 +19,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -40,7 +41,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
 
     public MoCEntityTurtle(EntityType<? extends MoCEntityTurtle> type, World world) {
         super(type, world);
-        setSize(0.6F, 0.425F);
+        //setSize(0.6F, 0.425F);
         setAdult(true);
         // TODO: Make hitboxes adjust depending on size
         //setAge(60 + this.rand.nextInt(50));
@@ -55,7 +56,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 10.0D).createMutableAttribute(Attributes.ARMOR, 5.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.15D);
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 10.0D).createMutableAttribute(Attributes.ARMOR, 5.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.15D);
     }
 
     @Override
@@ -124,7 +125,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
 
     @Override
     public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -132,14 +133,14 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
         if (getIsTamed()) {
             if (getIsUpsideDown()) {
                 flipflop(false);
-                return true;
+                return ActionResultType.SUCCESS;
             }
             if (this.getRidingEntity() == null) {
                 if (this.startRiding(player)) {
                     this.rotationYaw = player.rotationYaw;
                 }
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         flipflop(!getIsUpsideDown());
@@ -150,11 +151,10 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
     @Override
     protected void jump() {
         if (areEyesInFluid(FluidTags.WATER)) {
-            this.getMotion().getY() = 0.3D;
+            this.setMotion(this.getMotion().getX(), 0.3D, this.getMotion().getZ());
             if (isSprinting()) {
                 float f = this.rotationYaw * 0.01745329F;
-                this.getMotion().getX() -= MathHelper.sin(f) * 0.2F;
-                this.getMotion().getZ() += MathHelper.cos(f) * 0.2F;
+                this.setMotion(this.getMotion().add(MathHelper.sin(f) * -0.2F, 0.0D, MathHelper.cos(f) * 0.2F));
             }
             this.isAirBorne = true;
         }
@@ -182,14 +182,14 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
 
                     setIsHiding(false);
                     if (!hasPath() && this.rand.nextInt(50) == 0) {
-                        ItemEntity entityitem = getClosestItem(this, 10D, Items.MELON, Items.SUGAR_CANE);
+                        ItemEntity entityitem = getClosestItem(this, 10D, Ingredient.fromItems(Items.MELON, Items.SUGAR_CANE));
                         if (entityitem != null) {
                             float f = entityitem.getDistance(this);
                             if (f > 2.0F) {
                                 setPathToEntity(entityitem, f);
                             }
                             if (f < 2.0F && this.deathTime == 0) {
-                                entityitem.remove(keepData);
+                                entityitem.remove();
                                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_TURTLE_EATING);
                                 PlayerEntity entityplayer = this.world.getClosestPlayer(this, 24D);
                                 if (entityplayer != null) {
@@ -334,36 +334,30 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.TURTLE;
     }
 
     // TODO: Remove this after the weapons get reworked
     @Override
-    protected dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
+    protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         if (MoCreatures.proxy.easterEggs) {
             if (getPetName().equals("Donatello") || getPetName().equals("donatello")) {
-                return MoCItems.bo;
+                this.entityDropItem(MoCItems.bo);
             }
 
             if (getPetName().equals("Leonardo") || getPetName().equals("leonardo")) {
-                return MoCItems.katana;
+                this.entityDropItem(MoCItems.katana);
             }
 
             if (getPetName().equals("Rafael") || getPetName().equals("rafael") || getPetName().equals("raphael") || getPetName().equals("Raphael")) {
-                return MoCItems.sai;
+                this.entityDropItem(MoCItems.sai);
             }
 
             if (getPetName().equals("Michelangelo") || getPetName().equals("michelangelo") || getPetName().equals("Michaelangelo")
                     || getPetName().equals("michaelangelo")) {
-                return MoCItems.nunchaku;
+                this.entityDropItem(MoCItems.nunchaku);
             }
         }
-
-        return null;
     }
 
     /**

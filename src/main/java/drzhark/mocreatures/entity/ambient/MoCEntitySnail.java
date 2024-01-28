@@ -125,8 +125,7 @@ public class MoCEntitySnail extends MoCEntityAmbient {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.SNAIL;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.SNAIL;
     }
 
     @Override

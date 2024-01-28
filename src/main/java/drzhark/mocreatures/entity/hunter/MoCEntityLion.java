@@ -116,10 +116,6 @@ public class MoCEntityLion extends MoCEntityBigCat {
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.LION;
     }
 

@@ -137,8 +137,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.ANT;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.ANT;
     }
 
     @Override

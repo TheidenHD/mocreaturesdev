@@ -24,7 +24,6 @@ public class MoCEntitySalmon extends MoCEntityMediumFish {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.SALMON;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.SALMON;
     }
 }

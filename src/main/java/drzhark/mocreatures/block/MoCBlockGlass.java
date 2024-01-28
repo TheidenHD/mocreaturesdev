@@ -3,17 +3,16 @@
  */
 package drzhark.mocreatures.block;
 
-import net.minecraft.block.BlockBreakable;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.BreakableBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Random;
 
-public class MoCBlockGlass extends BlockBreakable {
+public class MoCBlockGlass extends BreakableBlock {
 
     public MoCBlockGlass() {
         super(Material.GLASS, false);

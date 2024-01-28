@@ -50,7 +50,6 @@ public class MoCEntityFireOgre extends MoCEntityOgre {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.FIRE_OGRE;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.FIRE_OGRE;
     }
 }

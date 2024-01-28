@@ -11,6 +11,7 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.SaplingBlock;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -19,8 +20,8 @@ import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.AxeItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.pathfinding.Path;
@@ -29,8 +30,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.world.BlockEvent;
 
@@ -38,9 +39,12 @@ import java.util.List;
 
 public class MoCEntityEnt extends MoCEntityAnimal {
 
+    private static  final Block[] tallgrass = new Block[]{Blocks.GRASS, Blocks.FERN};
+    private static  final Block[] double_plant = new Block[]{Blocks.SUNFLOWER, Blocks.LILAC, Blocks.ROSE_BUSH, Blocks.PEONY, Blocks.TALL_GRASS, Blocks.LARGE_FERN};
+    private static  final Block[] red_flower = new Block[]{Blocks.POPPY, Blocks.BLUE_ORCHID, Blocks.ALLIUM, Blocks.AZURE_BLUET, Blocks.RED_TULIP, Blocks.ORANGE_TULIP, Blocks.WHITE_TULIP, Blocks.PINK_TULIP, Blocks.OXEYE_DAISY};
     public MoCEntityEnt(EntityType<? extends MoCEntityEnt> type, World world) {
         super(type, world);
-        setSize(1.4F, 7F);
+        //setSize(1.4F, 7F);
         this.stepHeight = 2F;
         experienceValue = 10;
     }
@@ -54,8 +58,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 60.0D).createMutableAttribute(Attributes.ARMOR, 7.0D);
-        this.getAttributeMap().registerAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.5D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1.0D);
+        return MoCEntityAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 60.0D).createMutableAttribute(Attributes.ARMOR, 7.0D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.5D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1.0D);
     }
 
     @Override
@@ -84,7 +87,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
             PlayerEntity ep = (PlayerEntity) damagesource.getTrueSource();
             ItemStack currentItem = ep.inventory.getCurrentItem();
             Item itemheld = currentItem.getItem();
-            if (itemheld instanceof ItemAxe) {
+            if (itemheld instanceof AxeItem) {
                 this.world.getDifficulty();
                 if (super.shouldAttackPlayers()) {
                     setAttackTarget(ep);
@@ -100,23 +103,32 @@ public class MoCEntityEnt extends MoCEntityAnimal {
     }
 
     @Override
-    protected void dropFewItems(boolean flag, int x) {
+    protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         int i = this.rand.nextInt(3);
         int qty = this.rand.nextInt(12) + 4;
-        int typ = 0;
         if (getTypeMoC() == 2) {
-            typ = 2;
-        }
-        if (i == 0) {
-            entityDropItem(new ItemStack(Blocks.LOG, qty, typ), 0.0F);
-            return;
-        }
-        if (i == 1) {
-            entityDropItem(new ItemStack(Items.STICK, qty, 0), 0.0F);
-            return;
+            if (i == 0) {
+                entityDropItem(new ItemStack(Blocks.BIRCH_LOG, qty), 0.0F);
+                return;
+            }
+            if (i == 1) {
+                entityDropItem(new ItemStack(Items.STICK, qty), 0.0F);
+                return;
 
+            }
+            entityDropItem(new ItemStack(Blocks.BIRCH_SAPLING, qty), 0.0F);
+        } else {
+            if (i == 0) {
+                entityDropItem(new ItemStack(Blocks.OAK_LOG, qty), 0.0F);
+                return;
+            }
+            if (i == 1) {
+                entityDropItem(new ItemStack(Items.STICK, qty), 0.0F);
+                return;
+
+            }
+            entityDropItem(new ItemStack(Blocks.OAK_SAPLING, qty), 0.0F);
         }
-        entityDropItem(new ItemStack(Blocks.SAPLING, qty, typ), 0.0F);
     }
 
     @Override
@@ -160,7 +172,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
             if (entity instanceof AnimalEntity && entity.getWidth() < 0.6F && entity.getHeight() < 0.6F) {
                 AnimalEntity entityanimal = (AnimalEntity) entity;
                 if (entityanimal.getAttackTarget() == null && !MoCTools.isTamed(entityanimal)) {
-                    Path pathentity = entityanimal.getNavigator().pathfind(this);
+                    Path pathentity = entityanimal.getNavigator().pathfind(this, 0);
                     entityanimal.setAttackTarget(this);
                     entityanimal.getNavigator().setPath(pathentity, 1D);
                     j++;
@@ -178,7 +190,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
         Block blockUnderFeet = this.world.getBlockState(pos.down()).getBlock();
         Block blockOnFeet = this.world.getBlockState(pos).getBlock();
 
-        if (blockUnderFeet instanceof BlockDirt) {
+        if (Blocks.DIRT.matchesBlock(blockUnderFeet)) {
             Block block = Blocks.GRASS;
             BlockEvent.BreakEvent event = null;
             if (!this.world.isRemote) {
@@ -193,10 +205,10 @@ public class MoCEntityEnt extends MoCEntityAnimal {
             return;
         }
 
-        if (blockUnderFeet instanceof BlockGrass && blockOnFeet == Blocks.AIR) {
+        if (Blocks.GRASS_BLOCK.matchesBlock(blockUnderFeet) && blockOnFeet == Blocks.AIR) {
             BlockState iblockstate = getBlockStateToBePlanted();
             int plantChance = 3;
-            if (iblockstate.getBlock() instanceof BlockSapling) {
+            if (iblockstate.getBlock() instanceof SaplingBlock) {
                 plantChance = 10;
             }
             //boolean cantPlant = false;
@@ -228,8 +240,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
      * @return Any of the flowers, mushrooms, grass and saplings
      */
     private BlockState getBlockStateToBePlanted() {
-        int blockID;
-        int metaData = 0;
+        Block blockID;
         switch (this.rand.nextInt(20)) {
             case 0:
             case 1:
@@ -239,45 +250,40 @@ public class MoCEntityEnt extends MoCEntityAnimal {
             case 5:
             case 6:
             case 7:
-                blockID = 31;
-                metaData = rand.nextInt(2) + 1;
+                blockID = tallgrass[this.rand.nextInt(tallgrass.length)];
                 break;
             case 8:
             case 9:
             case 10:
-                blockID = 175; //other flowers
-                metaData = rand.nextInt(6);
+                blockID = double_plant[this.rand.nextInt(double_plant.length)];
                 break;
             case 11:
             case 12:
             case 13:
-                blockID = 37; //dandelion
+                blockID = Blocks.DANDELION;
                 break;
             case 14:
             case 15:
             case 16:
-                blockID = 38; //flowers
-                metaData = rand.nextInt(9);
+                blockID = red_flower[this.rand.nextInt(red_flower.length)];
                 break;
             case 17:
-                blockID = 39; //brown mushroom
+                blockID = Blocks.BROWN_MUSHROOM;
                 break;
             case 18:
-                blockID = 40; //red mushroom
+                blockID = Blocks.RED_MUSHROOM;
                 break;
             case 19:
-                blockID = 6; //sapling
+                blockID = Blocks.OAK_SAPLING;
                 if (getTypeMoC() == 2) {
-                    metaData = 2; //to place the right sapling
+                    blockID = Blocks.BIRCH_SAPLING;
                 }
                 break;
 
             default:
-                blockID = 31;
+                blockID = Blocks.DEAD_BUSH;
         }
-        BlockState iblockstate;
-        iblockstate = Block.getBlockById(blockID).getStateFromMeta(metaData);
-        return iblockstate;
+        return blockID.getDefaultState();
 
     }
 
@@ -298,7 +304,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
     }*/
 
     @Override
-    protected void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
+    public void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
         MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_SMACK);
         MoCTools.bigSmack(this, entityIn, 1F);
         super.applyEnchantments(entityLivingBaseIn, entityIn);

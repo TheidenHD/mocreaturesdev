@@ -111,10 +111,6 @@ public class MoCEntityManticorePet extends MoCEntityBigCat {
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         switch (getTypeMoC()) {
             case 2:
                 return MoCLootTables.DARK_MANTICORE;

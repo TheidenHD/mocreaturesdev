@@ -25,6 +25,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.Tags;
 
 import javax.annotation.Nullable;
 
@@ -34,7 +35,7 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
 
     public MoCEntityMole(EntityType<? extends MoCEntityMole> type, World world) {
         super(type, world);
-        setSize(1F, 0.5F);
+        //setSize(1F, 0.5F);
     }
 
     @Override
@@ -45,7 +46,7 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 6.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2D);
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 6.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2D);
     }
 
     @Override
@@ -65,11 +66,11 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
                 this.world.getBlockState(
                         new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(this.getBoundingBox().minY - 0.5D), MathHelper
                                 .floor(this.getPosZ()))).getBlock();
-        return isDiggableBlock(Block.getIdFromBlock(block));//(j == 2 | j == 3 | j == 12);
+        return isDiggableBlock(block);//(j == 2 | j == 3 | j == 12);
     }
 
-    private boolean isDiggableBlock(int i) {
-        return i == 2 | i == 3 | i == 12;
+    private boolean isDiggableBlock(Block i) {
+        return Tags.Blocks.DIRT.contains(i) || Tags.Blocks.SAND.contains(i) || Tags.Blocks.GRAVEL.contains(i);
     }
 
     /**
@@ -90,7 +91,7 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
                 this.world.getBlockState(
                                 new BlockPos(MathHelper.floor(newPosX), MathHelper.floor(newPosY), MathHelper.floor(newPosZ)))
                         .getBlock();
-        if (isDiggableBlock(Block.getIdFromBlock(block))) {
+        if (isDiggableBlock(block)) {
             this.setPosition(newPosX, newPosY, newPosZ);
         }
     }
@@ -227,11 +228,11 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean isEntityInvulnerable(DamageSource source) {
+    public boolean isInvulnerableTo(DamageSource source) {
         if (getState() == 2) {
             return true;
         }
-        return super.isEntityInvulnerable(source);
+        return super.isInvulnerableTo(source);
     }
 
     @Override
@@ -250,8 +251,7 @@ public class MoCEntityMole extends MoCEntityTameableAnimal {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.MOLE;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.MOLE;
     }
 
     protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {

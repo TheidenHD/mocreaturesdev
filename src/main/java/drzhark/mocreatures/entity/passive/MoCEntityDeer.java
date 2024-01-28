@@ -18,11 +18,13 @@ import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -34,7 +36,7 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
     public MoCEntityDeer(EntityType<? extends MoCEntityDeer> type, World world) {
         super(type, world);
         setAge(75);
-        setSize(0.9F, 1.425F);
+        //setSize(0.9F, 1.425F);
         setAdult(true);
         setTamed(false);
     }
@@ -43,14 +45,14 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EntityAIFleeFromEntityMoC(this, entity -> !(entity instanceof MoCEntityDeer) && (entity.getHeight() > 0.8F || entity.getWidth() > 0.8F), 6.0F, this.getMyAISpeed(), this.getMyAISpeed() * 1.2D));
-        this.goalSelector.addGoal(2, new EntityAIPanic(this, this.getMyAISpeed() * 1.2D));
+        this.goalSelector.addGoal(2, new PanicGoal(this, this.getMyAISpeed() * 1.2D));
         this.goalSelector.addGoal(4, new EntityAIFollowAdult(this, getMyAISpeed()));
         this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, getMyAISpeed()));
         this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 6.0F));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 10.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.35D);
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 10.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.35D);
     }
 
     @Override
@@ -113,10 +115,6 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.DEER;
     }
 
@@ -162,9 +160,7 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
                 if (MoCTools.getMyMovementSpeed(this) > 0.17F) {
                     float velX = (float) (0.5F * Math.cos((MoCTools.realAngle(this.rotationYaw - 90F)) / 57.29578F));
                     float velZ = (float) (0.5F * Math.sin((MoCTools.realAngle(this.rotationYaw - 90F)) / 57.29578F));
-                    this.getMotion().getX() -= velX;
-                    this.getMotion().getZ() -= velZ;
-                    this.getMotion().getY() = 0.5D;
+                    this.setMotion(new Vector3d(this.getMotion().getX(), 0.5D, this.getMotion().getZ()).subtract(velX, 0.0D, velZ));
                     this.readyToJumpTimer = this.rand.nextInt(10) + 20;
                 }
             }

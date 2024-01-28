@@ -118,8 +118,7 @@ public class MoCEntityButterfly extends MoCEntityInsect {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.BUTTERFLY;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.BUTTERFLY;
     }
 
     @Override

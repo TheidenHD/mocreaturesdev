@@ -70,8 +70,7 @@ public class MoCEntityHellRat extends MoCEntityRat {
 
     @Nullable
     @Override
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.HELL_RAT;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.HELL_RAT;
     }
 
     @Override

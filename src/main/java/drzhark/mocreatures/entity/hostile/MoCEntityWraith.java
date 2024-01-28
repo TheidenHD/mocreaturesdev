@@ -88,8 +88,7 @@ public class MoCEntityWraith extends MoCEntityMob//MoCEntityFlyerMob
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.WRAITH;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.WRAITH;
     }
 
     @Override

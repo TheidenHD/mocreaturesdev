@@ -82,8 +82,7 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.CRAB;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.CRAB;
     }
 
     @Override

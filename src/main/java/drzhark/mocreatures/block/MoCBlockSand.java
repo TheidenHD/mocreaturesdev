@@ -4,45 +4,31 @@
 package drzhark.mocreatures.block;
 
 import drzhark.mocreatures.init.MoCBlocks;
-import net.minecraft.block.BlockFalling;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.MapColor;
-import net.minecraft.block.material.Material;
+import net.minecraft.block.*;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.common.ToolType;
 
-public class MoCBlockSand extends BlockFalling {
+public class MoCBlockSand extends FallingBlock {
 
-    private final MapColor mapColor;
-
-    public MoCBlockSand(MapColor mapColor) {
-        super(Material.GROUND);
-        this.mapColor = mapColor;
-        this.setSoundType(SoundType.SAND);
-        this.setHarvestLevel("shovel", 0);
-    }
-
-    @Override
-    public MapColor getMapColor(BlockState state, IBlockAccess world, BlockPos pos) {
-        return mapColor;
+    public MoCBlockSand(AbstractBlock.Properties properties) {
+        super(properties.harvestLevel(0).harvestTool(ToolType.SHOVEL).sound(SoundType.SAND));
     }
 
     @OnlyIn(Dist.CLIENT)
-    public int getDustColor(BlockState state) {
+    public int getDustColor(BlockState state, IBlockReader reader, BlockPos pos) {
         return 12107978;
     }
 
     @Override
-    public boolean canSustainPlant(BlockState state, IBlockAccess world, BlockPos pos, Direction direction, IPlantable plantable) {
+    public boolean canSustainPlant(BlockState state, IBlockReader world, BlockPos pos, Direction direction, IPlantable plantable) {
         BlockState plant = plantable.getPlant(world, pos.offset(direction));
 
-        if (plant.getBlock() == Blocks.CACTUS || plant.getBlock() == Blocks.DEADBUSH) {
+        if (plant.getBlock() == Blocks.CACTUS || plant.getBlock() == Blocks.DEAD_BUSH) {
             return this == MoCBlocks.silverSand;
         }
 

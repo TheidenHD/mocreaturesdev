@@ -94,8 +94,7 @@ public class MoCEntityGrasshopper extends MoCEntityInsect {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.GRASSHOPPER;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.GRASSHOPPER;
     }
 
     @Override

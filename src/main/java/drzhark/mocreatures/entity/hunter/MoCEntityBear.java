@@ -27,6 +27,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.SaddleItem;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -217,7 +218,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
         }
         //TODO move to AI
         if (!this.world.isRemote && getTypeMoC() == 3 && (this.deathTime == 0) && getBearState() != 2) {
-            ItemEntity entityitem = getClosestItem(this, 12D, Items.SUGAR_CANE, Items.SUGAR);
+            ItemEntity entityitem = getClosestItem(this, 12D, Ingredient.fromItems(Items.SUGAR_CANE, Items.SUGAR));
             if (entityitem != null) {
 
                 float f = entityitem.getDistance(this);
@@ -340,7 +341,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
         }
         if (getIsChested() && player.isSneaking()) {
             if (this.localchest == null) {
-                this.localchest = new MoCAnimalChest("BigBearChest", 18);
+                this.localchest = new MoCAnimalChest("BigBearChest", MoCAnimalChest.Size.small);
             }
             if (!this.world.isRemote) {
                 player.openContainer(this.localchest);
@@ -436,7 +437,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
         setBearState(nbttagcompound.getInt("BearState"));
         if (getIsChested()) {
             ListNBT nbttaglist = nbttagcompound.getList("Items", 10);
-            this.localchest = new MoCAnimalChest("BigBearChest", 18);
+            this.localchest = new MoCAnimalChest("BigBearChest", MoCAnimalChest.Size.small);
             this.localchest.read(nbttagcompound);
             for (int i = 0; i < nbttaglist.size(); i++) {
                 CompoundNBT nbttagcompound1 = nbttaglist.getCompound(i);

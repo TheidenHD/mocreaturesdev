@@ -20,6 +20,7 @@ import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -39,6 +40,7 @@ public class MoCEntityHorseMob extends MoCEntityMob {
     public int tailCounter;
     public int eatingCounter;
     public int wingFlapCounter;
+    private boolean isImmuneToFire;
 
     public MoCEntityHorseMob(EntityType<? extends MoCEntityHorseMob> type, World world) {
         super(type, world);
@@ -62,7 +64,7 @@ public class MoCEntityHorseMob extends MoCEntityMob {
     public void selectType() {
         if (this.world.getDimensionType().isUltrawarm()) {
             setTypeMoC(38);
-            //this.isImmuneToFire = true; //TODO TheidenHD
+            this.isImmuneToFire = true;
         } else {
             if (getTypeMoC() == 0) {
                 int j = this.rand.nextInt(100);
@@ -341,7 +343,14 @@ public class MoCEntityHorseMob extends MoCEntityMob {
             drop = Items.GHAST_TEAR;
         }
 
-        this.entityDropItem(drop);
+        int i = this.rand.nextInt(3);
+
+        if (looting > 0)
+        {
+            i += this.rand.nextInt(looting + 1);
+        }
+
+        this.entityDropItem(new ItemStack(drop, i));
     }
 
     @Override
@@ -419,5 +428,10 @@ public class MoCEntityHorseMob extends MoCEntityMob {
     // Adjusted to avoid most of the roof suffocation for now
     protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.9F;
+    }
+
+    @Override
+    public boolean isImmuneToFire() {
+        return this.isImmuneToFire ? true : super.isImmuneToFire();
     }
 }

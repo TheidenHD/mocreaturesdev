@@ -8,21 +8,24 @@ import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.block.*;
 import drzhark.mocreatures.block.MoCBlockSapling.EnumWoodType;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.MapColor;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -93,33 +96,33 @@ public class MoCBlocks {
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         event.getRegistry().registerAll(
-                setup(new MoCBlockMetal(MapColor.IRON), "ancient_silver_block").setHardness(3.0F).setResistance(10.0F),
-                setup(new MoCBlockRock(MapColor.STONE), "cobbled_wyvstone").setHardness(2.0F).setResistance(10.0F),
-                setup(new MoCBlockRock(MapColor.STONE), "cobbled_deep_wyvstone").setHardness(3.5F).setResistance(10.0F),
-                setup(new MoCBlockRock(MapColor.STONE), "wyvstone").setHardness(1.5F).setResistance(10.0F),
-                setup(new MoCBlockRock(MapColor.STONE), "deep_wyvstone").setHardness(3.0F).setResistance(10.0F),
-                setup(new MoCBlockRock(MapColor.STONE), "mossy_cobbled_wyvstone").setHardness(1.5F).setResistance(10.0F),
-                setup(new MoCBlockRock(MapColor.STONE), "mossy_cobbled_deep_wyvstone").setHardness(1.5F).setResistance(10.0F),
+                setup(new MoCBlockMetal(AbstractBlock.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(3.0F, 10.0F)), "ancient_silver_block"),
+                setup(new MoCBlockRock(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2.0F, 10.0F)), "cobbled_wyvstone"),
+                setup(new MoCBlockRock(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3.5F, 10.0F)), "cobbled_deep_wyvstone"),
+                setup(new MoCBlockRock(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5F, 10.0F)), "wyvstone"),
+                setup(new MoCBlockRock(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3.0F, 10.0F)), "deep_wyvstone"),
+                setup(new MoCBlockRock(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5F, 10.0F)), "mossy_cobbled_wyvstone"),
+                setup(new MoCBlockRock(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5F, 10.0F)), "mossy_cobbled_deep_wyvstone"),
                 setup(new MoCBlockGlass(), "gleaming_glass").setHardness(0.4F),
-                setup(new MoCBlockSand(MapColor.CLAY), "silver_sand").setHardness(0.6F),
-                setup(new MoCBlockRock(MapColor.CLAY), "silver_sandstone").setHardness(1.2F),
-                setup(new MoCBlockRock(MapColor.CLAY), "carved_silver_sandstone").setHardness(1.2F),
-                setup(new MoCBlockRock(MapColor.CLAY), "smooth_silver_sandstone").setHardness(1.2F),
-                setup(new MoCBlockOre(MapColor.STONE), "ancient_ore").setHardness(3.0F).setResistance(5.0F),
-                setup(new MoCBlockFirestone(MapColor.ADOBE), "firestone").setHardness(3.0F).setLightLevel(0.5F),
-                setup(new MoCBlockOre(MapColor.STONE), "wyvern_diamond_ore").setHardness(4.5F).setResistance(5.0F),
-                setup(new MoCBlockOre(MapColor.STONE), "wyvern_emerald_ore").setHardness(4.5F).setResistance(5.0F),
-                setup(new MoCBlockOre(MapColor.STONE), "wyvern_gold_ore").setHardness(3.0F).setResistance(5.0F),
-                setup(new MoCBlockOre(MapColor.STONE), "wyvern_iron_ore").setHardness(3.0F).setResistance(5.0F),
-                setup(new MoCBlockOre(MapColor.STONE), "wyvern_lapis_ore").setHardness(1.5F).setResistance(5.0F),
-                setup(new MoCBlockGrass(MapColor.BLUE_STAINED_HARDENED_CLAY), "wyvgrass").setHardness(0.7F),
-                setup(new MoCBlockDirt(MapColor.DIRT), "wyvdirt").setHardness(0.6F),
-                setup(new MoCBlockLeaf(MapColor.DIAMOND, true, 100), "wyvwood_leaves").setHardness(0.2F).setLightOpacity(1),
-                setup(new MoCBlockSapling(EnumWoodType.WYVWOOD, MapColor.FOLIAGE, true), "wyvwood_sapling").setHardness(0.0F),
-                setup(new MoCBlockLog(MapColor.CYAN_STAINED_HARDENED_CLAY, true), "wyvwood_log").setHardness(2.0F),
-                setup(new MoCBlockLog(MapColor.CYAN_STAINED_HARDENED_CLAY, true), "stripped_wyvwood_log").setHardness(2.0F),
-                setup(new MoCBlockTallGrass(MapColor.LIGHT_BLUE_STAINED_HARDENED_CLAY, false), "tall_wyvgrass").setHardness(0.0F),
-                setup(new MoCBlockPlanks(MapColor.DIAMOND, true), "wyvwood_planks").setHardness(2.0F).setResistance(5.0F),
+                setup(new MoCBlockSand(AbstractBlock.Properties.create(Material.EARTH, MaterialColor.CLAY).hardnessAndResistance(0.6F)), "silver_sand"),
+                setup(new MoCBlockRock(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.CLAY).hardnessAndResistance(1.2F)), "silver_sandstone"),
+                setup(new MoCBlockRock(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.CLAY).hardnessAndResistance(1.2F)), "carved_silver_sandstone"),
+                setup(new MoCBlockRock(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.CLAY).hardnessAndResistance(1.2F)), "smooth_silver_sandstone"),
+                setup(new MoCBlockOre(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3.0F, 5.0F)), "ancient_ore"),
+                setup(new MoCBlockFirestone(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.ADOBE).hardnessAndResistance(3.0F).setLightLevel(state -> 7)), "firestone"),
+                setup(new MoCBlockOre(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(4.5F, 5.0F)), "wyvern_diamond_ore"),
+                setup(new MoCBlockOre(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(4.5F, 5.0F)), "wyvern_emerald_ore"),
+                setup(new MoCBlockOre(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3.0F, 5.0F)), "wyvern_gold_ore"),
+                setup(new MoCBlockOre(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3.0F, 5.0F)), "wyvern_iron_ore"),
+                setup(new MoCBlockOre(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5F, 5.0F)), "wyvern_lapis_ore"),
+                setup(new MoCBlockGrass(MaterialColor.BLUE_STAINED_HARDENED_CLAY), "wyvgrass").setHardness(0.7F),
+                setup(new MoCBlockDirt(MaterialColor.DIRT), "wyvdirt").setHardness(0.6F),
+                setup(new MoCBlockLeaf(MaterialColor.DIAMOND, true, 100), "wyvwood_leaves").setHardness(0.2F).setLightOpacity(1),
+                setup(new MoCBlockSapling(EnumWoodType.WYVWOOD, MaterialColor.FOLIAGE, true), "wyvwood_sapling").setHardness(0.0F),
+                setup(new MoCBlockLog(MaterialColor.CYAN_STAINED_HARDENED_CLAY, true), "wyvwood_log").setHardness(2.0F),
+                setup(new MoCBlockLog(MaterialColor.CYAN_STAINED_HARDENED_CLAY, true), "stripped_wyvwood_log").setHardness(2.0F),
+                setup(new MoCBlockTallGrass(MaterialColor.LIGHT_BLUE_STAINED_HARDENED_CLAY, false), "tall_wyvgrass").setHardness(0.0F),
+                setup(new MoCBlockPlanks(MaterialColor.DIAMOND, true), "wyvwood_planks").setHardness(2.0F).setResistance(5.0F),
                 setup(new MoCBlockNest(), "wyvern_nest_block").setHardness(0.5F)
         );
     }
@@ -129,7 +132,7 @@ public class MoCBlocks {
         final IForgeRegistry<Item> registry = event.getRegistry();
         ForgeRegistries.BLOCKS.getValues().stream()
                 .filter(block -> block.getRegistryName().getNamespace().equals(MoCConstants.MOD_ID))
-                .forEach(block -> registry.register(setup(new ItemBlock(block), block.getRegistryName())));
+                .forEach(block -> registry.register(setup(new BlockItem(block), block.getRegistryName())));
     }
 
     @OnlyIn(Dist.CLIENT)

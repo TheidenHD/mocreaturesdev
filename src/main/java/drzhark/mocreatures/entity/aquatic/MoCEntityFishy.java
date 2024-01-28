@@ -123,10 +123,6 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.FISHY;
     }
 

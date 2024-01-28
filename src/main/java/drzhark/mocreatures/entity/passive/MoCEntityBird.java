@@ -11,7 +11,6 @@ import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
@@ -23,6 +22,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -54,7 +54,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
 
     public MoCEntityBird(EntityType<? extends MoCEntityBird> type, World world) {
         super(type, world);
-        setSize(0.5F, 0.9F);
+        //setSize(0.5F, 0.9F);
         this.collidedVertically = true;
         this.wingb = 0.0F;
         this.wingc = 0.0F;
@@ -75,7 +75,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return TODO_REPLACE.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 6.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D);
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 6.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D);
     }
 
     @Override
@@ -188,28 +188,28 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
             int k = MathHelper.floor(entity.getPosZ());
             faceLocation(i, j, k, 30F);
             if (MathHelper.floor(this.getPosY()) < j) {
-                this.getMotion().getY() += 0.14999999999999999D;
+                this.setMotion(this.getMotion().add(0.0D, 0.14999999999999999D, 0.0D));
             }
             if (this.getPosX() < entity.getPosX()) {
                 double d = entity.getPosX() - this.getPosX();
                 if (d > 0.5D) {
-                    this.getMotion().getX() += 0.050000000000000003D;
+                    this.setMotion(this.getMotion().add(0.050000000000000003D, 0.0D, 0.0D));
                 }
             } else {
                 double d1 = this.getPosX() - entity.getPosX();
                 if (d1 > 0.5D) {
-                    this.getMotion().getX() -= 0.050000000000000003D;
+                    this.setMotion(this.getMotion().subtract(0.050000000000000003D, 0.0D, 0.0D));
                 }
             }
             if (this.getPosZ() < entity.getPosZ()) {
                 double d2 = entity.getPosZ() - this.getPosZ();
                 if (d2 > 0.5D) {
-                    this.getMotion().getZ() += 0.050000000000000003D;
+                    this.setMotion(this.getMotion().add(0.0D, 0.0D,0.050000000000000003D));
                 }
             } else {
                 double d3 = this.getPosZ() - entity.getPosZ();
                 if (d3 > 0.5D) {
-                    this.getMotion().getZ() -= 0.050000000000000003D;
+                    this.setMotion(this.getMotion().subtract(0.0D, 0.0D, 0.050000000000000003D));
                 }
             }
         }
@@ -225,23 +225,23 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
             int k = ai1[2];
             faceLocation(i, j, k, 30F);
             if ((j - MathHelper.floor(this.getPosY())) > 2) {
-                this.getMotion().getY() += 0.14999999999999999D;
+                this.setMotion(this.getMotion().add(0.0D, 0.14999999999999999D, 0.0D));
             }
             int l;
             int i1;
             if (this.getPosX() < i) {
                 l = i - MathHelper.floor(this.getPosX());
-                this.getMotion().getX() += 0.050000000000000003D;
+                this.setMotion(this.getMotion().add(0.050000000000000003D, 0.0D, 0.0D));
             } else {
                 l = MathHelper.floor(this.getPosX()) - i;
-                this.getMotion().getX() -= 0.050000000000000003D;
+                this.setMotion(this.getMotion().subtract(0.050000000000000003D, 0.0D, 0.0D));
             }
             if (this.getPosZ() < k) {
                 i1 = k - MathHelper.floor(this.getPosZ());
-                this.getMotion().getZ() += 0.050000000000000003D;
+                this.setMotion(this.getMotion().add(0.0D, 0.0D,0.050000000000000003D));
             } else {
                 i1 = MathHelper.floor(this.getPosX()) - k;
-                this.getMotion().getZ() -= 0.050000000000000003D;
+                this.setMotion(this.getMotion().subtract(0.0D, 0.0D, 0.050000000000000003D));
             }
             double d = l + i1;
             return d < 3D;
@@ -282,13 +282,12 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
 
     // TODO: Add unique sound event
     @Override
-    protected void playStepSound(BlockPos pos, Block blockIn) {
+    protected void playStepSound(BlockPos pos, BlockState blockIn) {
         this.playSound(SoundEvents.ENTITY_PARROT_STEP, 0.15F, 1.0F);
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.BIRD;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.BIRD;
     }
 
     @Override
@@ -302,7 +301,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
 
     @Override
     public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
-        final Boolean tameResult = this.processTameInteract(player, hand);
+        final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -313,18 +312,18 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
             if (!this.world.isRemote) {
                 MoCTools.tameWithName(player, this);
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         if (!getIsTamed()) {
-            return false;
+            return ActionResultType.FAIL;
         }
         if (this.getRidingEntity() == null) {
             if (this.startRiding(player)) {
                 this.rotationYaw = player.rotationYaw;
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         return super.getEntityInteractionResult(player, hand);
@@ -349,7 +348,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
         }
         this.wingh = (float) (this.wingh * 0.9D);
         if (!this.onGround && (this.getMotion().getY() < 0.0D)) {
-            this.getMotion().getY() *= 0.8D;
+            this.setMotion(this.getMotion().mul(1.0D, 0.8D, 1.0D));
         }
         this.wingb += this.wingh * 2.0F;
 
@@ -393,12 +392,12 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
 
             //TODO move to new AI
             if (!this.fleeing) {
-                ItemEntity entityitem = getClosestItem(this, 12D, Items.WHEAT_SEEDS, Items.MELON_SEEDS);
+                ItemEntity entityitem = getClosestItem(this, 12D, Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS));
                 if (entityitem != null) {
                     FlyToNextEntity(entityitem);
-                    ItemEntity entityitem1 = getClosestItem(this, 1.0D, Items.WHEAT_SEEDS, Items.MELON_SEEDS);
+                    ItemEntity entityitem1 = getClosestItem(this, 1.0D, Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS));
                     if ((this.rand.nextInt(50) == 0) && (entityitem1 != null)) {
-                        entityitem1.remove(keepData);
+                        entityitem1.remove();
                         setPreTamed(true);
                     }
                 }
@@ -422,17 +421,16 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
             this.rotationYaw = entityplayer.rotationYaw;
             entityplayer.fallDistance = 0.0F;
             if (entityplayer.getMotion().getY() < -0.1D)
-                entityplayer.getMotion().getY() *= 0.60;
+                entityplayer.setMotion(entityplayer.getMotion().mul(1.0D, 0.6D, 1.0D));
         }
 
         if (--this.jumpTimer <= 0 && this.onGround
                 && ((this.getMotion().getX() > 0.05D) || (this.getMotion().getZ() > 0.05D) || (this.getMotion().getX() < -0.05D) || (this.getMotion().getZ() < -0.05D))) {
-            this.getMotion().getY() = 0.25D;
+            this.setMotion(this.getMotion().getX(), 0.25D, this.getMotion().getZ());
             float velX = MathHelper.sin(this.rotationYaw * (float) Math.PI / 180.0F);
             float velZ = MathHelper.cos(this.rotationYaw * (float) Math.PI / 180.0F);
 
-            this.getMotion().getX() += (-0.2F * velX);
-            this.getMotion().getZ() += (0.2F * velZ);
+            this.setMotion(this.getMotion().add((-0.2F * velX), 0.0D, (0.2F * velZ)));
             this.jumpTimer = 15;
         }
     }
@@ -464,7 +462,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void remove(keepData) {
+    public void remove(boolean keepData) {
         if (!this.world.isRemote && getIsTamed() && (this.getHealth() > 0)) {
         } else {
             super.remove(keepData);
@@ -472,18 +470,18 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
     }
 
     private void WingFlap() {
-        this.getMotion().getY() += 0.05D;
+        this.setMotion(this.getMotion().add(0.0D, 0.05D, 0.0D));
         if (this.rand.nextInt(30) == 0) {
-            this.getMotion().getX() += 0.2D;
+            this.setMotion(this.getMotion().add(0.2D, 0.0D, 0.0D));
         }
         if (this.rand.nextInt(30) == 0) {
-            this.getMotion().getX() -= 0.2D;
+            this.setMotion(this.getMotion().subtract(0.2D, 0.0D, 0.0D));
         }
         if (this.rand.nextInt(30) == 0) {
-            this.getMotion().getZ() += 0.2D;
+            this.setMotion(this.getMotion().add(0.0D, 0.0D, 0.2D));
         }
         if (this.rand.nextInt(30) == 0) {
-            this.getMotion().getZ() -= 0.2D;
+            this.setMotion(this.getMotion().subtract(0.0D, 0.0D, 0.2D));
         }
     }
 

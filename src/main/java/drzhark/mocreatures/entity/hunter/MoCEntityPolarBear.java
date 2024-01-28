@@ -121,10 +121,6 @@ public class MoCEntityPolarBear extends MoCEntityBear {
 
     @Nullable
     protected ResourceLocation getLootTable() {
-        if (!getIsAdult()) {
-            return null;
-        }
-
         return MoCLootTables.POLAR_BEAR;
     }
 

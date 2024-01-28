@@ -45,7 +45,6 @@ public class MoCEntityToxicManticore extends MoCEntityManticore {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.TOXIC_MANTICORE;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.TOXIC_MANTICORE;
     }
 }

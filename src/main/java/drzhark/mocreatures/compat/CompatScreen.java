@@ -3,13 +3,15 @@
  */
 package drzhark.mocreatures.compat;
 
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompatScreen extends GuiScreen {
+public class CompatScreen extends Screen {
     public static boolean showScreen = true;
     private final List<String> messages = new ArrayList<>();
     private int textHeight;
@@ -51,6 +53,6 @@ public class CompatScreen extends GuiScreen {
             List<String> lines = this.fontRenderer.listFormattedStringToWidth(s, this.width);
             this.textHeight += lines.size() * this.fontRenderer.FONT_HEIGHT;
         }
-        this.buttonList.add(new GuiButton(0, this.width / 2 - 100, Math.min(this.height / 2 + this.textHeight / 2 + this.fontRenderer.FONT_HEIGHT, this.height - 30), I18n.format("gui.done")));
+        this.buttonList.add(new Button(0, this.width / 2 - 100, Math.min(this.height / 2 + this.textHeight / 2 + this.fontRenderer.FONT_HEIGHT, this.height - 30), I18n.format("gui.done")));
     }
 }

@@ -24,7 +24,6 @@ public class MoCEntityAnchovy extends MoCEntitySmallFish {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
-        return MoCLootTables.ANCHOVY;
+    protected ResourceLocation getLootTable() {        return MoCLootTables.ANCHOVY;
     }
 }

@@ -175,7 +175,7 @@ public class MoCItems {
                     sharkteeth,
                     haystack,
                     sugarlump,
-                    mocegg,
+                    //mocegg, //TODO TheidenHD
                     bigcatclaw,
                     whip,
                     medallion,

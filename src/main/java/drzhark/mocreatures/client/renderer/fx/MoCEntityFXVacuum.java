@@ -3,22 +3,23 @@
  */
 package drzhark.mocreatures.client.renderer.fx;
 
-import net.minecraft.client.particle.TexturedParticle;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.entity.Entity;
-import net.minecraft.world.World;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.particle.IParticleRenderType;
+import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCEntityFXVacuum extends TexturedParticle {
+public class MoCEntityFXVacuum extends SpriteTexturedParticle {
 
     private final float portalParticleScale;
     private final double portalPosX;
     private final double portalPosY;
     private final double portalPosZ;
 
-    public MoCEntityFXVacuum(World par1World, double par2, double par4, double par6, double par8, double par10, double par12, float red, float green,
+    public MoCEntityFXVacuum(ClientWorld par1World, double par2, double par4, double par6, double par8, double par10, double par12, float red, float green,
                              float blue, int partTexture) {
         super(par1World, par2, par4, par6, par8, par10, par12);
 
@@ -33,18 +34,22 @@ public class MoCEntityFXVacuum extends TexturedParticle {
         this.portalPosY = this.posY = par4;// + 0.7D;
         this.portalPosZ = this.posZ = par6;
         this.portalParticleScale = this.particleScale = this.rand.nextFloat() * 0.2F + 0.5F;
-        this.setParticleTextureIndex(partTexture);
         this.maxAge = (int) (Math.random() * 10.0D) + 30;
     }
 
     @Override
-    public void renderParticle(BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, float par3, float par4, float par5, float par6, float par7) {
+    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
         float var8 = (this.age + partialTicks) / this.maxAge;
         var8 = 1.0F - var8;
         var8 *= var8;
         var8 = 1.0F - var8;
         this.particleScale = this.portalParticleScale * var8;
-        super.renderParticle(worldRendererIn, entityIn, partialTicks, par3, par4, par5, par6, par7);
+        super.renderParticle(buffer, renderInfo, partialTicks);
+    }
+
+    @Override
+    public IParticleRenderType getRenderType() {
+        return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     @Override
