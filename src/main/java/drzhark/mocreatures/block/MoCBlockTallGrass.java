@@ -17,7 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 
@@ -46,7 +46,7 @@ public class MoCBlockTallGrass extends BlockBush implements IShearable {
     }
 
     @Override
-    public int getFlammability(IBlockAccess world, BlockPos pos, Direction face) {
+    public int getFlammability(IBlockReader world, BlockPos pos, Direction face) {
         if (isFlammable()) {
             return Blocks.TALLGRASS.getFlammability(world, pos, face);
         } else {
@@ -55,7 +55,7 @@ public class MoCBlockTallGrass extends BlockBush implements IShearable {
     }
 
     @Override
-    public int getFireSpreadSpeed(IBlockAccess world, BlockPos pos, Direction face) {
+    public int getFireSpreadSpeed(IBlockReader world, BlockPos pos, Direction face) {
         if (isFlammable()) {
             return Blocks.TALLGRASS.getFireSpreadSpeed(world, pos, face);
         } else {
@@ -69,7 +69,7 @@ public class MoCBlockTallGrass extends BlockBush implements IShearable {
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos) {
+    public AxisAlignedBB getBoundingBox(BlockState state, IBlockReader source, BlockPos pos) {
         return AABB;
     }
 
@@ -94,17 +94,17 @@ public class MoCBlockTallGrass extends BlockBush implements IShearable {
     }
 
     @Override
-    public boolean isShearable(ItemStack item, IBlockAccess world, BlockPos pos) {
+    public boolean isShearable(ItemStack item, IBlockReader world, BlockPos pos) {
         return true;
     }
 
     @Override
-    public List<ItemStack> onSheared(ItemStack item, IBlockAccess world, BlockPos pos, int fortune) {
+    public List<ItemStack> onSheared(ItemStack item, IBlockReader world, BlockPos pos, int fortune) {
         return new ArrayList<>(Collections.singletonList(new ItemStack(this, 1, 0)));
     }
 
     @Override
-    public boolean isReplaceable(IBlockAccess worldIn, BlockPos pos) {
+    public boolean isReplaceable(IBlockReader worldIn, BlockPos pos) {
         return true;
     }
 

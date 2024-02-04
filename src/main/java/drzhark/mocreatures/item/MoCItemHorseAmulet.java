@@ -8,16 +8,17 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.hunter.MoCEntityBigCat;
 import drzhark.mocreatures.entity.neutral.MoCEntityWyvern;
-import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.entity.tameable.MoCPetData;
+import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAppear;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
@@ -53,10 +54,8 @@ public class MoCItemHorseAmulet extends MoCItem {
     private String ownerName;
     private int PetId;
 
-    public MoCItemHorseAmulet(String name) {
-        super(name);
-        this.maxStackSize = 1;
-        setHasSubtypes(true);
+    public MoCItemHorseAmulet(Item.Properties properties, String name) {
+        super(properties.maxStackSize(1), name);
         this.ageCounter = 0;
     }
 
@@ -81,13 +80,13 @@ public class MoCItemHorseAmulet extends MoCItem {
                 MoCEntityTameableAnimal storedCreature;
                 this.spawnClass = this.spawnClass.replace(MoCConstants.MOD_PREFIX, "").toLowerCase();
                 if (this.spawnClass.equalsIgnoreCase("Wyvern")) { //ghost wyvern
-                    storedCreature = new MoCEntityWyvern(worldIn);
+                    storedCreature = MoCEntities.WYVERN.create(worldIn);
                     ((MoCEntityWyvern) storedCreature).setIsGhost(true);
                     this.isGhost = true;
                 } else if (this.spawnClass.equalsIgnoreCase("WildHorse")) {
-                    storedCreature = new MoCEntityHorse(worldIn);
+                    storedCreature = MoCEntities.WILDHORSE.create(worldIn);
                 } else {
-                    storedCreature = (MoCEntityTameableAnimal) EntityList.createEntityByIDFromName(new ResourceLocation(MoCConstants.MOD_PREFIX + this.spawnClass.toLowerCase()), worldIn);
+                    storedCreature = (MoCEntityTameableAnimal) EntityType.byKey(new ResourceLocation(MoCConstants.MOD_PREFIX + this.spawnClass.toLowerCase()).toString()).get().create(worldIn);
                     if (storedCreature instanceof MoCEntityBigCat) {
                         this.isGhost = true;
                         ((MoCEntityBigCat) storedCreature).setIsGhost(true);
@@ -165,13 +164,13 @@ public class MoCItemHorseAmulet extends MoCItem {
                     MoCTools.playCustomSound(storedCreature, MoCSoundEvents.ENTITY_GENERIC_MAGIC_APPEAR);
                     //gives an empty amulet
                     if (storedCreature instanceof MoCEntityBigCat || storedCreature instanceof MoCEntityWyvern || this.creatureType == 21 || this.creatureType == 22) {
-                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletghost, 1, 0));
+                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletghost, 1));
                     } else if (this.creatureType == 26 || this.creatureType == 27 || this.creatureType == 28) {
-                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletbone, 1, 0));
+                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletbone, 1));
                     } else if ((this.creatureType > 47 && this.creatureType < 60)) {
-                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletfairy, 1, 0));
+                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletfairy, 1));
                     } else if (this.creatureType == 39 || this.creatureType == 40) {
-                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletpegasus, 1, 0));
+                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletpegasus, 1));
                     }
                     MoCPetData petData = MoCreatures.instance.mapData.getPetData(storedCreature.getOwnerId());
                     if (petData != null) {
@@ -249,7 +248,7 @@ public class MoCItemHorseAmulet extends MoCItem {
 
     private void initAndReadNBT(ItemStack itemstack) {
         if (itemstack.getTag() == null) {
-            itemstack.put(new CompoundNBT());
+            itemstack.setTag(new CompoundNBT());
         }
         CompoundNBT nbtcompound = itemstack.getTag();
         readFromNBT(nbtcompound);

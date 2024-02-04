@@ -15,14 +15,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
-import net.minecraftforge.event.terraingen.PopulateChunkEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 import java.util.List;
 
@@ -82,11 +80,11 @@ public class MoCEventHooks {
         World world = event.getWorld();
         List<Integer> dimensionIDs = Ints.asList(data.getDimensions());
         if (!dimensionIDs.contains(world.provider.getDimension())) {
-            event.setResult(Result.DENY);
+            event.setResult(Event.Result.DENY);
         } else if (data.getFrequency() <= 0) {
-            event.setResult(Result.DENY);
+            event.setResult(Event.Result.DENY);
         } else if (dimensionIDs.contains(MoCreatures.proxy.wyvernDimension) && world.provider.getDimension() == MoCreatures.proxy.wyvernDimension) {
-            event.setResult(Result.ALLOW);
+            event.setResult(Event.Result.ALLOW);
         }
     }
 

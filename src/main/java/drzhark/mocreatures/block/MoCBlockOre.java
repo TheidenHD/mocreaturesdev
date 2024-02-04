@@ -69,7 +69,7 @@ public class MoCBlockOre extends Block {
 //    }
 //
 //    @Override
-//    public int getExpDrop(BlockState state, net.minecraft.world.IBlockAccess world, BlockPos pos, int fortune) {
+//    public int getExpDrop(BlockState state, net.minecraft.world.IBlockReader world, BlockPos pos, int fortune) {
 //        Random rand = world instanceof World ? ((World) world).rand : new Random();
 //
 //        if (this.getItemDropped(state, rand, fortune) != Item.getItemFromBlock(this)) {

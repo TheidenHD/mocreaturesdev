@@ -6,6 +6,8 @@ package drzhark.mocreatures.entity;
 import drzhark.mocreatures.MoCreatures;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.MobSpawnInfo;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
@@ -26,9 +28,9 @@ public class MoCEntityData {
     private int minGroup;
     private int maxGroup;
     private int maxSpawnInChunk;
-    private int[] dimensions;
+    private RegistryKey<World>[] dimensions;
 
-    public MoCEntityData(String name, int maxchunk, int[] dimensions, EntityClassification type, MobSpawnInfo.Spawners spawnListEntry, List<Type> biomeTypes) {
+    public MoCEntityData(String name, int maxchunk, RegistryKey<World>[] dimensions, EntityClassification type, MobSpawnInfo.Spawners spawnListEntry, List<Type> biomeTypes) {
         this.entityName = name;
         this.typeOfCreature = type;
         this.dimensions = dimensions;
@@ -41,7 +43,7 @@ public class MoCEntityData {
         MoCreatures.entityMap.put(spawnListEntry.type, this);
     }
 
-    public MoCEntityData(String name, int maxchunk, int[] dimensions, EntityClassification type, MobSpawnInfo.Spawners spawnListEntry, List<Type> biomeTypes, List<Type> blockedBiomeTypes) {
+    public MoCEntityData(String name, int maxchunk, RegistryKey<World>[] dimensions, EntityClassification type, MobSpawnInfo.Spawners spawnListEntry, List<Type> biomeTypes, List<Type> blockedBiomeTypes) {
         this.entityName = name;
         this.typeOfCreature = type;
         this.dimensions = dimensions;
@@ -59,7 +61,7 @@ public class MoCEntityData {
         return this.spawnListEntry.type;
     }
 
-    public EntityClassification getTypeMoC() {
+    public EntityClassification getType() {
         if (this.typeOfCreature != null) {
             return this.typeOfCreature;
         }
@@ -70,11 +72,11 @@ public class MoCEntityData {
         this.typeOfCreature = type;
     }
 
-    public int[] getDimensions() {
+    public RegistryKey<World>[] getDimensions() {
         return this.dimensions;
     }
 
-    public void setDimensions(int[] dimensions) {
+    public void setDimensions(RegistryKey<World>[] dimensions) {
         this.dimensions = dimensions;
     }
 

@@ -10,6 +10,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.IItemTier;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
@@ -28,17 +29,14 @@ public class MoCItemAxe extends AxeItem {
 
     private int specialWeaponType = 0;
 
-    public MoCItemAxe(String name, IItemTier material, float damage, float speed) {
-        this(name, 0, material, damage, speed);
-    }
 
-    public MoCItemAxe(String name, int meta, IItemTier material, float damage, float speed) {
-        super(material, damage - 1.0F, speed - 4.0F);
+    public MoCItemAxe(Item.Properties properties, String name, IItemTier material, float damage, float speed) {
+        super(material, damage - 1.0F, speed - 4.0F, properties);
         this.setRegistryName(MoCConstants.MOD_ID, name);
     }
 
-    public MoCItemAxe(String name, IItemTier material, float damage, float speed, int damageType) {
-        this(name, material, damage, speed);
+    public MoCItemAxe(Item.Properties properties, String name, IItemTier material, float damage, float speed, int damageType) {
+        this(properties, name, material, damage, speed);
         this.specialWeaponType = damageType;
     }
 
@@ -67,8 +65,7 @@ public class MoCItemAxe extends AxeItem {
             }
         }
 
-        stack.damageItem(2, attacker);
-        return true;
+        return super.hitEntity(stack, target, attacker);
     }
 
     @Override

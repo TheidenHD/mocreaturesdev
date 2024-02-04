@@ -9,7 +9,7 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 
 public class MoCBlockPlanks extends Block {
 
@@ -30,7 +30,7 @@ public class MoCBlockPlanks extends Block {
     }
 
     @Override
-    public int getFlammability(IBlockAccess world, BlockPos pos, Direction face) {
+    public int getFlammability(IBlockReader world, BlockPos pos, Direction face) {
         if (isFlammable()) {
             return Blocks.PLANKS.getFlammability(world, pos, face);
         } else {
@@ -39,7 +39,7 @@ public class MoCBlockPlanks extends Block {
     }
 
     @Override
-    public int getFireSpreadSpeed(IBlockAccess world, BlockPos pos, Direction face) {
+    public int getFireSpreadSpeed(IBlockReader world, BlockPos pos, Direction face) {
         if (isFlammable()) {
             return Blocks.PLANKS.getFireSpreadSpeed(world, pos, face);
         } else {

@@ -9,6 +9,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemTier;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.potion.EffectInstance;
@@ -28,17 +29,13 @@ public class MoCItemSword extends SwordItem {
 
     private int specialWeaponType = 0;
 
-    public MoCItemSword(String name, IItemTier material) {
-        this(name, 0, material);
-    }
-
-    public MoCItemSword(String name, int meta, IItemTier material) {
-        super(material);
+    public MoCItemSword(Item.Properties properties, String name, IItemTier material) {
+        super(material, 3, -2.4F, properties);
         this.setRegistryName(MoCConstants.MOD_ID, name);
     }
 
-    public MoCItemSword(String name, IItemTier material, int damageType) {
-        this(name, material);
+    public MoCItemSword(Item.Properties properties, String name, IItemTier material, int damageType) {
+        this(properties, name, material);
         this.specialWeaponType = damageType;
     }
 
@@ -67,8 +64,7 @@ public class MoCItemSword extends SwordItem {
             }
         }
 
-        stack.damageItem(1, attacker);
-        return true;
+        return super.hitEntity(stack, target, attacker);
     }
 
     @Override

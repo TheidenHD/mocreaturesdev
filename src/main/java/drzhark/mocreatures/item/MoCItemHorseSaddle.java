@@ -3,10 +3,11 @@
  */
 package drzhark.mocreatures.item;
 
+import net.minecraft.item.Item;
+
 public class MoCItemHorseSaddle extends MoCItem {
 
-    public MoCItemHorseSaddle(String name) {
-        super(name);
-        this.maxStackSize = 32;
+    public MoCItemHorseSaddle(Item.Properties properties, String name) {
+        super(properties.maxStackSize(32), name);
     }
 }

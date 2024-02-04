@@ -15,8 +15,10 @@ import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAppear;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
@@ -49,14 +51,12 @@ public class MoCItemPetAmulet extends MoCItem {
     private boolean adult;
     private int PetId;
 
-    public MoCItemPetAmulet(String name) {
-        super(name);
-        this.maxStackSize = 1;
-        setHasSubtypes(true);
+    public MoCItemPetAmulet(Item.Properties properties, String name) {
+        super(properties.maxStackSize(1), name);
     }
 
-    public MoCItemPetAmulet(String name, int type) {
-        this(name);
+    public MoCItemPetAmulet(Item.Properties properties, String name, int type) {
+        this(properties.maxStackSize(1), name);
         this.amuletType = type;
     }
 
@@ -68,9 +68,9 @@ public class MoCItemPetAmulet extends MoCItem {
         double newPosX = player.getPosX() - (dist * Math.cos((MoCTools.realAngle(player.rotationYaw - 90F)) / 57.29578F));
         double newPosZ = player.getPosZ() - (dist * Math.sin((MoCTools.realAngle(player.rotationYaw - 90F)) / 57.29578F));
 
-        ItemStack emptyAmulet = new ItemStack(MoCItems.fishnet, 1, 0);
+        ItemStack emptyAmulet = new ItemStack(MoCItems.fishnet, 1);
         if (this.amuletType == 1) {
-            emptyAmulet = new ItemStack(MoCItems.petamulet, 1, 0);
+            emptyAmulet = new ItemStack(MoCItems.petamulet, 1);
         }
 
         if (!world.isRemote) {
@@ -96,7 +96,7 @@ public class MoCItemPetAmulet extends MoCItem {
                             break;
                     }
                 }
-                MobEntity tempLiving = (MobEntity) EntityList.createEntityByIDFromName(new ResourceLocation(MoCConstants.MOD_PREFIX + this.spawnClass.toLowerCase()), world);
+                MobEntity tempLiving = (MobEntity) EntityType.byKey(new ResourceLocation(MoCConstants.MOD_PREFIX + this.spawnClass.toLowerCase()).toString()).get().create(world);
                 if (tempLiving instanceof IMoCEntity) {
                     IMoCTameable storedCreature = (IMoCTameable) tempLiving;
                     ((MobEntity) storedCreature).setPosition(newPosX, newPosY, newPosZ);
@@ -233,7 +233,7 @@ public class MoCItemPetAmulet extends MoCItem {
 
     private void initAndReadNBT(ItemStack itemstack) {
         if (itemstack.getTag() == null) {
-            itemstack.put(new CompoundNBT());
+            itemstack.setTag(new CompoundNBT());
         }
         CompoundNBT nbtcompound = itemstack.getTag();
         readFromNBT(nbtcompound);

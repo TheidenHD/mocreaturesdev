@@ -13,6 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.IArmorMaterial;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
@@ -27,8 +28,8 @@ import java.util.List;
 
 public class MoCItemArmor extends ArmorItem {
 
-    public MoCItemArmor(String name, IArmorMaterial materialIn, int renderIndex, EquipmentSlotType equipmentSlotIn) {
-        super(materialIn, renderIndex, equipmentSlotIn);
+    public MoCItemArmor(Item.Properties properties, String name, IArmorMaterial materialIn, EquipmentSlotType equipmentSlotIn) {
+        super(materialIn, equipmentSlotIn, properties);
         this.setRegistryName(MoCConstants.MOD_ID, name);
     }
 

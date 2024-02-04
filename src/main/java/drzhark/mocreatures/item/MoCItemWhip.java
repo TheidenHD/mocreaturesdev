@@ -17,13 +17,15 @@ import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.StandingSignBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -32,15 +34,8 @@ import java.util.List;
 
 public class MoCItemWhip extends MoCItem {
 
-    public MoCItemWhip(String name) {
-        super(name);
-        this.maxStackSize = 1;
-        setMaxDamage(24);
-    }
-
-    @Override
-    public boolean isFull3D() {
-        return true;
+    public MoCItemWhip(Item.Properties properties, String name) {
+        super(properties.maxStackSize(1).maxDamage(24), name);
     }
 
     public ItemStack onItemRightClick2(ItemStack itemstack, World world, PlayerEntity entityplayer) {
@@ -48,19 +43,21 @@ public class MoCItemWhip extends MoCItem {
     }
 
     @Override
-    public ActionResultType onItemUse(PlayerEntity player, World worldIn, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
-        final ItemStack stack = player.getHeldItem(hand);
-        Block block = worldIn.getBlockState(pos).getBlock();
-        Block block1 = worldIn.getBlockState(pos.up()).getBlock();
-        if (side != Direction.DOWN && (block1 == Blocks.AIR) && (block != Blocks.AIR) && (block != Blocks.STANDING_SIGN)) {
-            whipFX(worldIn, pos);
-            worldIn.playSound(player, pos, MoCSoundEvents.ENTITY_GENERIC_WHIP, SoundCategory.PLAYERS, 0.5F, 0.4F / ((itemRand.nextFloat() * 0.4F) + 0.8F));
-            stack.damageItem(1, player);
-            List<Entity> list = worldIn.getEntitiesWithinAABBExcludingEntity(player, player.getBoundingBox().grow(12D));
+    public ActionResultType onItemUse(ItemUseContext context) {
+        final ItemStack stack = context.getPlayer().getHeldItem(context.getHand());
+        Block block = context.getWorld().getBlockState(context.getPos()).getBlock();
+        Block block1 = context.getWorld().getBlockState(context.getPos().up()).getBlock();
+        if (context.getFace() != Direction.DOWN && (block1 == Blocks.AIR) && (block != Blocks.AIR) && !(block instanceof StandingSignBlock)) {
+            whipFX(context.getWorld(), context.getPos());
+            context.getWorld().playSound(context.getPlayer(), context.getPos(), MoCSoundEvents.ENTITY_GENERIC_WHIP, SoundCategory.PLAYERS, 0.5F, 0.4F / ((random.nextFloat() * 0.4F) + 0.8F));
+            stack.damageItem(1, context.getPlayer(), (player) -> {
+                player.sendBreakAnimation(context.getHand());
+            });
+            List<Entity> list = context.getWorld().getEntitiesWithinAABBExcludingEntity(context.getPlayer(), context.getPlayer().getBoundingBox().grow(12D));
             for (Entity entity : list) {
                 if (entity instanceof MoCEntityAnimal) {
                     MoCEntityAnimal animal = (MoCEntityAnimal) entity;
-                    if (MoCreatures.proxy.enableOwnership && animal.getOwnerId() != null && !player.getUniqueID().equals(animal.getOwnerId()) && !MoCTools.isThisPlayerAnOP(player)) {
+                    if (MoCreatures.proxy.enableOwnership && animal.getOwnerId() != null && !context.getPlayer().getUniqueID().equals(animal.getOwnerId()) && !MoCTools.isThisPlayerAnOP(context.getPlayer())) {
                         continue;
                     }
                 }
@@ -69,8 +66,8 @@ public class MoCItemWhip extends MoCItem {
                     MoCEntityBigCat entitybigcat = (MoCEntityBigCat) entity;
                     if (entitybigcat.getIsTamed()) {
                         entitybigcat.setSitting(!entitybigcat.getIsSitting());
-                    } else if ((worldIn.getDifficulty().getId() > 0) && entitybigcat.getIsAdult()) {
-                        entitybigcat.setAttackTarget(player);
+                    } else if ((context.getWorld().getDifficulty().getId() > 0) && entitybigcat.getIsAdult()) {
+                        entitybigcat.setAttackTarget(context.getPlayer());
                     }
                 }
                 if (entity instanceof MoCEntityHorse) {

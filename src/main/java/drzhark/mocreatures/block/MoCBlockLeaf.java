@@ -19,6 +19,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -52,7 +53,7 @@ public class MoCBlockLeaf extends LeavesBlock {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public boolean shouldSideBeRendered(BlockState blockState, IBlockAccess blockAccess, BlockPos pos, Direction side) {
+    public boolean shouldSideBeRendered(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
         if (!Minecraft.getInstance().gameSettings.fancyGraphics) {
             return !(blockAccess.getBlockState(pos.offset(side)).getBlock() instanceof LeavesBlock);
         }
@@ -60,7 +61,7 @@ public class MoCBlockLeaf extends LeavesBlock {
     }
 
     @Override
-    public MapColor getMapColor(BlockState state, IBlockAccess world, BlockPos pos) {
+    public MapColor getMapColor(BlockState state, IBlockReader world, BlockPos pos) {
         return mapColor;
     }
 
@@ -69,7 +70,7 @@ public class MoCBlockLeaf extends LeavesBlock {
     }
 
     @Override
-    public int getFlammability(IBlockAccess world, BlockPos pos, Direction face) {
+    public int getFlammability(IBlockReader world, BlockPos pos, Direction face) {
         if (isFlammable()) {
             return Blocks.LEAVES.getFlammability(world, pos, face);
         } else {
@@ -78,7 +79,7 @@ public class MoCBlockLeaf extends LeavesBlock {
     }
 
     @Override
-    public int getFireSpreadSpeed(IBlockAccess world, BlockPos pos, Direction face) {
+    public int getFireSpreadSpeed(IBlockReader world, BlockPos pos, Direction face) {
         if (isFlammable()) {
             return Blocks.LEAVES.getFireSpreadSpeed(world, pos, face);
         } else {
@@ -97,7 +98,7 @@ public class MoCBlockLeaf extends LeavesBlock {
     }
 
     @Override
-    public List<ItemStack> onSheared(ItemStack item, IBlockAccess world, BlockPos pos, int fortune) {
+    public List<ItemStack> onSheared(ItemStack item, IBlockReader world, BlockPos pos, int fortune) {
         List<ItemStack> list = new java.util.ArrayList<>();
         list.add(new ItemStack(this, 1, 0));
         return list;

@@ -30,6 +30,7 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
@@ -57,8 +58,8 @@ public class MoCreatures {
     public static Int2ObjectOpenHashMap<Class<? extends MobEntity>> instaSpawnerMap = new Int2ObjectOpenHashMap<>();
     public MoCPetMapData mapData;
 
-    public static boolean isServer() {
-        return (FMLCommonHandler.instance().getEffectiveSide() == MixinEnvironment.Side.SERVER);
+    public static boolean isServer(World world) {
+        return !world.isRemote();
     }
 
     @EventHandler

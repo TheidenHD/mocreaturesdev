@@ -7,13 +7,16 @@ import drzhark.mocreatures.init.MoCBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.trees.Tree;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.Random;
 
-public class MoCWorldGenBigTree extends WorldGenAbstractTree {
+public class MoCWorldGenBigTree extends Tree {
 
     /**
      * Contains three sets of two values that provide complimentary indices for
@@ -30,7 +33,7 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree {
     World world;
     int[] basePos = new int[]{0, 0, 0};
     int heightLimit = 20;
-    int getHeight();
+    int height;
     double heightAttenuation = 0.618D;
     double branchDensity = 1.0D;
     double branchSlope = 0.381D;
@@ -57,15 +60,10 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree {
     private BlockState iBlockStateLog;
     private BlockState iBlockStateLeaf;
 
-    public MoCWorldGenBigTree(boolean par1) {
-        super(par1);
-    }
-
     /**
      * Generates a Big Tree with the given log and leaf block IDs
      */
-    public MoCWorldGenBigTree(boolean par1, BlockState iblockstateLog, BlockState iblockstateleaf, int trunksize, int heightlimit, int leafdist) {
-        super(par1);
+    public MoCWorldGenBigTree(BlockState iblockstateLog, BlockState iblockstateleaf, int trunksize, int heightlimit, int leafdist) {
         this.iBlockStateLog = iblockstateLog;
         this.iBlockStateLeaf = iblockstateleaf;
         this.trunkSize = trunksize;
@@ -79,10 +77,10 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree {
      * generateLeaves.
      */
     void generateLeafNodeList() {
-        this.getHeight() = (int) (this.heightLimit * this.heightAttenuation);
+        this.height = (int) (this.heightLimit * this.heightAttenuation);
 
-        if (this.getHeight() >= this.heightLimit) {
-            this.getHeight() = this.heightLimit - 1;
+        if (this.height >= this.heightLimit) {
+            this.height = this.heightLimit - 1;
         }
 
         int var1 = (int) (1.382D + Math.pow(this.leafDensity * this.heightLimit / 13.0D, 2.0D));
@@ -94,7 +92,7 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree {
         int[][] var2 = new int[var1 * this.heightLimit][4];
         int var3 = this.basePos[1] + this.heightLimit - this.leafDistanceLimit;
         int var4 = 1;
-        int var5 = this.basePos[1] + this.getHeight();
+        int var5 = this.basePos[1] + this.height;
         int var6 = var3 - this.basePos[1];
         var2[0][0] = this.basePos[0];
         var2[0][1] = var3;
@@ -292,7 +290,7 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree {
     void generateTrunk() {
         int var1 = this.basePos[0];
         int var2 = this.basePos[1];
-        int var3 = this.basePos[1] + this.getHeight();
+        int var3 = this.basePos[1] + this.height;
         int var4 = this.basePos[2];
         int[] var5 = new int[]{var1, var2, var4};
         int[] var6 = new int[]{var1, var3, var4};
@@ -429,9 +427,9 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree {
     }
 
     @Override
-    public boolean generate(World par1World, Random par2Random, BlockPos pos) {
-        this.world = par1World;
-        long var6 = par2Random.nextLong();
+    public boolean attemptGrowTree(ServerWorld world, ChunkGenerator chunkGenerator, BlockPos pos, BlockState state, Random rand) {
+        this.world = world;
+        long var6 = rand.nextLong();
         this.rand.setSeed(var6);
         this.basePos[0] = pos.getX();
         this.basePos[1] = pos.getY();
@@ -440,7 +438,7 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree {
             this.heightLimit = 5 + this.rand.nextInt(this.heightLimitLimit);
         }
 
-        if (!this.validTreeLocation(pos, par1World)) {
+        if (!this.validTreeLocation(pos, world)) {
             return false;
         } else {
             this.generateLeafNodeList();

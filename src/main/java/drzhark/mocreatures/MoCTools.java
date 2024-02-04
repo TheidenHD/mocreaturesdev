@@ -25,6 +25,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.monster.SkeletonEntity;
+import net.minecraft.entity.monster.SlimeEntity;
+import net.minecraft.entity.monster.ZombieEntity;
+import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -46,6 +50,7 @@ import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -140,7 +145,7 @@ public class MoCTools {
             for (int i = 0; i < var2; ++i) {
                 float var4 = (i % 2 - 0.5F) * 1 / 4.0F;
                 float var5 = ((float) i / 2 - 0.5F) * 1 / 4.0F;
-                EntitySlime var6 = new EntitySlime(world);
+                SlimeEntity var6 = new SlimeEntity(world);
                 var6.setLocationAndAngles(entity.getPosX() + var4, entity.getPosY() + 0.5D, entity.getPosZ() + var5, world.rand.nextFloat() * 360.0F, 0.0F);
                 world.addEntity(var6);
             }
@@ -420,7 +425,7 @@ public class MoCTools {
     }
 
     public static void moveCreatureToXYZ(CreatureEntity movingEntity, int x, int y, int z, float f) {
-        Path pathEntity = movingEntity.getNavigator().getPathToXYZ(x, y, z);
+        Path pathEntity = movingEntity.getNavigator().pathfind(x, y, z, 0);
         if (pathEntity != null) {
             movingEntity.getNavigator().setPath(pathEntity, f);
         }
@@ -494,7 +499,7 @@ public class MoCTools {
 
     public static String biomeName(IWorld world, BlockPos pos) {
         Biome biome = world.getBiome(pos);
-        return biome.biomeName;
+        return biome.toString();
     }
 
     public static RegistryKey<Biome> biomeKind(World world, BlockPos pos) {
@@ -515,13 +520,13 @@ public class MoCTools {
             }
             ItemEntity entityitem = (ItemEntity) entity1;
             if (entityitem.getAge() < 50) {
-                entityitem.setDead();
+                entityitem.remove();
             }
         }
     }
 
     public static boolean mobGriefing(World world) {
-        return world.getGameRules().getBoolean("mobGriefing");
+        return world.getGameRules().getBoolean(GameRules.MOB_GRIEFING);
     }
 
     public static void destroyBlast(Entity entity, double d, double d1, double d2, float f, boolean flag) {
@@ -564,7 +569,7 @@ public class MoCTools {
                         BlockState blockstate = entity.world.getBlockState(pos);
                         if (blockstate.getBlock() != Blocks.AIR) {
                             f4 = blockstate.getBlockHardness(entity.world, pos);
-                            f2 -= (blockstate.getBlock().getExplosionResistance(entity) + 0.3F) * (f3 / 10F);
+                            f2 -= (blockstate.getBlock().getExplosionResistance() + 0.3F) * (f3 / 10F);
                         }
                         if ((f2 > 0.0F) && (d10 > entity.getPosY()) && (f4 < 3F)) {
                             hashset.add(pos);
@@ -581,7 +586,7 @@ public class MoCTools {
         }
 
         f *= 2.0F;
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
+        if (!entity.world.isRemote()) {
             int k = MathHelper.floor(d - f - 1.0D);
             int i1 = MathHelper.floor(d + f + 1.0D);
             int k1 = MathHelper.floor(d1 - f - 1.0D);
@@ -642,7 +647,7 @@ public class MoCTools {
                 /*
                   shows explosion on clients!
                  */
-                if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+                if (entity.world.isRemote()) {
                     entity.world.addParticle(ParticleTypes.POOF, (d14 + (d)) / 2D, (d16 + (d1)) / 2D, (d18 + (d2)) / 2D, d20, d22, d23);
                     entity.getMotion().getX() -= 0.0010000000474974511D;
                     entity.getMotion().getY() -= 0.0010000000474974511D;
@@ -651,7 +656,7 @@ public class MoCTools {
             }
 
             //destroys blocks on server!
-            if (mobGriefing && (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) && blockstate.getBlock() != Blocks.AIR) {
+            if (mobGriefing && !entity.world.isRemote() && blockstate.getBlock() != Blocks.AIR) {
                 BlockEvent.BreakEvent event = null;
                 if (!entity.world.isRemote) {
                     try {
@@ -670,7 +675,7 @@ public class MoCTools {
         }
 
         //sets world on fire on server
-        if (mobGriefing && (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) && flag) {
+        if (mobGriefing && !entity.world.isRemote() && flag) {
             for (int i3 = arraylist.size() - 1; i3 >= 0; i3--) {
                 BlockPos chunkposition1 = arraylist.get(i3);
                 BlockState blockstate = entity.world.getBlockState(chunkposition1);
@@ -782,7 +787,7 @@ public class MoCTools {
 
         if (MoCreatures.proxy.enableOwnership) {
             if (storedCreature == null) {
-                ep.sendMessage(new TranslationTextComponent(TextFormatting.RED + "ERROR:" + TextFormatting.WHITE + "The stored creature is NULL and could not be created. Report to admin."));
+                ep.sendMessage(new TranslationTextComponent(TextFormatting.RED + "ERROR:" + TextFormatting.WHITE + "The stored creature is NULL and could not be created. Report to admin."), ep.getUniqueID());
                 return ActionResultType.FAIL;
             }
             int max;
@@ -795,7 +800,7 @@ public class MoCTools {
                 }
                 if (count >= max) {
                     String message = "\2474" + ep.getName() + " can not tame more creatures, limit of " + max + " reached";
-                    ep.sendMessage(new TranslationTextComponent(message));
+                    ep.sendMessage(new TranslationTextComponent(message), ep.getUniqueID());
                     return ActionResultType.PASS;
                 }
             }
@@ -921,7 +926,7 @@ public class MoCTools {
                 nbtt.putInt("Armor", entity.getArmorType());
                 nbtt.putInt("CreatureType", entity.getTypeMoC());
                 nbtt.putBoolean("Adult", entity.getIsAdult());
-                nbtt.putString("OwnerName", epOwner != null ? epOwner.getName() : "");
+                nbtt.putString("OwnerName", epOwner != null ? epOwner.getName().getString() : "");
                 if (entity.getOwnerId() != null) {
                     nbtt.putUniqueId("OwnerUUID", entity.getOwnerId());
                 }
@@ -1032,7 +1037,7 @@ public class MoCTools {
     }
 
     public static void setPathToEntity(MobEntity creatureToMove, Entity entityTarget, float distance) {
-        Path pathentity = creatureToMove.getNavigator().pathfind(entityTarget);
+        Path pathentity = creatureToMove.getNavigator().pathfind(entityTarget, 0);
         if (pathentity != null && distance < 12F) {
             creatureToMove.getNavigator().setPath(pathentity, 1D);
         }
@@ -1084,7 +1089,7 @@ public class MoCTools {
     }
 
     public static boolean isTamed(Entity entity) {
-        if (entity instanceof EntityTameable && ((EntityTameable) entity).isTamed()) {
+        if (entity instanceof TameableEntity && ((TameableEntity) entity).isTamed()) {
             return true;
         }
         CompoundNBT nbt = new CompoundNBT();
@@ -1167,7 +1172,7 @@ public class MoCTools {
                 continue;
             }
             MonsterEntity entitymob = (MonsterEntity) entity;
-            if (entitymob.getRidingEntity() == null && (entitymob instanceof EntitySkeleton || entitymob instanceof EntityZombie || entitymob instanceof MoCEntitySilverSkeleton)) {
+            if (entitymob.getRidingEntity() == null && (entitymob instanceof SkeletonEntity || entitymob instanceof ZombieEntity || entitymob instanceof MoCEntitySilverSkeleton)) {
                 if (!mountEntity.world.isRemote) {
                     entitymob.startRiding(mountEntity);
                 }

@@ -20,11 +20,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -33,64 +31,35 @@ import javax.annotation.Nonnull;
 
 @SuppressWarnings("deprecation")
 @Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID)
-@GameRegistry.ObjectHolder(MoCConstants.MOD_ID)
 public class MoCBlocks {
 
-    @GameRegistry.ObjectHolder("ancient_ore")
     public static MoCBlockOre ancientOre;
-    @GameRegistry.ObjectHolder("ancient_silver_block")
     public static Block ancientSilverBlock;
-    @GameRegistry.ObjectHolder("carved_silver_sandstone")
     public static Block carvedSilverSandstone;
-    @GameRegistry.ObjectHolder("cobbled_wyvstone")
     public static Block cobbledWyvstone;
-    @GameRegistry.ObjectHolder("cobbled_deep_wyvstone")
     public static Block cobbledDeepWyvstone;
-    @GameRegistry.ObjectHolder("deep_wyvstone")
     public static Block deepWyvstone;
-    @GameRegistry.ObjectHolder("firestone")
     public static Block firestone;
-    @GameRegistry.ObjectHolder("gleaming_glass")
     public static Block gleamingGlass;
-    @GameRegistry.ObjectHolder("mossy_cobbled_wyvstone")
     public static Block mossyCobbledWyvstone;
-    @GameRegistry.ObjectHolder("mossy_cobbled_deep_wyvstone")
     public static Block mossyCobbledDeepWyvstone;
-    @GameRegistry.ObjectHolder("silver_sand")
     public static Block silverSand;
-    @GameRegistry.ObjectHolder("silver_sandstone")
     public static Block silverSandstone;
-    @GameRegistry.ObjectHolder("smooth_silver_sandstone")
     public static Block smoothSilverSandstone;
-    @GameRegistry.ObjectHolder("tall_wyvgrass")
     public static Block tallWyvgrass;
-    @GameRegistry.ObjectHolder("wyvern_diamond_ore")
     public static MoCBlockOre wyvernDiamondOre;
-    @GameRegistry.ObjectHolder("wyvern_emerald_ore")
     public static MoCBlockOre wyvernEmeraldOre;
-    @GameRegistry.ObjectHolder("wyvern_gold_ore")
     public static MoCBlockOre wyvernGoldOre;
-    @GameRegistry.ObjectHolder("wyvern_iron_ore")
     public static MoCBlockOre wyvernIronOre;
-    @GameRegistry.ObjectHolder("wyvern_lapis_ore")
     public static MoCBlockOre wyvernLapisOre;
-    @GameRegistry.ObjectHolder("wyvern_nest_block")
     public static MoCBlockNest wyvernNestBlock;
-    @GameRegistry.ObjectHolder("wyvstone")
     public static Block wyvstone;
-    @GameRegistry.ObjectHolder("wyvgrass")
     public static Block wyvgrass;
-    @GameRegistry.ObjectHolder("wyvdirt")
     public static Block wyvdirt;
-    @GameRegistry.ObjectHolder("wyvwood_leaves")
     public static Block wyvwoodLeaves;
-    @GameRegistry.ObjectHolder("wyvwood_sapling")
     public static Block wyvwoodSapling;
-    @GameRegistry.ObjectHolder("wyvwood_log")
     public static Block wyvwoodLog;
-    @GameRegistry.ObjectHolder("stripped_wyvwood_log")
     public static Block strippedwyvwoodLog;
-    @GameRegistry.ObjectHolder("wyvwood_planks")
     public static Block wyvwoodPlanks;
 
     @SubscribeEvent
@@ -103,7 +72,7 @@ public class MoCBlocks {
                 setup(new MoCBlockRock(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3.0F, 10.0F)), "deep_wyvstone"),
                 setup(new MoCBlockRock(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5F, 10.0F)), "mossy_cobbled_wyvstone"),
                 setup(new MoCBlockRock(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5F, 10.0F)), "mossy_cobbled_deep_wyvstone"),
-                setup(new MoCBlockGlass(), "gleaming_glass").setHardness(0.4F),
+                setup(new MoCBlockGlass(AbstractBlock.Properties.create(Material.GLASS).hardnessAndResistance(0.4F)), "gleaming_glass"),
                 setup(new MoCBlockSand(AbstractBlock.Properties.create(Material.EARTH, MaterialColor.CLAY).hardnessAndResistance(0.6F)), "silver_sand"),
                 setup(new MoCBlockRock(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.CLAY).hardnessAndResistance(1.2F)), "silver_sandstone"),
                 setup(new MoCBlockRock(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.CLAY).hardnessAndResistance(1.2F)), "carved_silver_sandstone"),
@@ -123,7 +92,7 @@ public class MoCBlocks {
                 setup(new MoCBlockLog(MaterialColor.CYAN_STAINED_HARDENED_CLAY, true), "stripped_wyvwood_log").setHardness(2.0F),
                 setup(new MoCBlockTallGrass(MaterialColor.LIGHT_BLUE_STAINED_HARDENED_CLAY, false), "tall_wyvgrass").setHardness(0.0F),
                 setup(new MoCBlockPlanks(MaterialColor.DIAMOND, true), "wyvwood_planks").setHardness(2.0F).setResistance(5.0F),
-                setup(new MoCBlockNest(), "wyvern_nest_block").setHardness(0.5F)
+                setup(new MoCBlockNest(AbstractBlock.Properties.create(Material.ORGANIC, MaterialColor.YELLOW).hardnessAndResistance(0.5F)), "wyvern_nest_block")
         );
     }
 
@@ -132,7 +101,7 @@ public class MoCBlocks {
         final IForgeRegistry<Item> registry = event.getRegistry();
         ForgeRegistries.BLOCKS.getValues().stream()
                 .filter(block -> block.getRegistryName().getNamespace().equals(MoCConstants.MOD_ID))
-                .forEach(block -> registry.register(setup(new BlockItem(block), block.getRegistryName())));
+                .forEach(block -> registry.register(setup(new BlockItem(block, new Item.Properties().group(MoCreatures.tabMoC)), block.getRegistryName())));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -156,10 +125,11 @@ public class MoCBlocks {
         Preconditions.checkNotNull(registryName, "Registry name to assign must not be null!");
         entry.setRegistryName(registryName);
         if (entry instanceof Block) {
-            ((Block) entry).setTranslationKey(registryName.getNamespace() + "." + registryName.getPath()).setCreativeTab(MoCreatures.tabMoC);
+            ((Block) entry).setTranslationKey(registryName.getNamespace() + "." + registryName.getPath());
+            ((Block) entry).setRegistryName(registryName);
         }
         if (entry instanceof Item) {
-            ((Item) entry).setTranslationKey(registryName.getNamespace() + "." + registryName.getPath()).setCreativeTab(MoCreatures.tabMoC);
+            ((Item) entry).setTranslationKey(registryName.getNamespace() + "." + registryName.getPath());
         }
         return entry;
     }

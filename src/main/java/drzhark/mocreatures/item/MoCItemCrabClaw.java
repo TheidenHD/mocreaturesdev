@@ -5,10 +5,11 @@ package drzhark.mocreatures.item;
 
 import com.google.common.collect.Multimap;
 import drzhark.mocreatures.init.MoCItems;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -25,17 +26,13 @@ public class MoCItemCrabClaw extends MoCItem {
     protected static final UUID REACH_DISTANCE_MODIFIER = UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF");
     protected static final UUID TOUGHNESS_MODIFIER = UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF");
     public final int armor;
-    public final int durability;
     public final int enchantability;
     public final float reach;
     public final float toughness;
 
-    public MoCItemCrabClaw(String name, int durability, int enchantability, float toughness, int armor, float reach) {
-        super(name);
-        this.setMaxDamage(durability);
-        this.maxStackSize = 1;
+    public MoCItemCrabClaw(Item.Properties properties, String name, int enchantability, float toughness, int armor, float reach) {
+        super(properties.maxStackSize(1), name);
         this.armor = armor;
-        this.durability = durability;
         this.enchantability = enchantability;
         this.reach = reach;
         this.toughness = toughness;
@@ -47,18 +44,22 @@ public class MoCItemCrabClaw extends MoCItem {
     	Item itemOffhand = attacker.getHeldItemOffhand().getItem();
     	
         if (itemOffhand instanceof MoCItemCrabClaw) {
-            stack.damageItem(1, attacker);
+            stack.damageItem(1, attacker, (entity) -> {
+                entity.sendBreakAnimation(EquipmentSlotType.MAINHAND);
+            });
         }
 
         return true;
     }
 
     @Override
-    public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, LivingEntity entityLiving) {
+    public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity entityLiving) {
     	Item itemOffhand = entityLiving.getHeldItemOffhand().getItem();
     	
         if (!worldIn.isRemote && state.getBlockHardness(worldIn, pos) != 0.0D && itemOffhand instanceof MoCItemCrabClaw) {
-            stack.damageItem(1, entityLiving);
+            stack.damageItem(1, entityLiving, (entity) -> {
+                entity.sendBreakAnimation(EquipmentSlotType.MAINHAND);
+            });
         }
 
         return true;
@@ -80,13 +81,13 @@ public class MoCItemCrabClaw extends MoCItem {
     }
 
     @Override
-    public Multimap<String, AttributeModifier> getItemAttributeModifiers(EquipmentSlotType equipmentSlot) {
-        Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers(equipmentSlot);
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType equipmentSlot) {
+        Multimap<Attribute, AttributeModifier> multimap = super.getAttributeModifiers(equipmentSlot);
 
         if (equipmentSlot == EquipmentSlotType.OFFHAND) {
-            multimap.put(Attributes.ARMOR.getName(), new AttributeModifier(TOUGHNESS_MODIFIER, "Crab claw armor", armor, 0));
-            multimap.put(PlayerEntity.REACH_DISTANCE.getName(), new AttributeModifier(REACH_DISTANCE_MODIFIER, "Crab claw reach", reach, 0));
-            multimap.put(Attributes.ARMOR_TOUGHNESS.getName(), new AttributeModifier(TOUGHNESS_MODIFIER, "Crab claw toughness", toughness, 0));
+            multimap.put(Attributes.ARMOR, new AttributeModifier(TOUGHNESS_MODIFIER, "Crab claw armor", armor, AttributeModifier.Operation.ADDITION));
+            multimap.put(net.minecraftforge.common.ForgeMod.REACH_DISTANCE.get(), new AttributeModifier(REACH_DISTANCE_MODIFIER, "Crab claw reach", reach, AttributeModifier.Operation.ADDITION));
+            multimap.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(TOUGHNESS_MODIFIER, "Crab claw toughness", toughness, AttributeModifier.Operation.ADDITION));
         }
 
         return multimap;

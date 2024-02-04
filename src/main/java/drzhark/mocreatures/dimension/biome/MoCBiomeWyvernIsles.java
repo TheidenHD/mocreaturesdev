@@ -16,9 +16,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.MobSpawnInfo;
-import net.minecraft.world.gen.feature.WorldGenAbstractTree;
-import net.minecraft.world.gen.feature.WorldGenShrub;
-import net.minecraft.world.gen.feature.WorldGenerator;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

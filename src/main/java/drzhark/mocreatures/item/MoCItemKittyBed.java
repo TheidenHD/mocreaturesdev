@@ -5,6 +5,7 @@ package drzhark.mocreatures.item;
 
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.item.MoCEntityKittyBed;
+import drzhark.mocreatures.init.MoCEntities;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -32,7 +33,8 @@ public class MoCItemKittyBed extends MoCItem {
         final ItemStack stack = player.getHeldItem(hand);
         if (!world.isRemote) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
-            MoCEntityKittyBed kittyBed = new MoCEntityKittyBed(world, this.sheetType);
+            MoCEntityKittyBed kittyBed = MoCEntities.KITTY_BED.create(world);
+            kittyBed.setSheetColor(this.sheetType);
             kittyBed.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
             world.addEntity(kittyBed);
             MoCTools.playCustomSound(kittyBed, SoundEvents.BLOCK_WOOD_PLACE);

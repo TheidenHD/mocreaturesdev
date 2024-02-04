@@ -6,15 +6,17 @@ package drzhark.mocreatures.item;
 import com.google.common.collect.Multimap;
 import drzhark.mocreatures.MoCreatures;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.WebBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IItemTier;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
@@ -39,16 +41,14 @@ public class MoCItemWeapon extends MoCItem {
     private final float attackDamage;
     private int specialWeaponType = 0;
 
-    public MoCItemWeapon(String name, IItemTier par2ToolMaterial) {
-        super(name);
+    public MoCItemWeapon(Item.Properties properties, String name, IItemTier par2ToolMaterial) {
+        super(properties.maxStackSize(1).maxDamage(par2ToolMaterial.getMaxUses()), name);
         this.material = par2ToolMaterial;
-        this.maxStackSize = 1;
-        this.setMaxDamage(par2ToolMaterial.getMaxUses());
         this.attackDamage = 3F + par2ToolMaterial.getAttackDamage();
     }
 
-    public MoCItemWeapon(String name, IItemTier par2ToolMaterial, int damageType) {
-        this(name, par2ToolMaterial);
+    public MoCItemWeapon(Item.Properties properties, String name, IItemTier par2ToolMaterial, int damageType) {
+        this(properties, name, par2ToolMaterial);
         this.specialWeaponType = damageType;
     }
 
@@ -57,11 +57,11 @@ public class MoCItemWeapon extends MoCItem {
     }
 
     public float getStrVsBlock(ItemStack stack, BlockState state) {
-        if (state.getBlock() instanceof BlockWeb) {
+        if (state.getBlock() instanceof WebBlock) {
             return 15.0F;
         } else {
             Material material = state.getMaterial();
-            return material != Material.PLANTS && material != Material.VINE && material != Material.CORAL && material != Material.LEAVES && material != Material.GOURD ? 1.0F : 1.5F;
+            return material != Material.PLANTS && material != Material.TALL_PLANTS && material != Material.CORAL && material != Material.LEAVES && material != Material.GOURD ? 1.0F : 1.5F;
         }
     }
 
@@ -90,12 +90,9 @@ public class MoCItemWeapon extends MoCItem {
             }
         }
 
-        stack.damageItem(1, attacker);
-        return true;
-    }
-
-    public boolean onBlockDestroyed(ItemStack par1ItemStack, int par2, int par3, int par4, int par5, MobEntity par6EntityLiving) {
-        par1ItemStack.damageItem(2, par6EntityLiving);
+        stack.damageItem(1, attacker, (entity) -> {
+            entity.sendBreakAnimation(EquipmentSlotType.MAINHAND);
+        });
         return true;
     }
 
@@ -115,7 +112,7 @@ public class MoCItemWeapon extends MoCItem {
      */
     @Override
     public boolean canHarvestBlock(BlockState state) {
-        return state.getBlock() instanceof BlockWeb;
+        return state.getBlock() instanceof WebBlock;
     }
 
     /**
@@ -130,9 +127,11 @@ public class MoCItemWeapon extends MoCItem {
     /**
      * Called when a Block is destroyed using this Item. Return true to trigger the "Use Item" statistic.
      */
-    public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, LivingEntity playerIn) {
-        if ((double) state.getBlockHardness(worldIn, pos) != 0.0D) {
-            stack.damageItem(2, playerIn);
+    public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity playerIn) {
+        if (!worldIn.isRemote && state.getBlockHardness(worldIn, pos) != 0.0F) {
+            stack.damageItem(1, playerIn, (entity) -> {
+                entity.sendBreakAnimation(EquipmentSlotType.MAINHAND);
+            });
         }
 
         return true;
@@ -152,18 +151,16 @@ public class MoCItemWeapon extends MoCItem {
      * @param repair   The ItemStack that should repair this Item (leather for leather armor, etc.)
      */
     public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-        ItemStack mat = this.material.getRepairItemStack();
-        if (OreDictionary.itemMatches(mat, repair, false)) return true;
-        return super.getIsRepairable(toRepair, repair);
+        return this.material.getRepairMaterial().test(repair) || super.getIsRepairable(toRepair, repair);
     }
 
     /**
      * Gets a map of item attribute modifiers, used by SwordItem to increase hit damage.
      */
-    public Multimap<String, AttributeModifier> getItemAttributeModifiers(EquipmentSlotType equipmentSlot) {
-        Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers(equipmentSlot);
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType equipmentSlot) {
+        Multimap<Attribute, AttributeModifier> multimap = super.getAttributeModifiers(equipmentSlot);
         if (equipmentSlot == EquipmentSlotType.MAINHAND) {
-            multimap.put(Attributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", this.attackDamage, 0));
+            multimap.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", this.attackDamage, AttributeModifier.Operation.ADDITION));
         }
         return multimap;
     }
