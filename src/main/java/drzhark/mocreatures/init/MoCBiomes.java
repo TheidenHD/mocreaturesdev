@@ -4,8 +4,6 @@
 package drzhark.mocreatures.init;
 
 import drzhark.mocreatures.MoCConstants;
-import drzhark.mocreatures.dimension.biome.MoCBiomeWyvernIsles;
-import drzhark.mocreatures.dimension.biome.MoCBiomeWyvernIslesDesert;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.event.RegistryEvent;

@@ -8,7 +8,6 @@ import drzhark.mocreatures.client.MoCKeyHandler;
 import drzhark.mocreatures.compat.CompatHandler;
 import drzhark.mocreatures.compat.datafixes.BlockIDFixer;
 import drzhark.mocreatures.compat.datafixes.EntityIDFixer;
-import drzhark.mocreatures.dimension.MoCWorldProviderWyvernSkylands;
 import drzhark.mocreatures.entity.MoCEntityData;
 import drzhark.mocreatures.entity.tameable.MoCPetMapData;
 import drzhark.mocreatures.event.MoCEventHooks;
@@ -36,11 +35,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import java.util.UUID;
 
-@Mod(modid = MoCConstants.MOD_ID, name = MoCConstants.MOD_NAME, version = MoCConstants.MOD_VERSION, acceptableRemoteVersions = MoCConstants.MOD_ACCEPTED_VERSIONS, dependencies = MoCConstants.MOD_DEPENDENCIES)
+@Mod(MoCConstants.MOD_ID)
 public class MoCreatures {
 
     public static final Logger LOGGER = LogManager.getLogger(MoCConstants.MOD_ID);

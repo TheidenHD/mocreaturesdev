@@ -46,7 +46,7 @@ public class MoCPetMapData extends WorldSavedData {
     public void updateOwnerPet(IMoCTameable pet) {
         this.markDirty();
         if (pet.getOwnerPetId() == -1 || this.petMap.get(pet.getOwnerId()) == null) {
-            UUID owner = MoCreatures.isServer() ? pet.getOwnerId() : Minecraft.getInstance().player.getUniqueID();
+            UUID owner = MoCreatures.isServer(((Entity) pet).getEntityWorld()) ? pet.getOwnerId() : Minecraft.getInstance().player.getUniqueID();
             MoCPetData petData;
             int id;
             if (this.petMap.containsKey(owner)) {

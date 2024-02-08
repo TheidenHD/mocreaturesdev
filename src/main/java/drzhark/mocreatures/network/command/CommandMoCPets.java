@@ -7,63 +7,33 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.entity.tameable.MoCPetData;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.NumberInvalidException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.ServerWorld;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public class CommandMoCPets extends CommandBase {
+public class CommandMoCPets {
 
     private static final List<String> commands = new ArrayList<>();
     private static final List<String> aliases = new ArrayList<>();
 
     static {
         commands.add("/mocpets");
-        aliases.add("mocpets");
-        //tabCompletionStrings.add("moctp");
     }
 
-    @Override
-    public String getName() {
-        return "mocpets";
-    }
 
-    @Override
-    public List<String> getAliases() {
-        return aliases;
-    }
-
-    /**
-     * Return the required permission level for this command.
-     */
-    @Override
-    public int getRequiredPermissionLevel() {
-        return 2;
-    }
-
-    @Override
-    public String getUsage(ICommandSender par1ICommandSender) {
-        return "commands.mocpets.usage";
-    }
-
-    @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
-        int unloadedCount = 0;
+    private static int execute(CommandSource source) {
+        /* int unloadedCount = 0;
         int loadedCount = 0;
         ArrayList<Integer> foundIds = new ArrayList<>();
         ArrayList<String> tamedlist = new ArrayList<>();
@@ -142,18 +112,11 @@ public class CommandMoCPets extends CommandBase {
                     + TextFormatting.WHITE
                     + (!MoCreatures.isServer() ? ", Unloaded Count : " + TextFormatting.AQUA + unloadedCount + TextFormatting.WHITE
                     + ", Total count : " + TextFormatting.AQUA + (loadedCount + unloadedCount) : "")));
-        }
+        } */
+        return 0; //TODO ThiedenHD
     }
 
-    /**
-     * Returns a sorted list of all possible commands for the given
-     * ICommandSender.
-     */
-    protected List<String> getSortedPossibleCommands(ICommandSender par1ICommandSender) {
-        Collections.sort(CommandMoCPets.commands);
-        return CommandMoCPets.commands;
-    }
-
+/*
     public boolean teleportLoadedPet(ServerWorld world, ServerPlayerEntity player, int petId, String petName, ICommandSender par1ICommandSender) {
         for (int j = 0; j < world.loadedEntityList.size(); j++) {
             Entity entity = world.loadedEntityList.get(j);
@@ -224,5 +187,5 @@ public class CommandMoCPets extends CommandBase {
             String tamedInfo = list.get(l);
             sender.sendMessage(new TranslationTextComponent(tamedInfo));
         }
-    }
+    }*/
 }

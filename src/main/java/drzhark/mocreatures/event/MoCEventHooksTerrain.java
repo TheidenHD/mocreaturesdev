@@ -9,15 +9,14 @@ import drzhark.mocreatures.init.MoCEntities;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.MobEntity;
-import net.minecraft.init.Biomes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
 import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +68,7 @@ public class MoCEventHooksTerrain {
     @SubscribeEvent
     public void onPopulateChunk(PopulateChunkEvent.Populate event) {
         // Regular spawning
-        if (event.getTypeMoC() == PopulateChunkEvent.Populate.EventType.ANIMALS) {
+        if (event.getType() == PopulateChunkEvent.Populate.EventType.ANIMALS) {
             int chunkX = event.getChunkX() * 16;
             int chunkZ = event.getChunkZ() * 16;
             int centerX = chunkX + 8;

@@ -38,7 +38,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-public class MoCItemPetAmulet extends MoCItem {
+public class  MoCItemPetAmulet extends MoCItem {
 
     private String name;
     private float health;
@@ -61,7 +61,7 @@ public class MoCItemPetAmulet extends MoCItem {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
+    public ActionResult<ItemStack>  onItemRightClick(World world, PlayerEntity player, Hand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         double dist = 1D;
         double newPosY = player.getPosY();

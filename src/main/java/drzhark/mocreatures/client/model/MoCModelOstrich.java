@@ -18,6 +18,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.neutral.MoCEntityOstrich;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.item.DyeColor;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -122,7 +123,7 @@ public class MoCModelOstrich<T extends MoCEntityOstrich> extends EntityModel<T> 
     private boolean rider;
     private int helmet;
     private byte typeI;
-    private int flagColor;
+    private DyeColor flagColor;
 
     public MoCModelOstrich() {
         this.textureWidth = 128;
@@ -677,7 +678,7 @@ public class MoCModelOstrich<T extends MoCEntityOstrich> extends EntityModel<T> 
         if (bagged) {
             this.Saddlebag.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.Flagpole.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            switch (this.flagColor) {
+            switch (this.flagColor.getId()) {
                 //case 0:
                 //    FlagWhite.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 //   break;
@@ -973,7 +974,7 @@ public class MoCModelOstrich<T extends MoCEntityOstrich> extends EntityModel<T> 
         //flag
         float flagF = MathHelper.cos(limbSwing * 0.8F) * 0.1F * limbSwingAmount;
 
-        switch (this.flagColor) {
+        switch (this.flagColor.getId()) {
             case 1:
                 this.FlagOrange.rotateAngleY = flagF;
                 break;

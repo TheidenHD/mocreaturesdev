@@ -113,40 +113,9 @@ public class CommandMoCreatures {
         tabCompletionStrings.add("zebrachance");
     }
 
-    @Override
-    public String getName() {
-        return MoCConstants.MOD_ID;
-    }
 
-    @Override
-    public List<String> getAliases() {
-        return aliases;
-    }
-
-    /**
-     * Return the required permission level for this command.
-     */
-    @Override
-    public int getRequiredPermissionLevel() {
-        return 2;
-    }
-
-    @Override
-    public String getUsage(ICommandSender par1ICommandSender) {
-        return "commands.mocreatures.usage";
-    }
-
-    /**
-     * Adds the strings available in this command to the given list of tab
-     * completion options.
-     */
-    public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
-        return getListOfStringsMatchingLastWord(par2ArrayOfStr, tabCompletionStrings.toArray(new String[0]));
-    }
-
-    @Override
-    public void execute(CommandSource source, MinecraftServer server, String[] args) {
-        String command;
+    public int execute(CommandSource source, MinecraftServer server, String[] args) {
+        /*String command;
         if (args.length == 0) {
             command = "help";
         } else {
@@ -556,19 +525,12 @@ public class CommandMoCreatures {
             // TODO: update only what is needed instead of everything
             config.save();
             MoCreatures.proxy.readGlobalConfigValues();
-        }
+        }*/
+        return  0; //TODO TheidenHD
     }
 
-    /**
-     * Returns a sorted list of all possible commands for the given
-     * ICommandSender.
-     */
-    protected List<String> getSortedPossibleCommands(ICommandSender par1ICommandSender) {
-        Collections.sort(CommandMoCreatures.commands);
-        return CommandMoCreatures.commands;
-    }
 
-    public boolean teleportLoadedPet(ServerWorld world, ServerPlayerEntity player, int petId, String petName, ICommandSender par1ICommandSender) {
+    /*public boolean teleportLoadedPet(ServerWorld world, ServerPlayerEntity player, int petId, String petName, ICommandSender par1ICommandSender) {
         for (int j = 0; j < world.loadedEntityList.size(); j++) {
             Entity entity = world.loadedEntityList.get(j);
             // search for entities that are MoCEntityAnimal's
@@ -637,5 +599,5 @@ public class CommandMoCreatures {
             String tamedInfo = list.get(l);
             sender.sendMessage(new TranslationTextComponent(tamedInfo));
         }
-    }
+    }*/
 }

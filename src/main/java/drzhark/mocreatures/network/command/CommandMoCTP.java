@@ -7,6 +7,7 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.entity.tameable.MoCPetData;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -24,15 +25,15 @@ public class CommandMoCTP {
 
 
     static {
-        commands.add("/moctp <entityid> <playername>");
-        commands.add("/moctp <petname> <playername>");
-        aliases.add("moctp");
+        //commands.add("/moctp <entityid> <playername>");
+        //commands.add("/moctp <petname> <playername>");
+        //aliases.add("moctp");
         //tabCompletionStrings.add("moctp");
     }
 
-    @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
-        int petId;
+    public int execute(CommandSource source) {
+        return 0;
+        /*int petId;
         if (args.length == 0) {
             sender.sendMessage(new TranslationTextComponent(TextFormatting.RED + "Error" + TextFormatting.WHITE
                     + ": You must enter a valid entity ID."));
@@ -80,18 +81,10 @@ public class CommandMoCTP {
             }
         } else {
             sender.sendMessage(new TranslationTextComponent("Tamed entity could not be located."));
-        }
+        }*/
     }
 
-    /**
-     * Returns a sorted list of all possible commands for the given
-     * ICommandSender.
-     */
-    protected List<String> getSortedPossibleCommands(ICommandSender par1ICommandSender) {
-        Collections.sort(CommandMoCTP.commands);
-        return CommandMoCTP.commands;
-    }
-
+/*
     public boolean teleportLoadedPet(ServerWorld world, PlayerEntity player, int petId, String petName, ICommandSender par1ICommandSender) {
         for (int j = 0; j < world.loadedEntityList.size(); j++) {
             Entity entity = world.loadedEntityList.get(j);
@@ -132,5 +125,5 @@ public class CommandMoCTP {
             }
         }
         return false;
-    }
+    }*/
 }

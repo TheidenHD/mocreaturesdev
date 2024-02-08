@@ -26,7 +26,7 @@ public class MoCPetData {
 
     public MoCPetData(IMoCTameable pet) {
         this.ownerData.put("TamedList", this.tamedList);
-        this.ownerUniqueId = MoCreatures.isServer() ? pet.getOwnerId() : Minecraft.getInstance().player.getUniqueID();
+        this.ownerUniqueId = MoCreatures.isServer(((Entity) pet).getEntityWorld()) ? pet.getOwnerId() : Minecraft.getInstance().player.getUniqueID();
     }
 
     public MoCPetData(CompoundNBT nbt, UUID owner) {

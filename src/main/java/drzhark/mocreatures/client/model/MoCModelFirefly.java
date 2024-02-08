@@ -4,6 +4,7 @@
 package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.ambient.MoCEntityFirefly;
@@ -15,7 +16,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelFirefly<T extends Entity> extends EntityModel<T> {
+public class MoCModelFirefly<T extends MoCEntityFirefly> extends EntityModel<T> {
 
     //fields
     ModelRenderer Antenna;
@@ -32,6 +33,8 @@ public class MoCModelFirefly<T extends Entity> extends EntityModel<T> {
     ModelRenderer LeftShell;
     ModelRenderer LeftWing;
     ModelRenderer RightWing;
+    private boolean flying;
+    private boolean day;
 
     public MoCModelFirefly() {
         this.textureWidth = 32;
@@ -109,12 +112,13 @@ public class MoCModelFirefly<T extends Entity> extends EntityModel<T> {
 
     }
 
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.flying = (entityIn.getIsFlying() || entityIn.getMotion().getY() < -0.1D);
+        this.day = !entityIn.getEntityWorld().isDaytime();
+    }
+
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        MoCEntityFirefly entityfirefly = (MoCEntityFirefly) entity;
-        boolean isFlying = (entityfirefly.getIsFlying() || entityfirefly.getMotion().getY() < -0.1D);
-
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, f5, isFlying);
         this.Antenna.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.RearLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.MidLegs.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -125,7 +129,7 @@ public class MoCModelFirefly<T extends Entity> extends EntityModel<T> {
         this.Thorax.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        if (!isFlying) {
+        if (!this.flying) {
             this.RightShell.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.LeftShell.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else {
@@ -143,15 +147,14 @@ public class MoCModelFirefly<T extends Entity> extends EntityModel<T> {
             matrixStackIn.pop();
         }
 
-        boolean flag = !entityfirefly.getEntityWorld().isDaytime();
         matrixStackIn.push();
         RenderSystem.enableBlend();
-        if (!flag) {
+        if (!this.day) {
             float transparency = 0.4F;
             RenderSystem.defaultBlendFunc();
             RenderSystem.color4f(0.8F, 0.8F, 0.8F, transparency);
         } else {
-            matrixStackIn.blendFunc(770, 1);
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
         }
         RenderSystem.disableBlend();
         matrixStackIn.pop();
@@ -163,12 +166,12 @@ public class MoCModelFirefly<T extends Entity> extends EntityModel<T> {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float f5, boolean isFlying) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         float legMov;
         float legMovB;
 
         float frontLegAdj = 0F;
-        if (isFlying) {
+        if (this.flying) {
             float WingRot = MathHelper.cos((ageInTicks * 1.8F)) * 0.8F;
             this.RightWing.rotateAngleZ = WingRot;
             this.LeftWing.rotateAngleZ = -WingRot;
