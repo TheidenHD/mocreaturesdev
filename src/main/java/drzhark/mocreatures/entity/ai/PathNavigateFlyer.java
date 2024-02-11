@@ -18,7 +18,8 @@ public class PathNavigateFlyer extends PathNavigator {
     }
 
     protected PathFinder getPathFinder(int searchDepthIn) {
-        return new PathFinder(new FlyNodeProcessor(), searchDepthIn);
+        this.nodeProcessor = new FlyNodeProcessor();
+        return new PathFinder(this.nodeProcessor, searchDepthIn);
     }
 
     /**

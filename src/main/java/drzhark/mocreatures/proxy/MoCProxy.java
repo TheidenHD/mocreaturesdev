@@ -75,7 +75,7 @@ public class MoCProxy {
     public float ogreCaveStrength;
     public float ogreFireStrength;
     public float ogreStrength;
-    public int filchLizardSpawnItemChance;
+    public int filchLizardSpawnItemChance = 1; //TODO TheideHD
     public int kittyVillageChance;
     public int maxOPTamed;
     public int maxTamed;

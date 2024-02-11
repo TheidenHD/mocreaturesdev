@@ -36,7 +36,6 @@ public class MoCEntityEgg extends MobEntity {
 
     public MoCEntityEgg(EntityType<? extends MoCEntityEgg> type, World world) {
         super(type, world);
-        //setSize(0.25F, 0.25F);
         this.tCounter = 0;
         this.lCounter = 0;
     }

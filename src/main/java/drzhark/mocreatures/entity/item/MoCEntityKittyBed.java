@@ -36,7 +36,6 @@ public class MoCEntityKittyBed extends MobEntity {
 
     public MoCEntityKittyBed(EntityType<? extends MoCEntityKittyBed> type, World world) {
         super(type, world);
-        //setSize(1.0F, 0.15F);
         setNoAI(true);
         this.milkLevel = 0.0F;
     }

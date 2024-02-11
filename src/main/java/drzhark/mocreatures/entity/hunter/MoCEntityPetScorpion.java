@@ -56,7 +56,6 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
 
     public MoCEntityPetScorpion(EntityType<? extends MoCEntityPetScorpion> type, World world) {
         super(type, world);
-        //setSize(1.4F, 0.9F);
         this.poisontimer = 0;
         setAdult(false);
         setAge(20);

@@ -31,7 +31,7 @@ public class MoCEntityGrasshopper extends MoCEntityInsect {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return MoCEntityGrasshopper.registerAttributes().createMutableAttribute(Attributes.ARMOR, 1.0D);
+        return MoCEntityInsect.registerAttributes().createMutableAttribute(Attributes.ARMOR, 1.0D);
     }
 
     @Override

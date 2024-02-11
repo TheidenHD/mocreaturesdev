@@ -41,8 +41,7 @@ public class MoCEntityThrowableRock extends Entity {
     public MoCEntityThrowableRock(EntityType<? extends MoCEntityThrowableRock> type, World par1World) {
         super(type, par1World);
         this.preventEntitySpawning = true;
-        //this.setSize(1F, 1F);
-        //this.yOffset = this.getHeight() / 2.0F;
+        //this.yOffset = this.getHeight() / 2.0F; //TODO TheidenHD
     }
 
     public static  MoCEntityThrowableRock build(World par1World, Entity entitythrower, double par2, double par4, double par6) {

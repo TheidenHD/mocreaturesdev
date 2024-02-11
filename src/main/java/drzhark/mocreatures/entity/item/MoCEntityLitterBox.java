@@ -38,7 +38,6 @@ public class MoCEntityLitterBox extends MobEntity {
 
     public MoCEntityLitterBox(EntityType<? extends MoCEntityLitterBox> type, World world) {
         super(type, world);
-        //setSize(1.0F, 0.15F);
         setNoAI(true);
     }
 
