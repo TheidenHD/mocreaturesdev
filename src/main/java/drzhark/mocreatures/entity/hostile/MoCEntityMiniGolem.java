@@ -113,7 +113,7 @@ public class MoCEntityMiniGolem extends MoCEntityMob {
         }
 
         //creates a dummy TRock on top of it
-        MoCEntityThrowableRock tRock = new MoCEntityThrowableRock(this.world, this, this.getPosX(), this.getPosY() + 1.5D, this.getPosZ());
+        MoCEntityThrowableRock tRock = MoCEntityThrowableRock.build(this.world, this, this.getPosX(), this.getPosY() + 1.5D, this.getPosZ());
         this.world.addEntity(tRock);
         tRock.setState(tRockState);
         tRock.setBehavior(1);
@@ -159,22 +159,22 @@ public class MoCEntityMiniGolem extends MoCEntityMob {
      */
     @Override
     protected void playStepSound(BlockPos pos, BlockState block) {
-        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOLEM_WALK);
+        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOLEM_WALK.get());
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_GOLEM_DYING;
+        return MoCSoundEvents.ENTITY_GOLEM_DYING.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_GOLEM_HURT;
+        return MoCSoundEvents.ENTITY_GOLEM_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MoCSoundEvents.ENTITY_GOLEM_AMBIENT;
+        return MoCSoundEvents.ENTITY_GOLEM_AMBIENT.get();
     }
 
     @Nullable

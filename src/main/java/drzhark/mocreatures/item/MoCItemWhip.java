@@ -49,7 +49,7 @@ public class MoCItemWhip extends MoCItem {
         Block block1 = context.getWorld().getBlockState(context.getPos().up()).getBlock();
         if (context.getFace() != Direction.DOWN && (block1 == Blocks.AIR) && (block != Blocks.AIR) && !(block instanceof StandingSignBlock)) {
             whipFX(context.getWorld(), context.getPos());
-            context.getWorld().playSound(context.getPlayer(), context.getPos(), MoCSoundEvents.ENTITY_GENERIC_WHIP, SoundCategory.PLAYERS, 0.5F, 0.4F / ((random.nextFloat() * 0.4F) + 0.8F));
+            context.getWorld().playSound(context.getPlayer(), context.getPos(), MoCSoundEvents.ENTITY_GENERIC_WHIP.get(), SoundCategory.PLAYERS, 0.5F, 0.4F / ((random.nextFloat() * 0.4F) + 0.8F));
             stack.damageItem(1, context.getPlayer(), (player) -> {
                 player.sendBreakAnimation(context.getHand());
             });

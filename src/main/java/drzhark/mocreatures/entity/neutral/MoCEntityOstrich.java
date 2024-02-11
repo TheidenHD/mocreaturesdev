@@ -399,7 +399,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
 
         if (this.transformCounter > 0) {
             if (this.transformCounter == 40) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_TRANSFORM);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_TRANSFORM.get());
             }
 
             if (++this.transformCounter > 100) {
@@ -565,7 +565,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
 
             openMouth();
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING.get());
             setFertile(true);
             return ActionResultType.SUCCESS;
         }
@@ -588,7 +588,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             } else {
                 transform(6);
             }
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_DRINKING);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_DRINKING.get());
             return ActionResultType.SUCCESS;
         }
 
@@ -604,7 +604,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             } else {
                 transform(7);
             }
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_DRINKING);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_DRINKING.get());
             return ActionResultType.SUCCESS;
         }
 
@@ -620,7 +620,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             } else {
                 transform(8);
             }
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_DRINKING);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_DRINKING.get());
             return ActionResultType.SUCCESS;
         }
 
@@ -636,7 +636,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             } else {
                 transform(5);
             }
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_DRINKING);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_DRINKING.get());
             return ActionResultType.SUCCESS;
         }
         if (getIsTamed() && getIsChested() && (getTypeMoC() > 1) && !stack.isEmpty() && ItemTags.WOOL.contains(stack.getItem())) {
@@ -701,7 +701,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                     player.setHeldItem(hand, ItemStack.EMPTY);
                     dropArmor();
                     this.setItemStackToSlot(itemArmor.getEquipmentSlot(), stack);
-                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_OFF);
+                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_OFF.get());
                     setHelmet(helmetType);
                     return ActionResultType.SUCCESS;
                 }
@@ -742,22 +742,22 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
         openMouth();
-        return MoCSoundEvents.ENTITY_OSTRICH_HURT;
+        return MoCSoundEvents.ENTITY_OSTRICH_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
         openMouth();
         if (getTypeMoC() == 1) {
-            return MoCSoundEvents.ENTITY_OSTRICH_AMBIENT_BABY;
+            return MoCSoundEvents.ENTITY_OSTRICH_AMBIENT_BABY.get();
         }
-        return MoCSoundEvents.ENTITY_OSTRICH_AMBIENT;
+        return MoCSoundEvents.ENTITY_OSTRICH_AMBIENT.get();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
         openMouth();
-        return MoCSoundEvents.ENTITY_OSTRICH_DEATH;
+        return MoCSoundEvents.ENTITY_OSTRICH_DEATH.get();
     }
 
     @Nullable
@@ -936,7 +936,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             this.jumpCounter = 1;
         }
         if (this.jumpCounter == 0) {
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_WINGFLAP);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_WINGFLAP.get());
             this.jumpPending = true;
             this.jumpCounter = 1;
         }

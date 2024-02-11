@@ -96,20 +96,20 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_DEER_DEATH;
+        return MoCSoundEvents.ENTITY_DEER_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_DEER_HURT;
+        return MoCSoundEvents.ENTITY_DEER_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
         if (!getIsAdult()) {
-            return MoCSoundEvents.ENTITY_DEER_AMBIENT_BABY;
+            return MoCSoundEvents.ENTITY_DEER_AMBIENT_BABY.get();
         } else {
-            return MoCSoundEvents.ENTITY_DEER_AMBIENT;
+            return MoCSoundEvents.ENTITY_DEER_AMBIENT.get();
         }
     }
 

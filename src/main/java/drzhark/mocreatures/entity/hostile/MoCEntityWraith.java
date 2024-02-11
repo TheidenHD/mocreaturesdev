@@ -74,17 +74,17 @@ public class MoCEntityWraith extends MoCEntityMob//MoCEntityFlyerMob
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCreatures.proxy.legacyWraithSounds ? MoCSoundEvents.ENTITY_WRAITH_DEATH_LEGACY : MoCSoundEvents.ENTITY_WRAITH_DEATH;
+        return MoCreatures.proxy.legacyWraithSounds ? MoCSoundEvents.ENTITY_WRAITH_DEATH_LEGACY.get() : MoCSoundEvents.ENTITY_WRAITH_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCreatures.proxy.legacyWraithSounds ? MoCSoundEvents.ENTITY_WRAITH_HURT_LEGACY : MoCSoundEvents.ENTITY_WRAITH_HURT;
+        return MoCreatures.proxy.legacyWraithSounds ? MoCSoundEvents.ENTITY_WRAITH_HURT_LEGACY.get() : MoCSoundEvents.ENTITY_WRAITH_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MoCreatures.proxy.legacyWraithSounds ? MoCSoundEvents.ENTITY_WRAITH_AMBIENT_LEGACY : MoCSoundEvents.ENTITY_WRAITH_AMBIENT;
+        return MoCreatures.proxy.legacyWraithSounds ? MoCSoundEvents.ENTITY_WRAITH_AMBIENT_LEGACY.get() : MoCSoundEvents.ENTITY_WRAITH_AMBIENT.get();
     }
 
     @Nullable

@@ -4,14 +4,10 @@
 package drzhark.mocreatures.compat;
 
 import drzhark.mocreatures.MoCConstants;
-import drzhark.mocreatures.compat.futuremc.FutureMCIntegration;
 import drzhark.mocreatures.compat.industrialforegoing.IndustrialForegoingIntegration;
 import drzhark.mocreatures.compat.jer.JERIntegration;
 import drzhark.mocreatures.compat.morph.MorphIntegration;
-import drzhark.mocreatures.compat.thermalexpansion.ThermalExpansionIntegration;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 
@@ -20,14 +16,14 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID)
+@Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CompatHandler {
 
     static {
         try {
-            File file = new File(Launch.minecraftHome, "config" + File.separator + "mia" + File.separator + "mocreatures.cfg");
+            File file = new File(Minecraft.getInstance().gameDir, "config" + File.separator + "mia" + File.separator + "mocreatures.cfg");
             if (Files.exists(file.toPath())) {
-                File tempFile = new File(Launch.minecraftHome, "config" + File.separator + "mia" + File.separator + "mocreatures_temp.cfg");
+                File tempFile = new File(Minecraft.getInstance().gameDir, "config" + File.separator + "mia" + File.separator + "mocreatures_temp.cfg");
                 List<String> configEntries = new ArrayList<>();
                 configEntries.add("Enable FutureMC integration");
                 configEntries.add("Enable Hatchery integration");
@@ -51,9 +47,9 @@ public class CompatHandler {
                 file.delete();
                 tempFile.renameTo(file);
             }
-            file = new File(Launch.minecraftHome, "config" + File.separator + "mia" + File.separator + "base.cfg");
+            file = new File(Minecraft.getInstance().gameDir, "config" + File.separator + "mia" + File.separator + "base.cfg");
             if (Files.exists(file.toPath())) {
-                File tempFile = new File(Launch.minecraftHome, "config" + File.separator + "mia" + File.separator + "base_temp.cfg");
+                File tempFile = new File(Minecraft.getInstance().gameDir, "config" + File.separator + "mia" + File.separator + "base_temp.cfg");
                 String targetConfigEntry = "Replaces all raw meat drops with cooked ones";
                 try (BufferedReader br = new BufferedReader(new FileReader(file)); BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile))) {
                     String line;
@@ -72,11 +68,11 @@ public class CompatHandler {
         }
     }
 
-    @SubscribeEvent
-    public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
-        if (ModList.get().isLoaded("futuremc")) FutureMCIntegration.addRecipes();
-        if (ModList.get().isLoaded("thermalexpansion")) ThermalExpansionIntegration.addRecipes();
-    }
+//    @SubscribeEvent //TODO TheidenHD
+//    public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
+//        if (ModList.get().isLoaded("futuremc")) FutureMCIntegration.addRecipes();
+//        if (ModList.get().isLoaded("thermalexpansion")) ThermalExpansionIntegration.addRecipes();
+//    }
 
     public static void preInit() {
     }

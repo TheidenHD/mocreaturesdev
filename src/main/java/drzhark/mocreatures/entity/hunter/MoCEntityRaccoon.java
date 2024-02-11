@@ -96,17 +96,17 @@ public class MoCEntityRaccoon extends MoCEntityTameableAnimal {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_RACCOON_DEATH;
+        return MoCSoundEvents.ENTITY_RACCOON_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_RACCOON_HURT;
+        return MoCSoundEvents.ENTITY_RACCOON_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MoCSoundEvents.ENTITY_RACCOON_AMBIENT;
+        return MoCSoundEvents.ENTITY_RACCOON_AMBIENT.get();
     }
 
     @Nullable

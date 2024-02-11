@@ -4,10 +4,11 @@
 package drzhark.mocreatures.compat.datafixes;
 
 import com.mojang.datafixers.DataFix;
+import com.mojang.datafixers.TypeRewriteRule;
+import com.mojang.datafixers.schemas.Schema;
 import drzhark.mocreatures.MoCConstants;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -17,7 +18,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BlockIDFixer implements DataFix {
+public class BlockIDFixer extends DataFix {
     private static final Map<ResourceLocation, ResourceLocation> BLOCK_NAME_MAPPINGS = new HashMap<>();
 
     static {
@@ -30,18 +31,14 @@ public class BlockIDFixer implements DataFix {
         BLOCK_NAME_MAPPINGS.put(new ResourceLocation(MoCConstants.MOD_ID, "MoCWoodPlank"), new ResourceLocation(MoCConstants.MOD_ID, "wyvwood_planks"));
     }
 
-    public BlockIDFixer() {
+    public BlockIDFixer(Schema outputSchema, boolean changesType) {
+        super(outputSchema, changesType);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
-    public int getFixVersion() {
-        return 1;
-    }
-
-    @Override
-    public CompoundNBT fixTagCompound(CompoundNBT compound) {
-        return compound;
+    public TypeRewriteRule makeRule() {
+        return null;
     }
 
     @SubscribeEvent

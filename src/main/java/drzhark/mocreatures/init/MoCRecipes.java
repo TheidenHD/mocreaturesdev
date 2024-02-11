@@ -35,7 +35,7 @@ public class MoCRecipes {
         }
 
         @SubscribeEvent
-        public static void registerRecipes(final RegistryEvent.Register<IRecipe> event) { //TODO TheidenHD
+        public static void registerRecipes(final RegistryEvent.Register<?> event) { //TODO TheidenHD
 
 //            GameRegistry.addSmelting(new ItemStack(MoCBlocks.ancientOre), new ItemStack(Items.DYE, 3, 15), 0.2F);
 //            GameRegistry.addSmelting(new ItemStack(MoCBlocks.cobbledDeepWyvstone), new ItemStack(MoCBlocks.deepWyvstone), 0.1F);

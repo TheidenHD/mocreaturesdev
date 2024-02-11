@@ -40,7 +40,7 @@ public class MoCEntityFirefly extends MoCEntityInsect {
         if (!this.world.isRemote) {
             PlayerEntity ep = this.world.getClosestPlayer(this, 5D);
             if (ep != null && getIsFlying() && --this.soundCount == -1) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GRASSHOPPER_FLY);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GRASSHOPPER_FLY.get());
                 this.soundCount = 20;
             }
         }
@@ -48,12 +48,12 @@ public class MoCEntityFirefly extends MoCEntityInsect {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_GRASSHOPPER_HURT;
+        return MoCSoundEvents.ENTITY_GRASSHOPPER_HURT.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_GRASSHOPPER_HURT;
+        return MoCSoundEvents.ENTITY_GRASSHOPPER_HURT.get();
     }
 
     @Nullable

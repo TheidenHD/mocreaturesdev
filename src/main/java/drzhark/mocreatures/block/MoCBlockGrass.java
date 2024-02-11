@@ -4,40 +4,33 @@
 package drzhark.mocreatures.block;
 
 import drzhark.mocreatures.init.MoCBlocks;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.IGrowable;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.MapColor;
-import net.minecraft.block.material.Material;
-import net.minecraft.item.Item;
+import net.minecraft.block.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.FlowersFeature;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.ToolType;
 
+import java.util.List;
 import java.util.Random;
 
 public class MoCBlockGrass extends Block implements IGrowable {
 
-    public MoCBlockGrass(MapColor mapColor) {
-        super(Material.GRASS, mapColor);
-        setTickRandomly(true);
-        this.setSoundType(SoundType.PLANT);
-        this.setHarvestLevel("shovel", 0);
+    public MoCBlockGrass(AbstractBlock.Properties properties) {
+        super(properties.tickRandomly().harvestLevel(0).harvestTool(ToolType.SHOVEL).sound(SoundType.PLANT));
     }
 
-    public MoCBlockGrass(Material material, MapColor mapColor) {
-        super(material, mapColor);
-    }
-
-    public void updateTick(World worldIn, BlockPos pos, BlockState state, Random rand) {
+    public void randomTick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
         if (!worldIn.isRemote) {
             if (!worldIn.isAreaLoaded(pos, 3)) return;
-            if (worldIn.getLightFromNeighbors(pos.up()) < 4 && worldIn.getBlockState(pos.up()).getLightOpacity(worldIn, pos.up()) > 2) {
+            if (worldIn.getLight(pos.up()) < 4 && worldIn.getBlockState(pos.up()).getOpacity(worldIn, pos.up()) > 2) {
                 if (this == MoCBlocks.wyvgrass) worldIn.setBlockState(pos, MoCBlocks.wyvdirt.getDefaultState());
             } else {
-                if (worldIn.getLightFromNeighbors(pos.up()) >= 9) {
+                if (worldIn.getLight(pos.up()) >= 9) {
                     for (int i = 0; i < 4; ++i) {
-                        BlockPos blockpos = pos.add(rand.nextInt(3) - 1, rand.nextInt(5) - 3, rand.nextInt(3) - 1);
+                        BlockPos blockpos = pos.add(random.nextInt(3) - 1, random.nextInt(5) - 3, random.nextInt(3) - 1);
 
                         if (blockpos.getY() >= 0 && blockpos.getY() < 256 && !worldIn.isBlockLoaded(blockpos)) {
                             return;
@@ -46,7 +39,7 @@ public class MoCBlockGrass extends Block implements IGrowable {
                         BlockState iblockstate = worldIn.getBlockState(blockpos.up());
                         BlockState iblockstate1 = worldIn.getBlockState(blockpos);
 
-                        if (iblockstate1.getBlock() == MoCBlocks.wyvdirt && worldIn.getLightFromNeighbors(blockpos.up()) >= 4 && iblockstate.getLightOpacity(worldIn, pos.up()) <= 2) {
+                        if (iblockstate1.getBlock() == MoCBlocks.wyvdirt && worldIn.getLight(blockpos.up()) >= 4 && iblockstate.getOpacity(worldIn, pos.up()) <= 2) {
                             worldIn.setBlockState(blockpos, MoCBlocks.wyvgrass.getDefaultState());
                         }
                     }
@@ -55,16 +48,8 @@ public class MoCBlockGrass extends Block implements IGrowable {
         }
     }
 
-    public Item getItemDropped(BlockState state, Random rand, int fortune) {
-        if (this == MoCBlocks.wyvgrass) {
-            return MoCBlocks.wyvdirt.getItemDropped(MoCBlocks.wyvdirt.getDefaultState(), rand, fortune);
-        } else {
-            return Item.getItemFromBlock(this);
-        }
-    }
-
     @Override
-    public boolean canGrow(World worldIn, BlockPos pos, BlockState state, boolean isClient) {
+    public boolean canGrow(IBlockReader worldIn, BlockPos pos, BlockState state, boolean isClient) {
         return true;
     }
 
@@ -74,7 +59,7 @@ public class MoCBlockGrass extends Block implements IGrowable {
     }
 
     @Override
-    public void grow(World worldIn, Random rand, BlockPos pos, BlockState state) {
+    public void grow(ServerWorld worldIn, Random rand, BlockPos pos, BlockState state) {
         BlockPos blockpos = pos.up();
 
         if (this == MoCBlocks.wyvgrass) {
@@ -86,11 +71,21 @@ public class MoCBlockGrass extends Block implements IGrowable {
                     if (j >= i / 16) {
                         if (worldIn.isAirBlock(blockpos1)) {
                             if (rand.nextInt(8) == 0) {
-                                worldIn.getBiome(blockpos1).plantFlower(worldIn, rand, blockpos1);
+                                List<ConfiguredFeature<?, ?>> list = worldIn.getBiome(blockpos1).getGenerationSettings().getFlowerFeatures();
+                                if (list.isEmpty()) {
+                                    continue;
+                                }
+
+                                ConfiguredFeature<?, ?> configuredfeature = list.get(0);
+                                FlowersFeature flowersfeature = (FlowersFeature)configuredfeature.feature;
+                                BlockState blockstate1 = flowersfeature.getFlowerToPlace(rand, blockpos1, configuredfeature.getConfig());
+                                if (blockstate1.isValidPosition(worldIn, blockpos1)) {
+                                    worldIn.setBlockState(blockpos1, blockstate1, 3);
+                                }
                             } else {
                                 BlockState iblockstate1 = MoCBlocks.tallWyvgrass.getDefaultState();
 
-                                if (((MoCBlockTallGrass) MoCBlocks.tallWyvgrass).canBlockStay(worldIn, blockpos1, iblockstate1)) {
+                                if (((MoCBlockTallGrass) MoCBlocks.tallWyvgrass).isValidGround(iblockstate1, worldIn, blockpos1)) {
                                     worldIn.setBlockState(blockpos1, iblockstate1, 3);
                                 }
                             }
@@ -101,7 +96,7 @@ public class MoCBlockGrass extends Block implements IGrowable {
 
                     blockpos1 = blockpos1.add(rand.nextInt(3) - 1, (rand.nextInt(3) - 1) * rand.nextInt(3) / 2, rand.nextInt(3) - 1);
 
-                    if (worldIn.getBlockState(blockpos1.down()).getBlock() != MoCBlocks.wyvgrass || worldIn.getBlockState(blockpos1).isNormalCube()) {
+                    if (worldIn.getBlockState(blockpos1.down()).getBlock() != MoCBlocks.wyvgrass || worldIn.getBlockState(blockpos1).isNormalCube(worldIn, blockpos1)) {
                         break;
                     }
 

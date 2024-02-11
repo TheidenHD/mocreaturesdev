@@ -269,7 +269,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
                         return;
                     }
                     if (f < 2.0F && this.deathTime == 0 && this.rand.nextInt(50) == 0) {
-                        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EATING);
+                        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EATING.get());
                         setEating(true);
 
                         entityitem.remove();
@@ -321,7 +321,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         this.attacking = 30;
         if (entityIn instanceof MoCEntityGoat) {
             MoCTools.bigSmack(this, entityIn, 0.4F);
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_SMACK);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_SMACK.get());
             if (this.rand.nextInt(3) == 0) {
                 calm();
                 ((MoCEntityGoat) entityIn).calm();
@@ -400,7 +400,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         if (getSwingLeg()) {
             this.movecount += 5;
             if (this.movecount == 30) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_DIGG);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_DIGG.get());
             }
 
             if (this.movecount > 100) {
@@ -430,7 +430,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
             if (this.eatcount == 2) {
                 PlayerEntity entityplayer1 = this.world.getClosestPlayer(this, 3D);
                 if (entityplayer1 != null) {
-                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EATING);
+                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EATING.get());
                 }
             }
             if (this.eatcount > 25) {
@@ -523,7 +523,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         if (getIsTamed() && !stack.isEmpty() && (MoCTools.isItemEdible(stack.getItem()))) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             this.setHealth(getMaxHealth());
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EATING);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EATING.get());
             return ActionResultType.SUCCESS;
         }
 
@@ -557,25 +557,25 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_GOAT_HURT;
+        return MoCSoundEvents.ENTITY_GOAT_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
         setBleating(true);
         if (getTypeMoC() == 1) {
-            return MoCSoundEvents.ENTITY_GOAT_AMBIENT_BABY;
+            return MoCSoundEvents.ENTITY_GOAT_AMBIENT_BABY.get();
         }
         if (getTypeMoC() > 2 && getTypeMoC() < 5) {
-            return MoCSoundEvents.ENTITY_GOAT_AMBIENT_FEMALE;
+            return MoCSoundEvents.ENTITY_GOAT_AMBIENT_FEMALE.get();
         }
 
-        return MoCSoundEvents.ENTITY_GOAT_AMBIENT;
+        return MoCSoundEvents.ENTITY_GOAT_AMBIENT.get();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_GOAT_DEATH;
+        return MoCSoundEvents.ENTITY_GOAT_DEATH.get();
     }
 
     // TODO: Add unique step sound

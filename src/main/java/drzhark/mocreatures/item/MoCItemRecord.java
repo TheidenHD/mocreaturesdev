@@ -15,8 +15,8 @@ public class MoCItemRecord extends MusicDiscItem {
 
     public static ResourceLocation RECORD_SHUFFLE_RESOURCE = new ResourceLocation(MoCConstants.MOD_ID, "shuffling");
 
-    public MoCItemRecord(int comparatorValueIn, String name, SoundEvent soundEvent, Item.Properties builder) {
-        super(comparatorValueIn, soundEvent, builder);
+    public MoCItemRecord(int comparatorValueIn, String name, java.util.function.Supplier<SoundEvent> soundSupplier, Item.Properties builder) {
+        super(comparatorValueIn, soundSupplier, builder);
         this.setRegistryName(MoCConstants.MOD_ID, name);
     }
 

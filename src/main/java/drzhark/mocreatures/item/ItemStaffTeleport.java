@@ -10,8 +10,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.EnumAction;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.UseAction;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -20,18 +21,8 @@ import net.minecraft.world.World;
 
 public class ItemStaffTeleport extends MoCItem {
 
-    public ItemStaffTeleport(String name) {
-        super(name);
-        this.maxStackSize = 1;
-        setMaxDamage(128);
-    }
-
-    /**
-     * Returns True is the item is renderer in full 3D when held.
-     */
-    @Override
-    public boolean isFull3D() {
-        return true;
+    public ItemStaffTeleport(Item.Properties properties, String name) {
+        super(properties.maxStackSize(1).maxDamage(128), name);
     }
 
     /**
@@ -39,8 +30,8 @@ public class ItemStaffTeleport extends MoCItem {
      * are being used
      */
     @Override
-    public EnumAction getItemUseAction(ItemStack par1ItemStack) {
-        return EnumAction.BLOCK;
+    public UseAction getUseAction(ItemStack par1ItemStack) {
+        return UseAction.BLOCK;
     }
 
     /**
@@ -71,11 +62,13 @@ public class ItemStaffTeleport extends MoCItem {
                 if (!worldIn.isRemote) {
                     ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
                     playerMP.connection.setPlayerLocation(newPosX, newPosY, newPosZ, player.rotationYaw, player.rotationPitch);
-                    MoCTools.playCustomSound(player, MoCSoundEvents.ENTITY_GENERIC_MAGIC_APPEAR);
+                    MoCTools.playCustomSound(player, MoCSoundEvents.ENTITY_GENERIC_MAGIC_APPEAR.get());
                 }
                 MoCreatures.proxy.teleportFX(player);
                 // player.setItemInUse(stack, 200);
-                stack.damageItem(1, player);
+                stack.damageItem(1, player, (user) -> {
+                    user.sendBreakAnimation(hand);
+                });
 
                 return ActionResult.resultSuccess(stack);
             }

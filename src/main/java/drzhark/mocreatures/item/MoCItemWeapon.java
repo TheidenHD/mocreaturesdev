@@ -159,9 +159,9 @@ public class MoCItemWeapon extends MoCItem {
      */
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType equipmentSlot) {
         Multimap<Attribute, AttributeModifier> multimap = super.getAttributeModifiers(equipmentSlot);
-        if (equipmentSlot == EquipmentSlotType.MAINHAND) {
-            multimap.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", this.attackDamage, AttributeModifier.Operation.ADDITION));
-        }
+        //if (equipmentSlot == EquipmentSlotType.MAINHAND) { //TODO TheidenHD
+        //    multimap.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", this.attackDamage, AttributeModifier.Operation.ADDITION));
+        //}
         return multimap;
     }
 

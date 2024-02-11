@@ -62,7 +62,7 @@ public class MoCEntityGrasshopper extends MoCEntityInsect {
             if (getIsFlying() || !this.onGround) {
                 PlayerEntity ep = this.world.getClosestPlayer(this, 5D);
                 if (ep != null && --this.soundCounter == -1) {
-                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GRASSHOPPER_FLY);
+                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GRASSHOPPER_FLY.get());
                     this.soundCounter = 10;
                 }
             }
@@ -77,20 +77,20 @@ public class MoCEntityGrasshopper extends MoCEntityInsect {
     protected SoundEvent getAmbientSound() {
         if (world.isDaytime()) {
             // TODO: Add grasshopper daytime ambient sound
-            return world.rand.nextDouble() <= 0.1D ? MoCSoundEvents.ENTITY_GRASSHOPPER_CHIRP : null;
+            return world.rand.nextDouble() <= 0.1D ? MoCSoundEvents.ENTITY_GRASSHOPPER_CHIRP.get() : null;
         } else {
-            return world.rand.nextDouble() <= 0.1D ? MoCSoundEvents.ENTITY_GRASSHOPPER_CHIRP : null;
+            return world.rand.nextDouble() <= 0.1D ? MoCSoundEvents.ENTITY_GRASSHOPPER_CHIRP.get() : null;
         }
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_GRASSHOPPER_HURT;
+        return MoCSoundEvents.ENTITY_GRASSHOPPER_HURT.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_GRASSHOPPER_HURT;
+        return MoCSoundEvents.ENTITY_GRASSHOPPER_HURT.get();
     }
 
     @Nullable

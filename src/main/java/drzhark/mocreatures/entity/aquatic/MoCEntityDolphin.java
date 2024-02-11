@@ -224,22 +224,22 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_DOLPHIN_DEATH;
+        return MoCSoundEvents.ENTITY_DOLPHIN_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_DOLPHIN_HURT;
+        return MoCSoundEvents.ENTITY_DOLPHIN_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MoCSoundEvents.ENTITY_DOLPHIN_AMBIENT;
+        return MoCSoundEvents.ENTITY_DOLPHIN_AMBIENT.get();
     }
 
     @Override
     protected SoundEvent getAngrySound() {
-        return MoCSoundEvents.ENTITY_DOLPHIN_UPSET;
+        return MoCSoundEvents.ENTITY_DOLPHIN_UPSET.get();
     }
 
     @Nullable
@@ -271,7 +271,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
                 }
             }
 
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING.get());
 
             return ActionResultType.SUCCESS;
         }
@@ -281,7 +281,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
                 this.setHealth(getMaxHealth());
             }
             setHasEaten(true);
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING.get());
             return ActionResultType.SUCCESS;
         }
         if (!this.isBeingRidden()) {

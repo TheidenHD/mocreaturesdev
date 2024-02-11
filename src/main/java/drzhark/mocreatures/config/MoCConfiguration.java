@@ -12,8 +12,8 @@ import com.google.common.base.CharMatcher;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.relauncher.FMLInjectionData;
+import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -62,7 +62,7 @@ public class MoCConfiguration {
      */
     public MoCConfiguration(File file) {
         this.file = file;
-        String basePath = ((File) (FMLInjectionData.data()[6])).getAbsolutePath().replace(File.separatorChar, '/').replace("/.", "");
+        String basePath = FMLLoader.getGamePath().toString().replace(File.separatorChar, '/').replace("/.", "");
         String path = file.getAbsolutePath().replace(File.separatorChar, '/').replace("/./", "/").replace(basePath, "");
         if (PARENT != null) {
             PARENT.setChild(path, this);
@@ -83,7 +83,7 @@ public class MoCConfiguration {
     }
 
     public static void enableGlobalConfig() {
-        PARENT = new MoCConfiguration(new File(Loader.instance().getConfigDir(), "global.cfg"));
+        PARENT = new MoCConfiguration(new File(FMLPaths.CONFIGDIR.get().toFile(), "global.cfg"));
         PARENT.load();
     }
 

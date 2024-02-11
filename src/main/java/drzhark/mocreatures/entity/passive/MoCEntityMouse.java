@@ -111,17 +111,17 @@ public class MoCEntityMouse extends MoCEntityAnimal {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_MOUSE_DEATH;
+        return MoCSoundEvents.ENTITY_MOUSE_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_MOUSE_HURT;
+        return MoCSoundEvents.ENTITY_MOUSE_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MoCSoundEvents.ENTITY_MOUSE_AMBIENT;
+        return MoCSoundEvents.ENTITY_MOUSE_AMBIENT.get();
     }
 
     @Nullable

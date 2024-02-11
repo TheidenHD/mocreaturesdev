@@ -331,7 +331,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
     private void drinkingHorse() {
         openMouth();
-        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_DRINKING);
+        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_DRINKING.get());
     }
 
     /**
@@ -341,7 +341,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     public void dropArmor() {
         if (this.world.isRemote) return;
         int armorType = this.getArmorType();
-        if (armorType != 0) MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_OFF);
+        if (armorType != 0) MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_OFF.get());
         ItemStack armorStack;
         switch (armorType) {
             case 1:
@@ -382,7 +382,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
     private void eatingHorse() {
         openMouth();
-        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
+        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING.get());
     }
 
     @Override
@@ -495,11 +495,11 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     @Override
     protected SoundEvent getDeathSound() {
         openMouth();
-        if (this.isUndead()) return MoCSoundEvents.ENTITY_HORSE_DEATH_UNDEAD;
-        if (this.getIsGhost()) return MoCSoundEvents.ENTITY_HORSE_DEATH_GHOST;
-        if (this.getTypeMoC() == 60 || this.getTypeMoC() == 61) return MoCSoundEvents.ENTITY_HORSE_HURT_ZEBRA;
-        if (this.getTypeMoC() > 64 && this.getTypeMoC() < 68) return MoCSoundEvents.ENTITY_HORSE_DEATH_DONKEY;
-        return MoCSoundEvents.ENTITY_HORSE_DEATH;
+        if (this.isUndead()) return MoCSoundEvents.ENTITY_HORSE_DEATH_UNDEAD.get();
+        if (this.getIsGhost()) return MoCSoundEvents.ENTITY_HORSE_DEATH_GHOST.get();
+        if (this.getTypeMoC() == 60 || this.getTypeMoC() == 61) return MoCSoundEvents.ENTITY_HORSE_HURT_ZEBRA.get();
+        if (this.getTypeMoC() > 64 && this.getTypeMoC() < 68) return MoCSoundEvents.ENTITY_HORSE_DEATH_DONKEY.get();
+        return MoCSoundEvents.ENTITY_HORSE_DEATH.get();
     }
 
     @Override
@@ -592,12 +592,12 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         if (isFlyer() && !this.isBeingRidden()) wingFlap();
         else if (this.rand.nextInt(3) == 0) stand();
 
-        if (this.isUndead()) return MoCSoundEvents.ENTITY_HORSE_HURT_UNDEAD;
-        if (this.getIsGhost()) return MoCSoundEvents.ENTITY_HORSE_HURT_GHOST;
-        if (this.getTypeMoC() == 60 || this.getTypeMoC() == 61) return MoCSoundEvents.ENTITY_HORSE_HURT_ZEBRA;
-        if (this.getTypeMoC() > 64 && this.getTypeMoC() < 68) return MoCSoundEvents.ENTITY_HORSE_HURT_DONKEY;
+        if (this.isUndead()) return MoCSoundEvents.ENTITY_HORSE_HURT_UNDEAD.get();
+        if (this.getIsGhost()) return MoCSoundEvents.ENTITY_HORSE_HURT_GHOST.get();
+        if (this.getTypeMoC() == 60 || this.getTypeMoC() == 61) return MoCSoundEvents.ENTITY_HORSE_HURT_ZEBRA.get();
+        if (this.getTypeMoC() > 64 && this.getTypeMoC() < 68) return MoCSoundEvents.ENTITY_HORSE_HURT_DONKEY.get();
 
-        return MoCSoundEvents.ENTITY_HORSE_HURT;
+        return MoCSoundEvents.ENTITY_HORSE_HURT.get();
     }
 
     @Override
@@ -605,12 +605,12 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         openMouth();
         if (this.rand.nextInt(10) == 0 && !isMovementCeased()) stand();
 
-        if (this.isUndead()) return MoCSoundEvents.ENTITY_HORSE_AMBIENT_UNDEAD;
-        if (this.getIsGhost()) return MoCSoundEvents.ENTITY_HORSE_AMBIENT_GHOST;
-        if (this.getTypeMoC() == 60 || this.getTypeMoC() == 61) return MoCSoundEvents.ENTITY_HORSE_AMBIENT_ZEBRA;
-        if (this.getTypeMoC() > 64 && this.getTypeMoC() < 68) return MoCSoundEvents.ENTITY_HORSE_HURT_DONKEY;
+        if (this.isUndead()) return MoCSoundEvents.ENTITY_HORSE_AMBIENT_UNDEAD.get();
+        if (this.getIsGhost()) return MoCSoundEvents.ENTITY_HORSE_AMBIENT_GHOST.get();
+        if (this.getTypeMoC() == 60 || this.getTypeMoC() == 61) return MoCSoundEvents.ENTITY_HORSE_AMBIENT_ZEBRA.get();
+        if (this.getTypeMoC() > 64 && this.getTypeMoC() < 68) return MoCSoundEvents.ENTITY_HORSE_HURT_DONKEY.get();
 
-        return MoCSoundEvents.ENTITY_HORSE_AMBIENT;
+        return MoCSoundEvents.ENTITY_HORSE_AMBIENT.get();
     }
 
     /**
@@ -620,11 +620,11 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     protected SoundEvent getAngrySound() {
         openMouth();
         stand();
-        if (this.isUndead()) return MoCSoundEvents.ENTITY_HORSE_ANGRY_UNDEAD;
-        if (this.getIsGhost()) return MoCSoundEvents.ENTITY_HORSE_ANGRY_GHOST;
-        if (this.getTypeMoC() == 60 || this.getTypeMoC() == 61) return MoCSoundEvents.ENTITY_HORSE_HURT_ZEBRA;
-        if (this.getTypeMoC() > 64 && this.getTypeMoC() < 68) return MoCSoundEvents.ENTITY_HORSE_HURT_DONKEY;
-        return MoCSoundEvents.ENTITY_HORSE_MAD;
+        if (this.isUndead()) return MoCSoundEvents.ENTITY_HORSE_ANGRY_UNDEAD.get();
+        if (this.getIsGhost()) return MoCSoundEvents.ENTITY_HORSE_ANGRY_GHOST.get();
+        if (this.getTypeMoC() == 60 || this.getTypeMoC() == 61) return MoCSoundEvents.ENTITY_HORSE_HURT_ZEBRA.get();
+        if (this.getTypeMoC() > 64 && this.getTypeMoC() < 68) return MoCSoundEvents.ENTITY_HORSE_HURT_DONKEY.get();
+        return MoCSoundEvents.ENTITY_HORSE_MAD.get();
     }
 
     public float calculateMaxHealth() {
@@ -1275,7 +1275,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         }
 
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == Items.IRON_HORSE_ARMOR && isArmored()) {
-            if (getArmorType() == 0) MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_ON);
+            if (getArmorType() == 0) MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_ON.get());
             dropArmor();
             setArmorType((byte) 1);
             if (!player.abilities.isCreativeMode) stack.shrink(1);
@@ -1283,7 +1283,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         }
 
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == Items.GOLDEN_HORSE_ARMOR && isArmored()) {
-            if (getArmorType() == 0) MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_ON);
+            if (getArmorType() == 0) MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_ON.get());
             dropArmor();
             setArmorType((byte) 2);
             if (!player.abilities.isCreativeMode) stack.shrink(1);
@@ -1291,7 +1291,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         }
 
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == Items.DIAMOND_HORSE_ARMOR && isArmored()) {
-            if (getArmorType() == 0) MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_ON);
+            if (getArmorType() == 0) MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_ON.get());
             dropArmor();
             setArmorType((byte) 3);
             if (!player.abilities.isCreativeMode) stack.shrink(1);
@@ -1299,7 +1299,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         }
 
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.horsearmorcrystal && isMagicHorse()) {
-            if (getArmorType() == 0) MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_ON);
+            if (getArmorType() == 0) MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_ON.get());
             dropArmor();
             setArmorType((byte) 4);
             if (!player.abilities.isCreativeMode) stack.shrink(1);
@@ -1802,7 +1802,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 MoCEntityHorse entityhorse1 = MoCEntities.WILDHORSE.create(this.world);
                 entityhorse1.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
                 this.world.addEntity(entityhorse1);
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_MAGIC_APPEAR);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_MAGIC_APPEAR.get());
 
                 entityhorse1.setOwnerId(this.getOwnerId());
                 entityhorse1.setTamed(true);
@@ -1843,7 +1843,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             if (this.wingFlapCounter > 0 && ++this.wingFlapCounter > 20) this.wingFlapCounter = 0;
             if (this.wingFlapCounter != 0 && this.wingFlapCounter % 5 == 0 && this.world.isRemote) StarFX();
             if (this.wingFlapCounter == 5 && !this.world.isRemote)
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_WINGFLAP);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_WINGFLAP.get());
         }
 
         if (isUndead() && (this.getTypeMoC() < 26) && getIsAdult() && (this.rand.nextInt(20) == 0)) {
@@ -1907,7 +1907,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
              */
             if ((this.sprintCounter > 0 && this.sprintCounter < 150) && isUnicorned() && this.isBeingRidden()) {
                 MoCTools.buckleMobs(this, 2D, this.world);
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_HORSE_MAD);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_HORSE_MAD.get());
             }
 
             if (isFlyer() && !getIsTamed() && this.rand.nextInt(100) == 0 && !isMovementCeased() && !getIsSitting())
@@ -1960,7 +1960,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
                 if (l == 50 || l == 54) // fairy horse!
                 {
-                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_MAGIC_APPEAR);
+                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_MAGIC_APPEAR.get());
                     if (!flag) ((MoCEntityHorse) horsemate).dissapearHorse();
                     this.dissapearHorse();
                 }
@@ -2042,7 +2042,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 dissapearHorse();
             }
 
-            if (getVanishC() == 1) MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_VANISH);
+            if (getVanishC() == 1) MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_VANISH.get());
 
             if (getVanishC() == 70) stand();
         }
@@ -2065,7 +2065,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         }*/
 
         if (this.transformCounter > 0) {
-            if (this.transformCounter == 40) MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_TRANSFORM);
+            if (this.transformCounter == 40) MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_TRANSFORM.get());
 
             if (++this.transformCounter > 100) {
                 this.transformCounter = 0;
@@ -2208,7 +2208,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageVanish(this.getEntityId()));
             setVanishC((byte) 1);
         }
-        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_VANISH);
+        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_VANISH.get());
     }
 
     @Override

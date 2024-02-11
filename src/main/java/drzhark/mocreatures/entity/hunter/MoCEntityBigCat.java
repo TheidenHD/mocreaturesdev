@@ -187,9 +187,9 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     protected SoundEvent getDeathSound() {
         openMouth();
         if (getIsAdult()) {
-            return MoCSoundEvents.ENTITY_LION_DEATH;
+            return MoCSoundEvents.ENTITY_LION_DEATH.get();
         } else {
-            return MoCSoundEvents.ENTITY_LION_DEATH_BABY;
+            return MoCSoundEvents.ENTITY_LION_DEATH_BABY.get();
         }
     }
 
@@ -197,9 +197,9 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     protected SoundEvent getHurtSound(DamageSource source) {
         openMouth();
         if (getIsAdult()) {
-            return MoCSoundEvents.ENTITY_LION_HURT;
+            return MoCSoundEvents.ENTITY_LION_HURT.get();
         } else {
-            return MoCSoundEvents.ENTITY_LION_HURT_BABY;
+            return MoCSoundEvents.ENTITY_LION_HURT_BABY.get();
         }
     }
 
@@ -207,9 +207,9 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     protected SoundEvent getAmbientSound() {
         openMouth();
         if (getIsAdult()) {
-            return MoCSoundEvents.ENTITY_LION_AMBIENT;
+            return MoCSoundEvents.ENTITY_LION_AMBIENT.get();
         } else {
-            return MoCSoundEvents.ENTITY_LION_AMBIENT_BABY;
+            return MoCSoundEvents.ENTITY_LION_AMBIENT_BABY.get();
         }
     }
 
@@ -235,7 +235,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
                 MoCEntityBigCat ghost = (MoCEntityBigCat) templiving;
                 ghost.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
                 this.world.addEntity(ghost);
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_MAGIC_APPEAR);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_MAGIC_APPEAR.get());
                 ghost.setOwnerId(this.getOwnerId());
                 ghost.setTamed(true);
                 PlayerEntity entityplayer = this.world.getClosestPlayer(this, 24D);
@@ -312,7 +312,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
                 this.wingFlapCounter = 0;
             }
             if (!this.world.isRemote && this.wingFlapCounter == 5) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_WINGFLAP);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_WINGFLAP.get());
             }
         }
 
@@ -331,7 +331,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
                     entityitem.remove();
                     this.setHealth(getMaxHealth());
                     setHasEaten(true);
-                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
+                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING.get());
                 }
             }
         }
@@ -452,7 +452,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
         if (!stack.isEmpty() && getIsTamed() && (MoCTools.isItemEdibleforCarnivores(stack.getItem()))) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             this.setHealth(getMaxHealth());
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING.get());
             setIsHunting(false);
             setHasEaten(true);
             return ActionResultType.SUCCESS;

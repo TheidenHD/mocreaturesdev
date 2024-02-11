@@ -138,7 +138,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
     public boolean attackEntityAsMob(Entity entity) {
         // Claw Attack Sound
         if (this.poisontimer != 1) {
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SCORPION_CLAW);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SCORPION_CLAW.get());
         }
         return super.attackEntityAsMob(entity);
     }
@@ -178,7 +178,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
         if (getIsPoisoning()) {
             this.poisontimer++;
             if (this.poisontimer == 1) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SCORPION_STING);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SCORPION_STING.get());
             }
             if (this.poisontimer > 50) {
                 this.poisontimer = 0;
@@ -247,12 +247,12 @@ public class MoCEntityScorpion extends MoCEntityMob {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_SCORPION_DEATH;
+        return MoCSoundEvents.ENTITY_SCORPION_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_SCORPION_HURT;
+        return MoCSoundEvents.ENTITY_SCORPION_HURT.get();
     }
 
     @Override
@@ -261,7 +261,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
         if (!this.world.isRemote) {
             MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 3));
         }
-        return MoCSoundEvents.ENTITY_SCORPION_AMBIENT;
+        return MoCSoundEvents.ENTITY_SCORPION_AMBIENT.get();
     }
 
     @Override

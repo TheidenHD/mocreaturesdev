@@ -82,17 +82,17 @@ public class MoCEntityOgre extends MoCEntityMob {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_OGRE_DEATH;
+        return MoCSoundEvents.ENTITY_OGRE_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_OGRE_HURT;
+        return MoCSoundEvents.ENTITY_OGRE_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MoCSoundEvents.ENTITY_OGRE_AMBIENT;
+        return MoCSoundEvents.ENTITY_OGRE_AMBIENT.get();
     }
 
     public boolean isFireStarter() {

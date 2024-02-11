@@ -14,6 +14,7 @@ import drzhark.mocreatures.entity.neutral.MoCEntityOstrich;
 import drzhark.mocreatures.entity.neutral.MoCEntityWyvern;
 import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCItems;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
@@ -32,11 +33,6 @@ public class MoCEntityEgg extends MobEntity {
     public int eggType;
     private int tCounter;
     private int lCounter;
-
-    public MoCEntityEgg(EntityType<? extends MoCEntityEgg> type, World world, int eggType) {
-        this(type, world);
-        this.eggType = eggType;
-    }
 
     public MoCEntityEgg(EntityType<? extends MoCEntityEgg> type, World world) {
         super(type, world);

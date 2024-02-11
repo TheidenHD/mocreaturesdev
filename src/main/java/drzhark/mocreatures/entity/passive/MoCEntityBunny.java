@@ -146,12 +146,12 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_RABBIT_DEATH;
+        return MoCSoundEvents.ENTITY_RABBIT_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_RABBIT_HURT;
+        return MoCSoundEvents.ENTITY_RABBIT_HURT.get();
     }
 
     @Override
@@ -175,7 +175,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
         if (!stack.isEmpty() && (stack.getItem() == Items.GOLDEN_CARROT) && !getHasEaten()) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             setHasEaten(true);
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING.get());
             return ActionResultType.SUCCESS;
         }
         if (this.getRidingEntity() == null) {

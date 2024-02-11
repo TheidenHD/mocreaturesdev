@@ -76,7 +76,7 @@ public class MoCEntityDragonfly extends MoCEntityInsect {
         if (!this.world.isRemote) {
             PlayerEntity ep = this.world.getClosestPlayer(this, 5D);
             if (ep != null && getIsFlying() && --this.soundCount == -1) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_DRAGONFLY_AMBIENT);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_DRAGONFLY_AMBIENT.get());
                 this.soundCount = 20;
             }
         }
@@ -84,12 +84,12 @@ public class MoCEntityDragonfly extends MoCEntityInsect {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_DRAGONFLY_HURT;
+        return MoCSoundEvents.ENTITY_DRAGONFLY_HURT.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_DRAGONFLY_HURT;
+        return MoCSoundEvents.ENTITY_DRAGONFLY_HURT.get();
     }
 
     @Nullable

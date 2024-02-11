@@ -7,11 +7,11 @@ import com.google.common.base.Preconditions;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.block.*;
-import drzhark.mocreatures.block.MoCBlockSapling.EnumWoodType;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.block.trees.JungleTree;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -30,7 +30,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import javax.annotation.Nonnull;
 
 @SuppressWarnings("deprecation")
-@Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID)
+@Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MoCBlocks {
 
     public static MoCBlockOre ancientOre;
@@ -84,14 +84,14 @@ public class MoCBlocks {
                 setup(new MoCBlockOre(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3.0F, 5.0F)), "wyvern_gold_ore"),
                 setup(new MoCBlockOre(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3.0F, 5.0F)), "wyvern_iron_ore"),
                 setup(new MoCBlockOre(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5F, 5.0F)), "wyvern_lapis_ore"),
-                setup(new MoCBlockGrass(MaterialColor.BLUE_STAINED_HARDENED_CLAY), "wyvgrass").setHardness(0.7F),
-                setup(new MoCBlockDirt(MaterialColor.DIRT), "wyvdirt").setHardness(0.6F),
-                setup(new MoCBlockLeaf(MaterialColor.DIAMOND, true, 100), "wyvwood_leaves").setHardness(0.2F).setLightOpacity(1),
-                setup(new MoCBlockSapling(EnumWoodType.WYVWOOD, MaterialColor.FOLIAGE, true), "wyvwood_sapling").setHardness(0.0F),
-                setup(new MoCBlockLog(MaterialColor.CYAN_STAINED_HARDENED_CLAY, true), "wyvwood_log").setHardness(2.0F),
-                setup(new MoCBlockLog(MaterialColor.CYAN_STAINED_HARDENED_CLAY, true), "stripped_wyvwood_log").setHardness(2.0F),
-                setup(new MoCBlockTallGrass(MaterialColor.LIGHT_BLUE_STAINED_HARDENED_CLAY, false), "tall_wyvgrass").setHardness(0.0F),
-                setup(new MoCBlockPlanks(MaterialColor.DIAMOND, true), "wyvwood_planks").setHardness(2.0F).setResistance(5.0F),
+                setup(new MoCBlockGrass(AbstractBlock.Properties.create(Material.ORGANIC ,MaterialColor.BLUE_TERRACOTTA).hardnessAndResistance(0.7F)), "wyvgrass"),
+                setup(new MoCBlockDirt(AbstractBlock.Properties.create(Material.EARTH, MaterialColor.DIRT).hardnessAndResistance(0.6F)), "wyvdirt"),
+                setup(new MoCBlockLeaf(AbstractBlock.Properties.create(Material.LEAVES, MaterialColor.DIAMOND).hardnessAndResistance(0.2F)), "wyvwood_leaves"),
+                setup(new MoCBlockSapling(new JungleTree(), AbstractBlock.Properties.create(Material.PLANTS, MaterialColor.FOLIAGE).zeroHardnessAndResistance()), "wyvwood_sapling"),
+                setup(new MoCBlockLog(AbstractBlock.Properties.create(Material.WOOD ,MaterialColor.CYAN_TERRACOTTA).hardnessAndResistance(2.0F)), "wyvwood_log"),
+                setup(new MoCBlockLog(AbstractBlock.Properties.create(Material.WOOD ,MaterialColor.CYAN_TERRACOTTA).hardnessAndResistance(2.0F)), "stripped_wyvwood_log"),
+                setup(new MoCBlockTallGrass(AbstractBlock.Properties.create(Material.TALL_PLANTS ,MaterialColor.LIGHT_BLUE_TERRACOTTA).zeroHardnessAndResistance()), "tall_wyvgrass"),
+                setup(new MoCBlockPlanks(AbstractBlock.Properties.create(Material.WOOD ,MaterialColor.DIAMOND).hardnessAndResistance(2.0F, 5.0F)), "wyvwood_planks"),
                 setup(new MoCBlockNest(AbstractBlock.Properties.create(Material.ORGANIC, MaterialColor.YELLOW).hardnessAndResistance(0.5F)), "wyvern_nest_block")
         );
     }
@@ -109,7 +109,7 @@ public class MoCBlocks {
     public static void registerModels(ModelRegistryEvent event) {
         for (Item item : ForgeRegistries.ITEMS.getValues()) {
             if (item.getRegistryName().getNamespace().equals(MoCConstants.MOD_ID)) {
-                ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "normal"));
+                //ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "normal")); //TODO TheidenHD
             }
         }
     }
@@ -124,13 +124,6 @@ public class MoCBlocks {
         Preconditions.checkNotNull(entry, "Entry to setup must not be null!");
         Preconditions.checkNotNull(registryName, "Registry name to assign must not be null!");
         entry.setRegistryName(registryName);
-        if (entry instanceof Block) {
-            ((Block) entry).setTranslationKey(registryName.getNamespace() + "." + registryName.getPath());
-            ((Block) entry).setRegistryName(registryName);
-        }
-        if (entry instanceof Item) {
-            ((Item) entry).setTranslationKey(registryName.getNamespace() + "." + registryName.getPath());
-        }
         return entry;
     }
 }

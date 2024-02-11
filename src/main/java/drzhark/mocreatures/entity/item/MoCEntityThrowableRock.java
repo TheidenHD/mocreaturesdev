@@ -45,14 +45,15 @@ public class MoCEntityThrowableRock extends Entity {
         //this.yOffset = this.getHeight() / 2.0F;
     }
 
-    public MoCEntityThrowableRock(World par1World, Entity entitythrower, double par2, double par4, double par6) {
-        this(MoCEntities.TROCK, par1World);
-        this.setPosition(par2, par4, par6);
-        this.rockTimer = 250;
-        this.prevPosX = this.oPosX = par2;
-        this.prevPosY = this.oPosY = par4;
-        this.prevPosZ = this.oPosZ = par6;
-        this.setMasterID(entitythrower.getEntityId());
+    public static  MoCEntityThrowableRock build(World par1World, Entity entitythrower, double par2, double par4, double par6) {
+        MoCEntityThrowableRock rock = new MoCEntityThrowableRock(MoCEntities.TROCK, par1World);
+        rock.setPosition(par2, par4, par6);
+        rock.rockTimer = 250;
+        rock.prevPosX = rock.oPosX = par2;
+        rock.prevPosY = rock.oPosY = par4;
+        rock.prevPosZ = rock.oPosZ = par6;
+        rock.setMasterID(entitythrower.getEntityId());
+        return rock;
     }
 
     public BlockState getState() {

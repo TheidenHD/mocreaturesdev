@@ -79,12 +79,12 @@ public class MoCEntityRoach extends MoCEntityInsect {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_GRASSHOPPER_HURT;
+        return MoCSoundEvents.ENTITY_GRASSHOPPER_HURT.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_GRASSHOPPER_HURT;
+        return MoCSoundEvents.ENTITY_GRASSHOPPER_HURT.get();
     }
 
     @Nullable

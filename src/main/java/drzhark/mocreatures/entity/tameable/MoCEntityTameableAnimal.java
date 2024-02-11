@@ -251,7 +251,7 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
         //heals
         if (!stack.isEmpty() && getIsTamed() && this.getHealth() != this.getMaxHealth() && isMyHealFood(stack)) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING.get());
             if (!this.world.isRemote) {
                 this.setHealth(getMaxHealth());
             }

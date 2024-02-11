@@ -17,15 +17,13 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.IGuiHandler;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MoCProxy implements IGuiHandler {
+public class MoCProxy {
 
     protected static final String CATEGORY_MOC_GENERAL_SETTINGS = "global-settings";
     protected static final String CATEGORY_MOC_CREATURE_GENERAL_SETTINGS = "creature-general-settings";
@@ -99,17 +97,17 @@ public class MoCProxy implements IGuiHandler {
     }
 
     //----------------CONFIG INITIALIZATION
-    public void configInit(FMLPreInitializationEvent event) {
-        this.mocSettingsConfig = new MoCConfiguration(new File(event.getSuggestedConfigurationFile().getParent(), "MoCreatures" + File.separator + "MoCSettings.cfg"));
-        this.mocEntityConfig = new MoCConfiguration(new File(event.getSuggestedConfigurationFile().getParent(), "MoCreatures" + File.separator + "MoCreatures.cfg"));
-        this.configFile = event.getSuggestedConfigurationFile();
-        this.mocSettingsConfig.load();
-        this.mocEntityConfig.load();
-        this.readGlobalConfigValues();
-        if (this.debug) {
-            MoCreatures.LOGGER.info("Initializing MoCreatures Config File at " + event.getSuggestedConfigurationFile().getParent() + "MoCSettings.cfg");
-        }
-    }
+//    public void configInit(FMLPreInitializationEvent event) { //TODO TheidenHD
+//        this.mocSettingsConfig = new MoCConfiguration(new File(event.getSuggestedConfigurationFile().getParent(), "MoCreatures" + File.separator + "MoCSettings.cfg"));
+//        this.mocEntityConfig = new MoCConfiguration(new File(event.getSuggestedConfigurationFile().getParent(), "MoCreatures" + File.separator + "MoCreatures.cfg"));
+//        this.configFile = event.getSuggestedConfigurationFile();
+//        this.mocSettingsConfig.load();
+//        this.mocEntityConfig.load();
+//        this.readGlobalConfigValues();
+//        if (this.debug) {
+//            MoCreatures.LOGGER.info("Initializing MoCreatures Config File at " + event.getSuggestedConfigurationFile().getParent() + "MoCSettings.cfg");
+//        }
+//    }
 
     //-----------------THE FOLLOWING ARE CLIENT SIDE ONLY, NOT TO BE USED IN SERVER AS THEY AFFECT ONLY DISPLAY / SOUNDS
 
@@ -217,11 +215,6 @@ public class MoCProxy implements IGuiHandler {
                 } else {
                     entityData.setCanSpawn(Boolean.parseBoolean(cat.get("canSpawn").value));
                 }
-                if (!cat.containsKey("dimensions")) {
-                    cat.put("dimensions", new MoCProperty("dimensions", Arrays.toString(entityData.getDimensions()), MoCProperty.Type.STRING));
-                } else {
-                    entityData.setDimensions(Arrays.stream(cat.get("dimensions").value.replaceAll(" ", "").replaceAll("\\[", "").replaceAll("]", "").split(",")).mapToInt(Integer::parseInt).toArray());
-                }
                 if (!cat.containsKey("frequency")) {
                     cat.put("frequency", new MoCProperty("frequency", Integer.toString(entityData.getFrequency()), MoCProperty.Type.INTEGER));
                 } else {
@@ -309,16 +302,6 @@ public class MoCProxy implements IGuiHandler {
 
     // Client side only
     public void registerRenderInformation() {
-    }
-
-    @Override
-    public Object getServerGuiElement(int ID, PlayerEntity player, World world, int x, int y, int z) {
-        return null;
-    }
-
-    @Override
-    public Object getClientGuiElement(int ID, PlayerEntity player, World world, int x, int y, int z) {
-        return null;
     }
 
     /***

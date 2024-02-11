@@ -228,7 +228,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     public boolean attackEntityAsMob(Entity entity) {
         // Claw Attack Sound
         if (this.poisontimer != 1) {
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SCORPION_CLAW);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SCORPION_CLAW.get());
         }
         return super.attackEntityAsMob(entity);
     }
@@ -251,7 +251,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
         if (getIsPoisoning()) {
             this.poisontimer++;
             if (this.poisontimer == 1) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SCORPION_STING);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SCORPION_STING.get());
             }
 
             if (this.poisontimer > 50) {
@@ -263,7 +263,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
         if (this.transformCounter > 0) {
             // Sound plays after this amount of time has passed during transformation
             if (this.transformCounter == 60) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_TRANSFORM);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_TRANSFORM.get());
             }
 
             // Transformation completed
@@ -344,12 +344,12 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_SCORPION_DEATH;
+        return MoCSoundEvents.ENTITY_SCORPION_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_SCORPION_HURT;
+        return MoCSoundEvents.ENTITY_SCORPION_HURT.get();
     }
 
     @Override
@@ -358,7 +358,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
         if (!this.world.isRemote) {
             MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 3));
         }
-        return MoCSoundEvents.ENTITY_SCORPION_AMBIENT;
+        return MoCSoundEvents.ENTITY_SCORPION_AMBIENT.get();
     }
 
     @Override

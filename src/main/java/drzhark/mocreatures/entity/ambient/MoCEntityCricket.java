@@ -67,20 +67,20 @@ public class MoCEntityCricket extends MoCEntityAmbient {
     @Override
     protected SoundEvent getAmbientSound() {
         if (!world.isDaytime()) {
-            return world.rand.nextDouble() <= 0.1D ? MoCSoundEvents.ENTITY_CRICKET_AMBIENT : null;
+            return world.rand.nextDouble() <= 0.1D ? MoCSoundEvents.ENTITY_CRICKET_AMBIENT.get() : null;
         } else {
-            return world.rand.nextDouble() <= 0.1D ? MoCSoundEvents.ENTITY_CRICKET_CHIRP : null;
+            return world.rand.nextDouble() <= 0.1D ? MoCSoundEvents.ENTITY_CRICKET_CHIRP.get() : null;
         }
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_CRICKET_HURT;
+        return MoCSoundEvents.ENTITY_CRICKET_HURT.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_CRICKET_HURT;
+        return MoCSoundEvents.ENTITY_CRICKET_HURT.get();
     }
 
     @Nullable

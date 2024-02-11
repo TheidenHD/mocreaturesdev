@@ -191,7 +191,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
             if (isSpinning()) {
                 this.spinInt += 3;
                 if ((this.spinInt % 20) == 0) {
-                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_CROCODILE_ROLL);
+                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_CROCODILE_ROLL.get());
                 }
                 if (this.spinInt > 80) {
                     this.spinInt = 0;
@@ -227,7 +227,7 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
         {
             this.biteProgress += 0.1F;
             if (this.biteProgress == 0.4F) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_CROCODILE_JAWSNAP);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_CROCODILE_JAWSNAP.get());
             }
             if (this.biteProgress > 0.6F) {
 
@@ -319,20 +319,20 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_CROCODILE_DEATH;
+        return MoCSoundEvents.ENTITY_CROCODILE_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_CROCODILE_HURT;
+        return MoCSoundEvents.ENTITY_CROCODILE_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
         if (getIsSitting()) {
-            return MoCSoundEvents.ENTITY_CROCODILE_RESTING;
+            return MoCSoundEvents.ENTITY_CROCODILE_RESTING.get();
         }
-        return MoCSoundEvents.ENTITY_CROCODILE_AMBIENT;
+        return MoCSoundEvents.ENTITY_CROCODILE_AMBIENT.get();
     }
 
     @Nullable

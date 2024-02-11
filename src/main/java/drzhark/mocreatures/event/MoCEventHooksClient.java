@@ -4,17 +4,18 @@
 package drzhark.mocreatures.event;
 
 import drzhark.mocreatures.compat.CompatScreen;
-import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.ModList;
+
 
 public class MoCEventHooksClient {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void displayCompatScreen(GuiOpenEvent event) {
-        if (event.getGui() instanceof GuiMainMenu && CompatScreen.showScreen && Loader.isModLoaded("customspawner")) {
+        if (event.getGui() instanceof MainMenuScreen && CompatScreen.showScreen && ModList.get().isLoaded("customspawner")) {
             event.setGui(new CompatScreen());
             CompatScreen.showScreen = false;
         }

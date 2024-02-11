@@ -227,7 +227,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
                 }
                 if (f < 2.0F && this.deathTime == 0) {
                     entityitem.remove();
-                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
+                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING.get());
                     this.setHealth(getMaxHealth());
                 }
 
@@ -242,19 +242,19 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_BEAR_DEATH;
+        return MoCSoundEvents.ENTITY_BEAR_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
         openMouth();
-        return MoCSoundEvents.ENTITY_BEAR_HURT;
+        return MoCSoundEvents.ENTITY_BEAR_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
         openMouth();
-        return MoCSoundEvents.ENTITY_BEAR_AMBIENT;
+        return MoCSoundEvents.ENTITY_BEAR_AMBIENT.get();
     }
 
     // TODO: Add unique sound event
@@ -287,7 +287,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
 
     protected void eatingAnimal() {
         openMouth();
-        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
+        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING.get());
     }
 
     @Override
@@ -328,7 +328,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
         if (!stack.isEmpty() && getIsTamed() && (MoCTools.isItemEdibleforCarnivores(stack.getItem()))) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             this.setHealth(getMaxHealth());
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING.get());
             setIsHunting(false);
             setHasEaten(true);
             return ActionResultType.SUCCESS;

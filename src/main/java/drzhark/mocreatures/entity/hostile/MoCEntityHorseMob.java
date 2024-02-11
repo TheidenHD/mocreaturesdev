@@ -151,14 +151,14 @@ public class MoCEntityHorseMob extends MoCEntityMob {
     @Override
     protected SoundEvent getDeathSound() {
         openMouth();
-        return MoCSoundEvents.ENTITY_HORSE_DEATH_UNDEAD;
+        return MoCSoundEvents.ENTITY_HORSE_DEATH_UNDEAD.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
         openMouth();
         stand();
-        return MoCSoundEvents.ENTITY_HORSE_HURT_UNDEAD;
+        return MoCSoundEvents.ENTITY_HORSE_HURT_UNDEAD.get();
     }
 
     @Override
@@ -167,7 +167,7 @@ public class MoCEntityHorseMob extends MoCEntityMob {
         if (this.rand.nextInt(10) == 0) {
             stand();
         }
-        return MoCSoundEvents.ENTITY_HORSE_AMBIENT_UNDEAD;
+        return MoCSoundEvents.ENTITY_HORSE_AMBIENT_UNDEAD.get();
     }
 
     @Override
@@ -362,7 +362,7 @@ public class MoCEntityHorseMob extends MoCEntityMob {
             stand();
         }
         openMouth();
-        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_HORSE_ANGRY_UNDEAD);
+        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_HORSE_ANGRY_UNDEAD.get());
         return super.attackEntityAsMob(entityIn);
     }
 

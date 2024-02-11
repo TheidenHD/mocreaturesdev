@@ -75,7 +75,7 @@ public class CommandMoCSpawn {
             if (!player.world.isRemote) {
                 MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(player.getPosX(), player.getPosY(), player.getPosZ(), 64, player.world.getDimensionKey())), new MoCMessageAppear(specialEntity.getEntityId()));
             }
-            MoCTools.playCustomSound(specialEntity, MoCSoundEvents.ENTITY_GENERIC_MAGIC_APPEAR);
+            MoCTools.playCustomSound(specialEntity, MoCSoundEvents.ENTITY_GENERIC_MAGIC_APPEAR.get());
         } catch (Exception e){}
         return 1;
     }

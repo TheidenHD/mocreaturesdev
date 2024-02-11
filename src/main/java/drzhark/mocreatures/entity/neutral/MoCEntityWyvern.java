@@ -316,12 +316,12 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             this.wingFlapCounter = 0;
         }
         if (this.wingFlapCounter == 5 && !this.world.isRemote) {
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_WYVERN_WINGFLAP);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_WYVERN_WINGFLAP.get());
         }
 
         if (this.transformCounter > 0) {
             if (this.transformCounter == 40) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_TRANSFORM);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_TRANSFORM.get());
             }
 
             if (++this.transformCounter > 100) {
@@ -433,7 +433,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
 
         if (!stack.isEmpty() && this.getIsTamed() && getAge() > 90 && stack.getItem() == Items.IRON_HORSE_ARMOR) {
             if (getArmorType() == 0) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_ON);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_ON.get());
             }
             dropArmor();
             setArmorType((byte) 1);
@@ -444,7 +444,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
 
         if (!stack.isEmpty() && this.getIsTamed() && getAge() > 90 && stack.getItem() == Items.GOLDEN_HORSE_ARMOR) {
             if (getArmorType() == 0) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_ON);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_ON.get());
             }
             dropArmor();
             setArmorType((byte) 2);
@@ -454,7 +454,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
 
         if (!stack.isEmpty() && this.getIsTamed() && getAge() > 90 && stack.getItem() == Items.DIAMOND_HORSE_ARMOR) {
             if (getArmorType() == 0) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_ON);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_ON.get());
             }
             dropArmor();
             setArmorType((byte) 3);
@@ -578,7 +578,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
         if (!this.world.isRemote) {
             int i = getArmorType();
             if (i != 0) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_OFF);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_OFF.get());
             }
 
             if (i == 1) {
@@ -607,19 +607,19 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_WYVERN_DEATH;
+        return MoCSoundEvents.ENTITY_WYVERN_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
         openMouth();
-        return MoCSoundEvents.ENTITY_WYVERN_HURT;
+        return MoCSoundEvents.ENTITY_WYVERN_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
         openMouth();
-        return MoCSoundEvents.ENTITY_WYVERN_AMBIENT;
+        return MoCSoundEvents.ENTITY_WYVERN_AMBIENT.get();
     }
 
     @Nullable
@@ -919,7 +919,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
                 MoCEntityWyvern entitywyvern = MoCEntities.WYVERN.create(this.world);
                 entitywyvern.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
                 this.world.addEntity(entitywyvern);
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_MAGIC_APPEAR);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_MAGIC_APPEAR.get());
 
                 entitywyvern.setOwnerId(this.getOwnerId());
                 entitywyvern.setTamed(true);

@@ -325,12 +325,12 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return getKittyState() == 10 ? MoCSoundEvents.ENTITY_KITTY_DEATH_BABY : MoCSoundEvents.ENTITY_KITTY_DEATH;
+        return getKittyState() == 10 ? MoCSoundEvents.ENTITY_KITTY_DEATH_BABY.get() : MoCSoundEvents.ENTITY_KITTY_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return getKittyState() == 10 ? MoCSoundEvents.ENTITY_KITTY_HURT_BABY : MoCSoundEvents.ENTITY_KITTY_HURT;
+        return getKittyState() == 10 ? MoCSoundEvents.ENTITY_KITTY_HURT_BABY.get() : MoCSoundEvents.ENTITY_KITTY_HURT.get();
     }
 
     @Nullable
@@ -341,31 +341,31 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
     protected SoundEvent getAmbientSound() {
         switch (getKittyState()) {
             case 3:
-                return MoCSoundEvents.ENTITY_KITTY_HUNGRY;
+                return MoCSoundEvents.ENTITY_KITTY_HUNGRY.get();
             case 4:
                 if (this.getRidingEntity() != null) {
                     MoCEntityKittyBed kittyBed = (MoCEntityKittyBed) this.getRidingEntity();
                     if (kittyBed != null && !kittyBed.getHasMilk()) {
-                        return MoCSoundEvents.ENTITY_KITTY_DRINKING;
+                        return MoCSoundEvents.ENTITY_KITTY_DRINKING.get();
                     }
                     if (kittyBed != null && !kittyBed.getHasFood()) {
-                        return MoCSoundEvents.ENTITY_KITTY_EATING;
+                        return MoCSoundEvents.ENTITY_KITTY_EATING.get();
                     }
                 }
                 return null;
             case 6:
-                return MoCSoundEvents.ENTITY_KITTY_LITTER;
+                return MoCSoundEvents.ENTITY_KITTY_LITTER.get();
             case 10:
-                return MoCSoundEvents.ENTITY_KITTY_AMBIENT_BABY;
+                return MoCSoundEvents.ENTITY_KITTY_AMBIENT_BABY.get();
             case 12:
             case 18:
-                return MoCSoundEvents.ENTITY_KITTY_PURR;
+                return MoCSoundEvents.ENTITY_KITTY_PURR.get();
             case 13:
-                return MoCSoundEvents.ENTITY_KITTY_ANGRY;
+                return MoCSoundEvents.ENTITY_KITTY_ANGRY.get();
             case 17:
-                return MoCSoundEvents.ENTITY_KITTY_TRAPPED;
+                return MoCSoundEvents.ENTITY_KITTY_TRAPPED.get();
             default:
-                return MoCSoundEvents.ENTITY_KITTY_AMBIENT;
+                return MoCSoundEvents.ENTITY_KITTY_AMBIENT.get();
         }
     }
 
@@ -443,7 +443,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
         }
         if (getKittyState() == 7 && !stack.isEmpty() && (stack.getItem() == Items.CAKE || ItemTags.FISHES.contains(stack.getItem()))) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EATING);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EATING.get());
             this.setHealth(getMaxHealth());
             changeKittyState(9);
             return ActionResultType.SUCCESS;
@@ -463,7 +463,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
         }
         if (getKittyState() == 13 && !stack.isEmpty() && ItemTags.FISHES.contains(stack.getItem())) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EATING);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EATING.get());
             this.setHealth(getMaxHealth());
             changeKittyState(7);
             return ActionResultType.SUCCESS;
@@ -563,7 +563,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                         }
                         if (f < 2.0F && this.deathTime < 1) {
                             entityItem.remove();
-                            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EATING);
+                            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EATING.get());
                             setHungry(false);
                         }
                     }

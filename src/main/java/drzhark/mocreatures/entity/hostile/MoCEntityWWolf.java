@@ -155,19 +155,19 @@ public class MoCEntityWWolf extends MoCEntityMob {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_WOLF_DEATH;
+        return MoCSoundEvents.ENTITY_WOLF_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
         openMouth();
-        return MoCSoundEvents.ENTITY_WOLF_HURT;
+        return MoCSoundEvents.ENTITY_WOLF_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
         openMouth();
-        return MoCSoundEvents.ENTITY_WOLF_AMBIENT;
+        return MoCSoundEvents.ENTITY_WOLF_AMBIENT.get();
     }
 
     @Nullable

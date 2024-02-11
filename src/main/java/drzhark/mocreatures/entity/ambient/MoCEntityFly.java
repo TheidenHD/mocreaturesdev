@@ -35,7 +35,7 @@ public class MoCEntityFly extends MoCEntityInsect {
             if (getIsFlying() && --this.soundCount == -1) {
                 PlayerEntity ep = this.world.getClosestPlayer(this, 5D);
                 if (ep != null) {
-                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_FLY_AMBIENT);
+                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_FLY_AMBIENT.get());
                     this.soundCount = 55;
                 }
             }
@@ -44,12 +44,12 @@ public class MoCEntityFly extends MoCEntityInsect {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_FLY_HURT;
+        return MoCSoundEvents.ENTITY_FLY_HURT.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_FLY_HURT;
+        return MoCSoundEvents.ENTITY_FLY_HURT.get();
     }
 
     @Nullable

@@ -276,7 +276,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
                 setfRattle(getfRattle() + 0.2F);
                 if (getfRattle() == 1.0F) {
                     // TODO synchronize
-                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SNAKE_RATTLE);
+                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SNAKE_RATTLE.get());
                 }
                 if (getfRattle() > 8.0F) {
                     setfRattle(0.0F);
@@ -323,7 +323,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
                 setfMouth(0.3F);
 
                 if (this.bodyswing < 0F) {
-                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SNAKE_SNAP);
+                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SNAKE_SNAP.get());
                     this.bodyswing = 2.5F;
                     setfMouth(0.0F);
                     setBiting(false);
@@ -353,7 +353,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
             // hiss
             if (this.hissCounter % 25 == 0) {
                 setfMouth(0.3F);
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SNAKE_ANGRY);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SNAKE_ANGRY.get());
             }
             if (this.hissCounter % 35 == 0) {
                 setfMouth(0.0F);
@@ -510,7 +510,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
     @Override
     protected void playStepSound(BlockPos pos, BlockState par4) {
         if (areEyesInFluid(FluidTags.WATER)) {
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SNAKE_SWIM);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SNAKE_SWIM.get());
         }
         // TODO - add sound for slither
         /*
@@ -521,17 +521,17 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_SNAKE_DEATH;
+        return MoCSoundEvents.ENTITY_SNAKE_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_SNAKE_HURT;
+        return MoCSoundEvents.ENTITY_SNAKE_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MoCSoundEvents.ENTITY_SNAKE_AMBIENT;
+        return MoCSoundEvents.ENTITY_SNAKE_AMBIENT.get();
     }
 
     @Override

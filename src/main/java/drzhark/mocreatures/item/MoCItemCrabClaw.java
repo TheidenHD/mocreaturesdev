@@ -31,7 +31,7 @@ public class MoCItemCrabClaw extends MoCItem {
     public final float toughness;
 
     public MoCItemCrabClaw(Item.Properties properties, String name, int enchantability, float toughness, int armor, float reach) {
-        super(properties.maxStackSize(1), name);
+        super(properties, name);
         this.armor = armor;
         this.enchantability = enchantability;
         this.reach = reach;
@@ -84,11 +84,11 @@ public class MoCItemCrabClaw extends MoCItem {
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType equipmentSlot) {
         Multimap<Attribute, AttributeModifier> multimap = super.getAttributeModifiers(equipmentSlot);
 
-        if (equipmentSlot == EquipmentSlotType.OFFHAND) {
-            multimap.put(Attributes.ARMOR, new AttributeModifier(TOUGHNESS_MODIFIER, "Crab claw armor", armor, AttributeModifier.Operation.ADDITION));
-            multimap.put(net.minecraftforge.common.ForgeMod.REACH_DISTANCE.get(), new AttributeModifier(REACH_DISTANCE_MODIFIER, "Crab claw reach", reach, AttributeModifier.Operation.ADDITION));
-            multimap.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(TOUGHNESS_MODIFIER, "Crab claw toughness", toughness, AttributeModifier.Operation.ADDITION));
-        }
+        //if (equipmentSlot == EquipmentSlotType.OFFHAND) { //TODO TheidenHD
+        //    multimap.put(Attributes.ARMOR, new AttributeModifier(TOUGHNESS_MODIFIER, "Crab claw armor", armor, AttributeModifier.Operation.ADDITION));
+        //    multimap.put(net.minecraftforge.common.ForgeMod.REACH_DISTANCE.get(), new AttributeModifier(REACH_DISTANCE_MODIFIER, "Crab claw reach", reach, AttributeModifier.Operation.ADDITION));
+        //    multimap.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(TOUGHNESS_MODIFIER, "Crab claw toughness", toughness, AttributeModifier.Operation.ADDITION));
+        //}
 
         return multimap;
     }

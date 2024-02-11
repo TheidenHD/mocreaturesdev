@@ -125,14 +125,14 @@ public class MoCEntityManticore extends MoCEntityMob {
             }*/
 
             if (!this.world.isRemote && this.wingFlapCounter == 5) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_WINGFLAP);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_WINGFLAP.get());
             }
         }
 
         if (getIsPoisoning()) {
             this.poisontimer++;
             if (this.poisontimer == 1) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SCORPION_STING);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SCORPION_STING.get());
             }
 
             if (this.poisontimer > 50) {
@@ -209,19 +209,19 @@ public class MoCEntityManticore extends MoCEntityMob {
     @Override
     protected SoundEvent getDeathSound() {
         openMouth(); // Mouth Animation
-        return MoCSoundEvents.ENTITY_LION_DEATH;
+        return MoCSoundEvents.ENTITY_LION_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
         openMouth(); // Mouth Animation
-        return MoCSoundEvents.ENTITY_LION_HURT;
+        return MoCSoundEvents.ENTITY_LION_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
         openMouth(); // Mouth Animation
-        return MoCSoundEvents.ENTITY_LION_AMBIENT;
+        return MoCSoundEvents.ENTITY_LION_AMBIENT.get();
     }
 
     @Override

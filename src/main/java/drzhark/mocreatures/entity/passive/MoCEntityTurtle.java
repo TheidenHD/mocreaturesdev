@@ -173,7 +173,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
                 LivingEntity entityliving = getBoogey(4D);
                 if ((entityliving != null) && canEntityBeSeen(entityliving)) {
                     if (!getIsHiding() && !isInWater()) {
-                        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_TURTLE_ANGRY);
+                        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_TURTLE_ANGRY.get());
                         setIsHiding(true);
                     }
 
@@ -190,7 +190,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
                             }
                             if (f < 2.0F && this.deathTime == 0) {
                                 entityitem.remove();
-                                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_TURTLE_EATING);
+                                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_TURTLE_EATING.get());
                                 PlayerEntity entityplayer = this.world.getClosestPlayer(this, 24D);
                                 if (entityplayer != null) {
                                     MoCTools.tameWithName(entityplayer, this);
@@ -319,17 +319,17 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_TURTLE_HURT;
+        return MoCSoundEvents.ENTITY_TURTLE_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MoCSoundEvents.ENTITY_TURTLE_AMBIENT;
+        return MoCSoundEvents.ENTITY_TURTLE_AMBIENT.get();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_TURTLE_DEATH;
+        return MoCSoundEvents.ENTITY_TURTLE_DEATH.get();
     }
 
     @Nullable

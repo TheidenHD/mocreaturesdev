@@ -41,11 +41,6 @@ public class MoCEntityKittyBed extends MobEntity {
         this.milkLevel = 0.0F;
     }
 
-    public MoCEntityKittyBed(EntityType<? extends MoCEntityKittyBed> type, World world, int i) {
-        this(type, world);
-        setSheetColor(i);
-    }
-
     public ResourceLocation getTexture() {
         return MoCreatures.proxy.getModelTexture("kitty_bed.png");
     }
@@ -140,12 +135,12 @@ public class MoCEntityKittyBed extends MobEntity {
         if (!stack.isEmpty() && !getHasFood() && !getHasMilk()) {
             if (stack.getItem() == MoCItems.petfood) {
                 if (!player.abilities.isCreativeMode) stack.shrink(1);
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTYBED_POURINGFOOD);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTYBED_POURINGFOOD.get());
                 setHasMilk(false);
                 setHasFood(true);
             } else if (stack.getItem() == Items.MILK_BUCKET) {
                 player.setHeldItem(hand, new ItemStack(Items.BUCKET, 1));
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTYBED_POURINGMILK);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTYBED_POURINGMILK.get());
                 setHasMilk(true);
                 setHasFood(false);
             }

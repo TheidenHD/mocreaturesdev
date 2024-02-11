@@ -88,17 +88,17 @@ public class MoCEntityTurkey extends MoCEntityTameableAnimal {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_TURKEY_HURT;
+        return MoCSoundEvents.ENTITY_TURKEY_HURT.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_TURKEY_HURT;
+        return MoCSoundEvents.ENTITY_TURKEY_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MoCSoundEvents.ENTITY_TURKEY_AMBIENT;
+        return MoCSoundEvents.ENTITY_TURKEY_AMBIENT.get();
     }
 
     // TODO: Add unique sound event

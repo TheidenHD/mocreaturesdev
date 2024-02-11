@@ -9,10 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.EnumAction;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -20,18 +17,8 @@ import net.minecraft.world.World;
 
 public class ItemOgreHammer extends MoCItem {
 
-    public ItemOgreHammer(String name) {
-        super(name);
-        this.maxStackSize = 1;
-        setMaxDamage(2048);
-    }
-
-    /**
-     * Returns True is the item is renderer in full 3D when held.
-     */
-    @Override
-    public boolean isFull3D() {
-        return true;
+    public ItemOgreHammer(Item.Properties properties, String name) {
+        super(properties.maxStackSize(1).maxDamage(2048), name);
     }
 
     /**
@@ -39,15 +26,15 @@ public class ItemOgreHammer extends MoCItem {
      * are being used
      */
     @Override
-    public EnumAction getItemUseAction(ItemStack par1ItemStack) {
-        return EnumAction.BLOCK;
+    public UseAction getUseAction(ItemStack par1ItemStack) {
+        return UseAction.BLOCK;
     }
 
     /**
      * How long it takes to use or consume an item
      */
     @Override
-    public int getMaxItemUseDuration(ItemStack par1ItemStack) {
+    public int getUseDuration(ItemStack par1ItemStack) {
         return 72000;
     }
 
@@ -78,11 +65,11 @@ public class ItemOgreHammer extends MoCItem {
                     return new ActionResult<>(ActionResultType.PASS, stack);
                 }
 
-                int[] blockInfo = obtainBlockAndMetadataFromBelt(player, true);
-                if (blockInfo[0] != 0) {
+                int blockInfo = obtainBlockAndMetadataFromBelt(player, true);
+                if (blockInfo != 0) {
                     if (!world.isRemote) {
-                        Block block = Block.getBlockById(blockInfo[0]);
-                        player.world.setBlockState(pos, block.getDefaultState(), 3);
+                        BlockState block = Block.getStateById(blockInfo);
+                        player.world.setBlockState(pos, block, 3);
                         player.world.playSound(player, (float) newPosX + 0.5F, (float) newPosY + 0.5F, (float) newPosZ + 0.5F, block.getSoundType().getPlaceSound(), SoundCategory.BLOCKS, (block.getSoundType().getVolume() + 1.0F) / 2.0F, block.getSoundType().getPitch() * 0.8F);
                     }
                     MoCreatures.proxy.hammerFX(player);
@@ -98,14 +85,13 @@ public class ItemOgreHammer extends MoCItem {
      * Finds a block from the belt inventory of player, passes the block ID and
      * Metadata and reduces the stack by 1 if not on Creative mode
      */
-    private int[] obtainBlockAndMetadataFromBelt(PlayerEntity player, boolean remove) {
+    private int obtainBlockAndMetadataFromBelt(PlayerEntity player, boolean remove) {
         for (int y = 0; y < 9; y++) {
             ItemStack slotStack = player.inventory.getStackInSlot(y);
             if (slotStack.isEmpty()) {
                 continue;
             }
             Item itemTemp = slotStack.getItem();
-            int metadata = slotStack.getItemDamage();
             if (itemTemp instanceof BlockItem) {
                 if (remove && !player.abilities.isCreativeMode) {
                     slotStack.shrink(1);
@@ -115,14 +101,14 @@ public class ItemOgreHammer extends MoCItem {
                         player.inventory.setInventorySlotContents(y, slotStack);
                     }
                 }
-                return new int[]{Item.getIdFromItem(itemTemp), metadata};
+                return Item.getIdFromItem(itemTemp);
             }
         }
-        return new int[]{0, 0};
+        return 0;
     }
 
     @Override
-    public ActionResultType onItemUse(PlayerEntity playerIn, World worldIn, BlockPos pos, Hand hand, Direction facing, float hitX, float hitY, float hitZ) {
+    public ActionResultType onItemUse(ItemUseContext context) {
         return ActionResultType.FAIL;
     }
 }

@@ -56,17 +56,17 @@ public class MoCEntityDuck extends MoCEntityAnimal {
     // TODO: Fix death sound
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_DUCK_DEATH;
+        return MoCSoundEvents.ENTITY_DUCK_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_DUCK_HURT;
+        return MoCSoundEvents.ENTITY_DUCK_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MoCSoundEvents.ENTITY_DUCK_AMBIENT;
+        return MoCSoundEvents.ENTITY_DUCK_AMBIENT.get();
     }
 
     // TODO: Add unique step sound

@@ -100,19 +100,19 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
     @Override
     protected SoundEvent getDeathSound() {
         openmouth();
-        return MoCSoundEvents.ENTITY_SNAKE_DEATH;
+        return MoCSoundEvents.ENTITY_SNAKE_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
         openmouth();
-        return MoCSoundEvents.ENTITY_SNAKE_HURT;
+        return MoCSoundEvents.ENTITY_SNAKE_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
         openmouth();
-        return MoCSoundEvents.ENTITY_SNAKE_AMBIENT;
+        return MoCSoundEvents.ENTITY_SNAKE_AMBIENT.get();
     }
 
     @Nullable

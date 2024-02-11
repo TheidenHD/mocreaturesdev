@@ -251,32 +251,32 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_BIRD_DEATH;
+        return MoCSoundEvents.ENTITY_BIRD_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_BIRD_HURT;
+        return MoCSoundEvents.ENTITY_BIRD_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
         if (getTypeMoC() == 1) {
-            return MoCSoundEvents.ENTITY_BIRD_AMBIENT_WHITE;
+            return MoCSoundEvents.ENTITY_BIRD_AMBIENT_WHITE.get();
         }
         if (getTypeMoC() == 2) {
-            return MoCSoundEvents.ENTITY_BIRD_AMBIENT_BLACK;
+            return MoCSoundEvents.ENTITY_BIRD_AMBIENT_BLACK.get();
         }
         if (getTypeMoC() == 3) {
-            return MoCSoundEvents.ENTITY_BIRD_AMBIENT_GREEN;
+            return MoCSoundEvents.ENTITY_BIRD_AMBIENT_GREEN.get();
         }
         if (getTypeMoC() == 4) {
-            return MoCSoundEvents.ENTITY_BIRD_AMBIENT_BLUE;
+            return MoCSoundEvents.ENTITY_BIRD_AMBIENT_BLUE.get();
         }
         if (getTypeMoC() == 5) {
-            return MoCSoundEvents.ENTITY_BIRD_AMBIENT_YELLOW;
+            return MoCSoundEvents.ENTITY_BIRD_AMBIENT_YELLOW.get();
         } else {
-            return MoCSoundEvents.ENTITY_BIRD_AMBIENT_RED;
+            return MoCSoundEvents.ENTITY_BIRD_AMBIENT_RED.get();
         }
     }
 

@@ -55,17 +55,17 @@ public class MoCEntityHellRat extends MoCEntityRat {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_HELL_RAT_DEATH;
+        return MoCSoundEvents.ENTITY_HELL_RAT_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_HELL_RAT_HURT;
+        return MoCSoundEvents.ENTITY_HELL_RAT_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MoCSoundEvents.ENTITY_HELL_RAT_AMBIENT;
+        return MoCSoundEvents.ENTITY_HELL_RAT_AMBIENT.get();
     }
 
     @Nullable

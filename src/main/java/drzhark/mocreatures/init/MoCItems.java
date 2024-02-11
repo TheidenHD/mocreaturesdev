@@ -22,7 +22,7 @@ public class MoCItems {
 
     public static final Set<Item> ITEMS = new HashSet<>();
     // Misc
-    public static final MoCItemRecord recordshuffle = new MoCItemRecord(15, "recordshuffle", MoCSoundEvents.ITEM_RECORD_SHUFFLING, (new Item.Properties()).maxStackSize(1).group(ItemGroup.MISC).rarity(Rarity.RARE));
+    public static final MoCItemRecord recordshuffle = new MoCItemRecord(15, "recordshuffle", MoCSoundEvents.ITEM_RECORD_SHUFFLING::get, (new Item.Properties()).maxStackSize(1).group(ItemGroup.MISC).rarity(Rarity.RARE));
     public static final MoCItem horsesaddle = new MoCItemHorseSaddle((new Item.Properties()), "horsesaddle");
     public static final MoCItem sharkteeth = new MoCItem((new Item.Properties()), "sharkteeth");
     public static final MoCItem haystack = new MoCItem((new Item.Properties().maxStackSize(16)), "haystack");
@@ -30,15 +30,15 @@ public class MoCItems {
     public static final MoCItem[] mocegg = {new MoCItemEgg((new Item.Properties()), "mocegg")};
     public static final MoCItem bigcatclaw = new MoCItem((new Item.Properties()), "bigcatclaw");
     public static final MoCItem whip = new MoCItemWhip((new Item.Properties()), "whip");
-    public static final MoCItem staffPortal = new ItemStaffPortal("staffportal");
+    public static final MoCItem staffPortal = new ItemStaffPortal((new Item.Properties()), "staffportal");
     public static final MoCItem medallion = new MoCItem((new Item.Properties()), "medallion");
     public static final MoCItemKittyBed[] kittybed = new MoCItemKittyBed[16];
     public static final MoCItem litterbox = new MoCItemLitterBox((new Item.Properties()), "kittylitter");
     public static final MoCItem woolball = new MoCItem((new Item.Properties()), "woolball");
     public static final MoCItem petfood = new MoCItem((new Item.Properties()), "petfood");
     // Both disabled until we figure out what to do with them
-    //public static final MoCItem staffTeleport = new ItemStaffTeleport("staffteleport");
-    //public static final MoCItem builderHammer = new ItemBuilderHammer("builderhammer");
+    //public static final MoCItem staffTeleport = new ItemStaffTeleport((new Item.Properties()), "staffteleport");
+    //public static final MoCItem builderHammer = new ItemBuilderHammer((new Item.Properties()), "builderhammer");
     public static final MoCItem hideCroc = new MoCItem((new Item.Properties()), "reptilehide");
     public static final MoCItem fur = new MoCItem((new Item.Properties()), "fur");
     public static final MoCItem essencedarkness = new MoCItem((new Item.Properties()), "essencedarkness");
@@ -161,7 +161,7 @@ public class MoCItems {
     public static final MoCItemArmor legsHide = new MoCItemArmor(new Item.Properties(), "hidelegs", MoCArmorMaterial.hideARMOR, EquipmentSlotType.LEGS);
     public static final MoCItemArmor bootsHide = new MoCItemArmor(new Item.Properties(), "hideboots", MoCArmorMaterial.hideARMOR, EquipmentSlotType.FEET);
 
-    @Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID)
+    @Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
         /**
          * Register this mod's {@link Item}s.

@@ -133,17 +133,17 @@ public class MoCEntityEnt extends MoCEntityAnimal {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_ENT_DEATH;
+        return MoCSoundEvents.ENTITY_ENT_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_ENT_HURT;
+        return MoCSoundEvents.ENTITY_ENT_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MoCSoundEvents.ENTITY_ENT_AMBIENT;
+        return MoCSoundEvents.ENTITY_ENT_AMBIENT.get();
     }
 
     @Override
@@ -305,7 +305,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
 
     @Override
     public void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
-        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_SMACK);
+        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_SMACK.get());
         MoCTools.bigSmack(this, entityIn, 1F);
         super.applyEnchantments(entityLivingBaseIn, entityIn);
     }
