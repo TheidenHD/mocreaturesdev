@@ -30,7 +30,7 @@ public class MoCItemSword extends SwordItem {
     private int specialWeaponType = 0;
 
     public MoCItemSword(Item.Properties properties, String name, IItemTier material) {
-        super(material, 3, -2.4F, properties);
+        super(material, 3, -2.4F, properties.group(MoCreatures.tabMoC));
         this.setRegistryName(MoCConstants.MOD_ID, name);
     }
 

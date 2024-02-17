@@ -31,7 +31,7 @@ public class MoCItemAxe extends AxeItem {
 
 
     public MoCItemAxe(Item.Properties properties, String name, IItemTier material, float damage, float speed) {
-        super(material, damage - 1.0F, speed - 4.0F, properties);
+        super(material, damage - 1.0F, speed - 4.0F, properties.group(MoCreatures.tabMoC));
         this.setRegistryName(MoCConstants.MOD_ID, name);
     }
 

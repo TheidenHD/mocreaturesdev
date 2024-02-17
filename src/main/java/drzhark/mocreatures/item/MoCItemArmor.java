@@ -29,7 +29,7 @@ import java.util.List;
 public class MoCItemArmor extends ArmorItem {
 
     public MoCItemArmor(Item.Properties properties, String name, IArmorMaterial materialIn, EquipmentSlotType equipmentSlotIn) {
-        super(materialIn, equipmentSlotIn, properties);
+        super(materialIn, equipmentSlotIn, properties.group(MoCreatures.tabMoC));
         this.setRegistryName(MoCConstants.MOD_ID, name);
     }
 
