@@ -206,7 +206,7 @@ public class MoCSoundEvents {
      * @return The SoundEvent
      */
     private static RegistryObject<SoundEvent> createSoundEvent(final String soundName) {
-        return SOUND_DEFERRED.register(soundName, () -> new SoundEvent(new ResourceLocation(soundName)));
+        return SOUND_DEFERRED.register(soundName, () -> new SoundEvent(new ResourceLocation(MoCConstants.MOD_ID, soundName)));
     }
 
 }

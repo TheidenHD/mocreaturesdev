@@ -7,6 +7,7 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityMob;
 import drzhark.mocreatures.entity.hunter.MoCEntityPetScorpion;
+import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
@@ -31,6 +32,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor;
+
 
 public class MoCEntityScorpion extends MoCEntityMob {
 
@@ -234,13 +236,13 @@ public class MoCEntityScorpion extends MoCEntityMob {
         if (!this.world.isRemote && getIsAdult() && getHasBabies()) {
             int k = this.rand.nextInt(5);
             for (int i = 0; i < k; i++) {
-//                MoCEntityPetScorpion entityscorpy = new MoCEntityPetScorpion(this.getType(), this.world);//TODO TheidenHD
-//                entityscorpy.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
-//                entityscorpy.setAdult(false);
-//                entityscorpy.setAge(20);
-//                entityscorpy.setTypeMoC(getTypeMoC);
-//                this.world.addEntity(entityscorpy);
-//                MoCTools.playCustomSound(entityscorpy, SoundEvents.ENTITY_SLIME_SQUISH);
+                MoCEntityPetScorpion entityscorpy = MoCEntities.PET_SCORPION.create(this.world);
+                entityscorpy.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
+                entityscorpy.setAdult(false);
+                entityscorpy.setAge(20);
+                entityscorpy.setTypeMoC(getTypeMoC);
+                this.world.addEntity(entityscorpy);
+                MoCTools.playCustomSound(entityscorpy, SoundEvents.ENTITY_SLIME_SQUISH);
             }
         }
     }

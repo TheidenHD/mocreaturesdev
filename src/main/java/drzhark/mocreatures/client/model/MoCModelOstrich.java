@@ -123,7 +123,7 @@ public class MoCModelOstrich<T extends MoCEntityOstrich> extends EntityModel<T> 
     private boolean rider;
     private int helmet;
     private byte typeI;
-    private DyeColor flagColor;
+    private int flagColor;
 
     public MoCModelOstrich() {
         this.textureWidth = 128;
@@ -593,7 +593,7 @@ public class MoCModelOstrich<T extends MoCEntityOstrich> extends EntityModel<T> 
         this.bagged = entityIn.getIsChested();
         this.rider = (entityIn.isBeingRidden());
         this.helmet = entityIn.getHelmet();
-        this.flagColor = entityIn.getFlagColor();
+        this.flagColor = entityIn.getFlagColorRaw();
     }
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
@@ -678,10 +678,10 @@ public class MoCModelOstrich<T extends MoCEntityOstrich> extends EntityModel<T> 
         if (bagged) {
             this.Saddlebag.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.Flagpole.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            switch (this.flagColor.getId()) {
-                //case 0:
-                //    FlagWhite.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                //   break;
+            switch (this.flagColor) {
+                case 0:
+                    FlagWhite.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    break;
                 case 1:
                     this.FlagOrange.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     break;
@@ -726,9 +726,6 @@ public class MoCModelOstrich<T extends MoCEntityOstrich> extends EntityModel<T> 
                     break;
                 case 15:
                     this.FlagBlack.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    break;
-                case 16:
-                    this.FlagWhite.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     break;
             }
         }
@@ -974,7 +971,10 @@ public class MoCModelOstrich<T extends MoCEntityOstrich> extends EntityModel<T> 
         //flag
         float flagF = MathHelper.cos(limbSwing * 0.8F) * 0.1F * limbSwingAmount;
 
-        switch (this.flagColor.getId()) {
+        switch (this.flagColor) {
+            case 0:
+                this.FlagWhite.rotateAngleY = flagF;
+                break;
             case 1:
                 this.FlagOrange.rotateAngleY = flagF;
                 break;
@@ -1019,9 +1019,6 @@ public class MoCModelOstrich<T extends MoCEntityOstrich> extends EntityModel<T> 
                 break;
             case 15:
                 this.FlagBlack.rotateAngleY = flagF;
-                break;
-            case 16:
-                this.FlagWhite.rotateAngleY = flagF;
                 break;
         }
 

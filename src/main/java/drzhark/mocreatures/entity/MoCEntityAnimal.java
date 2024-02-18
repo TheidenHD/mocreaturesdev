@@ -347,14 +347,6 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
     }
 
     @Override
-    public boolean isInWater() {
-        if (isAmphibian()) {
-            return this.handleFluidAcceleration(FluidTags.WATER, 0.014D);
-        }
-        return super.isInWater();
-    }
-
-    @Override
     public boolean canBreatheUnderwater() {
         return isAmphibian();
     }

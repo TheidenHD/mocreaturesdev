@@ -19,6 +19,8 @@ public class MoCModelSnail<T extends MoCEntitySnail> extends EntityModel<T> {
     ModelRenderer ShellUp;
     ModelRenderer ShellDown;
     ModelRenderer Tail;
+    private boolean isHiding;
+    private int type;
 
     public MoCModelSnail() {
         this.textureWidth = 32;
@@ -53,11 +55,14 @@ public class MoCModelSnail<T extends MoCEntitySnail> extends EntityModel<T> {
 
     }
 
-    public void renderMain(MoCEntitySnail entityIn, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn) {
-        boolean isHiding = entityIn.getIsHiding();
-        int type = entityIn.getTypeMoC();
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        this.isHiding = entityIn.getIsHiding();
+        this.type = entityIn.getTypeMoC();
+    }
 
-        if (isHiding && type < 5) {
+    @Override
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        if (this.isHiding && this.type < 5) {
             this.ShellDown.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
         } else {
             this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
@@ -66,10 +71,6 @@ public class MoCModelSnail<T extends MoCEntitySnail> extends EntityModel<T> {
             this.ShellUp.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
             this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
         }
-    }
-
-    @Override
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

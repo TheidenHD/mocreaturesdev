@@ -71,7 +71,7 @@ public class MoCreatures {
         MinecraftForge.EVENT_BUS.register(new MoCEventHooks());
         //MinecraftForge.TERRAIN_GEN_BUS.register(new MoCEventHooksTerrain()); //TODO TheidenHD
         //proxy.configInit();
-        if (!true) {
+        if (true) {
             MinecraftForge.EVENT_BUS.register(new MoCEventHooksClient());
             MinecraftForge.EVENT_BUS.register(new MoCKeyHandler());
         }

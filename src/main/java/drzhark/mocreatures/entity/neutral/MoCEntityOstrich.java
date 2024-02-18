@@ -161,11 +161,11 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         this.dataManager.set(FLAG_COLOR, color == null ? -1 : color.getId());
     }
 
-    private int getFlagColorRaw() {
+    public int getFlagColorRaw() {
         return this.dataManager.get(FLAG_COLOR);
     }
 
-    private void setFlagColorRaw(@Nullable int i) {
+    public void setFlagColorRaw(@Nullable int i) {
         this.dataManager.set(FLAG_COLOR, i);
     }
 

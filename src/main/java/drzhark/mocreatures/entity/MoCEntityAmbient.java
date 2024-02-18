@@ -173,10 +173,6 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
         super.livingTick();
     }
 
-    public boolean swimmerEntity() {
-        return false;
-    }
-
     //used to drop armor, inventory, saddles, etc.
     public void dropMyStuff() {
     }
@@ -186,19 +182,6 @@ public abstract class MoCEntityAmbient extends CreatureEntity implements IMoCEnt
      */
     protected boolean isMyHealFood(ItemStack itemstack) {
         return false;
-    }
-
-    @Override
-    public boolean isInWater() {
-        if (swimmerEntity()) {
-            return false;
-        }
-        return super.isInWater();
-    }
-
-    @Override
-    public boolean canBreatheUnderwater() {
-        return swimmerEntity();
     }
 
     public void faceLocation(int i, int j, int k, float f) {

@@ -319,13 +319,13 @@ public class MoCEntityWerewolf extends MoCEntityMob {
             this.setHealth(40);
             //setSize(0.6F, 2.125F);//TODO TheidenHD
             this.transforming = false;
-            //this.getEntityAttribute(Attributes.MOVEMENT_SPEED, 0.5D);//TODO TheidenHD
+            this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.5D);
         } else {
             setHumanForm(true);
             this.setHealth(15);
             //setSize(0.6F, 2.125F);//TODO TheidenHD
             this.transforming = false;
-            //this.getEntityAttribute(Attributes.MOVEMENT_SPEED, 0.25D);//TODO TheidenHD
+            this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
         }
     }
 

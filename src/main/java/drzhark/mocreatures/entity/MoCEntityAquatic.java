@@ -14,6 +14,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.passive.WaterMobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.ItemStack;
@@ -22,6 +23,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigator;
+import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.pathfinding.SwimmerPathNavigator;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
@@ -44,7 +46,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEntity {
+public abstract class MoCEntityAquatic extends WaterMobEntity implements IMoCEntity {
 
     protected static final DataParameter<Boolean> ADULT = EntityDataManager.createKey(MoCEntityAquatic.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Integer> TYPE = EntityDataManager.createKey(MoCEntityAquatic.class, DataSerializers.VARINT);
@@ -316,16 +318,6 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
      */
     public double getCustomSpeed() {
         return 1.5D;
-    }
-
-    @Override
-    public boolean isInWater() {
-        return this.handleFluidAcceleration(FluidTags.WATER, 0.014D);
-    }
-
-    @Override
-    public boolean canBreatheUnderwater() {
-        return true;
     }
 
     @Override
@@ -629,14 +621,6 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
     }
 
     @Override
-    public boolean canBeLeashedTo(PlayerEntity player) {
-        if (!this.world.isRemote && !MoCTools.isThisPlayerAnOP(player) && this.getIsTamed() && !player.getUniqueID().equals(this.getOwnerId())) {
-            return false;
-        }
-        return super.canBeLeashedTo(player);
-    }
-
-    @Override
     public boolean getIsSitting() {
         return false;
     }
@@ -755,14 +739,6 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
     }
 
     /**
-     * Whether the current entity is in lava
-     */
-    @Override
-    public boolean isNotColliding(IWorldReader worldIn) {
-        return worldIn.checkNoEntityCollision(this);
-    }
-
-    /**
      * Get number of ticks, at least during which the living entity will be silent.
      */
     @Override
@@ -770,23 +746,13 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
         return 300;
     }
 
-    @Override
-    protected int getExperiencePoints(PlayerEntity player) {
-        return 1 + this.world.rand.nextInt(3);
-    }
-
     /**
      * Gets called every tick from main Entity class
      */
     @Override
-    public void baseTick() {
-        int i = this.getAir();
-        super.baseTick();
-
-        if (this.isAlive() && !this.isInWater()) {
-            --i;
-            this.setAir(i);
-
+    public void updateAir(int air) {
+        if (this.isAlive() && !this.isInWaterOrBubbleColumn()) {
+            this.setAir(air - 1);
             if (this.getAir() == -30) {
                 this.setAir(0);
                 this.attackEntityFrom(DamageSource.DROWN, 1.0F);
@@ -795,11 +761,6 @@ public abstract class MoCEntityAquatic extends CreatureEntity implements IMoCEnt
         } else {
             this.setAir(300);
         }
-    }
-
-    @Override
-    public boolean isPushedByWater() {
-        return false;
     }
 
     protected boolean usesNewAI() {
