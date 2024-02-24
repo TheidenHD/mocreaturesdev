@@ -598,6 +598,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                         break;
                     }
                     float f5 = kittyBed.getDistance(this);
+                    System.out.println(f5);
                     if (f5 > 2.0F) {
                         setPathToEntity(kittyBed, f5);
                     }

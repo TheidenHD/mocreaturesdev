@@ -80,6 +80,7 @@ public class MoCreatures {
 
         wyvernSkylandsDimensionID = proxy.wyvernDimension;
         //proxy.mocSettingsConfig.save();
+        proxy.configInit();
         proxy.registerRenderers();
         proxy.registerRenderInformation();
         //WYVERN_SKYLANDS = DimensionType.register("Wyvern Skylands", "_wyvern_skylands", wyvernSkylandsDimensionID, MoCWorldProviderWyvernSkylands.class, false); //TODO TheidenHD

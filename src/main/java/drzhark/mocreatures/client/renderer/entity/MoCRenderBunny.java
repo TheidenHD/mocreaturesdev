@@ -26,11 +26,6 @@ public class MoCRenderBunny extends MoCRenderMoC<MoCEntityBunny, MoCModelBunny<M
     }
 
     @Override
-    public void render(MoCEntityBunny entitybunny, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        super.render(entitybunny, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
-    }
-
-    @Override
     protected void preRenderCallback(MoCEntityBunny entitybunny, MatrixStack matrixStackIn, float f) {
         if (!entitybunny.getIsAdult()) {
             stretch(entitybunny, matrixStackIn);

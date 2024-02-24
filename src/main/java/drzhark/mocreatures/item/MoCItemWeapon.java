@@ -3,6 +3,7 @@
  */
 package drzhark.mocreatures.item;
 
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import drzhark.mocreatures.MoCreatures;
 import net.minecraft.block.BlockState;
@@ -40,11 +41,15 @@ public class MoCItemWeapon extends MoCItem {
     private final IItemTier material;
     private final float attackDamage;
     private int specialWeaponType = 0;
+    private final Multimap<Attribute, AttributeModifier> attributeModifiers;
 
     public MoCItemWeapon(Item.Properties properties, String name, IItemTier par2ToolMaterial) {
         super(properties.maxStackSize(1).maxDamage(par2ToolMaterial.getMaxUses()), name);
         this.material = par2ToolMaterial;
         this.attackDamage = 3F + par2ToolMaterial.getAttackDamage();
+        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double)this.attackDamage, AttributeModifier.Operation.ADDITION));
+        this.attributeModifiers = builder.build();
     }
 
     public MoCItemWeapon(Item.Properties properties, String name, IItemTier par2ToolMaterial, int damageType) {
@@ -158,11 +163,7 @@ public class MoCItemWeapon extends MoCItem {
      * Gets a map of item attribute modifiers, used by SwordItem to increase hit damage.
      */
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType equipmentSlot) {
-        Multimap<Attribute, AttributeModifier> multimap = super.getAttributeModifiers(equipmentSlot);
-        //if (equipmentSlot == EquipmentSlotType.MAINHAND) { //TODO TheidenHD
-        //    multimap.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", this.attackDamage, AttributeModifier.Operation.ADDITION));
-        //}
-        return multimap;
+        return equipmentSlot == EquipmentSlotType.MAINHAND ? this.attributeModifiers : super.getAttributeModifiers(equipmentSlot);
     }
 
     @Override

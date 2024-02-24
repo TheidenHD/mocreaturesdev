@@ -3,6 +3,7 @@
  */
 package drzhark.mocreatures.item;
 
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.block.BlockState;
@@ -29,6 +30,7 @@ public class MoCItemCrabClaw extends MoCItem {
     public final int enchantability;
     public final float reach;
     public final float toughness;
+    private Multimap<Attribute, AttributeModifier> attributeModifiers;
 
     public MoCItemCrabClaw(Item.Properties properties, String name, int enchantability, float toughness, int armor, float reach) {
         super(properties, name);
@@ -82,14 +84,13 @@ public class MoCItemCrabClaw extends MoCItem {
 
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType equipmentSlot) {
-        Multimap<Attribute, AttributeModifier> multimap = super.getAttributeModifiers(equipmentSlot);
-
-        //if (equipmentSlot == EquipmentSlotType.OFFHAND) { //TODO TheidenHD
-        //    multimap.put(Attributes.ARMOR, new AttributeModifier(TOUGHNESS_MODIFIER, "Crab claw armor", armor, AttributeModifier.Operation.ADDITION));
-        //    multimap.put(net.minecraftforge.common.ForgeMod.REACH_DISTANCE.get(), new AttributeModifier(REACH_DISTANCE_MODIFIER, "Crab claw reach", reach, AttributeModifier.Operation.ADDITION));
-        //    multimap.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(TOUGHNESS_MODIFIER, "Crab claw toughness", toughness, AttributeModifier.Operation.ADDITION));
-        //}
-
-        return multimap;
+        if (attributeModifiers == null){
+            ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+            builder.put(Attributes.ARMOR, new AttributeModifier(TOUGHNESS_MODIFIER, "Crab claw armor", armor, AttributeModifier.Operation.ADDITION));
+            builder.put(net.minecraftforge.common.ForgeMod.REACH_DISTANCE.get(), new AttributeModifier(REACH_DISTANCE_MODIFIER, "Crab claw reach", reach, AttributeModifier.Operation.ADDITION));
+            builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(TOUGHNESS_MODIFIER, "Crab claw toughness", toughness, AttributeModifier.Operation.ADDITION));
+            this.attributeModifiers = builder.build();
+        }
+        return equipmentSlot == EquipmentSlotType.OFFHAND ? this.attributeModifiers : super.getAttributeModifiers(equipmentSlot);
     }
 }

@@ -14,7 +14,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -23,7 +25,10 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MoCEventHooks {
@@ -40,14 +45,9 @@ public class MoCEventHooks {
     public void onWorldLoad(WorldEvent.Load event) {
         if (event.getWorld() != null && !MoCreatures.proxy.worldInitDone) // if overworld has loaded, use its mapstorage
         {
-//            MoCPetMapData data = (MoCPetMapData) DimensionManager.getWorld(0).getMapStorage().getOrLoadData(MoCPetMapData.class, MoCConstants.MOD_ID); //TODO TheidenHD
-//            if (data == null) {
-//                data = new MoCPetMapData(MoCConstants.MOD_ID);
-//            }
-//            DimensionManager.getWorld(0).getMapStorage().setData(MoCConstants.MOD_ID, data);
-//            DimensionManager.getWorld(0).getMapStorage().saveAllData();
-//            MoCreatures.instance.mapData = data;
-//            MoCreatures.proxy.worldInitDone = true;
+            MoCPetMapData data = ServerLifecycleHooks.getCurrentServer().getWorld(World.OVERWORLD).getSavedData().getOrCreate(() -> new MoCPetMapData(MoCConstants.MOD_ID), MoCConstants.MOD_ID);
+            MoCreatures.instance.mapData = data;
+            MoCreatures.proxy.worldInitDone = true;
         }
     }
 
@@ -79,15 +79,15 @@ public class MoCEventHooks {
         Class<? extends LivingEntity> entityClass = entity.getClass();
         MoCEntityData data = MoCreatures.entityMap.get(entityClass);
         if (data == null) return; // not a MoC entity
-//        World world = event.getWorld(); //TODO TheidenHD
-//        List<Integer> dimensionIDs = Ints.asList(data.getDimensions());
-//        if (!dimensionIDs.contains(world.provider.getDimension())) {
-//            event.setResult(Event.Result.DENY);
-//        } else if (data.getFrequency() <= 0) {
-//            event.setResult(Event.Result.DENY);
-//        } else if (dimensionIDs.contains(MoCreatures.proxy.wyvernDimension) && world.provider.getDimension() == MoCreatures.proxy.wyvernDimension) {
-//            event.setResult(Event.Result.ALLOW);
-//        }
+        World world = (World) event.getWorld();
+        List<RegistryKey<World>> dimensionIDs = Arrays.asList(data.getDimensions());
+        if (!dimensionIDs.contains(world.getDimensionKey())) {
+            event.setResult(Event.Result.DENY);
+        } else if (data.getFrequency() <= 0) {
+            event.setResult(Event.Result.DENY);
+        } else if (dimensionIDs.contains(MoCreatures.proxy.wyvernDimension) && world.getDimensionKey() == MoCreatures.proxy.wyvernDimension) {
+            event.setResult(Event.Result.ALLOW);
+        }
     }
 
     @SubscribeEvent

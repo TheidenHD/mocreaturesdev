@@ -27,11 +27,6 @@ public class MoCRenderBird extends MoCRenderMoC<MoCEntityBird, MoCModelBird<MoCE
     }
 
     @Override
-    public void render(MoCEntityBird entitybird, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        super.render(entitybird, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
-    }
-
-    @Override
     protected float handleRotationFloat(MoCEntityBird entitybird, float f) {
         float f1 = entitybird.winge + ((entitybird.wingb - entitybird.winge) * f);
         float f2 = entitybird.wingd + ((entitybird.wingc - entitybird.wingd) * f);

@@ -17,6 +17,7 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class MoCProxy {
     public boolean armorSetEffects;
     public boolean attackHorses;
     public boolean attackWolves;
-    public boolean debug = false;
+    public boolean debug;
     public boolean destroyDrops;
     public boolean displayPetHealth;
     public boolean displayPetIcons;
@@ -70,12 +71,12 @@ public class MoCProxy {
     public boolean staticLitter;
     public boolean verboseEntityNames;
     public boolean weaponEffects;
-    public boolean worldInitDone = false;
+    public boolean worldInitDone;
     public double spawnMultiplier;
     public float ogreCaveStrength;
     public float ogreFireStrength;
     public float ogreStrength;
-    public int filchLizardSpawnItemChance = 1; //TODO TheideHD
+    public int filchLizardSpawnItemChance;
     public int kittyVillageChance;
     public int maxOPTamed;
     public int maxTamed;
@@ -90,24 +91,22 @@ public class MoCProxy {
     public MoCConfiguration mocSettingsConfig;
     public MoCConfiguration mocEntityConfig;
 
-    protected File configFile;
 
     public void resetAllData() {
         this.readGlobalConfigValues();
     }
 
     //----------------CONFIG INITIALIZATION
-//    public void configInit(FMLPreInitializationEvent event) { //TODO TheidenHD
-//        this.mocSettingsConfig = new MoCConfiguration(new File(event.getSuggestedConfigurationFile().getParent(), "MoCreatures" + File.separator + "MoCSettings.cfg"));
-//        this.mocEntityConfig = new MoCConfiguration(new File(event.getSuggestedConfigurationFile().getParent(), "MoCreatures" + File.separator + "MoCreatures.cfg"));
-//        this.configFile = event.getSuggestedConfigurationFile();
-//        this.mocSettingsConfig.load();
-//        this.mocEntityConfig.load();
-//        this.readGlobalConfigValues();
-//        if (this.debug) {
-//            MoCreatures.LOGGER.info("Initializing MoCreatures Config File at " + event.getSuggestedConfigurationFile().getParent() + "MoCSettings.cfg");
-//        }
-//    }
+    public void configInit() {
+        this.mocSettingsConfig = new MoCConfiguration(new File(FMLPaths.CONFIGDIR.get().toString(), "MoCreatures" + File.separator + "MoCSettings.cfg"));
+        this.mocEntityConfig = new MoCConfiguration(new File(FMLPaths.CONFIGDIR.get().toString(), "MoCreatures" + File.separator + "MoCreatures.cfg"));
+        this.mocSettingsConfig.load();
+        this.mocEntityConfig.load();
+        this.readGlobalConfigValues();
+        if (this.debug) {
+            MoCreatures.LOGGER.info("Initializing MoCreatures Config File at " + FMLPaths.CONFIGDIR.get().toString() + "MoCSettings.cfg");
+        }
+    }
 
     //-----------------THE FOLLOWING ARE CLIENT SIDE ONLY, NOT TO BE USED IN SERVER AS THEY AFFECT ONLY DISPLAY / SOUNDS
 
@@ -289,7 +288,6 @@ public class MoCProxy {
         this.staticLitter = this.mocSettingsConfig.get(CATEGORY_MOC_CREATURE_GENERAL_SETTINGS, "StaticLitter", true, "Makes the kitty litter box not pushable.").getBoolean(true);
         this.verboseEntityNames = this.mocSettingsConfig.get(CATEGORY_MOC_CREATURE_GENERAL_SETTINGS, "VerboseEntityNames", false, "Enables detailed names for creatures, describing their species.").getBoolean(false);
         this.weaponEffects = this.mocSettingsConfig.get(CATEGORY_MOC_GENERAL_SETTINGS, "WeaponEffects", true, "Applies potion effects when dealing damage with scorpion weapons.").getBoolean(true);
-        //this.wyvernDimension = this.mocSettingsConfig.get(CATEGORY_MOC_ID_SETTINGS, "WyvernLairDimensionID", -17, "The dimension ID of the wyvern lair.").getInt(); //TODO TheidenHD
         this.wyvernEggDropChance = this.mocSettingsConfig.get(CATEGORY_MOC_CREATURE_GENERAL_SETTINGS, "WyvernEggDropChance", 33, "The percentage for wyverns to drop an egg.").getInt();
 
         // Save

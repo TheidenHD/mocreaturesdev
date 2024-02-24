@@ -21,11 +21,6 @@ public class MoCRenderScorpion extends MoCRenderMoC<MoCEntityScorpion, MoCModelS
     }
 
     @Override
-    public void render(MoCEntityScorpion entityscorpion, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        super.render(entityscorpion, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
-    }
-
-    @Override
     protected float getDeathMaxRotation(MoCEntityScorpion entityscorpion) {
         return 180.0F;
     }

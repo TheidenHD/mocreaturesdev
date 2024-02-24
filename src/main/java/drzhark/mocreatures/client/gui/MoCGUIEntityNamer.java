@@ -41,10 +41,9 @@ public class MoCGUIEntityNamer extends Screen {
         this.ySize = 181;
         this.screenTitle = "Choose your Pet's name:";
         this.namedEntity = mocanimal;
-        this.textInputUtil = new TextInputUtil(() -> nameToSet, (p_238850_1_) -> {
-            nameToSet = p_238850_1_;
-            updateName();
-        }, TextInputUtil.getClipboardTextSupplier(this.minecraft), TextInputUtil.getClipboardTextSetter(this.minecraft), (p_238848_1_) -> true);
+        this.nameToSet = s;
+        this.textInputUtil = new TextInputUtil(() -> nameToSet, (p_238850_1_) -> nameToSet = p_238850_1_,
+                TextInputUtil.getClipboardTextSupplier(this.minecraft), TextInputUtil.getClipboardTextSetter(this.minecraft), (p_238848_1_) -> true);
     }
 
     @Override

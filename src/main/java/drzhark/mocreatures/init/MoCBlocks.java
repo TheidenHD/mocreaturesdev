@@ -104,16 +104,6 @@ public class MoCBlocks {
                 .forEach(block -> registry.register(setup(new BlockItem(block, new Item.Properties().group(MoCreatures.tabMoC)), block.getRegistryName())));
     }
 
-    @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent
-    public static void registerModels(ModelRegistryEvent event) {
-        for (Item item : ForgeRegistries.ITEMS.getValues()) {
-            if (item.getRegistryName().getNamespace().equals(MoCConstants.MOD_ID)) {
-                //ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "normal")); //TODO TheidenHD
-            }
-        }
-    }
-
     @Nonnull
     public static <T extends IForgeRegistryEntry<T>> T setup(T entry, String name) {
         return setup(entry, new ResourceLocation(MoCConstants.MOD_ID, name));

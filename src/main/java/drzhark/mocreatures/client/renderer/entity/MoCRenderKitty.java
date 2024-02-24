@@ -4,22 +4,42 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.client.model.MoCModelKitty;
 import drzhark.mocreatures.entity.neutral.MoCEntityKitty;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class MoCRenderKitty extends MoCRenderMoC<MoCEntityKitty, MoCModelKitty<MoCEntityKitty>> {
+
+    private static class Internal extends RenderType {
+        private Internal(String name, VertexFormat fmt, int glMode, int size, boolean doCrumbling, boolean depthSorting, Runnable onEnable, Runnable onDisable)
+        {
+            super(name, fmt, glMode, size, doCrumbling, depthSorting, onEnable, onDisable);
+            throw new IllegalStateException("This class must not be instantiated");
+        }
+
+        public static RenderType getKitty(ResourceLocation locationIn) {
+            RenderType.State rendertype$state = RenderType.State.getBuilder()
+                    .texture(new RenderState.TextureState(locationIn, true, false))
+                    .alpha(DEFAULT_ALPHA)
+                    .transparency(TRANSLUCENT_TRANSPARENCY)
+                    .build(false);
+            return makeType("kitty", DefaultVertexFormats.POSITION_TEX, 7, 256, false, true, rendertype$state);
+        }
+    }
 
     public MoCModelKitty kitty;
 
@@ -52,25 +72,26 @@ public class MoCRenderKitty extends MoCRenderMoC<MoCEntityKitty, MoCModelKitty<M
                 RenderSystem.normal3f(0.0F, 1.0F, 0.0F);
                 matrixStackIn.rotate(Vector3f.YP.rotationDegrees(-this.renderManager.info.getYaw()));
                 matrixStackIn.scale(-f3, -f3, f3);
-
-                Tessellator tessellator = Tessellator.getInstance();
+                //Tessellator tessellator = Tessellator.getInstance();
 
                 if (displayPetIcons && entitykitty.getShowEmoteIcon()) {
-                    Minecraft.getInstance().getTextureManager().bindTexture(entitykitty.getEmoteIcon());
+                    //Minecraft.getInstance().getTextureManager().bindTexture(entitykitty.getEmoteIcon());
                     int i = -90;
                     int k = 32;
                     int l = (k / 2) * -1;
                     float f9 = 0.0F;
                     float f11 = 1.0F / k;
                     float f12 = 1.0F / k;
-                    tessellator.getBuffer().begin(7, DefaultVertexFormats.POSITION_TEX);
-                    tessellator.getBuffer().pos(l, i + k, f9).tex(0.0F, k * f12).endVertex();
-                    tessellator.getBuffer().pos(l + k, i + k, f9).tex(k * f11, k * f12).endVertex();
-                    tessellator.getBuffer().pos(l + k, i, f9).tex(k * f11, 0.0F).endVertex();
-                    tessellator.getBuffer().pos(l, i, f9).tex(0.0F, 0.0F).endVertex();
-                    tessellator.draw();
-                }
+                    Matrix4f matrix = matrixStackIn.getLast().getMatrix();
+                    IVertexBuilder ivertexbuilder = bufferIn.getBuffer(MoCRenderKitty.Internal.getKitty(entitykitty.getEmoteIcon()));
 
+                    //tessellator.getBuffer().begin(7, DefaultVertexFormats.POSITION_TEX);
+                    ivertexbuilder.pos(matrix, l, i + k, f9).tex(0.0F, k * f12).endVertex();
+                    ivertexbuilder.pos(matrix, l + k, i + k, f9).tex(k * f11, k * f12).endVertex();
+                    ivertexbuilder.pos(matrix, l + k, i, f9).tex(k * f11, 0.0F).endVertex();
+                    ivertexbuilder.pos(matrix, l, i, f9).tex(0.0F, 0.0F).endVertex();
+                    //tessellator.draw();
+                }
 
                 matrixStackIn.pop();
             }

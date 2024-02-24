@@ -21,11 +21,6 @@ public class MoCRenderMouse extends MoCRenderMoC<MoCEntityMouse, MoCModelMouse<M
     }
 
     @Override
-    public void render(MoCEntityMouse entitymouse, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        super.render(entitymouse, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
-    }
-
-    @Override
     protected void preRenderCallback(MoCEntityMouse entitymouse, MatrixStack matrixStackIn, float partialTickTime) {
         stretch(matrixStackIn);
         // When mice are picked up

@@ -62,11 +62,7 @@ public class MoCRenderKittyBed extends MobRenderer<MoCEntityKittyBed, MoCModelKi
         public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, MoCEntityKittyBed entitykittybed, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             float f8 = 0.35F;
             int j = this.mocRenderer.mycolor;
-            RenderSystem.color3f(f8 * fleeceColorTable[j][0], f8 * fleeceColorTable[j][1], f8 * fleeceColorTable[j][2]);
-            this.mocModel.copyModelAttributesTo(this.mocRenderer.getEntityModel());
-            this.mocModel.setLivingAnimations(entitykittybed, limbSwing, limbSwingAmount, partialTicks);
-            IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityCutoutNoCull(this.getEntityTexture(entitykittybed)));
-            this.mocModel.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+            renderCopyCutoutModel(this.getEntityModel(), this.mocModel, this.getEntityTexture(entitykittybed), matrixStackIn, bufferIn, packedLightIn, entitykittybed, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, partialTicks, f8 * fleeceColorTable[j][0], f8 * fleeceColorTable[j][1], f8 * fleeceColorTable[j][2]);
         }
     }
 }
