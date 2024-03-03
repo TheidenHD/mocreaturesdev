@@ -15,7 +15,7 @@ import net.minecraftforge.registries.ObjectHolder;
 @ObjectHolder(MoCConstants.MOD_ID)
 public class MoCBiomes {
 
-//    public static Biome wyvernIsles = new MoCBiomeWyvernIsles(new BiomeProperties("Wyvern Isles") //TODO ThiedenHD
+//    public static Biome wyvernIsles = new MoCBiomeWyvernIsles(new BiomeProperties("Wyvern Isles") //TODO TheidenHD
 //            .setBaseHeight(1.0F)
 //            .setHeightVariation(0.5F)
 //            .setTemperature(0.25F)
@@ -30,7 +30,7 @@ public class MoCBiomes {
     @Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
 
-//        @SubscribeEvent //TODO ThiedenHD
+//        @SubscribeEvent //TODO TheidenHD
 //        public static void registerBiomes(final RegistryEvent.Register<Biome> event) {
 //            final IForgeRegistry<Biome> registry = event.getRegistry();
 //            registerBiome(registry, wyvernIsles, "wyvern_isles", MoCEntities.WYVERN_LAIR, BiomeDictionary.Type.VOID, BiomeDictionary.Type.MAGICAL, BiomeDictionary.Type.COLD);

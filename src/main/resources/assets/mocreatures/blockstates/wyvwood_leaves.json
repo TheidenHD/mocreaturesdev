@@ -1,29 +1,7 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "cube_all",
-    "textures": {
-      "all": "mocreatures:blocks/leaves_wyvwood"
-    }
-  },
   "variants": {
-    "normal": [
-      {}
-    ],
-    "inventory": [
-      {}
-    ],
-    "check_decay=false,decayable=false": {
-      "model": "minecraft:leaves"
-    },
-    "check_decay=false,decayable=true": {
-      "model": "minecraft:leaves"
-    },
-    "check_decay=true,decayable=false": {
-      "model": "minecraft:leaves"
-    },
-    "check_decay=true,decayable=true": {
-      "model": "minecraft:leaves"
+    "": {
+      "model": "mocreatures:block/wyvwood_leaves"
     }
   }
 }

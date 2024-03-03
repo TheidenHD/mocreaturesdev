@@ -27,7 +27,7 @@ public class MoCItems {
     public static final MoCItem sharkteeth = new MoCItem((new Item.Properties()), "sharkteeth");
     public static final MoCItem haystack = new MoCItem((new Item.Properties().maxStackSize(16)), "haystack");
     public static final MoCItemFood sugarlump = new MoCItemFood.Builder((new Item.Properties()), "sugarlump", 1, 0.1F, false, 12).setPotionEffect(new EffectInstance(Effects.NAUSEA, 4 * 20, 0), 0.15F).setPotionEffect(new EffectInstance(Effects.SPEED, 4 * 20, 0), 1.0F).build();
-    public static final MoCItem[] mocegg = {new MoCItemEgg((new Item.Properties()), "mocegg")};
+    public static final MoCItem mocegg = new MoCItemEgg((new Item.Properties()), "mocegg");
     public static final MoCItem bigcatclaw = new MoCItem((new Item.Properties()), "bigcatclaw");
     public static final MoCItem whip = new MoCItemWhip((new Item.Properties()), "whip");
     public static final MoCItem staffPortal = new ItemStaffPortal((new Item.Properties()), "staffportal");
@@ -175,7 +175,7 @@ public class MoCItems {
                     sharkteeth,
                     haystack,
                     sugarlump,
-                    //mocegg, //TODO TheidenHD
+                    mocegg,
                     bigcatclaw,
                     whip,
                     medallion,

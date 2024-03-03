@@ -72,9 +72,4 @@ public class MoCItemEgg extends MoCItem {
 //            items.add(new ItemStack(this, 1, i));
 //        }
 //    }
-
-    @Override
-    public String getTranslationKey(ItemStack itemstack) {
-        return getTranslationKey() + "." ; //TODO TheidenHD
-    }
 }

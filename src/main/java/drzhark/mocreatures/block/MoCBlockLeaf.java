@@ -14,5 +14,4 @@ public class MoCBlockLeaf extends LeavesBlock {
     public MoCBlockLeaf(AbstractBlock.Properties properties) {
         super(properties.sound(SoundType.PLANT).notSolid().setAllowsSpawn(Blocks::allowsSpawnOnLeaves).setSuffocates(Blocks::isntSolid).setBlocksVision(Blocks::isntSolid));
     }
-
 }

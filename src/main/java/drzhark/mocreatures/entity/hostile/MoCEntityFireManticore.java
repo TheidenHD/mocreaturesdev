@@ -44,6 +44,7 @@ public class MoCEntityFireManticore extends MoCEntityManticore {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {        return MoCLootTables.FIRE_MANTICORE;
+    protected ResourceLocation getLootTable() {
+        return MoCLootTables.FIRE_MANTICORE;
     }
 }

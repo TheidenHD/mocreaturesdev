@@ -497,7 +497,7 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
             int j = this.rand.nextInt(3);
             for (int l = 0; l < j; l++) {
 
-                entityDropItem(new ItemStack(MoCItems.mocegg[getTypeMoC() + 20], 1), 0.0F);
+                entityDropItem(new ItemStack(MoCItems.mocegg, 1), 0.0F);
             }
         }
     }

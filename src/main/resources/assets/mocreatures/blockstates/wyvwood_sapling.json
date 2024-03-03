@@ -1,11 +1,7 @@
 {
-  "forge_marker": 1,
   "variants": {
-    "stage=0": {
-      "model": "mocreatures:wyvwood_sapling"
-    },
-    "stage=1": {
-      "model": "mocreatures:wyvwood_sapling"
+    "": {
+      "model": "mocreatures:block/wyvwood_sapling"
     }
   }
 }

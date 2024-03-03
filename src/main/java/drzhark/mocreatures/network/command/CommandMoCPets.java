@@ -113,7 +113,7 @@ public class CommandMoCPets {
                     + (!MoCreatures.isServer() ? ", Unloaded Count : " + TextFormatting.AQUA + unloadedCount + TextFormatting.WHITE
                     + ", Total count : " + TextFormatting.AQUA + (loadedCount + unloadedCount) : "")));
         } */
-        return 0; //TODO ThiedenHD
+        return 0; //TODO TheidenHD
     }
 
 /*

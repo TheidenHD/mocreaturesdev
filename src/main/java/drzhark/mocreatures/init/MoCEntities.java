@@ -156,9 +156,9 @@ public class MoCEntities {
     /**
      * Other
      */
-    public static EntityType<MoCEntityEgg> EGG = createEntityEntry(EntityType.Builder.create(MoCEntityEgg::new, EntityClassification.MISC).size(1.0F, 1.0F), MoCEntityEgg::registerAttributes, "Egg");
-    public static EntityType<MoCEntityKittyBed> KITTY_BED = createEntityEntry(EntityType.Builder.create(MoCEntityKittyBed::new, EntityClassification.MISC).size(1.0F, 1.0F), MoCEntityKittyBed::registerAttributes, "KittyBed");
-    public static EntityType<MoCEntityLitterBox> LITTERBOX = createEntityEntry(EntityType.Builder.create(MoCEntityLitterBox::new, EntityClassification.MISC).size(1.0F, 1.0F), MoCEntityLitterBox::registerAttributes, "LitterBox");
+    public static EntityType<MoCEntityEgg> EGG = createEntityEntry(EntityType.Builder.create(MoCEntityEgg::new, EntityClassification.MISC).size(0.25F, 0.25F), MoCEntityEgg::registerAttributes, "Egg");
+    public static EntityType<MoCEntityKittyBed> KITTY_BED = createEntityEntry(EntityType.Builder.create(MoCEntityKittyBed::new, EntityClassification.MISC).size(1.0F, 0.15F), MoCEntityKittyBed::registerAttributes, "KittyBed");
+    public static EntityType<MoCEntityLitterBox> LITTERBOX = createEntityEntry(EntityType.Builder.create(MoCEntityLitterBox::new, EntityClassification.MISC).size(1.0F, 0.15F), MoCEntityLitterBox::registerAttributes, "LitterBox");
     public static EntityType<MoCEntityThrowableRock> TROCK = createRock(EntityType.Builder.create(MoCEntityThrowableRock::new, EntityClassification.MISC).size(1.0F, 1.0F), "TRock");
     static int MoCEntityID = 0;
 

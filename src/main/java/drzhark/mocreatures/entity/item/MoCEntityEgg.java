@@ -65,7 +65,7 @@ public class MoCEntityEgg extends MobEntity {
         if (i == 30) {
             i = 31;
         }
-        if ((this.lCounter > 10) && entityplayer.inventory.addItemStackToInventory(new ItemStack(MoCItems.mocegg[i], 1))) {
+        if ((this.lCounter > 10) && entityplayer.inventory.addItemStackToInventory(new ItemStack(MoCItems.mocegg, 1))) {
             this.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 0.2F, (((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F) + 1.0F) * 2.0F);
             if (!this.world.isRemote) {
                 entityplayer.onItemPickup(this, 1);
