@@ -1,30 +1,32 @@
-///*
-// * GNU GENERAL PUBLIC LICENSE Version 3
-// */
-//package drzhark.mocreatures.event;
-//
-//import drzhark.mocreatures.MoCTools;
-//import drzhark.mocreatures.entity.IMoCEntity;
-//import drzhark.mocreatures.init.MoCEntities;
-//import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-//import net.minecraft.entity.EntityClassification;
-//import net.minecraft.entity.MobEntity;
-//import net.minecraft.util.ResourceLocation;
-//import net.minecraft.util.math.BlockPos;
-//import net.minecraft.world.World;
-//import net.minecraft.world.biome.Biome;
-//import net.minecraft.world.biome.Biomes;
-//import net.minecraftforge.common.BiomeDictionary;
-//import net.minecraftforge.eventbus.api.SubscribeEvent;
-//import net.minecraftforge.registries.ForgeRegistries;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Random;
-//
-//public class MoCEventHooksTerrain {
-//
-//    public static List<Biome.MobSpawnInfo.Spawners> creatureList = new ArrayList<>();
+/*
+ * GNU GENERAL PUBLIC LICENSE Version 3
+ */
+package drzhark.mocreatures.event;
+
+import drzhark.mocreatures.MoCTools;
+import drzhark.mocreatures.entity.IMoCEntity;
+import drzhark.mocreatures.init.MoCEntities;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
+import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+public class MoCEventHooksTerrain {
+
+//    public static List<Biome.MobSpawnInfo.Spawners> creatureList = new ArrayList<>(); //TODO TheidenHD
 //    public static List<Biome.MobSpawnInfo.Spawners> waterCreatureList = new ArrayList<>();
 //    public static Object2ObjectOpenHashMap<Biome, List<Biome.MobSpawnInfo.Spawners>> creatureSpawnMap = new Object2ObjectOpenHashMap<>();
 //    public static Object2ObjectOpenHashMap<Biome, List<Biome.MobSpawnInfo.Spawners>> waterCreatureSpawnMap = new Object2ObjectOpenHashMap<>();
@@ -57,11 +59,11 @@
 //        // Traverse
 //        ResourceLocation rockyPlateau = new ResourceLocation("traverse:rocky_plateau");
 //        if (ForgeRegistries.BIOMES.containsKey(rockyPlateau)) {
-//            BiomeDictionary.addTypes(ForgeRegistries.BIOMES.getValue(rockyPlateau), BiomeDictionary.Type.PLAINS);
+//            BiomeDictionary.addTypes(RegistryKey.getOrCreateKey(Registry.BIOME_KEY, rockyPlateau), BiomeDictionary.Type.PLAINS);
 //        }
 //        ResourceLocation aridHighland = new ResourceLocation("traverse:arid_highland");
 //        if (ForgeRegistries.BIOMES.containsKey(aridHighland)) {
-//            BiomeDictionary.addTypes(ForgeRegistries.BIOMES.getValue(aridHighland), BiomeDictionary.Type.SAVANNA);
+//            BiomeDictionary.addTypes(RegistryKey.getOrCreateKey(Registry.BIOME_KEY, aridHighland), BiomeDictionary.Type.SAVANNA);
 //        }
 //    }
 //
@@ -82,4 +84,4 @@
 //            MoCTools.performCustomWorldGenSpawning(world, biome, centerX, centerZ, 16, 16, rand, waterCreatureSpawnMap.get(biome), MobEntity.SpawnPlacementType.IN_WATER);
 //        }
 //    }
-//}
+}

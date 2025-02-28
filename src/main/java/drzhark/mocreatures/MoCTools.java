@@ -251,15 +251,14 @@ public class MoCTools {
     }
 
     public static void checkForTwistedEntities(World world) {
-//        for (int l = 0; l < world.loadedEntityList.size(); l++) { //TODO TheidenHD
-//            Entity entity = world.loadedEntityList.get(l);
-//            if (entity instanceof LivingEntity) {
-//                LivingEntity twisted = (LivingEntity) entity;
-//                if (twisted.deathTime > 0 && twisted.getRidingEntity() == null && twisted.getHealth() > 0) {
-//                    twisted.deathTime = 0;
-//                }
-//            }
-//        }
+        for(Entity entity : world.getServer().getWorld(world.getDimensionKey()).getEntitiesIteratable()) {
+            if (entity instanceof LivingEntity) {
+                LivingEntity twisted = (LivingEntity) entity;
+                if (twisted.deathTime > 0 && twisted.getRidingEntity() == null && !twisted.getShouldBeDead()) {
+                    twisted.deathTime = 0;
+                }
+            }
+        }
     }
 
     public static double getSqDistanceTo(Entity entity, double i, double j, double k) {
