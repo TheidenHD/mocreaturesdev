@@ -288,7 +288,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
             if (!this.temptedEntity.getHeldItemMainhand().isEmpty()) {
                 return false;
             }
-            List<Entity> list = this.temptedEntity.getEntityWorld().getEntitiesWithinAABBExcludingEntity(temptedEntity, temptedEntity.getEntityBoundingBox().expand(6D, 4D, 6D));
+            List<Entity> list = this.temptedEntity.getEntityWorld().getEntitiesWithinAABBExcludingEntity(temptedEntity, temptedEntity.getEntityBoundingBox().grow(6D, 4D, 6D));
             if (this.stealDelay > 0) {
                 --this.stealDelay;
                 if (stealDelay == 0) {
