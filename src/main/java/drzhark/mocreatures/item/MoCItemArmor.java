@@ -4,7 +4,6 @@
 package drzhark.mocreatures.item;
 
 import drzhark.mocreatures.MoCConstants;
-import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.client.util.ITooltipFlag;

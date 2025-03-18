@@ -9,6 +9,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -69,7 +71,8 @@ public class MoCItemMattock extends ItemPickaxe {
             }
         }
 
-        if (!player.isSneaking()) return Items.IRON_SHOVEL.onItemUse(player, worldIn, pos, hand, facing, hitX, hitY, hitZ);
+        if (!player.isSneaking())
+            return Items.IRON_SHOVEL.onItemUse(player, worldIn, pos, hand, facing, hitX, hitY, hitZ);
         return Items.IRON_HOE.onItemUse(player, worldIn, pos, hand, facing, hitX, hitY, hitZ);
     }
 
@@ -91,15 +94,18 @@ public class MoCItemMattock extends ItemPickaxe {
     public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
         if (MoCreatures.proxy.weaponEffects) {
             int timer = 10; // In seconds
+            int fire_aspect = 5 * EnchantmentHelper.getFireAspectModifier(attacker); // Fire Aspect
+            int poisonous = 5 * EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByLocation("mod_lavacow:poisonous"), attacker.getHeldItem(attacker.getActiveHand())); // Poisonous (Fish's Undead Rising)
+
             switch (this.specialWeaponType) {
                 case 1: // Poison 2
-                    target.addPotionEffect(new PotionEffect(MobEffects.POISON, timer * 20, 1));
+                    target.addPotionEffect(new PotionEffect(MobEffects.POISON, (timer * 20) + poisonous, 1));
                     break;
                 case 2: // Slowness
                     target.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, timer * 20, 0));
                     break;
                 case 3: // Fire
-                    target.setFire(timer);
+                    target.setFire(timer + fire_aspect);
                     break;
                 case 4: // Weakness (Nausea for players)
                     target.addPotionEffect(new PotionEffect(target instanceof EntityPlayer ? MobEffects.NAUSEA : MobEffects.WEAKNESS, timer * 20, 0));

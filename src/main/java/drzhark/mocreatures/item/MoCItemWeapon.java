@@ -12,6 +12,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -41,12 +43,12 @@ public class MoCItemWeapon extends MoCItem {
     private final float attackDamage;
     private int specialWeaponType = 0;
 
-    public MoCItemWeapon(String name, Item.ToolMaterial par2ToolMaterial) {
+    public MoCItemWeapon(String name, Item.ToolMaterial material) {
         super(name);
-        this.material = par2ToolMaterial;
+        this.material = material;
         this.maxStackSize = 1;
-        this.setMaxDamage(par2ToolMaterial.getMaxUses());
-        this.attackDamage = 3F + par2ToolMaterial.getAttackDamage();
+        this.setMaxDamage(material.getMaxUses());
+        this.attackDamage = 3F + material.getAttackDamage();
     }
 
     public MoCItemWeapon(String name, ToolMaterial par2ToolMaterial, int damageType) {
@@ -71,15 +73,18 @@ public class MoCItemWeapon extends MoCItem {
     public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
         if (MoCreatures.proxy.weaponEffects) {
             int timer = 15; // In seconds
+            int fire_aspect = 5 * EnchantmentHelper.getFireAspectModifier(attacker); // Fire Aspect
+            int poisonous = 5 * EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByLocation("mod_lavacow:poisonous"), attacker.getHeldItem(attacker.getActiveHand())); // Poisonous (Fish's Undead Rising)
+
             switch (this.specialWeaponType) {
                 case 1: // Poison 2
-                    target.addPotionEffect(new PotionEffect(MobEffects.POISON, timer * 20, 1));
+                    target.addPotionEffect(new PotionEffect(MobEffects.POISON, (timer * 20) + poisonous, 1));
                     break;
                 case 2: // Slowness
                     target.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, timer * 20, 0));
                     break;
                 case 3: // Fire
-                    target.setFire(timer);
+                    target.setFire(timer + fire_aspect);
                     break;
                 case 4: // Weakness (Nausea for players)
                     target.addPotionEffect(new PotionEffect(target instanceof EntityPlayer ? MobEffects.NAUSEA : MobEffects.WEAKNESS, timer * 20, 0));
@@ -164,6 +169,7 @@ public class MoCItemWeapon extends MoCItem {
      */
     public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot equipmentSlot) {
         Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers(equipmentSlot);
+
         if (equipmentSlot == EntityEquipmentSlot.MAINHAND) {
             multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", this.attackDamage, 0));
         }
@@ -172,7 +178,7 @@ public class MoCItemWeapon extends MoCItem {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flagIn) {
         if (MoCreatures.proxy.weaponEffects) {
             switch (this.specialWeaponType) {
                 case 1: // Poison 2
