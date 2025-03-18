@@ -127,7 +127,7 @@ public class MoCEntityEgg extends EntityLiving {
                     this.motionY += 0.2D;
                 }
 
-                if (this.tCounter == 5) {
+                if (this.tCounter == 5 && MoCreatures.proxy.eggWarningMessages) {
                     notifyEggHatching();
                 }
 
@@ -198,7 +198,7 @@ public class MoCEntityEgg extends EntityLiving {
                     this.motionY += 0.2D;
                 }
 
-                if (this.tCounter == 5) {
+                if (this.tCounter == 5 && MoCreatures.proxy.eggWarningMessages) {
                     notifyEggHatching();
                 }
 

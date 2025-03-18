@@ -57,6 +57,7 @@ public class MoCProxy implements IGuiHandler {
     public boolean displayPetName;
     public boolean easterEggs;
     public boolean easyHorseBreeding;
+    public boolean eggWarningMessages;
     public boolean elephantBulldozer;
     public boolean enableHunters;
     public boolean enableOwnership;
@@ -278,6 +279,7 @@ public class MoCProxy implements IGuiHandler {
         this.destroyDrops = this.mocSettingsConfig.get(CATEGORY_MOC_CREATURE_GENERAL_SETTINGS, "DestroyDrops", false, "Destroys animal drops when not killed by a player.").getBoolean(false);
         this.easterEggs = this.mocSettingsConfig.get(CATEGORY_MOC_CREATURE_GENERAL_SETTINGS, "EasterEggs", true, "Not for the more serious lore friendly players.").getBoolean(true);
         this.easyHorseBreeding = this.mocSettingsConfig.get(CATEGORY_MOC_CREATURE_GENERAL_SETTINGS, "EasyHorseBreeding", false, "Guarantees a new horse mix on every breed.").getBoolean(false);
+        this.eggWarningMessages = this.mocSettingsConfig.get(CATEGORY_MOC_CREATURE_GENERAL_SETTINGS, "EggWarningMessages", true, "Displays a chat message that warns about an egg hatching alongside its coordinates.").getBoolean(true);
         this.elephantBulldozer = this.mocSettingsConfig.get(CATEGORY_MOC_CREATURE_GENERAL_SETTINGS, "ElephantBulldozer", true, "Makes elephants destroy blocks in front of them when riding.").getBoolean(true);
         this.enableHunters = this.mocSettingsConfig.get(CATEGORY_MOC_CREATURE_GENERAL_SETTINGS, "EnableHunters", true, "Allows creatures to attack other creatures. Not recommended if despawning is off.").getBoolean(true);
         this.enableOwnership = this.mocSettingsConfig.get(CATEGORY_OWNERSHIP_SETTINGS, "EnableOwnership", false, "Assigns the player as the owner for each creature they tame. Only the owner can interact with the tamed creature.").getBoolean(false);
