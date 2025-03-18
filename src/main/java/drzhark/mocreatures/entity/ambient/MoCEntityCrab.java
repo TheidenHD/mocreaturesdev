@@ -156,7 +156,9 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean isReadyToFollowOwnerPlayer() { return !this.isMovementCeased(); }
+    public boolean isReadyToFollowOwnerPlayer() {
+        return !this.isMovementCeased();
+    }
 
     @Override
     protected SoundEvent getDeathSound() {

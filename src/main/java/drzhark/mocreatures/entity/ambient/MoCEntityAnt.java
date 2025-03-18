@@ -62,6 +62,10 @@ public class MoCEntityAnt extends MoCEntityAmbient {
     public void onLivingUpdate() {
         super.onLivingUpdate();
 
+        if (this.isInWater()) {
+            this.motionY *= 0.6D;
+        }
+
         if (!this.world.isRemote) {
             if (!getHasFood()) {
                 EntityItem entityitem = MoCTools.getClosestFood(this, 8D);

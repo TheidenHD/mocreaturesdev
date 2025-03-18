@@ -27,6 +27,11 @@ public class MoCEntityFly extends MoCEntityInsect {
     }
 
     @Override
+    public boolean isAttractedToLight() {
+        return true;
+    }
+
+    @Override
     public void onLivingUpdate() {
         super.onLivingUpdate();
 
