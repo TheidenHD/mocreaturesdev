@@ -37,7 +37,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemSeeds;
@@ -697,43 +696,6 @@ public class MoCTools {
                     }
                 }
             }
-        }
-    }
-
-    public static void updatePlayerArmorEffects(EntityPlayer player) {
-        if (!MoCreatures.proxy.armorSetEffects) return;
-
-        Item boots = player.getItemStackFromSlot(EntityEquipmentSlot.FEET).getItem(); // Boots
-        Item legs = player.getItemStackFromSlot(EntityEquipmentSlot.LEGS).getItem(); // Leggings
-        Item plate = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem(); // Chestplate
-        Item helmet = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem(); // Helmet
-
-        // Dark Scorpion Armor Set Effect - Night Vision
-        if (boots == MoCItems.scorpBootsCave && legs == MoCItems.scorpLegsCave && plate == MoCItems.scorpPlateCave && helmet == MoCItems.scorpHelmetCave) {
-            player.addPotionEffect(new PotionEffect(MobEffects.NIGHT_VISION, 300, 0, true, false));
-            return;
-        }
-
-        // Fire Scorpion Armor Set Effect - Fire Resistance
-        if (boots == MoCItems.scorpBootsNether && legs == MoCItems.scorpLegsNether && plate == MoCItems.scorpPlateNether && helmet == MoCItems.scorpHelmetNether) {
-            player.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE, 300, 0, true, false));
-            return;
-        }
-
-        // Frost Scorpion Armor Set Effect - Resistance
-        if (boots == MoCItems.scorpBootsFrost && legs == MoCItems.scorpLegsFrost && plate == MoCItems.scorpPlateFrost && helmet == MoCItems.scorpHelmetFrost) {
-            player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 300, 0, true, false));
-            return;
-        }
-
-        // Earth Scorpion Armor Set Effect - Speed II
-        if (boots == MoCItems.scorpBootsDirt && legs == MoCItems.scorpLegsDirt && plate == MoCItems.scorpPlateDirt && helmet == MoCItems.scorpHelmetDirt) {
-            player.addPotionEffect(new PotionEffect(MobEffects.SPEED, 300, 1, true, false));
-        }
-
-        // Undead Scorpion Armor Set Effect - Strength
-        if (boots == MoCItems.scorpBootsUndead && legs == MoCItems.scorpLegsUndead && plate == MoCItems.scorpPlateUndead && helmet == MoCItems.scorpHelmetUndead) {
-            player.addPotionEffect(new PotionEffect(MobEffects.STRENGTH, 300, 0, true, false));
         }
     }
 
