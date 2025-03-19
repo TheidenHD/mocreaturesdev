@@ -11,11 +11,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import slimeknights.tconstruct.library.Util;
 import slimeknights.tconstruct.library.traits.AbstractTrait;
 
-public class TraitSpeedDemon extends AbstractTrait {
+public class TraitSilverHoplite extends AbstractTrait {
     protected final float bonus;
 
-    public TraitSpeedDemon(float bonus) {
-        super(MoCConstants.MOD_ID + "." + "speed_demon", 0x8E8F93);
+    public TraitSilverHoplite(float bonus) {
+        super(MoCConstants.MOD_ID + "." + "silver_hoplite", 0x8E8F93);
 
         this.bonus = bonus;
     }

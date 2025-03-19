@@ -7,6 +7,7 @@ import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.compat.tinkers.traits.armor.TraitShellEffectArmor;
 import drzhark.mocreatures.compat.tinkers.traits.armor.TraitShellEffectPlayerArmor;
 import drzhark.mocreatures.compat.tinkers.traits.armor.TraitShellFireArmor;
+import drzhark.mocreatures.compat.tinkers.traits.armor.TraitSpeedDemonArmor;
 import drzhark.mocreatures.compat.tinkers.traits.armor.TraitThresherArmor;
 import net.minecraft.init.MobEffects;
 import slimeknights.tconstruct.library.TinkerRegistry;
@@ -20,6 +21,7 @@ public class ConstructsArmoryIntegration {
     public static final AbstractArmorTrait FROST_SHELL_ARMOR = new TraitShellEffectArmor(MoCConstants.MOD_ID + "." + "frost_shell", 0x1B7A87, 0.0625F, MobEffects.RESISTANCE, MobEffects.SLOWNESS, 0);
     public static final AbstractArmorTrait UNDEAD_SHELL_ARMOR = new TraitShellEffectPlayerArmor(MoCConstants.MOD_ID + "." + "undead_shell", 0x92B859, 0.0625F, MobEffects.STRENGTH,
             MobEffects.WITHER, MobEffects.BLINDNESS);
+    public static final AbstractArmorTrait SPEED_DEMON_ARMOR = new TraitSpeedDemonArmor();
     public static final AbstractArmorTrait THRESHER_ARMOR = new TraitThresherArmor();
 
     // Materials are already registered in the tools class, we are just registering support for armor sets here
@@ -68,7 +70,7 @@ public class ConstructsArmoryIntegration {
         ArmorMaterials.addArmorTrait(TinkersConstructIntegration.UNDEAD_CHITIN, ArmorTraits.spiny, ArmorMaterialType.CORE);
         ArmorMaterials.addArmorTrait(TinkersConstructIntegration.UNDEAD_CHITIN, ArmorTraits.spiny, ArmorMaterialType.PLATES);
         ArmorMaterials.addArmorTrait(TinkersConstructIntegration.UNDEAD_CHITIN, ArmorTraits.spiny, ArmorMaterialType.TRIM);
-        
+
         TinkerRegistry.addMaterialStats(TinkersConstructIntegration.BIG_CAT_CLAW,
                 new CoreMaterialStats(10.0F, 4.0F),
                 new PlatesMaterialStats(0.9F, 2.0F, 1.0F),
@@ -91,7 +93,7 @@ public class ConstructsArmoryIntegration {
                 new CoreMaterialStats(15.0F, 17.0F),
                 new PlatesMaterialStats(0.95F, 8.5F, 3.0F),
                 new TrimMaterialStats(4.0F));
-        ArmorMaterials.addArmorTrait(TinkersConstructIntegration.ANCIENT_SILVER, ArmorTraits.lightweight, ArmorMaterialType.CORE);
+        ArmorMaterials.addArmorTrait(TinkersConstructIntegration.ANCIENT_SILVER, SPEED_DEMON_ARMOR, ArmorMaterialType.CORE);
         ArmorMaterials.addArmorTrait(TinkersConstructIntegration.ANCIENT_SILVER, ArmorTraits.heavy, ArmorMaterialType.CORE);
         ArmorMaterials.addArmorTrait(TinkersConstructIntegration.ANCIENT_SILVER, ArmorTraits.heavy, ArmorMaterialType.PLATES);
         ArmorMaterials.addArmorTrait(TinkersConstructIntegration.ANCIENT_SILVER, ArmorTraits.heavy, ArmorMaterialType.TRIM);

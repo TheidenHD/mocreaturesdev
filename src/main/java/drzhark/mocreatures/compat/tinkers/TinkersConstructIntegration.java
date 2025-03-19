@@ -46,7 +46,7 @@ public class TinkersConstructIntegration {
     public static final AbstractTrait FIRE_STING = new TraitStingFire(MoCConstants.MOD_ID + "." + "fire_sting", 0xC62B13, 1.5F);
     public static final AbstractTrait FROST_STING = new TraitStingEffect(MoCConstants.MOD_ID + "." + "frost_sting", 0x1B7A87, 1.5F, MobEffects.SLOWNESS, 0);
     public static final AbstractTrait SEA_PREDATOR = new TraitSeaPredator(0.4F);
-    public static final AbstractTrait SPEED_DEMON = new TraitSpeedDemon(5.0F);
+    public static final AbstractTrait SILVER_HOPLITE = new TraitSilverHoplite(5.0F);
     public static final AbstractTrait UNDEAD_STING = new TraitStingEffectPlayer(MoCConstants.MOD_ID + "." + "undead_sting", 0x92B859, 1.5F, MobEffects.WITHER, MobEffects.BLINDNESS);
 
     public static final FluidMolten ANCIENT_SILVER_FLUID = new FluidMolten("ancient_silver", 0x9D9FA3, FluidMolten.ICON_MetalStill, FluidMolten.ICON_MetalFlowing);
@@ -136,7 +136,7 @@ public class TinkersConstructIntegration {
                 new HandleMaterialStats(1.1F, 120),
                 new ExtraMaterialStats(110),
                 new BowMaterialStats(0.4F, 2.0F, 9.0F));
-        ANCIENT_SILVER.addTrait(SPEED_DEMON, MaterialTypes.HEAD);
+        ANCIENT_SILVER.addTrait(SILVER_HOPLITE, MaterialTypes.HEAD);
         ANCIENT_SILVER.addTrait(TinkerTraits.heavy, MaterialTypes.HEAD);
         ANCIENT_SILVER.addTrait(TinkerTraits.heavy);
         TinkerRegistry.integrate(new MaterialIntegration(ANCIENT_SILVER, ANCIENT_SILVER_FLUID, "AncientSilver")).toolforge().preInit();
