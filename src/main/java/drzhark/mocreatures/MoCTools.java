@@ -1174,6 +1174,9 @@ public class MoCTools {
     }
 
     public static Entity getEntityRidingPlayer(EntityPlayer player) {
+        if (player.getPassengers().isEmpty()) {
+            return null;
+        }
         // Get ID for entity that is currently riding player.
         NBTTagCompound tag = player.getEntityData();
         UUID animalID = tag.getUniqueId("MOCEntity_Riding_Player");
@@ -1191,7 +1194,7 @@ public class MoCTools {
             if (force) MoCreatures.LOGGER.info("Forcing dismount from " + entity + " for passenger " + passenger);
             passenger.setPositionAndUpdate(entity.posX, entity.posY + 1D, entity.posZ);
             passenger.dismountRidingEntity();
-            MoCTools.playCustomSound(passenger, SoundEvents.ENTITY_CHICKEN_EGG);
+            MoCTools.playCustomSound(entity, SoundEvents.ENTITY_CHICKEN_EGG);
             if (entity instanceof EntityPlayer) {
                 NBTTagCompound tag = entity.getEntityData();
                 tag.removeTag("MOCEntity_Riding_Player"); // remove the tag
