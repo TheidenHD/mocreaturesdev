@@ -135,7 +135,7 @@ public class MoCItems {
     public static final MoCItemSword silversword = new MoCItemSword("silversword", SILVER);
     public static final MoCItemMattock silverMattock = new MoCItemMattock("ancient_silver_mattock", SILVER, 6.0F, 1.3F);
     public static final MoCItemAxe silveraxe = new MoCItemAxe("silveraxe", SILVER, 10.0F, 1.1F);
-    public static final MoCItemBow silverBow = new MoCItemBow("ancient_silver_bow", 720, 1.3F, 1.2F, 0.8F, 0.8F, Ingredient.fromStacks(new ItemStack(ancientSilverIngot)));
+    public static final MoCItemBow silverBow = new MoCItemBow("ancient_silver_bow", 720, 1.2F, 1.2F, 0.8F, 0.8F, Ingredient.fromStacks(new ItemStack(ancientSilverIngot)));
     static ToolMaterial SCORPC = EnumHelper.addToolMaterial("SCORPC", 3, 371, 7.5F, 2.5F, 16).setRepairItem(new ItemStack(chitinCave));
     public static final MoCItemSword scorpSwordCave = new MoCItemSword("scorpswordcave", SCORPC, 4);
     public static final MoCItemMattock scorpMattockCave = new MoCItemMattock("dark_scorpion_mattock", SCORPC, 4.5F, 1.2F, 4);
