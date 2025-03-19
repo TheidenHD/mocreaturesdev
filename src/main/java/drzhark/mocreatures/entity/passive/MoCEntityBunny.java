@@ -9,7 +9,6 @@ import drzhark.mocreatures.entity.ai.*;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -34,25 +33,24 @@ import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class MoCEntityBunny extends MoCEntityTameableAnimal {
 
     private static final DataParameter<Boolean> HAS_EATEN = EntityDataManager.createKey(MoCEntityBunny.class, DataSerializers.BOOLEAN);
-    private int bunnyReproduceTickerA;
-    private int bunnyReproduceTickerB;
+    public int bunnyReproduceTickerA;
+    public int bunnyReproduceTickerB;
     private int jumpTimer;
 
     public MoCEntityBunny(World world) {
         super(world);
         setAdult(true);
         setTamed(false);
-        setAge(50 + this.rand.nextInt(15));
-        if (this.rand.nextInt(4) == 0) {
+        setAge(50 + getRNG().nextInt(15));
+        if (getRNG().nextInt(4) == 0) {
             setAdult(false);
         }
         setSize(0.5F, 0.5F);
-        this.bunnyReproduceTickerA = this.rand.nextInt(64);
+        this.bunnyReproduceTickerA = getRNG().nextInt(64);
         this.bunnyReproduceTickerB = 0;
     }
 
@@ -63,8 +61,9 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
         this.tasks.addTask(2, new EntityAIPanicMoC(this, 1.0D));
         this.tasks.addTask(3, new EntityAIFleeFromPlayer(this, 1.0D, 4D));
         this.tasks.addTask(4, new EntityAIFollowAdult(this, 1.0D));
-        this.tasks.addTask(5, new EntityAIWanderMoC2(this, 0.8D));
-        this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
+        this.tasks.addTask(5, new EntityAIBunnyReproduce(this));
+        this.tasks.addTask(6, new EntityAIWanderMoC2(this, 0.8D));
+        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
     }
 
     @Override
@@ -78,13 +77,13 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     @Override
     protected void entityInit() {
         super.entityInit();
-        this.dataManager.register(HAS_EATEN, Boolean.FALSE);
+        this.dataManager.register(HAS_EATEN, false);
     }
 
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData par1EntityLivingData) {
+    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData entityLivingData) {
         if (this.world.provider.getDimension() == MoCreatures.proxy.wyvernDimension) this.enablePersistence();
-        return super.onInitialSpawn(difficulty, par1EntityLivingData);
+        return super.onInitialSpawn(difficulty, entityLivingData);
     }
 
     public boolean getHasEaten() {
@@ -100,7 +99,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
         checkSpawningBiome();
 
         if (getType() == 0) {
-            setType(this.rand.nextInt(5) + 1);
+            setType(getRNG().nextInt(5) + 1);
         }
 
     }
@@ -174,21 +173,21 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
             return tameResult;
         }
 
-        final ItemStack stack = player.getHeldItem(hand);
-        if (!stack.isEmpty() && (stack.getItem() == Items.GOLDEN_CARROT) && !getHasEaten()) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
-            setHasEaten(true);
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
-            return true;
-        }
-        if (this.getRidingEntity() == null) {
-            if (this.startRidingPlayer(player)) {
-                this.rotationYaw = player.rotationYaw;
+        final ItemStack stack = player.getHeldItemMainhand();
+        if (!stack.isEmpty()) {
+            if (stack.getItem() == Items.CARROT && !getHasEaten()) {
+                if (!player.capabilities.isCreativeMode) stack.shrink(1);
+                setHasEaten(true);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
                 if (!getIsTamed() && !this.world.isRemote) {
                     MoCTools.tameWithName(player, this);
                 }
+                return true;
             }
-
+        } else if (getRidingEntity() == null) {
+            if (startRidingPlayer(player)) {
+                this.rotationYaw = player.rotationYaw;
+            }
             return true;
         }
 
@@ -202,52 +201,13 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
         if (this.getRidingEntity() != null) {
             this.rotationYaw = this.getRidingEntity().rotationYaw;
         }
-        if (!this.world.isRemote) {
 
+        if (!this.world.isRemote) {
             if (--this.jumpTimer <= 0 && this.onGround && ((this.motionX > 0.05D) || (this.motionZ > 0.05D) || (this.motionX < -0.05D) || (this.motionZ < -0.05D))) {
                 this.motionY = 0.3D;
                 this.jumpTimer = 15;
             }
-
-            if (!getIsTamed() || !getIsAdult() || !getHasEaten() || (this.getRidingEntity() != null)) {
-                return;
-            }
-            if (this.bunnyReproduceTickerA < 1023) {
-                this.bunnyReproduceTickerA++;
-            } else if (this.bunnyReproduceTickerB < 127) {
-                this.bunnyReproduceTickerB++;
-            } else {
-                List<Entity> list1 = this.world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(4.0D));
-                for (Entity entity1 : list1) {
-                    if (!(entity1 instanceof MoCEntityBunny) || (entity1 == this)) {
-                        continue;
-                    }
-                    MoCEntityBunny entitybunny = (MoCEntityBunny) entity1;
-                    if ((entitybunny.getRidingEntity() != null) || (entitybunny.bunnyReproduceTickerA < 1023) || !entitybunny.getIsAdult() || !entitybunny.getHasEaten()) {
-                        continue;
-                    }
-                    MoCEntityBunny entitybunny1 = new MoCEntityBunny(this.world);
-                    entitybunny1.setPosition(this.posX, this.posY, this.posZ);
-                    entitybunny1.setAdult(false);
-                    int babytype = this.getType();
-                    if (this.rand.nextInt(2) == 0) {
-                        babytype = entitybunny.getType();
-                    }
-                    entitybunny1.setType(babytype);
-                    this.world.spawnEntity(entitybunny1);
-                    MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
-                    proceed();
-                    entitybunny.proceed();
-                    break;
-                }
-            }
         }
-    }
-
-    public void proceed() {
-        setHasEaten(false);
-        this.bunnyReproduceTickerB = 0;
-        this.bunnyReproduceTickerA = this.rand.nextInt(64);
     }
 
     @Override
@@ -300,5 +260,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean isReadyToFollowOwnerPlayer() { return !this.isMovementCeased(); }
+    public boolean isReadyToFollowOwnerPlayer() {
+        return !this.isMovementCeased();
+    }
 }
