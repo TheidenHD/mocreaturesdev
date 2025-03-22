@@ -25,7 +25,6 @@ public class MoCEntityDragonfly extends MoCEntityInsect {
 
     public MoCEntityDragonfly(World world) {
         super(world);
-        this.texture = "dragonflya.png";
     }
 
     @Override

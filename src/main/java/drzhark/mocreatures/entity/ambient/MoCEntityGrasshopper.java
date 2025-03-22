@@ -3,13 +3,13 @@
  */
 package drzhark.mocreatures.entity.ambient;
 
-import drzhark.mocreatures.MoCTools;
+//import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.player.EntityPlayer;
+//import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 public class MoCEntityGrasshopper extends MoCEntityInsect {
 
     private int jumpCounter;
-    private int soundCounter;
+    //private int soundCounter;
 
     public MoCEntityGrasshopper(World world) {
         super(world);
@@ -57,13 +57,13 @@ public class MoCEntityGrasshopper extends MoCEntityInsect {
     public void onLivingUpdate() {
         super.onLivingUpdate();
         if (!this.world.isRemote) {
-            if (getIsFlying() || !this.onGround) {
+            /*if (getIsFlying() || !this.onGround) {
                 EntityPlayer ep = this.world.getClosestPlayerToEntity(this, 5D);
                 if (ep != null && --this.soundCounter == -1) {
                     MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GRASSHOPPER_FLY);
                     this.soundCounter = 10;
                 }
-            }
+            }*/
 
             if (this.jumpCounter > 0 && ++this.jumpCounter > 30) {
                 this.jumpCounter = 0;
