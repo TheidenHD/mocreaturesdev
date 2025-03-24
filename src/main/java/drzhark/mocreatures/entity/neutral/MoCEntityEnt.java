@@ -24,7 +24,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.DamageSource;
@@ -89,15 +88,14 @@ public class MoCEntityEnt extends MoCEntityAnimal {
 
     @Override
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
-        if (damagesource.getTrueSource() != null && damagesource.getTrueSource() instanceof EntityPlayer) {
-            EntityPlayer ep = (EntityPlayer) damagesource.getTrueSource();
-            ItemStack currentItem = ep.inventory.getCurrentItem();
-            Item itemheld = currentItem.getItem();
-            if (itemheld instanceof ItemAxe) {
+        if (damagesource.getTrueSource() instanceof EntityPlayer) {
+            EntityPlayer player = (EntityPlayer) damagesource.getTrueSource();
+            ItemStack heldStack = player.inventory.getCurrentItem();
+            Item heldItem = heldStack.getItem();
+            if (heldItem.getHarvestLevel(heldStack, "axe", player, null) >= 0) {
                 this.world.getDifficulty();
                 if (super.shouldAttackPlayers()) {
-                    setAttackTarget(ep);
-
+                    setAttackTarget(player);
                 }
                 return super.attackEntityFrom(damagesource, i);
             }
@@ -191,9 +189,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
             Block block = Blocks.GRASS;
             BlockEvent.BreakEvent event = null;
             if (!this.world.isRemote) {
-                event =
-                        new BlockEvent.BreakEvent(this.world, pos, block.getDefaultState(), FakePlayerFactory.get((WorldServer) this.world,
-                                MoCreatures.MOCFAKEPLAYER));
+                event = new BlockEvent.BreakEvent(this.world, pos, block.getDefaultState(), FakePlayerFactory.get((WorldServer) this.world, MoCreatures.MOCFAKEPLAYER));
             }
             if (event != null && !event.isCanceled()) {
                 this.world.setBlockState(pos.down(), block.getDefaultState(), 3);
