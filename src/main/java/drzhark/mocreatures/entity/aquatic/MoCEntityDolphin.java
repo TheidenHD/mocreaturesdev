@@ -43,7 +43,6 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     public MoCEntityDolphin(World world) {
         super(world);
         setSize(1.3F, 0.605F);
-        setAdult(true);
         // TODO: Make hitboxes adjust depending on size
         //setAge(60 + this.rand.nextInt(100));
         setAge(120);
@@ -322,11 +321,11 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
                 setIsHungry(true);
             }*/
             // fixes growth
+            if (getAge() >= 120) {
+                setAdult(true);
+            }
             if (!getIsAdult() && (rand.nextInt(50) == 0)) {
                 setAge(getAge() + 1);
-                if (getAge() >= 150) {
-                    setAdult(true);
-                }
             }
             //TODO
             if ((!this.isBeingRidden()) && (this.deathTime == 0) && (!getIsTamed() || getIsHungry())) {

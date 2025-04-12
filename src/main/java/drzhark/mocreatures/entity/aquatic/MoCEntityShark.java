@@ -5,7 +5,6 @@ package drzhark.mocreatures.entity.aquatic;
 
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityAquatic;
-import drzhark.mocreatures.entity.ai.EntityAIHuntAquatic;
 import drzhark.mocreatures.entity.ai.EntityAITargetNonTamedMoC;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.item.MoCEntityEgg;
@@ -18,7 +17,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -37,7 +35,6 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
         super(world);
         this.texture = "shark.png";
         setSize(1.65F, 0.9F);
-        setAdult(true);
         // TODO: Make hitboxes adjust depending on size
         //setAge(60 + this.rand.nextInt(100));
         setAge(160);
@@ -143,11 +140,11 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     public void onLivingUpdate() {
         super.onLivingUpdate();
         if (!this.world.isRemote) {
+            if (getAge() >= 160) {
+                setAdult(true);
+            }
             if (!getIsAdult() && (this.rand.nextInt(50) == 0)) {
                 setAge(getAge() + 1);
-                if (getAge() >= 200) {
-                    setAdult(true);
-                }
             }
         }
     }
