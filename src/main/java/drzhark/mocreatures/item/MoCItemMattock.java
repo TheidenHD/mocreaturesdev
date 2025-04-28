@@ -93,9 +93,10 @@ public class MoCItemMattock extends ItemPickaxe {
     @Override
     public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
         if (MoCreatures.proxy.weaponEffects) {
+            EnumHand hand = attacker.getActiveHand() == null ? EnumHand.MAIN_HAND : attacker.getActiveHand();
             int timer = 10; // In seconds
             int fire_aspect = 5 * EnchantmentHelper.getFireAspectModifier(attacker); // Fire Aspect
-            int poisonous = 5 * EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByLocation("mod_lavacow:poisonous"), attacker.getHeldItem(attacker.getActiveHand())); // Poisonous (Fish's Undead Rising)
+            int poisonous = 5 * EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByLocation("mod_lavacow:poisonous"), attacker.getHeldItem(hand)); // Poisonous (Fish's Undead Rising)
 
             switch (this.specialWeaponType) {
                 case 1: // Poison 2
