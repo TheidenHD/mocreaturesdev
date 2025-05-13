@@ -41,6 +41,8 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.IWorld;
@@ -99,7 +101,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 80.0D).createMutableAttribute(Attributes.ARMOR, 14.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 9.0D);
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.FOLLOW_RANGE, 24.0D).createMutableAttribute(Attributes.MAX_HEALTH, 80.0D).createMutableAttribute(Attributes.ARMOR, 14.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 9.0D);
     }
 
     @Override
@@ -125,8 +127,10 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     public static boolean getCanSpawnHere(EntityType<MoCEntityAnimal> type, IWorld world, SpawnReason reason, BlockPos pos, Random randomIn) {
-        BlockState iblockstate = world.getBlockState(pos.down());
-        return iblockstate.canEntitySpawn(world, pos, type);
+        //BlockState iblockstate = world.getBlockState(pos.down());
+        //return iblockstate.canEntitySpawn(world, pos, type);
+        return world.getBlockState(pos.down()).isSolid();
+
     }
 
     @Override
@@ -374,6 +378,42 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
                 }
             }
 
+            // Prevent void
+            if (getIsFlying() && !this.isBeingRidden()) {
+                boolean isVoidBelow = true;
+
+                for (int i = 1; i <= 10; i++) {
+                    BlockPos checkPos = this.getPosition().down(i);
+                    if (this.world.getBlockState(checkPos).isSolid()) {
+                        isVoidBelow = false;
+                        break;
+                    }
+                }
+
+                if (isVoidBelow && this.getPosY() < 20) {
+                    BlockPos landingSpot = findNearbyLandingSpot();
+
+                    if (landingSpot != null) {
+                        Vector3d direction = new Vector3d(
+                                landingSpot.getX() + 0.5 - this.getPosX(),
+                                landingSpot.getY() + 1.0 - this.getPosY(),
+                                landingSpot.getZ() + 0.5 - this.getPosZ()
+                        ).normalize();
+
+                        this.setMotion(direction.scale(0.6D));
+                        this.rotationYaw = -((float) MathHelper.atan2(direction.x, direction.z)) * (180F / (float)Math.PI);
+                    } else {
+                        // No spot? Just fly upward
+                        this.setMotion(this.getMotion().x, 0.3D, this.getMotion().z);
+                    }
+
+                    this.navigator.clearPath();
+                    if (this.rand.nextInt(5) == 0) {
+                        wingFlap();
+                    }
+                }
+            }
+
         } else {
 
             if (this.mouthCounter > 0 && ++this.mouthCounter > 30) {
@@ -384,8 +424,41 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
                 this.diveCounter = 0;
             }
         }
+
+        boolean shouldFly = !this.onGround && !isInWater() && !this.isBeingRidden();
+        if (getIsFlying() != shouldFly) {
+            setIsFlying(shouldFly);
+        }
+
         super.livingTick();
     }
+
+    @Nullable
+    public BlockPos findNearbyLandingSpot() {
+        BlockPos currentPos = this.getPosition();
+        int searchRadius = 16;
+
+        for (int dx = -searchRadius; dx <= searchRadius; dx++) {
+            for (int dz = -searchRadius; dz <= searchRadius; dz++) {
+                BlockPos checkPos = currentPos.add(dx, 0, dz);
+
+                // Search from Y=30 up to Y=100 (or tweak as needed)
+                for (int dy = 30; dy <= 100; dy++) {
+                    BlockPos groundPos = new BlockPos(checkPos.getX(), dy, checkPos.getZ());
+                    BlockPos above = groundPos.up();
+
+                    if (this.world.getBlockState(groundPos).isSolid() &&
+                            this.world.isAirBlock(above) &&
+                            this.world.isAirBlock(above.up())) {
+                        return above; // a valid landing spot
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
 
     public void wingFlap() {
         if (this.wingFlapCounter == 0) {

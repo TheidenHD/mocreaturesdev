@@ -287,7 +287,48 @@ public class MoCEntityWerewolf extends MoCEntityMob {
         return MoCEntityMob.getCanSpawnHere(type, world, reason, pos, randomIn) && world.canSeeSky(new BlockPos(pos));
     }
 
+    // PATCHED Transform method:
     private void Transform() {
+        if (this.deathTime > 0) return;
+
+        int i = MathHelper.floor(this.getPosX());
+        int j = MathHelper.floor(getBoundingBox().minY) + 1;
+        int k = MathHelper.floor(this.getPosZ());
+        float f = 0.1F;
+        for (int l = 0; l < 30; l++) {
+            double d = i + this.world.rand.nextFloat();
+            double d1 = j + this.world.rand.nextFloat();
+            double d2 = k + this.world.rand.nextFloat();
+            double d3 = d - i;
+            double d4 = d1 - j;
+            double d5 = d2 - k;
+            double d6 = MathHelper.sqrt((d3 * d3) + (d4 * d4) + (d5 * d5));
+            d3 /= d6;
+            d4 /= d6;
+            d5 /= d6;
+            double d7 = 0.5D / ((d6 / f) + 0.1D);
+            d7 *= (this.world.rand.nextFloat() * this.world.rand.nextFloat()) + 0.3F;
+            d3 *= d7;
+            d4 *= d7;
+            d5 *= d7;
+            this.world.addParticle(ParticleTypes.POOF, (d + (i * 1.0D)) / 2D, (d1 + (j * 1.0D)) / 2D, (d2 + (k * 1.0D)) / 2D, d3, d4, d5);
+        }
+
+        if (getIsHumanForm()) {
+            setHumanForm(false);
+            this.setHealth(40);
+            this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.5D);
+        } else {
+            setHumanForm(true);
+            this.setHealth(15);
+            this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+        }
+
+        this.recalculateSize(); // ✅ forces size/hitbox update
+        this.stepHeight = getIsHumanForm() ? 0.6F : 1.0F; // ✅ smooth terrain stepping
+        this.transforming = false;
+    }
+    /*private void Transform() {
         if (this.deathTime > 0) {
             return;
         }
@@ -327,7 +368,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
             this.transforming = false;
             this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
         }
-    }
+    }*/
 
     @Override
     public void readAdditional(CompoundNBT nbttagcompound) {
@@ -353,8 +394,22 @@ public class MoCEntityWerewolf extends MoCEntityMob {
     }
 
 
+    /*
     protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return getIsHumanForm() ? this.getHeight() * 0.885F : this.getHeight();
+    }*/
+    @Override
+    public EntitySize getSize(Pose poseIn) {
+        if (getIsHumanForm()) {
+            return EntitySize.fixed(0.6F, 1.8F); // player size
+        } else {
+            return EntitySize.fixed(1.2F, 2.4F); // beast form
+        }
+    }
+
+    @Override
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return getIsHumanForm() ? 1.62F : 2.0F; // match model scale
     }
 
     @Override

@@ -12,7 +12,8 @@ import net.minecraftforge.common.ToolType;
 
 public class MoCBlockGlass extends AbstractGlassBlock {
 
+    // TODO: PRIVATE ACCESS
     public MoCBlockGlass(AbstractBlock.Properties properties) {
-        super(properties.sound(SoundType.GLASS).notSolid().setAllowsSpawn(Blocks::neverAllowSpawn).setOpaque(Blocks::isntSolid).setSuffocates(Blocks::isntSolid).setBlocksVision(Blocks::isntSolid).harvestLevel(0).harvestTool(ToolType.PICKAXE));
+        super(properties.sound(SoundType.GLASS).notSolid()/*.setAllowsSpawn(Blocks::neverAllowSpawn).setOpaque(Blocks::isntSolid).setSuffocates(Blocks::isntSolid).setBlocksVision(Blocks::isntSolid)*/.harvestLevel(0).harvestTool(ToolType.PICKAXE));
     }
 }

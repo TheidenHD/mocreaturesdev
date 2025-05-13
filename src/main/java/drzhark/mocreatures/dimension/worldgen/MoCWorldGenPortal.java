@@ -1,92 +1,71 @@
-///*
-// * GNU GENERAL PUBLIC LICENSE Version 3
-// */
-//package drzhark.mocreatures.dimension.worldgen;
-//
-//import net.minecraft.block.Block;
-//import net.minecraft.util.math.BlockPos;
-//import net.minecraft.world.World;
-//import net.minecraft.world.gen.feature.WorldGenerator;
-//
-//import java.util.Random;
-//
-//public class MoCWorldGenPortal extends WorldGenerator {
-//
-//    private final Block pillarBlock;
-//    private final Block stairBlock;
-//    private final Block wallBlock;
-//    private final Block centerBlock;
-//    private final int pillarMetadata;
-//    private final int wallMetadata;
-//    private final int centerMetadata;
-//    private int stairMetadata;
-//
-//    public MoCWorldGenPortal(Block pillar, int pillarMeta, Block stair, int stairMeta, Block wall, int wallMeta, Block center, int centerMeta) {
-//        this.pillarBlock = pillar;
-//        this.stairBlock = stair;
-//        this.wallBlock = wall;
-//        this.centerBlock = center;
-//        this.pillarMetadata = pillarMeta;
-//        this.stairMetadata = stairMeta;
-//        this.wallMetadata = wallMeta;
-//        this.centerMetadata = centerMeta;
-//    }
-//
-//    public void generatePillar(World world, BlockPos pos) {
-//        for (int nY = pos.getY(); nY < pos.getY() + 6; nY++) {
-//            world.setBlockState(new BlockPos(pos.getX(), nY, pos.getZ()), this.pillarBlock.getStateFromMeta(this.pillarMetadata), 2);
-//        }
-//    }
-//
-//    @Override
-//    public boolean generate(World world, Random random, BlockPos pos) {
-//        if (world.getBlockState(pos).getBlock() == this.centerBlock || world.getBlockState(pos.down()).getBlock() == this.centerBlock || world.getBlockState(pos.up()).getBlock() == this.centerBlock) {
-//            return true;
-//        }
-//
-//        if (world.isAirBlock(pos) || !world.isAirBlock(pos.up())) {
-//            return false;
-//        }
-//
-//        int x = pos.getX();
-//        int y = pos.getY();
-//        int z = pos.getZ();
-//        //System.out.println("GENERATING Portal @ " + pos);
-//
-//        this.stairMetadata = 2;
-//        for (int nZ = z - 3; nZ < z + 3; nZ = nZ + 5) {
-//            for (int nX = x - 2; nX < x + 2; nX++) {
-//                if (nZ > z) {
-//                    this.stairMetadata = 3;
-//                }
-//
-//                world.setBlockState(new BlockPos(nX, y + 1, nZ), this.stairBlock.getStateFromMeta(this.stairMetadata), 2);
-//            }
-//        }
-//
-//        for (int nX = x - 2; nX < x + 2; nX++) {
-//            for (int nZ = z - 2; nZ < z + 2; nZ++) {
-//                world.setBlockState(new BlockPos(nX, y + 1, nZ), this.wallBlock.getStateFromMeta(this.wallMetadata), 2);
-//            }
-//        }
-//
-//        for (int nX = x - 1; nX < x + 1; nX++) {
-//            for (int nZ = z - 1; nZ < z + 1; nZ++) {
-//                world.setBlockState(new BlockPos(nX, y + 1, nZ), this.centerBlock.getStateFromMeta(this.centerMetadata), 2);
-//            }
-//        }
-//
-//        for (int j = x - 3; j < x + 3; j = j + 5) {
-//            for (int nZ = z - 3; nZ < z + 3; nZ++) {
-//                world.setBlockState(new BlockPos(j, y + 6, nZ), this.wallBlock.getStateFromMeta(this.wallMetadata), 2);
-//            }
-//        }
-//
-//        generatePillar(world, new BlockPos(x - 3, y, z - 3));
-//        generatePillar(world, new BlockPos(x - 3, y, z + 2));
-//        generatePillar(world, new BlockPos(x + 2, y, z - 3));
-//        generatePillar(world, new BlockPos(x + 2, y, z + 2));
-//
-//        return true;
-//    }
-//}
+package drzhark.mocreatures.dimension.worldgen;
+
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
+
+import java.util.Random;
+
+public class MoCWorldGenPortal {
+
+    private final BlockState pillarBlock;
+    private final BlockState stairBlock;
+    private final BlockState wallBlock;
+    private final BlockState centerBlock;
+
+    public MoCWorldGenPortal(BlockState pillar, BlockState stair, BlockState wall, BlockState center) {
+        this.pillarBlock = pillar;
+        this.stairBlock = stair;
+        this.wallBlock = wall;
+        this.centerBlock = center;
+    }
+
+    public void generatePillar(ServerWorld world, BlockPos pos) {
+        for (int y = 0; y < 6; y++) {
+            BlockPos target = pos.up(y);
+            world.setBlockState(target, pillarBlock, 2);
+        }
+    }
+
+    public void generate(ServerWorld world, Random rand, BlockPos pos) {
+        if (!world.isAirBlock(pos)) return;
+
+        int x = pos.getX();
+        int y = pos.getY() - 1;
+        int z = pos.getZ();
+
+        // Place stairs
+        for (int nZ = z - 3; nZ < z + 3; nZ += 5) {
+            for (int nX = x - 2; nX < x + 2; nX++) {
+                world.setBlockState(new BlockPos(nX, y + 1, nZ), stairBlock, 2);
+            }
+        }
+
+        // Inner wall
+        for (int nX = x - 2; nX < x + 2; nX++) {
+            for (int nZ = z - 2; nZ < z + 2; nZ++) {
+                world.setBlockState(new BlockPos(nX, y + 1, nZ), wallBlock, 2);
+            }
+        }
+
+        // Center platform
+        for (int nX = x - 1; nX < x + 1; nX++) {
+            for (int nZ = z - 1; nZ < z + 1; nZ++) {
+                world.setBlockState(new BlockPos(nX, y + 1, nZ), centerBlock, 2);
+            }
+        }
+
+        // Top blocks
+        for (int j = x - 3; j < x + 3; j += 5) {
+            for (int nZ = z - 3; nZ < z + 3; nZ++) {
+                world.setBlockState(new BlockPos(j, y + 6, nZ), wallBlock, 2);
+            }
+        }
+
+        // Pillars
+        generatePillar(world, new BlockPos(x - 3, y, z - 3));
+        generatePillar(world, new BlockPos(x - 3, y, z + 2));
+        generatePillar(world, new BlockPos(x + 2, y, z - 3));
+        generatePillar(world, new BlockPos(x + 2, y, z + 2));
+    }
+}

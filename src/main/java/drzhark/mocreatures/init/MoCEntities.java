@@ -22,6 +22,7 @@ import drzhark.mocreatures.entity.neutral.*;
 import drzhark.mocreatures.entity.passive.*;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.SpawnEggItem;
@@ -121,23 +122,23 @@ public class MoCEntities {
     /**
      * Aquatic
      */
-    public static EntityType<MoCEntityAnchovy> ANCHOVY = createEntityEntry(EntityType.Builder.create(MoCEntityAnchovy::new, EntityClassification.WATER_CREATURE).size(0.5f, 0.3f), MoCEntityPetScorpion::registerAttributes, "Anchovy", 7039838, 12763545, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
-    public static EntityType<MoCEntityAngelFish> ANGELFISH = createEntityEntry(EntityType.Builder.create(MoCEntityAngelFish::new, EntityClassification.WATER_CREATURE).size(0.5f, 0.3f), MoCEntityPetScorpion::registerAttributes, "AngelFish", 12040119, 15970609, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
-    public static EntityType<MoCEntityAngler> ANGLER = createEntityEntry(EntityType.Builder.create(MoCEntityAngler::new, EntityClassification.WATER_CREATURE).size(0.5f, 0.3f), MoCEntityPetScorpion::registerAttributes, "Angler", 5257257, 6225864, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
-    public static EntityType<MoCEntityBass> BASS = createEntityEntry(EntityType.Builder.create(MoCEntityBass::new, EntityClassification.WATER_CREATURE).size(0.7f, 0.45f), MoCEntityPetScorpion::registerAttributes, "Bass", 4341299, 10051649, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
-    public static EntityType<MoCEntityClownFish> CLOWNFISH = createEntityEntry(EntityType.Builder.create(MoCEntityClownFish::new, EntityClassification.WATER_CREATURE).size(0.5f, 0.3f), MoCEntityPetScorpion::registerAttributes, "ClownFish", 16439491, 15425029, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
-    public static EntityType<MoCEntityCod> COD = createEntityEntry(EntityType.Builder.create(MoCEntityCod::new, EntityClassification.WATER_CREATURE).size(0.7f, 0.45f), MoCEntityPetScorpion::registerAttributes, "Cod", 5459520, 14600592, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
-    public static EntityType<MoCEntityDolphin> DOLPHIN = createEntityEntry(EntityType.Builder.create(MoCEntityDolphin::new, EntityClassification.WATER_CREATURE).size(1.3F, 0.605F), MoCEntityPetScorpion::registerAttributes, "Dolphin", 4086148, 11251396, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
-    public static EntityType<MoCEntityFishy> FISHY = createEntityEntry(EntityType.Builder.create(MoCEntityFishy::new, EntityClassification.WATER_CREATURE).size(0.5f, 0.3f), MoCEntityPetScorpion::registerAttributes, "Fishy", 5665535, 2037680, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
-    public static EntityType<MoCEntityGoldFish> GOLDFISH = createEntityEntry(EntityType.Builder.create(MoCEntityGoldFish::new, EntityClassification.WATER_CREATURE).size(0.5f, 0.3f), MoCEntityPetScorpion::registerAttributes, "GoldFish", 15577089, 16735257, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
-    public static EntityType<MoCEntityHippoTang> HIPPOTANG = createEntityEntry(EntityType.Builder.create(MoCEntityHippoTang::new, EntityClassification.WATER_CREATURE).size(0.5f, 0.3f), MoCEntityPetScorpion::registerAttributes, "HippoTang", 4280267, 12893441, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
-    public static EntityType<MoCEntityJellyFish> JELLYFISH = createEntityEntry(EntityType.Builder.create(MoCEntityJellyFish::new, EntityClassification.WATER_CREATURE).size(0.45F, 0.575F), MoCEntityPetScorpion::registerAttributes, "JellyFish", 12758461, 9465021, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
-    public static EntityType<MoCEntityManderin> MANDERIN = createEntityEntry(EntityType.Builder.create(MoCEntityManderin::new, EntityClassification.WATER_CREATURE).size(0.5f, 0.3f), MoCEntityPetScorpion::registerAttributes, "Manderin", 14764801, 5935359, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
-    public static EntityType<MoCEntityPiranha> PIRANHA = createEntityEntry(EntityType.Builder.create(MoCEntityPiranha::new, EntityClassification.WATER_CREATURE).size(0.5f, 0.3f), MoCEntityPetScorpion::registerAttributes, "Piranha", 10756121, 3160114, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
-    public static EntityType<MoCEntitySalmon> SALMON = createEntityEntry(EntityType.Builder.create(MoCEntitySalmon::new, EntityClassification.WATER_CREATURE).size(0.7f, 0.45f), MoCEntityPetScorpion::registerAttributes, "Salmon", 5262951, 10716540, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
-    public static EntityType<MoCEntityMantaRay> MANTARAY = createEntityEntry(EntityType.Builder.create(MoCEntityMantaRay::new, EntityClassification.WATER_CREATURE).size(1.4F, 0.4F), MoCEntityPetScorpion::registerAttributes, "MantaRay", 5791360, 11580358, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
-    public static EntityType<MoCEntityShark> SHARK = createEntityEntry(EntityType.Builder.create(MoCEntityShark::new, EntityClassification.WATER_CREATURE).size(1.65F, 0.9F), MoCEntityPetScorpion::registerAttributes, "Shark", 3817558, 11580358, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
-    public static EntityType<MoCEntityStingRay> STINGRAY = createEntityEntry(EntityType.Builder.create(MoCEntityStingRay::new, EntityClassification.WATER_CREATURE).size(0.7F, 0.3F), MoCEntityPetScorpion::registerAttributes, "StingRay", 3679519, 8418674, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
+    public static EntityType<MoCEntityAnchovy> ANCHOVY = createEntityEntry(EntityType.Builder.create(MoCEntityAnchovy::new, EntityClassification.WATER_CREATURE).size(0.5f, 0.3f), MoCEntityAquatic::registerAttributes, "Anchovy", 7039838, 12763545, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
+    public static EntityType<MoCEntityAngelFish> ANGELFISH = createEntityEntry(EntityType.Builder.create(MoCEntityAngelFish::new, EntityClassification.WATER_CREATURE).size(0.5f, 0.3f), MoCEntityAquatic::registerAttributes, "AngelFish", 12040119, 15970609, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
+    public static EntityType<MoCEntityAngler> ANGLER = createEntityEntry(EntityType.Builder.create(MoCEntityAngler::new, EntityClassification.WATER_CREATURE).size(0.5f, 0.3f), MoCEntityAquatic::registerAttributes, "Angler", 5257257, 6225864, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
+    public static EntityType<MoCEntityBass> BASS = createEntityEntry(EntityType.Builder.create(MoCEntityBass::new, EntityClassification.WATER_CREATURE).size(0.7f, 0.45f), MoCEntityAquatic::registerAttributes, "Bass", 4341299, 10051649, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
+    public static EntityType<MoCEntityClownFish> CLOWNFISH = createEntityEntry(EntityType.Builder.create(MoCEntityClownFish::new, EntityClassification.WATER_CREATURE).size(0.5f, 0.3f), MoCEntityAquatic::registerAttributes, "ClownFish", 16439491, 15425029, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
+    public static EntityType<MoCEntityCod> COD = createEntityEntry(EntityType.Builder.create(MoCEntityCod::new, EntityClassification.WATER_CREATURE).size(0.7f, 0.45f), MoCEntityAquatic::registerAttributes, "Cod", 5459520, 14600592, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
+    public static EntityType<MoCEntityDolphin> DOLPHIN = createEntityEntry(EntityType.Builder.create(MoCEntityDolphin::new, EntityClassification.WATER_CREATURE).size(1.3F, 0.605F), MoCEntityAquatic::registerAttributes, "Dolphin", 4086148, 11251396, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
+    public static EntityType<MoCEntityFishy> FISHY = createEntityEntry(EntityType.Builder.create(MoCEntityFishy::new, EntityClassification.WATER_CREATURE).size(0.5f, 0.3f), MoCEntityAquatic::registerAttributes, "Fishy", 5665535, 2037680, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
+    public static EntityType<MoCEntityGoldFish> GOLDFISH = createEntityEntry(EntityType.Builder.create(MoCEntityGoldFish::new, EntityClassification.WATER_CREATURE).size(0.5f, 0.3f), MoCEntityAquatic::registerAttributes, "GoldFish", 15577089, 16735257, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
+    public static EntityType<MoCEntityHippoTang> HIPPOTANG = createEntityEntry(EntityType.Builder.create(MoCEntityHippoTang::new, EntityClassification.WATER_CREATURE).size(0.5f, 0.3f), MoCEntityAquatic::registerAttributes, "HippoTang", 4280267, 12893441, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
+    public static EntityType<MoCEntityJellyFish> JELLYFISH = createEntityEntry(EntityType.Builder.create(MoCEntityJellyFish::new, EntityClassification.WATER_CREATURE).size(0.45F, 0.575F), MoCEntityAquatic::registerAttributes, "JellyFish", 12758461, 9465021, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
+    public static EntityType<MoCEntityManderin> MANDERIN = createEntityEntry(EntityType.Builder.create(MoCEntityManderin::new, EntityClassification.WATER_CREATURE).size(0.5f, 0.3f), MoCEntityAquatic::registerAttributes, "Manderin", 14764801, 5935359, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
+    public static EntityType<MoCEntityPiranha> PIRANHA = createEntityEntry(EntityType.Builder.create(MoCEntityPiranha::new, EntityClassification.WATER_CREATURE).size(0.5f, 0.3f), MoCEntityAquatic::registerAttributes, "Piranha", 10756121, 3160114, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
+    public static EntityType<MoCEntitySalmon> SALMON = createEntityEntry(EntityType.Builder.create(MoCEntitySalmon::new, EntityClassification.WATER_CREATURE).size(0.7f, 0.45f), MoCEntityAquatic::registerAttributes, "Salmon", 5262951, 10716540, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
+    public static EntityType<MoCEntityMantaRay> MANTARAY = createEntityEntry(EntityType.Builder.create(MoCEntityMantaRay::new, EntityClassification.WATER_CREATURE).size(1.4F, 0.4F), MoCEntityAquatic::registerAttributes, "MantaRay", 5791360, 11580358, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
+    public static EntityType<MoCEntityShark> SHARK = createEntityEntry(EntityType.Builder.create(MoCEntityShark::new, EntityClassification.WATER_CREATURE).size(1.65F, 0.9F), MoCEntityAquatic::registerAttributes, "Shark", 3817558, 11580358, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
+    public static EntityType<MoCEntityStingRay> STINGRAY = createEntityEntry(EntityType.Builder.create(MoCEntityStingRay::new, EntityClassification.WATER_CREATURE).size(0.7F, 0.3F), MoCEntityAquatic::registerAttributes, "StingRay", 3679519, 8418674, EntitySpawnPlacementRegistry.PlacementType.IN_WATER, MoCEntityAquatic::getCanSpawnHere);
     /**
      * Ambient
      */
@@ -204,13 +205,13 @@ public class MoCEntities {
         MoCreatures.mocEntityMap.put("PandaBear", new MoCEntityData("PandaBear", 4, overworld, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(PANDA_BEAR, 7, 1, 3), new ArrayList<>(Arrays.asList(Type.JUNGLE))));
         MoCreatures.mocEntityMap.put("Bird", new MoCEntityData("Bird", 4, overworld, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(BIRD, 16, 2, 3), new ArrayList<>(Arrays.asList(Type.FOREST, Type.JUNGLE, Type.PLAINS, Type.MESA, Type.LUSH, STEEP))));
         MoCreatures.mocEntityMap.put("Boar", new MoCEntityData("Boar", 3, overworld, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(BOAR, 12, 2, 2), new ArrayList<>(Arrays.asList(Type.FOREST, Type.PLAINS))));
-        MoCreatures.mocEntityMap.put("Bunny", new MoCEntityData("Bunny", 4, overworldWyvernLair, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(BUNNY, 12, 2, 3), new ArrayList<>(Arrays.asList(Type.FOREST, Type.PLAINS, Type.SNOWY, Type.CONIFEROUS, WYVERN_LAIR, STEEP))));
+        MoCreatures.mocEntityMap.put("Bunny", new MoCEntityData("Bunny", 4, overworldWyvernLair, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(BUNNY, 12, 2, 3), new ArrayList<>(Arrays.asList(Type.FOREST, Type.PLAINS, Type.SNOWY, Type.CONIFEROUS, STEEP))));
         MoCreatures.mocEntityMap.put("Crocodile", new MoCEntityData("Crocodile", 2, overworld, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(CROCODILE, 10, 1, 2), new ArrayList<>(Arrays.asList(Type.SWAMP))));
         MoCreatures.mocEntityMap.put("Deer", new MoCEntityData("Deer", 2, overworld, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(DEER, 10, 1, 2), new ArrayList<>(Arrays.asList(Type.FOREST, Type.PLAINS, Type.CONIFEROUS))));
         MoCreatures.mocEntityMap.put("Duck", new MoCEntityData("Duck", 3, overworld, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(DUCK, 12, 2, 4), new ArrayList<>(Arrays.asList(Type.RIVER, Type.LUSH))));
         MoCreatures.mocEntityMap.put("Elephant", new MoCEntityData("Elephant", 3, overworld, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(ELEPHANT, 6, 1, 2), new ArrayList<>(Arrays.asList(Type.SANDY, Type.JUNGLE, Type.SAVANNA, Type.SNOWY)), new ArrayList<>(Arrays.asList(Type.MESA))));
         MoCreatures.mocEntityMap.put("Ent", new MoCEntityData("Ent", 3, overworld, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(ENT, 5, 1, 2), new ArrayList<>(Arrays.asList(Type.FOREST))));
-        MoCreatures.mocEntityMap.put("FilchLizard", new MoCEntityData("FilchLizard", 2, overworld, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(FILCH_LIZARD, 6, 1, 2), new ArrayList<>(Arrays.asList(Type.SAVANNA, Type.SANDY, Type.MESA, WYVERN_LAIR))));
+        MoCreatures.mocEntityMap.put("FilchLizard", new MoCEntityData("FilchLizard", 2, overworld, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(FILCH_LIZARD, 6, 1, 2), new ArrayList<>(Arrays.asList(Type.SAVANNA, Type.SANDY, Type.MESA))));
         MoCreatures.mocEntityMap.put("Fox", new MoCEntityData("Fox", 2, overworld, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(FOX, 10, 1, 1), new ArrayList<>(Arrays.asList(Type.FOREST, Type.SNOWY, Type.CONIFEROUS))));
         MoCreatures.mocEntityMap.put("Goat", new MoCEntityData("Goat", 2, overworld, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(GOAT, 12, 1, 3), new ArrayList<>(Arrays.asList(Type.PLAINS, STEEP))));
         MoCreatures.mocEntityMap.put("Kitty", new MoCEntityData("Kitty", 3, overworld, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(KITTY, 8, 1, 2), new ArrayList<>(Arrays.asList(Type.PLAINS, Type.FOREST)))); // spawns in villages
@@ -222,7 +223,7 @@ public class MoCEntities {
         MoCreatures.mocEntityMap.put("Ostrich", new MoCEntityData("Ostrich", 3, overworld, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(OSTRICH, 7, 1, 1), new ArrayList<>(Arrays.asList(Type.SAVANNA, Type.SANDY)), new ArrayList<>(Arrays.asList(Type.MESA))));
         MoCreatures.mocEntityMap.put("Panther", new MoCEntityData("Panther", 4, overworld, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(PANTHER, 6, 1, 2), new ArrayList<>(Arrays.asList(Type.JUNGLE))));
         MoCreatures.mocEntityMap.put("Raccoon", new MoCEntityData("Raccoon", 2, overworld, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(RACCOON, 12, 1, 2), new ArrayList<>(Arrays.asList(Type.FOREST))));
-        MoCreatures.mocEntityMap.put("Snake", new MoCEntityData("Snake", 3, overworldWyvernLair, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(SNAKE, 12, 1, 1), new ArrayList<>(Arrays.asList(Type.SANDY, Type.MESA, Type.PLAINS, Type.FOREST, Type.SWAMP, Type.LUSH, Type.JUNGLE, WYVERN_LAIR, STEEP))));
+        MoCreatures.mocEntityMap.put("Snake", new MoCEntityData("Snake", 3, overworldWyvernLair, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(SNAKE, 12, 1, 1), new ArrayList<>(Arrays.asList(Type.SANDY, Type.MESA, Type.PLAINS, Type.FOREST, Type.SWAMP, Type.LUSH, Type.JUNGLE, STEEP))));
         MoCreatures.mocEntityMap.put("Tiger", new MoCEntityData("Tiger", 4, overworld, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(TIGER, 7, 1, 2), new ArrayList<>(Arrays.asList(Type.JUNGLE))));
         MoCreatures.mocEntityMap.put("Turkey", new MoCEntityData("Turkey", 2, overworld, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(TURKEY, 12, 1, 2), new ArrayList<>(Arrays.asList(Type.FOREST, Type.PLAINS))));
         MoCreatures.mocEntityMap.put("Turtle", new MoCEntityData("Turtle", 3, overworld, EntityClassification.CREATURE, new MobSpawnInfo.Spawners(TURTLE, 12, 1, 3), new ArrayList<>(Arrays.asList(Type.SWAMP, Type.RIVER))));
@@ -282,10 +283,10 @@ public class MoCEntities {
         MoCreatures.mocEntityMap.put("ButterFly", new MoCEntityData("ButterFly", 3, overworld, EntityClassification.AMBIENT, new MobSpawnInfo.Spawners(BUTTERFLY, 12, 1, 4), new ArrayList<>(Arrays.asList(Type.FOREST, Type.PLAINS))));
         MoCreatures.mocEntityMap.put("Crab", new MoCEntityData("Crab", 2, overworld, EntityClassification.AMBIENT, new MobSpawnInfo.Spawners(CRAB, 11, 1, 2), new ArrayList<>(Arrays.asList(Type.BEACH, Type.WATER))));
         MoCreatures.mocEntityMap.put("Cricket", new MoCEntityData("Cricket", 2, overworld, EntityClassification.AMBIENT, new MobSpawnInfo.Spawners(CRICKET, 10, 1, 2), new ArrayList<>(Arrays.asList(Type.FOREST, Type.JUNGLE, Type.PLAINS, Type.SWAMP))));
-        MoCreatures.mocEntityMap.put("DragonFly", new MoCEntityData("DragonFly", 2, overworldWyvernLair, EntityClassification.AMBIENT, new MobSpawnInfo.Spawners(DRAGONFLY, 9, 1, 2), new ArrayList<>(Arrays.asList(Type.FOREST, Type.JUNGLE, Type.PLAINS, Type.SWAMP, Type.BEACH, Type.WET, WYVERN_LAIR))));
-        MoCreatures.mocEntityMap.put("Firefly", new MoCEntityData("Firefly", 3, overworld, EntityClassification.AMBIENT, new MobSpawnInfo.Spawners(FIREFLY, 9, 1, 2), new ArrayList<>(Arrays.asList(Type.FOREST, Type.JUNGLE, Type.SWAMP, Type.LUSH, Type.DENSE, WYVERN_LAIR))));
+        MoCreatures.mocEntityMap.put("DragonFly", new MoCEntityData("DragonFly", 2, overworldWyvernLair, EntityClassification.AMBIENT, new MobSpawnInfo.Spawners(DRAGONFLY, 9, 1, 2), new ArrayList<>(Arrays.asList(Type.FOREST, Type.JUNGLE, Type.PLAINS, Type.SWAMP, Type.BEACH, Type.WET))));
+        MoCreatures.mocEntityMap.put("Firefly", new MoCEntityData("Firefly", 3, overworld, EntityClassification.AMBIENT, new MobSpawnInfo.Spawners(FIREFLY, 9, 1, 2), new ArrayList<>(Arrays.asList(Type.FOREST, Type.JUNGLE, Type.SWAMP, Type.LUSH, Type.DENSE))));
         MoCreatures.mocEntityMap.put("Fly", new MoCEntityData("Fly", 2, overworld, EntityClassification.AMBIENT, new MobSpawnInfo.Spawners(FLY, 12, 1, 2), new ArrayList<>(Arrays.asList(Type.JUNGLE, Type.MESA, Type.WET, Type.SWAMP, Type.HOT))));
-        MoCreatures.mocEntityMap.put("Grasshopper", new MoCEntityData("Grasshopper", 2, overworld, EntityClassification.AMBIENT, new MobSpawnInfo.Spawners(GRASSHOPPER, 10, 1, 2), new ArrayList<>(Arrays.asList(Type.FOREST, Type.JUNGLE, Type.PLAINS, Type.SAVANNA, WYVERN_LAIR))));
+        MoCreatures.mocEntityMap.put("Grasshopper", new MoCEntityData("Grasshopper", 2, overworld, EntityClassification.AMBIENT, new MobSpawnInfo.Spawners(GRASSHOPPER, 10, 1, 2), new ArrayList<>(Arrays.asList(Type.FOREST, Type.JUNGLE, Type.PLAINS, Type.SAVANNA))));
         MoCreatures.mocEntityMap.put("Maggot", new MoCEntityData("Maggot", 2, overworld, EntityClassification.AMBIENT, new MobSpawnInfo.Spawners(MAGGOT, 8, 1, 2), new ArrayList<>(Arrays.asList(Type.JUNGLE, Type.MESA, Type.WET, Type.SWAMP, Type.HOT))));
         MoCreatures.mocEntityMap.put("Snail", new MoCEntityData("Snail", 2, overworld, EntityClassification.AMBIENT, new MobSpawnInfo.Spawners(SNAIL, 10, 1, 2), new ArrayList<>(Arrays.asList(Type.FOREST, Type.JUNGLE, Type.DENSE, Type.LUSH))));
         MoCreatures.mocEntityMap.put("Roach", new MoCEntityData("Roach", 2, overworld, EntityClassification.AMBIENT, new MobSpawnInfo.Spawners(ROACH, 10, 1, 2), new ArrayList<>(Arrays.asList(Type.HOT))));
@@ -302,9 +303,18 @@ public class MoCEntities {
     @SubscribeEvent
     public static void addEntityAttributes(EntityAttributeCreationEvent event) {
         for (Map.Entry<EntityType<? extends LivingEntity>, Supplier<AttributeModifierMap.MutableAttribute>> entry : ENTITIES.entrySet()) {
-            event.put(entry.getKey(), entry.getValue().get().create());
+            AttributeModifierMap map = entry.getValue().get().create();
+            event.put(entry.getKey(), map);
+
+            // ✅ Attribute validation log
+            if (!map.hasAttribute(Attributes.FOLLOW_RANGE)) {
+                //MoCreatures.LOGGER.warn("[Attribute Missing] " + entry.getKey().getRegistryName() + " lacks FOLLOW_RANGE");
+            } else {
+                //MoCreatures.LOGGER.debug("[Attribute OK] " + entry.getKey().getRegistryName() + " includes FOLLOW_RANGE");
+            }
         }
     }
+
 
     @SubscribeEvent
     public static void registerSpawnEggs(RegistryEvent.Register<Item> event) {
@@ -318,6 +328,45 @@ public class MoCEntities {
     public static class RegistrationHandler {
 
         @SubscribeEvent(priority = EventPriority.HIGH)
+        public static void registerSpawns(BiomeLoadingEvent event) {
+            if (event.getName() != null) {
+                Biome biome = ForgeRegistries.BIOMES.getValue(event.getName());
+                if (biome == null) return;
+
+                RegistryKey<Biome> biomeKey = RegistryKey.getOrCreateKey(ForgeRegistries.Keys.BIOMES, event.getName());
+                Set<BiomeDictionary.Type> biomeTypes = BiomeDictionary.getTypes(biomeKey);
+
+                for (MoCEntityData entityData : MoCreatures.mocEntityMap.values()) {
+                    if (!entityData.getCanSpawn() || entityData.getFrequency() <= 0) {
+                        //MoCreatures.LOGGER.debug("[Spawn Skip] " + entityData.getEntityName() + " is disabled or has 0 frequency");
+                        continue;
+                    }
+
+                    List<BiomeDictionary.Type> includeList = entityData.getBiomeTypes();
+                    List<BiomeDictionary.Type> excludeList = entityData.getBlockedBiomeTypes();
+
+                    boolean biomeAllowed = biomeTypes.stream().noneMatch(excludeList::contains)
+                            && biomeTypes.stream().anyMatch(includeList::contains);
+
+                    if (!biomeAllowed) {
+                        /*MoCreatures.LOGGER.debug("[Biome Skip] " + entityData.getEntityName()
+                                + " does not match biome " + event.getName()
+                                + " (types=" + biomeTypes + ", includes=" + includeList + ", excludes=" + excludeList + ")");*/
+                        continue;
+                    }
+
+                    event.getSpawns().getSpawner(entityData.getType()).add(entityData.getSpawnListEntry());
+
+                    /*MoCreatures.LOGGER.info("[Spawn Registered] " + entityData.getEntityName()
+                            + " in biome " + event.getName()
+                            + " with weight=" + entityData.getSpawnListEntry().itemWeight
+                            + ", min=" + entityData.getSpawnListEntry().minCount
+                            + ", max=" + entityData.getSpawnListEntry().maxCount);*/
+                }
+            }
+        }
+
+        /*@SubscribeEvent(priority = EventPriority.HIGH)
         public static void registerSpawns(BiomeLoadingEvent event) {
             if (event.getName() != null) {
                 Biome biome = ForgeRegistries.BIOMES.getValue(event.getName());
@@ -338,6 +387,6 @@ public class MoCEntities {
                     }
                 }
             }
-        }
+        }*/
     }
 }

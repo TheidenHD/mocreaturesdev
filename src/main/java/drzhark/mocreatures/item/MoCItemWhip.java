@@ -1,18 +1,10 @@
-/*
- * GNU GENERAL PUBLIC LICENSE Version 3
- */
 package drzhark.mocreatures.item;
 
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityAnimal;
-import drzhark.mocreatures.entity.hunter.MoCEntityBear;
-import drzhark.mocreatures.entity.hunter.MoCEntityBigCat;
-import drzhark.mocreatures.entity.hunter.MoCEntityPetScorpion;
-import drzhark.mocreatures.entity.neutral.MoCEntityElephant;
-import drzhark.mocreatures.entity.neutral.MoCEntityKitty;
-import drzhark.mocreatures.entity.neutral.MoCEntityOstrich;
-import drzhark.mocreatures.entity.neutral.MoCEntityWyvern;
+import drzhark.mocreatures.entity.hunter.*;
+import drzhark.mocreatures.entity.neutral.*;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
@@ -38,103 +30,89 @@ public class MoCItemWhip extends MoCItem {
         super(properties.maxStackSize(1).maxDamage(24), name);
     }
 
-    public ItemStack onItemRightClick2(ItemStack itemstack, World world, PlayerEntity entityplayer) {
-        return itemstack;
-    }
-
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
-        final ItemStack stack = context.getPlayer().getHeldItem(context.getHand());
-        Block block = context.getWorld().getBlockState(context.getPos()).getBlock();
-        Block block1 = context.getWorld().getBlockState(context.getPos().up()).getBlock();
-        if (context.getFace() != Direction.DOWN && (block1 == Blocks.AIR) && (block != Blocks.AIR) && !(block instanceof StandingSignBlock)) {
-            whipFX(context.getWorld(), context.getPos());
-            context.getWorld().playSound(context.getPlayer(), context.getPos(), MoCSoundEvents.ENTITY_GENERIC_WHIP.get(), SoundCategory.PLAYERS, 0.5F, 0.4F / ((random.nextFloat() * 0.4F) + 0.8F));
-            stack.damageItem(1, context.getPlayer(), (player) -> {
-                player.sendBreakAnimation(context.getHand());
-            });
-            List<Entity> list = context.getWorld().getEntitiesWithinAABBExcludingEntity(context.getPlayer(), context.getPlayer().getBoundingBox().grow(12D));
+        PlayerEntity player = context.getPlayer();
+        if (player == null) return ActionResultType.FAIL;
+
+        ItemStack stack = player.getHeldItem(context.getHand());
+        BlockPos pos = context.getPos();
+        World world = context.getWorld();
+        Block block = world.getBlockState(pos).getBlock();
+        Block blockAbove = world.getBlockState(pos.up()).getBlock();
+
+        if (context.getFace() != Direction.DOWN && blockAbove == Blocks.AIR && block != Blocks.AIR && !(block instanceof StandingSignBlock)) {
+            whipFX(world, pos);
+            world.playSound(player, pos, MoCSoundEvents.ENTITY_GENERIC_WHIP.get(), SoundCategory.PLAYERS, 0.5F, 0.4F / ((random.nextFloat() * 0.4F) + 0.8F));
+
+            stack.damageItem(1, player, (p) -> p.sendBreakAnimation(context.getHand()));
+
+            List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(player, player.getBoundingBox().grow(12D));
             for (Entity entity : list) {
                 if (entity instanceof MoCEntityAnimal) {
                     MoCEntityAnimal animal = (MoCEntityAnimal) entity;
-                    if (MoCreatures.proxy.enableOwnership && animal.getOwnerId() != null && !context.getPlayer().getUniqueID().equals(animal.getOwnerId()) && !MoCTools.isThisPlayerAnOP(context.getPlayer())) {
+                    if (MoCreatures.proxy.enableOwnership && animal.getOwnerId() != null && !player.getUniqueID().equals(animal.getOwnerId()) && !MoCTools.isThisPlayerAnOP(player)) {
                         continue;
                     }
                 }
 
                 if (entity instanceof MoCEntityBigCat) {
-                    MoCEntityBigCat entitybigcat = (MoCEntityBigCat) entity;
-                    if (entitybigcat.getIsTamed()) {
-                        entitybigcat.setSitting(!entitybigcat.getIsSitting());
-                    } else if ((context.getWorld().getDifficulty().getId() > 0) && entitybigcat.getIsAdult()) {
-                        entitybigcat.setAttackTarget(context.getPlayer());
+                    MoCEntityBigCat bigCat = (MoCEntityBigCat) entity;
+                    if (bigCat.getIsTamed()) {
+                        bigCat.setSitting(!bigCat.getIsSitting());
+                    } else if (world.getDifficulty().getId() > 0 && bigCat.getIsAdult()) {
+                        bigCat.setAttackTarget(player);
                     }
                 }
+
                 if (entity instanceof MoCEntityHorse) {
-                    MoCEntityHorse entityhorse = (MoCEntityHorse) entity;
-                    if (entityhorse.getIsTamed()) {
-                        if (entityhorse.getRidingEntity() == null) {
-                            entityhorse.setSitting(!entityhorse.getIsSitting());
-                        } else if (entityhorse.isNightmare()) {
-                            entityhorse.setNightmareInt(100);
-                        } else if (entityhorse.sprintCounter == 0) {
-                            entityhorse.sprintCounter = 1;
+                    MoCEntityHorse horse = (MoCEntityHorse) entity;
+                    if (horse.getIsTamed()) {
+                        if (horse.getRidingEntity() == null) {
+                            horse.setSitting(!horse.getIsSitting());
+                        } else if (horse.isNightmare()) {
+                            horse.setNightmareInt(100);
+                        } else if (horse.sprintCounter == 0) {
+                            horse.sprintCounter = 1;
                         }
                     }
                 }
 
-                if ((entity instanceof MoCEntityKitty)) {
-                    MoCEntityKitty entitykitty = (MoCEntityKitty) entity;
-                    if ((entitykitty.getKittyState() > 2) && entitykitty.whipable()) {
-                        entitykitty.setSitting(!entitykitty.getIsSitting());
+                if (entity instanceof MoCEntityKitty) {
+                    MoCEntityKitty kitty = (MoCEntityKitty) entity;
+                    if (kitty.getKittyState() > 2 && kitty.whipable()) {
+                        kitty.setSitting(!kitty.getIsSitting());
                     }
                 }
 
-                if ((entity instanceof MoCEntityWyvern)) {
-                    MoCEntityWyvern entitywyvern = (MoCEntityWyvern) entity;
-                    if (entitywyvern.getIsTamed() && entitywyvern.getRidingEntity() == null && !entitywyvern.isOnAir()) {
-                        entitywyvern.setSitting(!entitywyvern.getIsSitting());
+                if (entity instanceof MoCEntityWyvern) {
+                    MoCEntityWyvern wyvern = (MoCEntityWyvern) entity;
+                    if (wyvern.getIsTamed() && wyvern.getRidingEntity() == null && !wyvern.isOnAir()) {
+                        wyvern.setSitting(!wyvern.getIsSitting());
                     }
                 }
 
-                if ((entity instanceof MoCEntityPetScorpion)) {
-                    MoCEntityPetScorpion petscorpion = (MoCEntityPetScorpion) entity;
-                    if (petscorpion.getIsTamed() && petscorpion.getRidingEntity() == null) {
-                        petscorpion.setSitting(!petscorpion.getIsSitting());
+                if (entity instanceof MoCEntityPetScorpion) {
+                    MoCEntityPetScorpion scorpion = (MoCEntityPetScorpion) entity;
+                    if (scorpion.getIsTamed() && scorpion.getRidingEntity() == null) {
+                        scorpion.setSitting(!scorpion.getIsSitting());
                     }
                 }
 
                 if (entity instanceof MoCEntityOstrich) {
-                    MoCEntityOstrich entityostrich = (MoCEntityOstrich) entity;
-
-                    //makes ridden ostrich sprint
-                    if (entityostrich.isBeingRidden() && entityostrich.sprintCounter == 0) {
-                        entityostrich.sprintCounter = 1;
+                    MoCEntityOstrich ostrich = (MoCEntityOstrich) entity;
+                    if (ostrich.isBeingRidden() && ostrich.sprintCounter == 0) {
+                        ostrich.sprintCounter = 1;
                     }
-
-                    //toggles hiding of tamed ostriches
-                    if (entityostrich.getIsTamed() && entityostrich.getRidingEntity() == null) {
-                        entityostrich.setHiding(!entityostrich.getHiding());
+                    if (ostrich.getIsTamed() && ostrich.getRidingEntity() == null) {
+                        ostrich.setHiding(!ostrich.getHiding());
                     }
                 }
+
                 if (entity instanceof MoCEntityElephant) {
-                    MoCEntityElephant entityelephant = (MoCEntityElephant) entity;
-
-                    //makes elephants charge
-                    if (entityelephant.isBeingRidden() && entityelephant.sprintCounter == 0) {
-                        entityelephant.sprintCounter = 1;
-                    }
-                }
-
-                if (entity instanceof MoCEntityBear) {
-                    MoCEntityBear entitybear = (MoCEntityBear) entity;
-
-                    if (entitybear.getIsTamed()) {
-                        if (entitybear.getBearState() == 0) {
-                            entitybear.setBearState(2);
-                        } else {
-                            entitybear.setBearState(0);
-                        }
+                    MoCEntityElephant elephant = (MoCEntityElephant) entity;
+                    if (elephant.isBeingRidden() && elephant.sprintCounter == 0) {
+                        elephant.sprintCounter = 1;
                     }
                 }
             }
@@ -143,21 +121,23 @@ public class MoCItemWhip extends MoCItem {
         return ActionResultType.FAIL;
     }
 
-    public void whipFX(World world, BlockPos pos) {
+    private void whipFX(World world, BlockPos pos) {
         double d = pos.getX() + 0.5F;
         double d1 = pos.getY() + 1.0F;
         double d2 = pos.getZ() + 0.5F;
-        double d3 = 0.2199999988079071D;
-        double d4 = 0.27000001072883606D;
-        world.addParticle(ParticleTypes.SMOKE, d - d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
-        world.addParticle(ParticleTypes.FLAME, d - d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
-        world.addParticle(ParticleTypes.SMOKE, d + d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
-        world.addParticle(ParticleTypes.FLAME, d + d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
-        world.addParticle(ParticleTypes.SMOKE, d, d1 + d3, d2 - d4, 0.0D, 0.0D, 0.0D);
-        world.addParticle(ParticleTypes.FLAME, d, d1 + d3, d2 - d4, 0.0D, 0.0D, 0.0D);
-        world.addParticle(ParticleTypes.SMOKE, d, d1 + d3, d2 + d4, 0.0D, 0.0D, 0.0D);
-        world.addParticle(ParticleTypes.FLAME, d, d1 + d3, d2 + d4, 0.0D, 0.0D, 0.0D);
-        world.addParticle(ParticleTypes.SMOKE, d, d1, d2, 0.0D, 0.0D, 0.0D);
+        double spread = 0.27D;
+        double rise = 0.22D;
+
+        world.addParticle(ParticleTypes.FLAME, d - spread, d1 + rise, d2, 0.0D, 0.0D, 0.0D);
+        world.addParticle(ParticleTypes.FLAME, d + spread, d1 + rise, d2, 0.0D, 0.0D, 0.0D);
+        world.addParticle(ParticleTypes.FLAME, d, d1 + rise, d2 - spread, 0.0D, 0.0D, 0.0D);
+        world.addParticle(ParticleTypes.FLAME, d, d1 + rise, d2 + spread, 0.0D, 0.0D, 0.0D);
         world.addParticle(ParticleTypes.FLAME, d, d1, d2, 0.0D, 0.0D, 0.0D);
+
+        world.addParticle(ParticleTypes.SMOKE, d - spread, d1 + rise, d2, 0.0D, 0.0D, 0.0D);
+        world.addParticle(ParticleTypes.SMOKE, d + spread, d1 + rise, d2, 0.0D, 0.0D, 0.0D);
+        world.addParticle(ParticleTypes.SMOKE, d, d1 + rise, d2 - spread, 0.0D, 0.0D, 0.0D);
+        world.addParticle(ParticleTypes.SMOKE, d, d1 + rise, d2 + spread, 0.0D, 0.0D, 0.0D);
+        world.addParticle(ParticleTypes.SMOKE, d, d1, d2, 0.0D, 0.0D, 0.0D);
     }
 }

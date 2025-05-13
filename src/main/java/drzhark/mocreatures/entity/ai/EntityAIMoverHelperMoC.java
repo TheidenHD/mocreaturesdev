@@ -187,7 +187,19 @@ public class EntityAIMoverHelperMoC extends MovementController {
             double d4 = Math.sin((double) (this.theCreature.ticksExisted + this.theCreature.getEntityId()) * 0.75D) * 0.01D;
             double d5 = Math.cos(this.theCreature.rotationYaw * (float) Math.PI / 180.0F);
             double d6 = Math.sin(this.theCreature.rotationYaw * (float) Math.PI / 180.0F);
-            this.theCreature.setMotion(this.theCreature.getMotion().add(d4 * d5, (d4 * (d6 + d5) * 0.25D) + ((double) this.theCreature.getAIMoveSpeed() * d1 * 1.5D), d4 * d5));
+
+            double targetDepth = MoCTools.waterSurfaceAtGivenEntity(this.theCreature) - this.theCreature.getPosY();
+            double yMotion = 0.0D;
+
+            if (targetDepth > ((IMoCEntity) this.theCreature).getDivingDepth()) {
+                yMotion = 0.01D; // gently ascend
+            } else if (targetDepth < ((IMoCEntity) this.theCreature).getDivingDepth() - 0.2D) {
+                yMotion = -0.005D; // descend slightly
+            }
+
+            this.theCreature.setMotion(this.theCreature.getMotion().add(d4 * d5, yMotion, d4 * d5));
+
+            //this.theCreature.setMotion(this.theCreature.getMotion().add(d4 * d5, (d4 * (d6 + d5) * 0.25D) + ((double) this.theCreature.getAIMoveSpeed() * d1 * 1.5D), d4 * d5));
         }
     }
 

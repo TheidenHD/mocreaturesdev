@@ -83,7 +83,8 @@ public class MoCItems {
     public static final MoCItem ancientSilverIngot = new MoCItem((new Item.Properties()), "ancientsilveringot");
     public static final MoCItem ancientSilverNugget = new MoCItem((new Item.Properties()), "ancientsilvernugget");
     public static final MoCItem firestoneChunk = new MoCItem((new Item.Properties()), "firestonechunk");
-    public static final MoCItemCrabClaw brackishClaw = new MoCItemCrabClaw((new Item.Properties().defaultMaxDamage(768)), "brackish_claw", 15, 0.0F, 1, 2.0F);
+    // Never finished, even in new MoCreatures
+    // public static final MoCItemCrabClaw brackishClaw = new MoCItemCrabClaw((new Item.Properties().defaultMaxDamage(768)), "brackish_claw", 15, 0.0F, 1, 2.0F);
     // Food
     public static final MoCItemFood cookedTurkey = new MoCItemFood.Builder((new Item.Properties()), "turkeycooked", 7, 0.8F, true).build();
     public static final MoCItemFood crabraw = new MoCItemFood.Builder((new Item.Properties()), "crabraw", 2, 0.1F, true).setPotionEffect(new EffectInstance(Effects.HUNGER, 30 * 20, 0), 0.8F).build();
@@ -315,8 +316,8 @@ public class MoCItems {
                     scrollOfSale,
                     scrollOfOwner,
                     crabraw,
-                    crabcooked,
-                    brackishClaw
+                    crabcooked//,
+                    //brackishClaw
             ));
 
             final IForgeRegistry<Item> registry = event.getRegistry();

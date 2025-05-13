@@ -109,7 +109,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 30.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.FOLLOW_RANGE, 12.0D).createMutableAttribute(Attributes.MAX_HEALTH, 30.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
@@ -193,7 +193,8 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         RegistryKey<Biome> currentbiome = MoCTools.biomeKind(this.world, pos);
         try {
             if (BiomeDictionary.hasType(currentbiome, Type.SAVANNA)) setTypeMoC(60); // zebra
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return true;
     }

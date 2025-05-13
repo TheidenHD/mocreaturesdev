@@ -16,7 +16,7 @@ import net.minecraftforge.common.ToolType;
 import java.util.List;
 import java.util.Random;
 
-public class MoCBlockGrass extends Block implements IGrowable {
+public class MoCBlockGrass extends GrassBlock implements IGrowable {
 
     public MoCBlockGrass(AbstractBlock.Properties properties) {
         super(properties.tickRandomly().harvestLevel(0).harvestTool(ToolType.SHOVEL).sound(SoundType.PLANT));

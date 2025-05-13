@@ -20,6 +20,7 @@ import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.hostile.*;
 import drzhark.mocreatures.entity.passive.*;
 import drzhark.mocreatures.init.MoCEntities;
+import drzhark.mocreatures.shaders.MoCClientEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -215,10 +216,20 @@ public class MoCProxyClient extends MoCProxy {
         if (i > 10) {
             i = 10;
         }
-        for (int x = 0; x < i; x++) {
+        /*for (int x = 0; x < i; x++) {
             MoCEntityFXUndead FXUndead = new MoCEntityFXUndead((ClientWorld)entity.getEntityWorld(), entity.getPosX(), entity.getPosY() + entity.world.rand.nextFloat() * entity.getHeight(), entity.getPosZ());
             mc.particles.addEffect(FXUndead);
 
+        }*/
+        for (int x = 0; x < i; x++) {
+            MoCEntityFXUndead fx = new MoCEntityFXUndead(
+                    (ClientWorld) entity.world,
+                    entity.getPosX(),
+                    entity.getPosY() + entity.getHeight() * entity.world.rand.nextFloat(),
+                    entity.getPosZ(),
+                    MoCClientEvents.UNDEAD_SPRITE_SET
+            );
+            Minecraft.getInstance().particles.addEffect(fx);
         }
     }
 

@@ -84,7 +84,7 @@ public class MoCBlocks {
         wyvwoodLeaves = setup(new MoCBlockLeaf(AbstractBlock.Properties.create(Material.LEAVES, MaterialColor.DIAMOND).hardnessAndResistance(0.2F)), "wyvwood_leaves");
         wyvwoodSapling = setup(new MoCBlockSapling(new JungleTree(), AbstractBlock.Properties.create(Material.PLANTS, MaterialColor.FOLIAGE).zeroHardnessAndResistance()), "wyvwood_sapling");
         wyvwoodLog = setup(new MoCBlockLog(AbstractBlock.Properties.create(Material.WOOD ,MaterialColor.CYAN_TERRACOTTA).hardnessAndResistance(2.0F)), "wyvwood_log");
-        tallWyvgrass = setup(new MoCBlockTallGrass(AbstractBlock.Properties.create(Material.TALL_PLANTS ,MaterialColor.LIGHT_BLUE_TERRACOTTA).zeroHardnessAndResistance()), "tall_wyvgrass");
+        tallWyvgrass = setup(new MoCBlockTallGrass(AbstractBlock.Properties.create(Material.PLANTS ,MaterialColor.LIGHT_BLUE_TERRACOTTA).zeroHardnessAndResistance()), "tall_wyvgrass");
         wyvwoodPlanks = setup(new MoCBlockPlanks(AbstractBlock.Properties.create(Material.WOOD ,MaterialColor.DIAMOND).hardnessAndResistance(2.0F, 5.0F)), "wyvwood_planks");
         wyvernNestBlock = setup(new MoCBlockNest(AbstractBlock.Properties.create(Material.ORGANIC, MaterialColor.YELLOW).hardnessAndResistance(0.5F)), "wyvern_nest_block");
 

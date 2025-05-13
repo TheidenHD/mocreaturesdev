@@ -45,41 +45,55 @@ public class MoCRenderWerewolf<M extends EntityModel<MoCEntityWerewolf>> extends
 
     private class LayerMoCWereHuman<M extends MoCModelWerehuman<MoCEntityWerewolf>> extends LayerRenderer<MoCEntityWerewolf, M> {
 
-        private final MoCRenderWerewolf mocRenderer;
-        private final MoCModelWerehuman mocModel = new MoCModelWerehuman();
+        private final MoCRenderWerewolf renderer;
+        private final MoCModelWerehuman<MoCEntityWerewolf> humanModel = new MoCModelWerehuman<>();
 
-        public LayerMoCWereHuman(MoCRenderWerewolf render) {
-            super(render);
-            this.mocRenderer = render;
+        public LayerMoCWereHuman(MoCRenderWerewolf renderer) {
+            super(renderer);
+            this.renderer = renderer;
         }
 
-        public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, MoCEntityWerewolf entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            int myType = entity.getTypeMoC();
+        @Override
+        public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn,
+                           MoCEntityWerewolf entity, float limbSwing, float limbSwingAmount, float partialTicks,
+                           float ageInTicks, float netHeadYaw, float headPitch) {
 
-            ResourceLocation resourcelocation;
-            if (!entity.getIsHumanForm()) {
-                resourcelocation = MoCreatures.proxy.getModelTexture("wereblank.png");
-            } else {
-                switch (myType) {
+            if (!entity.getIsHumanForm()) return; // Only render in human form
 
-                    case 1:
-                        resourcelocation = MoCreatures.proxy.getModelTexture("werehuman_dude.png");
-                        break;
-                    case 2:
-                        resourcelocation = MoCreatures.proxy.getModelTexture("werehuman_classic.png");
-                        break;
-                    case 4:
-                        resourcelocation = MoCreatures.proxy.getModelTexture("werehuman_woman.png");
-                        break;
-                    default:
-                        resourcelocation = MoCreatures.proxy.getModelTexture("werehuman_oldie.png");
-                }
+            // Pick correct texture for human type
+            ResourceLocation texture;
+            switch (entity.getTypeMoC()) {
+                case 1:
+                    texture = MoCreatures.proxy.getModelTexture("werehuman_dude.png");
+                    break;
+                case 2:
+                    texture = MoCreatures.proxy.getModelTexture("werehuman_classic.png");
+                    break;
+                case 4:
+                    texture = MoCreatures.proxy.getModelTexture("werehuman_woman.png");
+                    break;
+                default:
+                    texture = MoCreatures.proxy.getModelTexture("werehuman_oldie.png");
             }
 
-            this.mocModel.copyModelAttributesTo(this.mocRenderer.getEntityModel());
-            IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityCutoutNoCull(resourcelocation));
-            this.mocModel.setLivingAnimations(entity, limbSwing, limbSwingAmount, partialTicks);
-            this.mocModel.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+            // Set model pose and animation
+            this.humanModel.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+            this.humanModel.setLivingAnimations(entity, limbSwing, limbSwingAmount, partialTicks);
+            this.humanModel.copyModelAttributesTo(this.renderer.getEntityModel());
+
+            // Scale model to full size
+            matrixStackIn.push();
+            //matrixStackIn.scale(1.0F, 1.0F, 1.0F); // You can tweak this if it's still off
+            //matrixStackIn.scale(1.0F, 1.0F, 1.0F);
+
+            // Render the human model
+            IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityCutoutNoCull(texture));
+
+            this.humanModel.render(matrixStackIn, ivertexbuilder, packedLightIn,
+                    OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+
+
+            matrixStackIn.pop();
         }
     }
 }
