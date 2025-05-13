@@ -11,7 +11,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 
 group = 'drzhark.mocreatures'
-version = '16.0.0'
+version = '1.16.5-1.0.0'
 
 java {
     archivesBaseName = 'mocreatures'
@@ -90,7 +90,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.2.26'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.42'
 
     // TODO: Clean up mod integration
     // Thermal Expansion

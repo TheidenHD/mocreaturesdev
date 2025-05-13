@@ -52,6 +52,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.Explosion;
@@ -60,6 +61,7 @@ import net.minecraft.world.WorldEntitySpawner;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.biome.MobSpawnInfo;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
@@ -70,6 +72,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
 
@@ -77,7 +80,75 @@ public class MoCTools {
 
     /**
      * Spawns entities during world gen
-     */ //TODO TheidenHD
+     */
+
+    public static void performCustomWorldGenSpawning(ServerWorld world, Biome biome, int centerX, int centerZ, int diameterX, int diameterZ, Random random, List<MobSpawnInfo.Spawners> spawnList, EntitySpawnPlacementRegistry.PlacementType placementType) {
+        if (spawnList == null || spawnList.isEmpty()) return;
+
+        //float spawnChance = (float) (0.1F * MoCreatures.proxy.spawnMultiplier); // default chance
+        //float baseChance = biome.getMobSpawnInfo().getCreatureSpawnProbability(); // default is 0.1F
+        //float spawnChance = (float) Math.min(baseChance * MoCreatures.proxy.spawnMultiplier, 0.5F);
+
+        //while (random.nextFloat() < Math.min(spawnChance, 0.5F)) {
+        while (random.nextFloat() < Math.min(biome.getMobSpawnInfo().getCreatureSpawnProbability() * MoCreatures.proxy.spawnMultiplier, 0.5F)) {
+            MobSpawnInfo.Spawners spawnEntry = WeightedRandom.getRandomItem(random, spawnList);
+            if (spawnEntry == null) continue;
+
+            int min = Math.min(spawnEntry.minCount, 1);
+            int max = Math.min(spawnEntry.maxCount, 6);
+            int groupSize = min + random.nextInt(1 + max - min);
+
+            ILivingEntityData spawnData = null;
+
+            int xPos = centerX + random.nextInt(diameterX);
+            int zPos = centerZ + random.nextInt(diameterZ);
+            int xOrig = xPos;
+            int zOrig = zPos;
+
+            for (int i = 0; i < groupSize; i++) {
+                boolean spawned = false;
+
+                for (int j = 0; !spawned && j < 4; j++) {
+                    BlockPos pos = world.getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, new BlockPos(xPos, 0, zPos));
+                    if (placementType == EntitySpawnPlacementRegistry.PlacementType.IN_WATER) {
+                        pos = pos.down();
+                    }
+
+                    if (WorldEntitySpawner.canSpawnAtBody(placementType, world, pos, spawnEntry.type)) {
+                        Entity entity = spawnEntry.type.create(world);
+                        if (!(entity instanceof MobEntity)) break;
+
+                        MobEntity mob = (MobEntity) entity;
+
+                        Event.Result result = ForgeEventFactory.canEntitySpawn(mob, world, pos.getX(), pos.getY(), pos.getZ(), null, SpawnReason.NATURAL);
+                        if (result == Event.Result.DENY) continue;
+
+                        mob.setLocationAndAngles(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, random.nextFloat() * 360.0F, 0.0F);
+
+                        if (mob.canSpawn(world, SpawnReason.NATURAL) && mob.isNotColliding(world)) {
+                            spawnData = mob.onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.NATURAL, spawnData, null);
+                            world.addEntity(mob);
+                            spawned = true;
+                        } else {
+                            mob.remove();
+                        }
+                    }
+
+                    // Adjust spawn point
+                    xPos += random.nextInt(5) - random.nextInt(5);
+                    zPos += random.nextInt(5) - random.nextInt(5);
+
+                    while (xPos < centerX || xPos >= centerX + diameterX || zPos < centerZ || zPos >= centerZ + diameterZ) {
+                        xPos = xOrig + random.nextInt(5) - random.nextInt(5);
+                        zPos = zOrig + random.nextInt(5) - random.nextInt(5);
+                    }
+                }
+            }
+        }
+    }
+
+
+    //TODO FINISHED
 //    public static void performCustomWorldGenSpawning(World world, Biome biome, int centerX, int centerZ, int diameterX, int diameterZ, Random random, List<Biome.MobSpawnInfo.Spawners> spawnList, MobEntity.SpawnPlacementType placementType) {
 //        if (spawnList == null || spawnList.isEmpty()) return;
 //        while (random.nextFloat() < Math.min(biome.getSpawningChance() * MoCreatures.proxy.spawnMultiplier, 0.5F)) {
@@ -485,8 +556,16 @@ public class MoCTools {
     }
 
     public static RegistryKey<Biome> biomeKind(World world, BlockPos pos) {
-        return WorldGenRegistries.BIOME.getOptionalKey(world.getBiome(pos)).orElse(Biomes.THE_VOID);
+        Biome biome = world.getBiome(pos);
+        ResourceLocation biomeName = biome.getRegistryName();
+
+        if (biomeName != null) {
+            return RegistryKey.getOrCreateKey(Registry.BIOME_KEY, biomeName);
+        }
+
+        return Biomes.THE_VOID; // fallback
     }
+
 
     public static void destroyDrops(Entity entity, double d) {
 

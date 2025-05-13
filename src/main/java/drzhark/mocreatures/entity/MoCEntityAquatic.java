@@ -14,6 +14,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.passive.DolphinEntity;
 import net.minecraft.entity.passive.WaterMobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
@@ -411,7 +412,8 @@ public abstract class MoCEntityAquatic extends WaterMobEntity implements IMoCEnt
                 List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(2));
                 for (Entity entity1 : list) {
                     if (entity1 instanceof FishingBobberEntity && ((FishingBobberEntity) entity1).func_234607_k_() == this) {
-                        ((FishingBobberEntity) entity1).onEntityHit(new EntityRayTraceResult(null));
+                        // TODO: PRIVATE ACCESS
+                        //((FishingBobberEntity) entity1).onEntityHit(new EntityRayTraceResult(null));
                     }
                 }
             }
@@ -585,7 +587,8 @@ public abstract class MoCEntityAquatic extends WaterMobEntity implements IMoCEnt
                 if (f > 1) {
                     MoCTools.setPathToEntity(this, fishHook, f);
                 } else {
-                    fishHook.onEntityHit(new EntityRayTraceResult(this));
+                    // TODO: PRIVATE ACCESS
+                    //fishHook.onEntityHit(new EntityRayTraceResult(this));
                     this.fishHooked = true;
                 }
             }
@@ -661,7 +664,7 @@ public abstract class MoCEntityAquatic extends WaterMobEntity implements IMoCEnt
             this.move(MoverType.SELF, this.getMotion());
             this.setMotion(this.getMotion().mul(0.8999999761581421D, 0.8999999761581421D, 0.8999999761581421D));
 
-            if (this.getAttackTarget() == null) {
+            if (this.getAttackTarget() == null && this.navigator.noPath()) {
                 this.setMotion(this.getMotion().subtract(0.0F, 0.005D, 0.0F));
             }
             this.prevLimbSwingAmount = this.limbSwingAmount;

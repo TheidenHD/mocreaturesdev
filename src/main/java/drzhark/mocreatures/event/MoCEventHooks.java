@@ -3,7 +3,6 @@
  */
 package drzhark.mocreatures.event;
 
-import com.google.common.primitives.Ints;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
@@ -18,7 +17,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldEntitySpawner;
 import net.minecraftforge.common.DimensionManager;
@@ -30,7 +28,6 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -104,7 +101,7 @@ public class MoCEventHooks {
                     return;
                 }
 
-                if (mocEntity.getOwnerPetId() != -1) // required since getInteger will always return 0 if no key is found
+                if (mocEntity.getOwnerPetId() != -1) // required since getInt will always return 0 if no key is found
                 {
                     MoCreatures.instance.mapData.removeOwnerPet(mocEntity, mocEntity.getOwnerPetId());
                 }

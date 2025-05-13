@@ -4,10 +4,14 @@
 package drzhark.mocreatures.block;
 
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.LeavesBlock;
-import net.minecraft.block.SoundType;
+import drzhark.mocreatures.init.MoCBlocks;
+import net.minecraft.block.*;
+import net.minecraft.state.StateContainer;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
 
@@ -16,7 +20,7 @@ import java.util.List;
 import java.util.Random;
 
     public MoCBlockLeaf(AbstractBlock.Properties properties) {
-        super(properties.sound(SoundType.PLANT).notSolid().setAllowsSpawn(Blocks::allowsSpawnOnLeaves).setSuffocates(Blocks::isntSolid).setBlocksVision(Blocks::isntSolid));
+        super(properties.sound(SoundType.PLANT).notSolid()/*.setAllowsSpawn(Blocks::allowsSpawnOnLeaves).setSuffocates(Blocks::isntSolid).setBlocksVision(Blocks::isntSolid)*/);
     }
 
     @Override

@@ -3,8 +3,10 @@
  */
 package drzhark.mocreatures;
 
+import com.google.common.base.Supplier;
 import com.mojang.authlib.GameProfile;
 import drzhark.mocreatures.client.MoCKeyHandler;
+import drzhark.mocreatures.client.renderer.fx.MoCParticles;
 import drzhark.mocreatures.compat.CompatHandler;
 import drzhark.mocreatures.compat.datafixes.BlockIDFixer;
 import drzhark.mocreatures.compat.datafixes.EntityIDFixer;
@@ -51,6 +53,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Mod(MoCConstants.MOD_ID)
@@ -80,7 +83,7 @@ public class MoCreatures {
         MoCMessageHandler.init();
         final IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.register(new MoCEventHooks());
-        //MinecraftForge.TERRAIN_GEN_BUS.register(new MoCEventHooksTerrain()); //TODO TheidenHD
+        MinecraftForge.EVENT_BUS.register(new MoCEventHooksTerrain());
         //proxy.configInit();
         if (true) {
             MinecraftForge.EVENT_BUS.register(new MoCEventHooksClient());
@@ -89,7 +92,7 @@ public class MoCreatures {
                 MinecraftForge.EVENT_BUS.register(new TinkersConstructIntegration());
             }
         }
-        MoCEntities.registerEntities();
+        //MoCEntities.registerEntities();
         CompatHandler.preInit();
 
         wyvernSkylandsDimensionID = proxy.wyvernDimension;

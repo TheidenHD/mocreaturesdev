@@ -1,6 +1,3 @@
-/*
- * GNU GENERAL PUBLIC LICENSE Version 3
- */
 package drzhark.mocreatures.item;
 
 import drzhark.mocreatures.MoCConstants;
@@ -68,7 +65,7 @@ public class MoCItemWhip extends MoCItemSword {
             for (Entity entity : list) {
                 if (entity instanceof MoCEntityAnimal) {
                     MoCEntityAnimal animal = (MoCEntityAnimal) entity;
-                    if (MoCreatures.proxy.enableOwnership && animal.getOwnerId() != null && !context.getPlayer().getUniqueID().equals(animal.getOwnerId()) && !MoCTools.isThisPlayerAnOP(context.getPlayer())) {
+                    if (MoCreatures.proxy.enableOwnership && animal.getOwnerId() != null && !player.getUniqueID().equals(animal.getOwnerId()) && !MoCTools.isThisPlayerAnOP(player)) {
                         continue;
                     }
                 }
@@ -132,11 +129,9 @@ public class MoCItemWhip extends MoCItemSword {
                 }
 
                 if (entity instanceof MoCEntityOstrich) {
-                    MoCEntityOstrich entityostrich = (MoCEntityOstrich) entity;
-
-                    //makes ridden ostrich sprint
-                    if (entityostrich.isBeingRidden() && entityostrich.sprintCounter == 0) {
-                        entityostrich.sprintCounter = 1;
+                    MoCEntityOstrich ostrich = (MoCEntityOstrich) entity;
+                    if (ostrich.isBeingRidden() && ostrich.sprintCounter == 0) {
+                        ostrich.sprintCounter = 1;
                     }
 
                     //toggles hiding of tamed ostriches
@@ -151,9 +146,10 @@ public class MoCItemWhip extends MoCItemSword {
                 if (entity instanceof MoCEntityElephant) {
                     MoCEntityElephant entityelephant = (MoCEntityElephant) entity;
 
-                    //makes elephants charge
-                    if (entityelephant.isBeingRidden() && entityelephant.sprintCounter == 0) {
-                        entityelephant.sprintCounter = 1;
+                if (entity instanceof MoCEntityElephant) {
+                    MoCEntityElephant elephant = (MoCEntityElephant) entity;
+                    if (elephant.isBeingRidden() && elephant.sprintCounter == 0) {
+                        elephant.sprintCounter = 1;
                     }
                 }
             }
@@ -172,18 +168,20 @@ public class MoCItemWhip extends MoCItemSword {
         double d = pos.getX() + 0.5F;
         double d1 = pos.getY() + 1.0F;
         double d2 = pos.getZ() + 0.5F;
-        double d3 = 0.2199999988079071D;
-        double d4 = 0.27000001072883606D;
-        world.addParticle(ParticleTypes.SMOKE, d - d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
-        world.addParticle(ParticleTypes.FLAME, d - d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
-        world.addParticle(ParticleTypes.SMOKE, d + d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
-        world.addParticle(ParticleTypes.FLAME, d + d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
-        world.addParticle(ParticleTypes.SMOKE, d, d1 + d3, d2 - d4, 0.0D, 0.0D, 0.0D);
-        world.addParticle(ParticleTypes.FLAME, d, d1 + d3, d2 - d4, 0.0D, 0.0D, 0.0D);
-        world.addParticle(ParticleTypes.SMOKE, d, d1 + d3, d2 + d4, 0.0D, 0.0D, 0.0D);
-        world.addParticle(ParticleTypes.FLAME, d, d1 + d3, d2 + d4, 0.0D, 0.0D, 0.0D);
-        world.addParticle(ParticleTypes.SMOKE, d, d1, d2, 0.0D, 0.0D, 0.0D);
+        double spread = 0.27D;
+        double rise = 0.22D;
+
+        world.addParticle(ParticleTypes.FLAME, d - spread, d1 + rise, d2, 0.0D, 0.0D, 0.0D);
+        world.addParticle(ParticleTypes.FLAME, d + spread, d1 + rise, d2, 0.0D, 0.0D, 0.0D);
+        world.addParticle(ParticleTypes.FLAME, d, d1 + rise, d2 - spread, 0.0D, 0.0D, 0.0D);
+        world.addParticle(ParticleTypes.FLAME, d, d1 + rise, d2 + spread, 0.0D, 0.0D, 0.0D);
         world.addParticle(ParticleTypes.FLAME, d, d1, d2, 0.0D, 0.0D, 0.0D);
+
+        world.addParticle(ParticleTypes.SMOKE, d - spread, d1 + rise, d2, 0.0D, 0.0D, 0.0D);
+        world.addParticle(ParticleTypes.SMOKE, d + spread, d1 + rise, d2, 0.0D, 0.0D, 0.0D);
+        world.addParticle(ParticleTypes.SMOKE, d, d1 + rise, d2 - spread, 0.0D, 0.0D, 0.0D);
+        world.addParticle(ParticleTypes.SMOKE, d, d1 + rise, d2 + spread, 0.0D, 0.0D, 0.0D);
+        world.addParticle(ParticleTypes.SMOKE, d, d1, d2, 0.0D, 0.0D, 0.0D);
     }
 
     /**

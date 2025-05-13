@@ -3,6 +3,8 @@
  */
 package drzhark.mocreatures.event;
 
+import drzhark.mocreatures.client.renderer.fx.MoCEntityFXUndead;
+import drzhark.mocreatures.client.renderer.fx.MoCParticles;
 import drzhark.mocreatures.compat.CompatScreen;
 import drzhark.mocreatures.item.MoCItemBow;
 import net.minecraft.client.Minecraft;

@@ -4,10 +4,14 @@
 package drzhark.mocreatures.client.renderer.fx;
 
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.particles.BasicParticleType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
@@ -15,102 +19,48 @@ import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.Random;
+
 @OnlyIn(Dist.CLIENT)
 public class MoCEntityFXUndead extends SpriteTexturedParticle {
+    private final TextureAtlasSprite spriteAir;
+    private final TextureAtlasSprite spriteGround;
 
-    public MoCEntityFXUndead(ClientWorld par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6, 0.0D, 0.0D, 0.0D);
-        this.motionX *= 0.8D;
-        this.motionY *= 0.8D;
-        this.motionZ *= 0.8D;
-        this.motionY = this.rand.nextFloat() * 0.4F + 0.05F;
+    public MoCEntityFXUndead(ClientWorld world, double x, double y, double z, IAnimatedSprite spriteSet) {
+        super(world, x, y, z, 0, 0, 0);
 
-        this.setSize(0.01F, 0.01F);
         this.particleGravity = 0.06F;
-        this.maxAge = (int) (32.0D / (Math.random() * 0.8D + 0.2D));
+        this.maxAge = (int)(32.0D / (Math.random() * 0.8D + 0.2D));
         this.particleScale *= 0.8F;
+
+        this.spriteGround = spriteSet.get(new Random()); // fx_undead1
+        this.spriteAir = spriteSet.get(new Random());    // fx_undead2
+
+        this.setSprite(spriteAir);
     }
 
-    /**
-     * sets which texture to use (2 = items.png)
-     */
-    @Override
-    public IParticleRenderType getRenderType() {
-        if (this.onGround) {
-            return IParticleRenderType.TERRAIN_SHEET; //1
-        }
-        return IParticleRenderType.PARTICLE_SHEET_LIT; //2
-    }
-
-    /**
-     * Called to update the entity's position/logic.
-     */
     @Override
     public void tick() {
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
-
-        this.motionY -= 0.03D;
-        this.move(this.motionX, this.motionY, this.motionZ);
-
-        this.motionX *= 0.8D;
-        this.motionY *= 0.5D;
-        this.motionZ *= 0.8D;
-
-        if (this.onGround) {
-            this.motionX *= 0.7D;
-            this.motionZ *= 0.7D;
-        }
-
-        if (this.maxAge-- <= 0) {
-            this.setExpired();
-        }
-    }
-
-    private String getCurrentTexture() {
-        if (this.onGround) {
-            return "fx_undead1.png";
-        }
-        return "fx_undead2.png";
+        super.tick();
+        this.setSprite(this.onGround ? spriteGround : spriteAir);
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
-        //FMLClientHandler.instance().getClient().renderEngine.bindTexture(MoCreatures.proxy.getMiscTexture(getCurrentTexture())); //TODO TheidenHD
-        Vector3d vector3d = renderInfo.getProjectedView();
-        float f = (float)(MathHelper.lerp((double)partialTicks, this.prevPosX, this.posX) - vector3d.getX());
-        float f1 = (float)(MathHelper.lerp((double)partialTicks, this.prevPosY, this.posY) - vector3d.getY());
-        float f2 = (float)(MathHelper.lerp((double)partialTicks, this.prevPosZ, this.posZ) - vector3d.getZ());
-        Quaternion quaternion;
-        if (this.particleAngle == 0.0F) {
-            quaternion = renderInfo.getRotation();
-        } else {
-            quaternion = new Quaternion(renderInfo.getRotation());
-            float f3 = MathHelper.lerp(partialTicks, this.prevParticleAngle, this.particleAngle);
-            quaternion.multiply(Vector3f.ZP.rotation(f3));
+    public IParticleRenderType getRenderType() {
+        return IParticleRenderType.PARTICLE_SHEET_LIT;
+    }
+
+    public static class Factory implements IParticleFactory<BasicParticleType> {
+        private final IAnimatedSprite spriteSet;
+
+        public Factory(IAnimatedSprite spriteSet) {
+            this.spriteSet = spriteSet;
         }
 
-        Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);
-        vector3f1.transform(quaternion);
-        Vector3f[] avector3f = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
-        float f4 = 0.1F * this.getScale(partialTicks);
-
-        for(int i = 0; i < 4; ++i) {
-            Vector3f vector3f = avector3f[i];
-            vector3f.transform(quaternion);
-            vector3f.mul(f4);
-            vector3f.add(f, f1, f2);
+        @Override
+        public Particle makeParticle(BasicParticleType type, ClientWorld world, double x, double y, double z,
+                                     double xSpeed, double ySpeed, double zSpeed) {
+            return new MoCEntityFXUndead(world, x, y, z, spriteSet);
         }
-
-        float f7 = this.getMinU();
-        float f8 = this.getMaxU();
-        float f5 = this.getMinV();
-        float f6 = this.getMaxV();
-        int j = this.getBrightnessForRender(partialTicks);
-        buffer.pos((double)avector3f[0].getX(), (double)avector3f[0].getY(), (double)avector3f[0].getZ()).tex(f8, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
-        buffer.pos((double)avector3f[1].getX(), (double)avector3f[1].getY(), (double)avector3f[1].getZ()).tex(f8, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
-        buffer.pos((double)avector3f[2].getX(), (double)avector3f[2].getY(), (double)avector3f[2].getZ()).tex(f7, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
-        buffer.pos((double)avector3f[3].getX(), (double)avector3f[3].getY(), (double)avector3f[3].getZ()).tex(f7, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
     }
 }
