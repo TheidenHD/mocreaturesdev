@@ -3,16 +3,12 @@
  */
 package drzhark.mocreatures.item;
 
-import drzhark.mocreatures.entity.aquatic.MoCEntityFishy;
-import drzhark.mocreatures.entity.aquatic.MoCEntityMediumFish;
-import drzhark.mocreatures.entity.aquatic.MoCEntitySmallFish;
 import drzhark.mocreatures.entity.item.MoCEntityEgg;
 import drzhark.mocreatures.init.MoCEntities;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -96,11 +92,15 @@ public class MoCItemEgg extends MoCItem {
             if (i == 30) {
                 i = 31; // For ostrich eggs. Placed eggs become stolen eggs.
             }
-            MoCEntityEgg entityegg = MoCEntities.EGG.create(world);
-            entityegg.setEggType(i);
-            entityegg.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
-            player.world.addEntity(entityegg);
-            entityegg.setMotion(entityegg.getMotion().add((world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F, world.rand.nextFloat() * 0.05F, (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F));
+            MoCEntityEgg entityEgg = MoCEntities.EGG.create(world);
+            assert entityEgg != null;
+            entityEgg.setEggType(eggType);
+            entityEgg.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
+            player.world.addEntity(entityEgg);
+
+            entityEgg.setMotion(entityEgg.getMotion().add((world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F, world.rand.nextFloat() * 0.05F, (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F));
+
+            System.out.println("[DEBUG] Placing egg with type: " + eggType);
         }
         return new ActionResult<>(ActionResultType.SUCCESS, stack);
     }
