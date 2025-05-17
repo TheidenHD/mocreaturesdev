@@ -831,6 +831,15 @@ public class MoCTools {
         if (MoCreatures.proxy.alwaysNamePets && ep instanceof EntityPlayerMP) {
             MoCMessageHandler.INSTANCE.sendTo(new MoCMessageNameGUI(((Entity) storedCreature).getEntityId()), (EntityPlayerMP) ep);
         }
+        /*if (!ep.world.isRemote && MoCreatures.proxy.alwaysNamePets && ep instanceof ServerPlayerEntity) {
+            ServerPlayerEntity serverPlayer = (ServerPlayerEntity) ep;
+
+            MoCMessageHandler.INSTANCE.sendTo(
+                    new MoCMessageNameGUI(((Entity) storedCreature).getEntityId()),
+                    serverPlayer.connection.getNetworkManager(),
+                    NetworkDirection.PLAY_TO_CLIENT
+            );
+        }*/
         storedCreature.setTamed(true);
         // Required to update petId data for pet amulets
         if (MoCreatures.instance.mapData != null && storedCreature.getOwnerPetId() == -1) {
