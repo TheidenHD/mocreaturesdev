@@ -7,7 +7,7 @@
   ],
   "key": {
     "X": {
-      "tag": "forge:leather"
+      "item": "minecraft:leather"
     },
     "#": {
       "item": "mocreatures:bigcatclaw"
