@@ -30,8 +30,12 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-    // Set username here, the UUID will be looked up automatically
-    username = System.properties['moc_extended_dev.name'] ?: 'Developer'
+            mods {
+                mocreatures {
+                    source sourceSets.main
+                }
+            }
+        }
 
         server {
             workingDirectory project.file('run')
@@ -75,71 +79,29 @@ repositories {
             includeGroup 'curse.maven'
         }
     }
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "Modrinth"
-                url = "https://api.modrinth.com/maven"
-            }
-        }
-        filter {
-            includeGroup "maven.modrinth"
-        }
+    maven { url 'https://maven.blamejared.com/' }
+    maven {
+        name = "ModMaven"
+        url = "https://modmaven.dev"
     }
-    mavenLocal() // Must be last for caching to work
 }
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.42'
 
-    // TODO: Clean up mod integration
-    // Thermal Expansion
-    implementation rfg.deobf("curse.maven:cofh-core-69162:2920433")
-    implementation rfg.deobf("curse.maven:thermal-expansion-69163:2926431")
-    runtimeOnly "curse.maven:codechicken-lib-1-8-242818:2779848"
-    implementation rfg.deobf("curse.maven:thermal-foundation-222880:2926428")
-    runtimeOnly "curse.maven:cofh-world-271384:2920434"
-    runtimeOnly "curse.maven:redstone-flux-270789:2920436"
+    implementation fg.deobf("curse.maven:jei-238222:5846870")
 
-    // Thaumcraft + Baubles
-    implementation rfg.deobf("curse.maven:thaumcraft-223628:2629023")
-    runtimeOnly "curse.maven:baubles-227083:2518667"
+    //implementation fg.deobf ("curse.maven:cofh-core-69162:4022663")
+    //implementation rfg.deobf("curse.maven:future-mc-310059:3924863")
+    //implementation rfg.deobf("curse.maven:thaumcraft-223628:2629023")
+    //implementation fg.deobf ("curse.maven:thermal-expansion-69163:4063134")
+    //implementation fg.deobf ("curse.maven:thermal-foundation-222880:4022666")
+    //implementation "com.buuz135:industrial-foregoing:1.16.5-3.2.14.7-16"
+    //implementation "curse.maven:just-enough-resources-jer-240630:4526616"
+    //implementation fg.deobf ("curse.maven:morph-229080:4397367")
+    //runtimeOnly fg.deobf ('com.hrznstudio:titanium:1.16.5-3.2.8.3-1')
 
-    // Industrial Foregoing
-    implementation "curse.maven:industrial-foregoing-266515:2745324"
-    runtimeOnly "curse.maven:forgelin-continuous-456403:5946402"
-    runtimeOnly "curse.maven:tesla-core-lib-254602:3438487"
-
-    // Morph
-    implementation "curse.maven:morph-229080:2995522"
-    runtimeOnly "curse.maven:ichunutil-229060:2801262"
-
-    // Had Enough Items + Addons
-    runtimeOnly "curse.maven:had-enough-items-557549:7282920"
-    implementation "curse.maven:just-enough-resources-jer-240630:4440936"
-
-    // Antique Suite
-    implementation "curse.maven:mantle-74924:2713386"
-    implementation "curse.maven:tinkers-antique-1242239:7242538"
-    implementation "curse.maven:antique-armory-1394222:7275086"
-
-    // Patchouli
-    implementation "curse.maven:patchouli-rofl-edition-905159:6178311"
-
-    if (project.use_mixins.toBoolean()) {
-        // Change your mixin refmap name here:
-        String mixin = modUtils.enableMixins('org.spongepowered:mixin:0.8.3', "mixins.${project.archives_base_name}.refmap.json")
-        api(mixin) {
-            transitive = false
-        }
-        annotationProcessor 'org.ow2.asm:asm-debug-all:5.2'
-        annotationProcessor 'com.google.guava:guava:24.1.1-jre'
-        annotationProcessor 'com.google.code.gson:gson:2.8.6'
-        annotationProcessor(mixin) {
-            transitive = false
-        }
-    }
-}
+    //implementation "curse.maven:pams-harvestcraft-221857:2904825"
 
     //runtimeOnly "curse.maven:baubles-227083:2518667"
     //runtimeOnly "curse.maven:codechicken-lib-1-8-242818:2779848"
@@ -165,38 +127,4 @@ jar {
     }
 }
 
-idea {
-    module {
-        inheritOutputDirs = true
-    }
-    project {
-        settings {
-            runConfigurations {
-                "1. Run Client"(Gradle) {
-                    taskNames = ["runClient"]
-                    jvmArgs = "-Dmoc_extended_dev.name=Developer"
-                }
-                "2. Run Second Client"(Gradle) {
-                    taskNames = ["runClient"]
-                    jvmArgs = "-Dmoc_extended_dev.name=Developer2"
-                }
-                "3. Run Server"(Gradle) {
-                    taskNames = ["runServer"]
-                }
-                "4. Run Obfuscated Client"(Gradle) {
-                    taskNames = ["runObfClient"]
-                    jvmArgs = "-Dmoc_extended_dev.name=DeveloperObf"
-                }
-                "5. Run Obfuscated Server"(Gradle) {
-                    taskNames = ["runObfServer"]
-                }
-            }
-            compiler.javac {
-                afterEvaluate {
-                    javacAdditionalOptions = "-encoding utf8"
-                    moduleJavacAdditionalOptions = [(project.name + ".main"): tasks.compileJava.options.compilerArgs.collect { '"' + it + '"' }.join(' ')]
-                }
-            }
-        }
-    }
-}
+jar.finalizedBy('reobfJar')
