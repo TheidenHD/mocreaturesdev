@@ -25,19 +25,16 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.JukeboxBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
-import net.minecraft.entity.item.EntityBoat;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.monster.EntityMob;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntitySlime;
-import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.passive.EntityTameable;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.init.MobEffects;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.item.BoatEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.monster.SkeletonEntity;
+import net.minecraft.entity.monster.SlimeEntity;
+import net.minecraft.entity.monster.ZombieEntity;
+import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -55,10 +52,11 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.GameRules;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldEntitySpawner;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.MobSpawnInfo;
@@ -75,6 +73,9 @@ import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class MoCTools {
 
@@ -217,7 +218,7 @@ public class MoCTools {
         if (!entity.getIsRideable() || world.isRemote) {
             return;
         }
-        dropCustomItem(entity, world, new ItemStack(Items.SADDLE, 1));
+        dropCustomItem(entity, world, new ItemStack(MoCItems.horsesaddle, 1));
         entity.setRideable(false);
     }
 
@@ -258,8 +259,7 @@ public class MoCTools {
 
             entitytarget.attackEntityFrom(DamageSource.causeMobDamage(entityattacker), 2);
             bigSmack(entityattacker, entitytarget, 0.6F);
-            // TODO: Add equip sound
-            //playCustomSound(entityattacker, MoCSoundEvents.ENTITY_GENERIC_TUD);
+            playCustomSound(entityattacker, MoCSoundEvents.ENTITY_GENERIC_TUD.get());
         }
     }
 
@@ -272,9 +272,7 @@ public class MoCTools {
 
             entitytarget.attackEntityFrom(DamageSource.causeMobDamage(entityattacker), 2);
             bigSmack(entityattacker, entitytarget, 0.6F);
-
-            // TODO: Add equip sound
-            //playCustomSound(entityattacker, MoCSoundEvents.ENTITY_GENERIC_TUD);
+            playCustomSound(entityattacker, MoCSoundEvents.ENTITY_GENERIC_TUD.get());
         }
     }
 
@@ -750,7 +748,44 @@ public class MoCTools {
         }
     }
 
-    public static IBlockState destroyRandomBlockWithIBlockState(Entity entity, double distance) {
+    public static void updatePlayerArmorEffects(PlayerEntity player) {
+        if (!MoCreatures.proxy.armorSetEffects) return;
+
+        Item boots = player.getItemStackFromSlot(EquipmentSlotType.FEET).getItem(); // Boots
+        Item legs = player.getItemStackFromSlot(EquipmentSlotType.LEGS).getItem(); // Leggings
+        Item plate = player.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem(); // Chestplate
+        Item helmet = player.getItemStackFromSlot(EquipmentSlotType.HEAD).getItem(); // Helmet
+
+        // Cave Scorpion Armor Set Effect - Night Vision
+        if (boots == MoCItems.scorpBootsCave && legs == MoCItems.scorpLegsCave && plate == MoCItems.scorpPlateCave && helmet == MoCItems.scorpHelmetCave) {
+            player.addPotionEffect(new EffectInstance(Effects.NIGHT_VISION, 300, 0));
+            return;
+        }
+
+        // Fire Scorpion Armor Set Effect - Fire Resistance
+        if (boots == MoCItems.scorpBootsNether && legs == MoCItems.scorpLegsNether && plate == MoCItems.scorpPlateNether && helmet == MoCItems.scorpHelmetNether) {
+            player.addPotionEffect(new EffectInstance(Effects.FIRE_RESISTANCE, 300, 0));
+            return;
+        }
+
+        // Frost Scorpion Armor Set Effect - Resistance
+        if (boots == MoCItems.scorpBootsFrost && legs == MoCItems.scorpLegsFrost && plate == MoCItems.scorpPlateFrost && helmet == MoCItems.scorpHelmetFrost) {
+            player.addPotionEffect(new EffectInstance(Effects.RESISTANCE, 300, 0));
+            return;
+        }
+
+        // Dirt Scorpion Armor Set Effect - Health Boost
+        if (boots == MoCItems.scorpBootsDirt && legs == MoCItems.scorpLegsDirt && plate == MoCItems.scorpPlateDirt && helmet == MoCItems.scorpHelmetDirt) {
+            player.addPotionEffect(new EffectInstance(Effects.HEALTH_BOOST, 300, 1));
+        }
+
+        // Undead Scorpion Armor Set Effect - Strength
+        if (boots == MoCItems.scorpBootsUndead && legs == MoCItems.scorpLegsUndead && plate == MoCItems.scorpPlateUndead && helmet == MoCItems.scorpHelmetUndead) {
+            player.addPotionEffect(new EffectInstance(Effects.STRENGTH, 300, 0));
+        }
+    }
+
+    public static BlockState destroyRandomBlockWithIBlockState(Entity entity, double distance) {
         int l = (int) (distance * distance * distance);
         for (int i = 0; i < l; i++) {
             int x = (int) (entity.getPosX() + entity.world.rand.nextInt((int) (distance)) - (int) (distance / 2));
@@ -802,51 +837,55 @@ public class MoCTools {
      * player.getName() as the owner of the entity, and name the entity.
      */
     public static ActionResultType tameWithName(PlayerEntity ep, IMoCTameable storedCreature) {
-        if (ep == null) {
-            return ActionResultType.PASS;
-        }
+        if (ep == null || storedCreature == null) return ActionResultType.PASS;
+
+        storedCreature.setOwnerId(ep.getUniqueID());
 
         if (MoCreatures.proxy.enableOwnership) {
-            if (storedCreature == null) {
-                ep.sendMessage(new TranslationTextComponent(TextFormatting.RED + "ERROR:" + TextFormatting.WHITE + "The stored creature is NULL and could not be created. Report to admin."), ep.getUniqueID());
-                return ActionResultType.FAIL;
-            }
-            int max;
-            max = MoCreatures.proxy.maxTamed;
-            // only check count for new pets as owners may be changing the name
+            int max = MoCreatures.proxy.maxTamed;
             if (!MoCreatures.instance.mapData.isExistingPet(ep.getUniqueID(), storedCreature)) {
                 int count = MoCTools.numberTamedByPlayer(ep);
                 if (isThisPlayerAnOP(ep)) {
                     max = MoCreatures.proxy.maxOPTamed;
                 }
                 if (count >= max) {
-                    String message = "\2474" + ep.getName() + " can not tame more creatures, limit of " + max + " reached";
-                    ep.sendMessage(new TranslationTextComponent(message), ep.getUniqueID());
+                    ep.sendMessage(new TranslationTextComponent("\2474" + ep.getName() + " can not tame more creatures, limit of " + max + " reached"), ep.getUniqueID());
                     return ActionResultType.PASS;
                 }
             }
         }
 
-        storedCreature.setOwnerId(ep.getUniqueID()); // ALWAYS SET OWNER. Required for our new pet save system.
-        if (MoCreatures.proxy.alwaysNamePets && ep instanceof EntityPlayerMP) {
-            MoCMessageHandler.INSTANCE.sendTo(new MoCMessageNameGUI(((Entity) storedCreature).getEntityId()), (EntityPlayerMP) ep);
-        }
-        /*if (!ep.world.isRemote && MoCreatures.proxy.alwaysNamePets && ep instanceof ServerPlayerEntity) {
-            ServerPlayerEntity serverPlayer = (ServerPlayerEntity) ep;
-
-            MoCMessageHandler.INSTANCE.sendTo(
-                    new MoCMessageNameGUI(((Entity) storedCreature).getEntityId()),
-                    serverPlayer.connection.getNetworkManager(),
-                    NetworkDirection.PLAY_TO_CLIENT
-            );
-        }*/
         storedCreature.setTamed(true);
-        // Required to update petId data for pet amulets
+
+        // Update petId
         if (MoCreatures.instance.mapData != null && storedCreature.getOwnerPetId() == -1) {
             MoCreatures.instance.mapData.updateOwnerPet(storedCreature);
         }
+
+        // Delay GUI opening to ensure client has the entity
+        if (!ep.world.isRemote && MoCreatures.proxy.alwaysNamePets && ep instanceof ServerPlayerEntity) {
+            ServerPlayerEntity serverPlayer = (ServerPlayerEntity) ep;
+            Entity entity = (Entity) storedCreature;
+
+            MoCTools.runLater(() -> {
+                MoCMessageHandler.INSTANCE.sendTo(
+                        new MoCMessageNameGUI(entity.getEntityId()),
+                        serverPlayer.connection.getNetworkManager(),
+                        NetworkDirection.PLAY_TO_CLIENT
+                );
+            }, 3); // Delay 3 ticks (150ms)
+        }
+
         return ActionResultType.SUCCESS;
     }
+
+    private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+    public static void runLater(Runnable task, int ticksDelay) {
+        long delayMs = ticksDelay * 50L;
+        scheduler.schedule(task, delayMs, TimeUnit.MILLISECONDS);
+    }
+
 
     public static int numberTamedByPlayer(PlayerEntity ep) {
         if (MoCreatures.instance.mapData != null && MoCreatures.instance.mapData.getPetData(ep.getUniqueID()) != null) {
@@ -890,7 +929,7 @@ public class MoCTools {
                     //blockstate.getBlock().dropBlockAsItemWithChance(entity.world, pos, blockstate, 0.20F * strength, 1); //TODO TheidenHD
                     entity.world.removeBlock(pos, false);
                     if (entity.world.rand.nextInt(3) == 0) {
-                        playCustomSound(entity, MoCSoundEvents.ENTITY_BIG_GOLEM_STEP);
+                        playCustomSound(entity, MoCSoundEvents.ENTITY_GOLEM_WALK.get());
                         count++; //only counts recovered blocks
                     }
                 }
@@ -1212,51 +1251,16 @@ public class MoCTools {
         source.read(nbttagcompound);
     }
 
-    public static Entity findTheCorrectEntity(World world, UUID searchFor) {
-        if (searchFor == null) {
-            return null;
-        }
-        Entity entity = null;
-        for (int i = 0; i < world.loadedEntityList.size(); i++) {
-            if (world.loadedEntityList.get(i) != null) {
-                Entity entity2 = world.loadedEntityList.get(i);
-                if (entity2.getUniqueID().equals(searchFor)) {
-                    entity = entity2;
-                }
-            }
-        }
-        return entity;
-    }
-
-    public static Entity getEntityRidingPlayer(EntityPlayer player) {
-        if (player.getPassengers().isEmpty()) {
-            return null;
-        }
-        // Get ID for entity that is currently riding player.
-        NBTTagCompound tag = player.getEntityData();
-        UUID animalID = tag.getUniqueId("MOCEntity_Riding_Player");
-        if (animalID == null || player.getUniqueID().equals(animalID)) {
-            return null;
-        }
-        return MoCTools.findTheCorrectEntity(player.getEntityWorld(), animalID);
-    }
-
-    public static void dismountPassengerFromEntity(Entity passenger, Entity entity, boolean force) {
-        if (!force && (passenger == null || entity == null || passenger.getRidingEntity() == null)) {
-            return;
-        }
-        if (force || entity.isSneaking() || passenger.isInWater()) {
-            if (force) MoCreatures.LOGGER.info("Forcing dismount from " + entity + " for passenger " + passenger);
-            passenger.setPositionAndUpdate(entity.posX, entity.posY + 1D, entity.posZ);
-            passenger.dismountRidingEntity();
+    public static void dismountSneakingPlayer(MobEntity entity) {
+        if (!entity.isPassenger()) return;
+        Entity entityRidden = entity.getRidingEntity();
+        if (entityRidden instanceof LivingEntity && entityRidden.isSneaking()) {
+            entity.dismount();
+            double dist = (-1.5D);
+            double newPosX = entityRidden.getPosX() + (dist * Math.sin(((LivingEntity) entityRidden).renderYawOffset / 57.29578F));
+            double newPosZ = entityRidden.getPosZ() - (dist * Math.cos(((LivingEntity) entityRidden).renderYawOffset / 57.29578F));
+            entity.setPositionAndUpdate(newPosX, entityRidden.getPosY() + 2D, newPosZ);
             MoCTools.playCustomSound(entity, SoundEvents.ENTITY_CHICKEN_EGG);
-            if (entity instanceof EntityPlayer) {
-                NBTTagCompound tag = entity.getEntityData();
-                tag.removeTag("MOCEntity_Riding_Player"); // remove the tag
-                if (IMoCEntity.class.isAssignableFrom(passenger.getClass())) {
-                    ((IMoCEntity) passenger).onStopRidingPlayer();
-                }
-            }
         }
     }
 
