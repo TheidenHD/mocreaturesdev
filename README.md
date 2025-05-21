@@ -1,32 +1,20 @@
 ![DrZhark's Mo'Creatures Extended](logo_ext_small.png)
 
-### Continued maintenance for Mo'Creatures in 1.12.2
+### Continued maintenance for Mo'Creatures in 1.16.5 & 1.20.1
 
-**Extended Team [v12.1.0 and upwards]:**
+**Nostalgia Team:**
 
-* Lead Developer, Codebase Cleanup, Spawn Logic, General Maintenance ~ ACGaming
-* Developer, Sound/Texture Artist, Language/Model Adjustments, General Maintenance ~ IcarussOne
-* Collaborator ~ DemonLexe (Alexis Kaufman)
-* QA Analyst, Testing, Entity Spawn Rules ~ xJon
+* Lead Developer, Codebase Cleanup, Spawn Logic, General Maintenance ~ multision
+* Project setup, bugfixes ~ [TheidenHD](https://github.com/TheidenHD/mocreaturesdev)
 
-**Legacy Team [v12.0.5 and below]:**
+**Legacy Team [v12.1.0 and below]:**
 
 * Author, Coding, AI, Animations, Models, Textures ~ DrZhark
 * Models, Textures ~ BlockDaddy
 * Coding ~ Bloodshot
 
-**Special Thanks:**
+**Special Thanks: Extended Team**
 
-- Project Setup, Bugfixes, Turkey Breeding ~ Dockter
-- Filch Lizards from [Primitive Mobs](https://www.curseforge.com/minecraft/mc-mods/primitive-mobs) (with permission!) ~ Daveyx0
-- Some assets used from their [texture repository](https://github.com/malcolmriley/unused-textures) ~ MCThe_Paragon (Malcolm Riley)
-- Thaumcraft aspects from their [Mo' Creatures Aspects](https://www.curseforge.com/minecraft/customization/mo-creatures-aspects) script ~ Rozmir
-- New Shark Model ~ Foreck
-- Donkey & Mule Texture Tweaks ~ Deino
-- Extra Kitty Textures ~ Paulu2015
-
-**Translators:**
-
-- French ~ nocturni
-- German ~ magiczocker10, ACGaming
-- Spanish ~ ESTEBAN1303YT
+* Lead Developer, Codebase Cleanup, Spawn Logic, General Maintenance ~ ACGaming
+* Developer, Sound Artist, Language/Model Adjustments, General Maintenance ~ IcarussOne
+* QA Analyst & Testing, Entity Spawn Rules ~ xJon
