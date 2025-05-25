@@ -12,7 +12,6 @@ import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
 import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
-import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageHeart;
 import net.minecraft.entity.Entity;
@@ -22,13 +21,16 @@ import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -37,7 +39,7 @@ import java.util.List;
 
 public class MoCEntityFishy extends MoCEntityTameableAquatic {
 
-    public static final String[] fishNames = {"Blue", "Regal Blue", "Orange White Stripe", "Light Blue", "Green Yellow", "Green", "Purple", "Yellow", "Orange Blue Stripe", "Black White", "Red"};
+    public static final String[] fishNames = {"Blue", "Orange", "Light Blue", "Lime", "Green", "Purple", "Yellow", "Cyan", "Striped", "Red"};
     private static final DataParameter<Boolean> HAS_EATEN = EntityDataManager.createKey(MoCEntityFishy.class, DataSerializers.BOOLEAN);
     public int gestationtime;
 
@@ -108,11 +110,21 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public void dropLegacyEgg() {
+    protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         int i = this.rand.nextInt(100);
-        if (i < 30) {
+        if (i < 70) {
+            Item[] fishTypes = new Item[] { Items.COD, Items.SALMON, Items.TROPICAL_FISH };
+            Item fish = fishTypes[this.rand.nextInt(fishTypes.length)];
+            entityDropItem(new ItemStack(fish), 0.0F);
+        } else {
             int j = this.rand.nextInt(2);
-            entityDropItem(new ItemStack(MoCItems.mocegg, j, getType()), 0.0F);
+
+            int fishyEggType = getTypeMoC();
+            ItemStack fishyEgg = new ItemStack(MoCItems.mocegg, j);
+
+            fishyEgg.getOrCreateTag().putInt("EggType", fishyEggType);
+
+            entityDropItem(fishyEgg, 0.0F);
         }
     }
 
@@ -266,20 +278,5 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
 
     protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.65F;
-    }
-    
-    @Override
-    protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_FISH_FLOP;
-    }
-
-    @Override
-    protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_FISH_HURT;
-    }
-
-    @Override
-    protected SoundEvent getSwimSound() {
-        return MoCSoundEvents.ENTITY_FISH_SWIM;
     }
 }
