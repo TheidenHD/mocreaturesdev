@@ -93,8 +93,8 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
 
     @Override
     public void selectType() {
-        if (getType() == 0) {
-            setType(this.rand.nextInt(11) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(this.rand.nextInt(11) + 1);
         }
     }
 
@@ -350,13 +350,15 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                 if (this.getRidingEntity() != null) {
                     MoCEntityKittyBed kittyBed = (MoCEntityKittyBed) this.getRidingEntity();
                     if (kittyBed != null && !kittyBed.getHasMilk()) {
-                        return MoCSoundEvents.ENTITY_KITTY_DRINK;
+                        return MoCSoundEvents.ENTITY_KITTY_DRINKING.get();
                     }
                     if (kittyBed != null && !kittyBed.getHasFood()) {
-                        return MoCSoundEvents.ENTITY_KITTY_EAT;
+                        return MoCSoundEvents.ENTITY_KITTY_EATING.get();
                     }
                 }
                 return null;
+            case 6:
+                return MoCSoundEvents.ENTITY_KITTY_LITTER.get();
             case 10:
                 return MoCSoundEvents.ENTITY_KITTY_AMBIENT_BABY.get();
             case 12:
@@ -443,9 +445,9 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
             }
             return ActionResultType.FAIL;
         }
-        if (getKittyState() == 7 && !stack.isEmpty() && (stack.getItem() == Items.FISH || stack.getItem() == Items.COOKED_FISH)) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EAT);
+        if (getKittyState() == 7 && !stack.isEmpty() && (stack.getItem() == Items.CAKE || ItemTags.FISHES.contains(stack.getItem()))) {
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EATING.get());
             this.setHealth(getMaxHealth());
             changeKittyState(9);
             return ActionResultType.SUCCESS;
@@ -463,38 +465,39 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
             }
             return ActionResultType.SUCCESS;
         }
-        if (getKittyState() == 13 && !stack.isEmpty() && (stack.getItem() == Items.FISH || stack.getItem() == Items.COOKED_FISH)) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EAT);
+        if (getKittyState() == 13 && !stack.isEmpty() && ItemTags.FISHES.contains(stack.getItem())) {
+            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EATING.get());
             this.setHealth(getMaxHealth());
             changeKittyState(7);
             return ActionResultType.SUCCESS;
         }
-        if (!stack.isEmpty() && getKittyState() > 2 && stack.getItem() == MoCItems.scrollOfRenaming) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
-            return MoCTools.tameWithName(player, this);
+        if (!stack.isEmpty() && getKittyState() > 2 && stack.getItem() == MoCItems.medallion || stack.getItem() == Items.BOOK) {
+            if (!this.world.isRemote) {
+                MoCTools.tameWithName(player, this);
+            }
+            return ActionResultType.SUCCESS;
         }
         if (!stack.isEmpty() && getKittyState() > 2 && pickable() && stack.getItem() == Items.LEAD) {
-            if (this.startRidingPlayer(player)) {
+            if (this.startRiding(player)) {
                 changeKittyState(14);
             }
             return ActionResultType.SUCCESS;
         }
         if (!stack.isEmpty() && getKittyState() > 2 && whipable() && stack.getItem() == MoCItems.whip) {
             setSitting(!getIsSitting());
-            setIsJumping(false);
-            getNavigator().clearPath();
-            setAttackTarget(null);
-            return true;
+            return ActionResultType.SUCCESS;
         }
-        // Can be picked up, then pick it up
-        if (getKittyState() > 2 && pickable()) {
-            if (this.startRidingPlayer(player)) {
+        if (stack.isEmpty() && getKittyState() > 2 && pickable()) {
+            if (this.startRiding(player)) {
                 changeKittyState(15);
             }
             return ActionResultType.SUCCESS;
         }
-        // Roped and not on player
+        if (stack.isEmpty() && getKittyState() == 15) {
+            changeKittyState(7);
+            return ActionResultType.SUCCESS;
+        }
         if (getKittyState() == 14 && this.getRidingEntity() != null) {
             changeKittyState(7);
             return ActionResultType.SUCCESS;
@@ -505,14 +508,6 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
     @Override
     public boolean isMovementCeased() {
         return getIsSitting() || getKittyState() == 6 || (getKittyState() == 16 && getOnTree()) || getKittyState() == 12 || getKittyState() == 17 || getKittyState() == 14 || getKittyState() == 20 || getKittyState() == 23;
-    }
-
-
-    // Called when an Entity is dismounted from riding on the Player's head.
-    @Override
-    public void onStopRidingPlayer() {
-        // Stopped riding player, reset state to Idle.
-        changeKittyState(7);
     }
 
     @Override
@@ -571,8 +566,8 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                             setPathToEntity(entityItem, f);
                         }
                         if (f < 2.0F && this.deathTime < 1) {
-                            entityItem.setDead();
-                            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EAT);
+                            entityItem.remove();
+                            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EATING.get());
                             setHungry(false);
                         }
                     }
@@ -645,7 +640,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                         break;
                     }
                     MoCEntityLitterBox litterBox = (MoCEntityLitterBox) getKittyStuff(this, 18D, true);
-                    if (litterBox == null || litterBox.isBeingRidden() || litterBox.getUsedLitter()) {
+                    if ((litterBox == null) || (litterBox.isBeingRidden()) || litterBox.getUsedLitter()) {
                         break;
                     }
                     float f6 = litterBox.getDistance(this);
@@ -820,8 +815,8 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                     }
                     break;
                 case 11: // Looking for player holding wool ball
-                    EntityPlayer player1 = this.world.getClosestPlayerToEntity(this, 18D);
-                    if (player1 == null || this.rand.nextInt(10) != 0) {
+                    PlayerEntity player1 = this.world.getClosestPlayer(this, 18D);
+                    if ((player1 == null) || (this.rand.nextInt(10) != 0)) {
                         break;
                     }
                     ItemStack stack1 = player1.inventory.getCurrentItem();
@@ -1051,7 +1046,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
             super.livingTick();
         }
         // Dismount player on both sides to prevent desyncs
-        if (this.isRiding()) MoCTools.dismountPassengerFromEntity(this, this.getRidingEntity(), false);
+        if (this.isPassenger()) MoCTools.dismountSneakingPlayer(this);
     }
 
     public boolean onMaBack() {
@@ -1083,12 +1078,10 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void setDead() {
-        // Server check required to prevent tamed entities from being duplicated on client-side
-        if (!this.world.isRemote && (getKittyState() > 2) && (getHealth() > 0)) {
-            return;
+    public void remove(boolean keepData) {
+        if (this.world.isRemote || getKittyState() <= 2 || getHealth() <= 0) {
+            super.remove(keepData);
         }
-        super.setDead();
     }
 
     public void swingArm() {

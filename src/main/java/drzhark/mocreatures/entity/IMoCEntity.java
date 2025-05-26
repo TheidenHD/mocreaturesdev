@@ -3,13 +3,9 @@
  */
 package drzhark.mocreatures.entity;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
 
-import java.util.Random;
 import java.util.UUID;
 
 public interface IMoCEntity {
@@ -27,8 +23,6 @@ public interface IMoCEntity {
     UUID getOwnerId();
 
     boolean getIsTamed();
-
-    boolean shouldRenderNameAndHealth();
 
     boolean getIsAdult();
 
@@ -97,11 +91,4 @@ public interface IMoCEntity {
     boolean isFlyer();
 
     boolean getIsFlying();
-
-    String getClazzString();
-    boolean startRidingPlayer(EntityPlayer player);
-
-    void onStopRidingPlayer();
-
-    boolean canRidePlayer();
 }

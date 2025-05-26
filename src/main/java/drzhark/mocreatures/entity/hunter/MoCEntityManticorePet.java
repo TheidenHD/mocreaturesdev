@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -90,6 +91,12 @@ public class MoCEntityManticorePet extends MoCEntityBigCat {
                 setSitting(false);
             }
 
+            return ActionResultType.SUCCESS;
+        }
+
+        final ItemStack stack = player.getHeldItem(hand);
+        if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.whip)) {
+            setSitting(!getIsSitting());
             return ActionResultType.SUCCESS;
         }
 

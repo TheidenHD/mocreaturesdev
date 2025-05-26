@@ -3,35 +3,11 @@
  */
 package drzhark.mocreatures.network.command;
 
-import com.mojang.authlib.GameProfile;
-import drzhark.mocreatures.MoCConstants;
-import drzhark.mocreatures.MoCTools;
-import drzhark.mocreatures.MoCreatures;
-import drzhark.mocreatures.config.MoCConfigCategory;
-import drzhark.mocreatures.config.MoCConfiguration;
-import drzhark.mocreatures.config.MoCProperty;
-import drzhark.mocreatures.entity.MoCEntityAnimal;
-import drzhark.mocreatures.entity.tameable.IMoCTameable;
-import drzhark.mocreatures.entity.MoCEntityData;
-import drzhark.mocreatures.entity.tameable.IMoCTameable;
-import drzhark.mocreatures.entity.tameable.MoCPetData;
 import net.minecraft.command.CommandSource;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.server.ServerWorld;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class CommandMoCreatures {
 
@@ -53,11 +29,11 @@ public class CommandMoCreatures {
         commands.add("/moc easybreeding <boolean>");
         commands.add("/moc elephantbulldozer <boolean>");
         commands.add("/moc enableownership <boolean>");
+        commands.add("/moc enableresetownerscroll <boolean>");
         commands.add("/moc fireogrechance <int>");
         commands.add("/moc fireogrestrength <float>");
         commands.add("/moc frequency <entity> <int>");
         commands.add("/moc golemdestroyblocks <boolean>");
-        commands.add("/moc growup <petid>");
         commands.add("/moc tamed");
         commands.add("/moc tamed <playername>");
         commands.add("/moc maxchunk <entity> <int>");
@@ -90,12 +66,12 @@ public class CommandMoCreatures {
         tabCompletionStrings.add("easybreeding");
         tabCompletionStrings.add("elephantbulldozer");
         tabCompletionStrings.add("enableownership");
+        tabCompletionStrings.add("enableresetownerscroll");
         tabCompletionStrings.add("fireogrechance");
         tabCompletionStrings.add("fireogrestrength");
         tabCompletionStrings.add("forcedespawns");
         tabCompletionStrings.add("frequency");
         tabCompletionStrings.add("golemdestroyblocks");
-        tabCompletionStrings.add("growup");
         tabCompletionStrings.add("tamed");
         tabCompletionStrings.add("maxchunk");
         tabCompletionStrings.add("maxspawn");
@@ -321,56 +297,6 @@ public class CommandMoCreatures {
             sender.sendMessage(new TranslationTextComponent(TextFormatting.RED + "Could not find player "
                     + TextFormatting.GREEN + par2 + TextFormatting.RED
                     + ". Please verify the player is online and/or name was entered correctly."));
-        } else if (command.equalsIgnoreCase("growup") && args.length == 2) {
-            int petId;
-            try {
-                petId = Integer.parseInt(par2);
-            } catch (NumberFormatException e) {
-                petId = -1;
-            }
-            String playername = sender.getName();
-            EntityPlayerMP player =
-                    FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(playername);
-            if (player == null) {
-                return;
-            }
-            // search for tamed entity in mocreatures.dat
-            MoCPetData ownerPetData = MoCreatures.instance.mapData.getPetData(player.getUniqueID());
-            if (ownerPetData != null) {
-                boolean found = false;
-                for (int i = 0; i < ownerPetData.getTamedList().tagCount(); i++) {
-                    NBTTagCompound nbt = ownerPetData.getTamedList().getCompoundTagAt(i);
-                    if (nbt.hasKey("PetId") && nbt.getInteger("PetId") == petId) {
-                        String petName = nbt.getString("Name");
-                        WorldServer world = DimensionManager.getWorld(nbt.getInteger("Dimension"));
-                        for (int j = 0; j < world.loadedEntityList.size(); j++) {
-                            Entity entity = world.loadedEntityList.get(j);
-                            if (MoCEntityAnimal.class.isAssignableFrom(entity.getClass())) {
-                                MoCEntityAnimal mocreature = (MoCEntityAnimal) entity;
-                                if (mocreature.getOwnerPetId() == petId) {
-                                    found = true;
-                                    if (mocreature.getIsAdult()) {
-                                        sender.sendMessage(new TextComponentTranslation("Pet " + TextFormatting.GREEN
-                                                + petId + TextFormatting.WHITE + " named " +  TextFormatting.GREEN + petName + TextFormatting.WHITE + " is already an adult."));
-                                    } else {
-                                        // force the pet to grow up, bypassing the normal growth process
-                                        mocreature.setAge(mocreature.getMaxAge());
-                                        sender.sendMessage(new TextComponentTranslation("Pet " + TextFormatting.GREEN
-                                                + petId + TextFormatting.WHITE + " named " +  TextFormatting.GREEN + petName + TextFormatting.WHITE + " has been grown up."));
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                        break;
-                    }
-                }
-                if (!found) {
-                    sender.sendMessage(new TextComponentTranslation("Tamed entity with ID " + TextFormatting.GREEN + petId + TextFormatting.WHITE + "could not be located."));
-                }
-            } else {
-                sender.sendMessage(new TextComponentTranslation("Tamed entity with ID " + TextFormatting.GREEN + petId + TextFormatting.WHITE + "could not be located."));
-            }
         }
         // START ENTITY FREQUENCY/BIOME SECTION
         else if (args.length >= 2
