@@ -34,7 +34,6 @@ public class CompatHandler {
             if (Files.exists(file.toPath())) {
                 File tempFile = new File(Minecraft.getInstance().gameDir, "config" + File.separator + "mia" + File.separator + "mocreatures_temp.cfg");
                 List<String> configEntries = new ArrayList<>();
-                configEntries.add("Enable FutureMC integration");
                 configEntries.add("Enable Hatchery integration");
                 configEntries.add("Enable Ice and Fire additions");
                 configEntries.add("Enable Industrial Foregoing integration");
