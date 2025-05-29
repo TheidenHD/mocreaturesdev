@@ -132,9 +132,8 @@ dependencies {
     implementation "curse.maven:tinkers-construct-74072:2902483"
     implementation "curse.maven:constructs-armory-287683:3174535"
 
-    // Unused
-    //implementation rfg.deobf("maven.modrinth:crossbow:1.1.0")
-    //runtimeOnly "com.cleanroommc:assetmover:2.5"
+    // Patchouli
+    implementation "curse.maven:patchouli-rofl-edition-905159:6178311"
 
     if (project.use_mixins.toBoolean()) {
         // Change your mixin refmap name here:
