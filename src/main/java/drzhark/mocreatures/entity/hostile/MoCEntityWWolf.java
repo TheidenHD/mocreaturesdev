@@ -53,11 +53,11 @@ public class MoCEntityWWolf extends MoCEntityMob {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new SwimGoal(this));
-        this.goalSelector.addGoal(2, new MoCEntityWWolf.AIWolfAttack(this));
+        this.goalSelector.addGoal(2, new MoCEntityWWolf.AIWolfAttack(this, 1.0D, false));
         this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(2, new MoCEntityWWolf.AIWolfTarget<>(this, PlayerEntity.class));
-        this.targetSelector.addGoal(3, new MoCEntityWWolf.AIWolfTarget<>(this, IronGolemEntity.class));
+        this.targetSelector.addGoal(2, new MoCEntityWWolf.AIWolfTarget<>(this, PlayerEntity.class, false));
+        this.targetSelector.addGoal(3, new MoCEntityWWolf.AIWolfTarget<>(this, IronGolemEntity.class, true));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {

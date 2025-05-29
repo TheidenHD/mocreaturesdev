@@ -316,6 +316,10 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
                 setIsFollowingOwnerPlayer(false);
             }
 
+            if (this.getIsFollowingOwnerPlayer() && ++this.followPlayerCounter > 50) {
+                setIsFollowingOwnerPlayer(false);
+            }
+
             this.getNavigator().tick();
         }
 
@@ -870,6 +874,10 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
         return false;
     }
 
+    public boolean isReadyToFollowOwnerPlayer() {
+        return false;
+    }
+
     @Override
     public boolean canBeLeashedTo(PlayerEntity player) {
         if (!this.world.isRemote && !MoCTools.isThisPlayerAnOP(player) && this.getIsTamed() && !player.getUniqueID().equals(this.getOwnerId())) {
@@ -899,6 +907,17 @@ public abstract class MoCEntityAnimal extends AnimalEntity implements IMoCEntity
             this.huntingCounter = 0;
         }
     }
+    public boolean getIsFollowingOwnerPlayer() {
+        return this.followPlayerCounter != 0;
+    }
+    public void setIsFollowingOwnerPlayer(boolean flag) {
+        if (flag) {
+            this.followPlayerCounter = this.rand.nextInt(30) + 1;
+        } else {
+            this.followPlayerCounter = 0;
+        }
+    }
+
     public boolean getIsFollowingOwnerPlayer() {
         return this.followPlayerCounter != 0;
     }

@@ -530,6 +530,9 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
         return n;
     }
 
+    @Override
+    public boolean isReadyToFollowOwnerPlayer() { return !this.isMovementCeased(); }
+
     // TODO: Overhaul acceptable food
     @Override
     protected boolean isMyHealFood(ItemStack itemstack) {

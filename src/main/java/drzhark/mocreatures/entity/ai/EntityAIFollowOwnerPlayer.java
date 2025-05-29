@@ -58,6 +58,10 @@ public class EntityAIFollowOwnerPlayer extends Goal {
             return false;
         }
 
+        if (!((MoCEntityAnimal) this.thePet).getIsFollowingOwnerPlayer()) {
+            return false;
+        }
+
         UUID ownerUniqueId = ((IMoCTameable) this.thePet).getOwnerId();
         if (ownerUniqueId == null) {
             return false;

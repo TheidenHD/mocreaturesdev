@@ -67,11 +67,11 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new SwimGoal(this));
-        this.goalSelector.addGoal(2, new MoCEntityGolem.AIGolemAttack(this));
+        this.goalSelector.addGoal(2, new MoCEntityGolem.AIGolemAttack(this, 1.0D, true));
         this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(2, new MoCEntityGolem.AIGolemTarget<>(this, PlayerEntity.class));
-        this.targetSelector.addGoal(3, new MoCEntityGolem.AIGolemTarget<>(this, IronGolemEntity.class));
+        this.targetSelector.addGoal(2, new MoCEntityGolem.AIGolemTarget<>(this, PlayerEntity.class, true));
+        this.targetSelector.addGoal(3, new MoCEntityGolem.AIGolemTarget<>(this, IronGolemEntity.class, true));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {

@@ -388,6 +388,9 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
     }
 
     @Override
+    public boolean isReadyToFollowOwnerPlayer() { return !this.isMovementCeased(); }
+
+    @Override
     public boolean isAmphibian() {
         return true;
     }

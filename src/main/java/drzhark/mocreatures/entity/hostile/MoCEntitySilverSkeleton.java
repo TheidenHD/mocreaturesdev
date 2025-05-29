@@ -46,11 +46,11 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new SwimGoal(this));
-        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0D, true));
+        this.goalSelector.addGoal(2, new MoCEntitySilverSkeleton.AISkeletonAttack(this, 1.0D, true));
         this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-        this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
-        this.targetTasks.addTask(2, new MoCEntitySilverSkeleton.AISkeletonTarget<>(this, EntityPlayer.class, false));
-        this.targetTasks.addTask(3, new MoCEntitySilverSkeleton.AISkeletonTarget<>(this, EntityIronGolem.class, true));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new MoCEntitySilverSkeleton.AISkeletonTarget<>(this, PlayerEntity.class, false));
+        this.targetSelector.addGoal(3, new MoCEntitySilverSkeleton.AISkeletonTarget<>(this, IronGolemEntity.class, false));
     }
 
     @Override
@@ -154,16 +154,11 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
     protected ResourceLocation getLootTable() {        return MoCLootTables.SILVER_SKELETON;
     }
 
-    @Override
-    protected boolean isHarmedByDaylight() {
-        return true;
-    }
-
     protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return this.getHeight() * 0.905F;
     }
-    
-    static class AISkeletonAttack extends EntityAIAttackMelee {
+
+    static class AISkeletonAttack extends MeleeAttackGoal {
         public AISkeletonAttack(MoCEntitySilverSkeleton skeleton, double speed, boolean useLongMemory) {
             super(skeleton, speed, useLongMemory);
         }
@@ -181,14 +176,14 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
         }
     }
 
-    static class AISkeletonTarget<T extends EntityLivingBase> extends EntityAINearestAttackableTarget<T> {
+    static class AISkeletonTarget<T extends LivingEntity> extends NearestAttackableTargetGoal<T> {
         public AISkeletonTarget(MoCEntitySilverSkeleton skeleton, Class<T> classTarget, boolean checkSight) {
             super(skeleton, classTarget, checkSight);
         }
 
         @Override
         public boolean shouldExecute() {
-            float f = this.taskOwner.getBrightness();
+            float f = this.goalOwner.getBrightness();
             return f < 0.5F && super.shouldExecute();
         }
     }

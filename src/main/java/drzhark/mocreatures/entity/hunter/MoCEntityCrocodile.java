@@ -56,9 +56,11 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
         this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(7, new EntityAIWanderMoC2(this, 0.9D));
         this.goalSelector.addGoal(9, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-        this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
-        //this.targetTasks.addTask(2, new EntityAIHunt<>(this, EntityAnimal.class, true));
-        this.targetTasks.addTask(3, new EntityAIHunt<>(this, EntityPlayer.class, false));
+
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        //this.targetSelector.addGoal(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
+        this.targetSelector.addGoal(3, new EntityAIHunt<>(this, PlayerEntity.class, false));
+
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
