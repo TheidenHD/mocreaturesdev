@@ -8,7 +8,8 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
 import drzhark.mocreatures.init.MoCEntities;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -24,6 +25,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import java.util.Iterator;
 import java.util.List;
@@ -56,8 +58,9 @@ public class MoCEntityThrowableRock extends Entity {
         return rock;
     }
 
-    public IBlockState getState() {
-        return Block.getStateById(this.dataManager.get(ROCK_STATE) & 65535);
+    public BlockState getState() {
+        BlockState state = Block.getStateById(this.dataManager.get(ROCK_STATE) & 65535);
+        return (state == null || state.isAir()) ? Blocks.STONE.getDefaultState() : state; // fallback for safety
     }
 
     public void setState(IBlockState state) {
@@ -98,7 +101,7 @@ public class MoCEntityThrowableRock extends Entity {
 
     @Override
     public IPacket<?> createSpawnPacket() {
-        return new SSpawnObjectPacket(this);
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
