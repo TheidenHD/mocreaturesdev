@@ -12,10 +12,11 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
+import com.mojang.blaze3d.platform.InputConstants;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID, value = Dist.CLIENT)
@@ -23,15 +24,17 @@ public class MoCKeyHandler {
 
     static KeyBinding diveBinding = new KeyBinding("Flying Mount Descent (Mo' Creatures)", Keyboard.KEY_Z, "key.categories.movement");
 
-    public MoCKeyHandler() {
-        ClientRegistry.registerKeyBinding(diveBinding);
+    @SubscribeEvent
+    public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
+        event.register(diveBinding);
     }
 
     @SubscribeEvent
-    public void onInput(TickEvent.PlayerTickEvent e) {
+    public static void onInput(TickEvent.PlayerTickEvent e) {
+        if (e.phase != TickEvent.Phase.END) return;
 
-        boolean kbJump = MoCProxyClient.mc.gameSettings.keyBindJump.isKeyDown();
-        boolean kbDive = diveBinding.isKeyDown();
+        boolean kbJump = MoCProxyClient.mc.options.keyJump.isDown();
+        boolean kbDive = diveBinding.isDown();
 
         boolean kbJump = MoCProxyClient.mc.gameSettings.keyBindJump.getKeyCode() >= 0 ? GameSettings.isKeyDown(MoCProxyClient.mc.gameSettings.keyBindJump) : keyPressed == MoCProxyClient.mc.gameSettings.keyBindJump.getKeyCode();
         boolean kbDive = diveBinding.getKeyCode() >= 0 ? GameSettings.isKeyDown(diveBinding) : keyPressed == diveBinding.getKeyCode();
@@ -41,13 +44,13 @@ public class MoCKeyHandler {
          */
         if (kbJump && ep.getRidingEntity() != null && ep.getRidingEntity() instanceof IMoCEntity) {
             // jump code needs to be executed client/server simultaneously to take
-            ((IMoCEntity) e.player.getRidingEntity()).makeEntityJump();
+            ((IMoCEntity) e.player.getVehicle()).makeEntityJump();
             MoCMessageHandler.INSTANCE.sendToServer(new MoCMessageEntityJump());
         }
 
-        if (kbDive && e.player.getRidingEntity() != null && e.player.getRidingEntity() instanceof IMoCEntity) {
-            // jump code needs to be executed client/server simultaneously to take
-            ((IMoCEntity) e.player.getRidingEntity()).makeEntityDive();
+        if (kbDive && e.player.getVehicle() != null && e.player.getVehicle() instanceof IMoCEntity) {
+            // dive code needs to be executed client/server simultaneously to take
+            ((IMoCEntity) e.player.getVehicle()).makeEntityDive();
             MoCMessageHandler.INSTANCE.sendToServer(new MoCMessageEntityDive());
         }
     }

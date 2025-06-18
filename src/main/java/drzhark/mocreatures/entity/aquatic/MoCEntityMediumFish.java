@@ -19,67 +19,69 @@ public class MoCEntityMediumFish extends MoCEntityTameableAquatic {
 
     public static final String[] fishNames = {"Salmon", "Cod", "Bass"};
 
-    public MoCEntityMediumFish(EntityType<? extends MoCEntityMediumFish> type, World world) {
+    public MoCEntityMediumFish(EntityType<? extends MoCEntityMediumFish> type, Level world) {
         super(type, world);
         //setSize(0.7f, 0.45f);
         // TODO: Make hitboxes adjust depending on size
-        //setAge(30 + this.rand.nextInt(70));
-        setAge(100);
+        //setAge(30 + this.random.nextInt(70));
+        setMoCAge(100);
     }
 
-    public static MoCEntityMediumFish createEntity(World world, int type) {
+    public static MoCEntityMediumFish createEntity(Level world, int type) {
         if (type == 1) {
-            return MoCEntities.SALMON.create(world);
+            return (MoCEntityMediumFish) MoCEntities.SALMON.get().create(world);
         }
         if (type == 2) {
-            return MoCEntities.COD.create(world);
+            return (MoCEntityMediumFish) MoCEntities.COD.get().create(world);
         }
         if (type == 3) {
-            return MoCEntities.BASS.create(world);
+            return (MoCEntityMediumFish) MoCEntities.BASS.get().create(world);
         }
-        return MoCEntities.SALMON.create(world);
+        return (MoCEntityMediumFish) MoCEntities.SALMON.get().create(world);
     }
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(3, new EntityAIFleeFromEntityMoC(this, entity -> (entity.getHeight() > 0.6F && entity.getWidth() > 0.3F), 2.0F, 0.6D, 1.5D));
+        this.goalSelector.addGoal(3, new EntityAIFleeFromEntityMoC(this, entity -> (entity.getBbHeight() > 0.6F && entity.getBbWidth() > 0.3F), 2.0F, 0.6D, 1.5D));
         this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 1.0D, 50));
     }
 
-    public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return MoCEntityTameableAquatic.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 7.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.5D);
+    public static AttributeSupplier.Builder createAttributes() {
+        return MoCEntityTameableAquatic.createMobAttributes()
+            .add(Attributes.MAX_HEALTH, 7.0D)
+            .add(Attributes.MOVEMENT_SPEED, 0.5D);
     }
 
     @Override
     public void selectType() {
         if (getTypeMoC() == 0) {
-            setTypeMoC(this.rand.nextInt(fishNames.length) + 1);
+            setTypeMoC(this.random.nextInt(fishNames.length) + 1);
         }
     }
 
     @Override
-    public void livingTick() {
-        super.livingTick();
+    public void aiStep() {
+        super.aiStep();
 
-        if (!this.world.isRemote) {
-            if (getIsTamed() && this.rand.nextInt(100) == 0 && getHealth() < getMaxHealth()) {
+        if (!this.level().isClientSide()) {
+            if (getIsTamed() && this.random.nextInt(100) == 0 && getHealth() < getMaxHealth()) {
                 this.setHealth(getMaxHealth());
             }
         }
-        if (!this.areEyesInFluid(FluidTags.WATER)) {
-            this.prevRenderYawOffset = this.renderYawOffset = this.rotationYaw = this.prevRotationYaw;
-            this.rotationPitch = this.prevRotationPitch;
+        if (!this.isEyeInFluid(FluidTags.WATER)) {
+            this.yBodyRot = this.getYRot();
+            this.setXRot(this.getXRot());
         }
     }
 
     @Override
     public float getSizeFactor() {
-        return getAge() * 0.0081F;
+        return getMoCAge() * 0.0081F;
     }
 
     @Override
     public float getAdjustedYOffset() {
-        if (!this.areEyesInFluid(FluidTags.WATER)) {
+        if (!this.isEyeInFluid(FluidTags.WATER)) {
             return 1F;
         }
         return 0.5F;
@@ -93,7 +95,7 @@ public class MoCEntityMediumFish extends MoCEntityTameableAquatic {
     @OnlyIn(Dist.CLIENT)
     @Override
     public float yawRotationOffset() {
-        if (!this.areEyesInFluid(FluidTags.WATER)) {
+        if (!this.isEyeInFluid(FluidTags.WATER)) {
             return 90F;
         }
         return 90F + super.yawRotationOffset();
@@ -101,7 +103,7 @@ public class MoCEntityMediumFish extends MoCEntityTameableAquatic {
 
     @Override
     public float rollRotationOffset() {
-        if (!isInWater() && this.onGround) {
+        if (!isInWater() && this.onGround()) {
             return -90F;
         }
         return 0F;
@@ -131,7 +133,7 @@ public class MoCEntityMediumFish extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public float getAIMoveSpeed() {
+    public float getSpeed() {
         return 0.15F;
     }
 
@@ -160,8 +162,9 @@ public class MoCEntityMediumFish extends MoCEntityTameableAquatic {
         return getIsTamed();
     }
 
-    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
-        return this.getHeight() * 0.775F;
+    @Override
+    protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
+        return this.getBbHeight() * 0.775F;
     }
     
     @Override

@@ -1,9 +1,5 @@
-/*
- * GNU GENERAL PUBLIC LICENSE Version 3
- */
 package drzhark.mocreatures.item;
 
-import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -27,21 +23,20 @@ import java.util.List;
 
 public class MoCItemAxe extends AxeItem {
 
-    private int specialWeaponType = 0;
+    private final int specialWeaponType;
 
-
-    public MoCItemAxe(Item.Properties properties, String name, IItemTier material, float damage, float speed) {
-        super(material, damage - 1.0F, speed - 4.0F, properties.group(MoCreatures.tabMoC));
-        this.setRegistryName(MoCConstants.MOD_ID, name);
+    public MoCItemAxe(Item.Properties properties, Tier material, float damage, float speed) {
+        super(material, damage - 1.0F, speed - 4.0F, properties);
+        this.specialWeaponType = 0;
     }
 
-    public MoCItemAxe(Item.Properties properties, String name, IItemTier material, float damage, float speed, int damageType) {
-        this(properties, name, material, damage, speed);
+    public MoCItemAxe(Item.Properties properties, Tier material, float damage, float speed, int damageType) {
+        super(material, damage - 1.0F, speed - 4.0F, properties);
         this.specialWeaponType = damageType;
     }
 
     @Override
-    public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (MoCreatures.proxy.weaponEffects) {
             EnumHand hand = attacker.getActiveHand() == null ? EnumHand.MAIN_HAND : attacker.getActiveHand();
             int timer = 10; // In seconds
@@ -53,16 +48,24 @@ public class MoCItemAxe extends AxeItem {
                     target.addPotionEffect(new PotionEffect(MobEffects.POISON, (timer * 20) + poisonous, 1));
                     break;
                 case 2: // Slowness
-                    target.addPotionEffect(new EffectInstance(Effects.SLOWNESS, timer * 20, 0));
+                    target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, timer * 20, 0));
                     break;
                 case 3: // Fire
                     target.setFire(timer + fire_aspect);
                     break;
-                case 4: // Weakness (Nausea for players)
-                    target.addPotionEffect(new EffectInstance(target instanceof PlayerEntity ? Effects.NAUSEA : Effects.WEAKNESS, timer * 20, 0));
+                case 4: // Weakness or Nausea
+                    if (target instanceof Player) {
+                        target.addEffect(new MobEffectInstance(MobEffects.CONFUSION, timer * 20, 0));
+                    } else {
+                        target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, timer * 20, 0));
+                    }
                     break;
-                case 5: // Wither (Blindness for players)
-                    target.addPotionEffect(new EffectInstance(target instanceof PlayerEntity ? Effects.BLINDNESS : Effects.WITHER, timer * 20, 0));
+                case 5: // Wither or Blindness
+                    if (target instanceof Player) {
+                        target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, timer * 20, 0));
+                    } else {
+                        target.addEffect(new MobEffectInstance(MobEffects.WITHER, timer * 20, 0));
+                    }
                     break;
                 default:
                     break;
@@ -75,7 +78,7 @@ public class MoCItemAxe extends AxeItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
         if (MoCreatures.proxy.weaponEffects) {
             switch (this.specialWeaponType) {
                 case 1: // Poison 2

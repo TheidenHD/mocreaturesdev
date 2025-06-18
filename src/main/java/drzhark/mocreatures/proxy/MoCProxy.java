@@ -11,12 +11,14 @@ import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.MoCEntityData;
 import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraftforge.common.BiomeDictionary;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.tags.TagKey;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.File;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("removal")
 public class MoCProxy {
 
     protected static final String CATEGORY_MOC_GENERAL_SETTINGS = "global-settings";
@@ -139,10 +142,10 @@ public class MoCProxy {
     public void VacuumFX(MoCEntityGolem entity) {
     }
 
-    public void hammerFX(PlayerEntity entityplayer) {
+    public void hammerFX(Player entityplayer) {
     }
 
-    public void teleportFX(PlayerEntity entity) {
+    public void teleportFX(Player entity) {
     }
 
     public boolean getAnimateTextures() {
@@ -189,7 +192,7 @@ public class MoCProxy {
         return null;
     }
 
-    public PlayerEntity getPlayer() {
+    public Player getPlayer() {
         return null;
     }
 
@@ -197,11 +200,15 @@ public class MoCProxy {
     public void printMessageToPlayer(String msg) {
     }
 
-    public List<BiomeDictionary.Type> parseBiomeTypes(String[] biomeNames) {
-        List<BiomeDictionary.Type> biomeTypes = new ArrayList<>();
+    public List<TagKey<Biome>> parseBiomeTypes(String[] biomeNames) {
+        List<TagKey<Biome>> biomeTypes = new ArrayList<>();
         for (String biomeName : biomeNames) {
-            BiomeDictionary.Type biomeType = BiomeDictionary.Type.getType(biomeName);
-            biomeTypes.add(biomeType);
+            try {
+                TagKey<Biome> biomeTag = TagKey.create(Registries.BIOME, new ResourceLocation(biomeName));
+                biomeTypes.add(biomeTag);
+            } catch (Exception e) {
+                MoCreatures.LOGGER.error("Error parsing biome tag: " + biomeName, e);
+            }
         }
         return biomeTypes;
     }
@@ -211,14 +218,14 @@ public class MoCProxy {
             for (MoCEntityData entityData : MoCreatures.mocEntityMap.values()) {
                 MoCConfigCategory cat = this.mocEntityConfig.getCategory(entityData.getEntityName().toLowerCase());
                 if (!cat.containsKey("biomeTypes")) {
-                    cat.put("biomeTypes", new MoCProperty("biomeTypes", Arrays.toString(entityData.getBiomeTypes().toArray()), MoCProperty.Type.STRING));
+                    cat.put("biomeTypes", new MoCProperty("biomeTypes", Arrays.toString(entityData.getBiomeTags().toArray()), MoCProperty.Type.STRING));
                 } else {
-                    entityData.setBiomeTypes(parseBiomeTypes(cat.get("biomeTypes").value.replaceAll(" ", "").replaceAll("\\[", "").replaceAll("]", "").split(",")));
+                    entityData.setBiomeTags(parseBiomeTypes(cat.get("biomeTypes").value.replaceAll(" ", "").replaceAll("\\[", "").replaceAll("]", "").split(",")));
                 }
                 if (!cat.containsKey("blockedBiomeTypes")) {
-                    cat.put("blockedBiomeTypes", new MoCProperty("blockedBiomeTypes", Arrays.toString(entityData.getBlockedBiomeTypes().toArray()), MoCProperty.Type.STRING));
+                    cat.put("blockedBiomeTypes", new MoCProperty("blockedBiomeTypes", Arrays.toString(entityData.getBlockedBiomeTags().toArray()), MoCProperty.Type.STRING));
                 } else {
-                    entityData.setBlockedBiomeTypes(parseBiomeTypes(cat.get("blockedBiomeTypes").value.replaceAll(" ", "").replaceAll("\\[", "").replaceAll("]", "").split(",")));
+                    entityData.setBlockedBiomeTags(parseBiomeTypes(cat.get("blockedBiomeTypes").value.replaceAll(" ", "").replaceAll("\\[", "").replaceAll("]", "").split(",")));
                 }
                 if (!cat.containsKey("canSpawn")) {
                     cat.put("canSpawn", new MoCProperty("canSpawn", Boolean.toString(entityData.getCanSpawn()), MoCProperty.Type.BOOLEAN));
@@ -230,11 +237,6 @@ public class MoCProxy {
                 } else {
                     entityData.setFrequency(Integer.parseInt(cat.get("frequency").value));
                 }
-                //if (!cat.containsKey("maxChunk")) {
-                //    cat.put("maxChunk", new MoCProperty("maxChunk", Integer.toString(entityData.getMaxInChunk()), MoCProperty.Type.INTEGER));
-                //} else {
-                //    entityData.setMaxInChunk(Integer.parseInt(cat.get("maxChunk").value));
-                //}
                 if (!cat.containsKey("maxSpawn")) {
                     cat.put("maxSpawn", new MoCProperty("maxSpawn", Integer.toString(entityData.getMaxSpawn()), MoCProperty.Type.INTEGER));
                 } else {
@@ -313,28 +315,25 @@ public class MoCProxy {
         this.wyvernDimension = this.mocSettingsConfig.get(CATEGORY_MOC_ID_SETTINGS, "WyvernLairDimensionID", -17, "The dimension ID of the wyvern lair.").getInt();
         this.wyvernEggDropChance = this.mocSettingsConfig.get(CATEGORY_MOC_CREATURE_GENERAL_SETTINGS, "WyvernEggDropChance", 33, "The percentage for wyverns to drop an egg.").getInt();
 
-        // Save
+        // Custom ID settings
+        this.allowInstaSpawn = this.mocSettingsConfig.get(CATEGORY_MOC_ID_SETTINGS, "AllowInstaSpawn", false, "Used for debugging purposes.").getBoolean(false);
+
+        if (this.debug) {
+            MoCreatures.LOGGER.info("Settings loaded.");
+        }
         this.mocSettingsConfig.save();
     }
 
-    // Client side only
     public void registerRenderers() {
     }
 
-    // Client side only
     public void registerRenderInformation() {
     }
 
-    /***
-     * Dummy to know if is dedicated server or not
-     */
     public int getProxyMode() {
-        return 1;
+        return 0;
     }
 
-    /**
-     * Sets the name on client side. Name is synchronized with data watchers
-     */
-    public void setName(PlayerEntity player, IMoCEntity mocanimal) {
+    public void setName(Player player, IMoCEntity mocanimal) {
     }
 }

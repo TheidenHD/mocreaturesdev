@@ -1,9 +1,5 @@
-/*
- * GNU GENERAL PUBLIC LICENSE Version 3
- */
 package drzhark.mocreatures.item;
 
-import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -28,20 +24,20 @@ import java.util.List;
 
 public class MoCItemSword extends SwordItem {
 
-    private int specialWeaponType = 0;
+    private final int specialWeaponType;
 
-    public MoCItemSword(Item.Properties properties, String name, IItemTier material) {
-        super(material, 3, -2.4F, properties.group(MoCreatures.tabMoC));
-        this.setRegistryName(MoCConstants.MOD_ID, name);
+    public MoCItemSword(Item.Properties properties, Tier material) {
+        super(material, 3, -2.4F, properties);
+        this.specialWeaponType = 0;
     }
 
-    public MoCItemSword(Item.Properties properties, String name, IItemTier material, int damageType) {
-        this(properties, name, material);
+    public MoCItemSword(Item.Properties properties, Tier material, int damageType) {
+        super(material, 3, -2.4F, properties);
         this.specialWeaponType = damageType;
     }
 
     @Override
-    public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (MoCreatures.proxy.weaponEffects) {
             EnumHand hand = attacker.getActiveHand() == null ? EnumHand.MAIN_HAND : attacker.getActiveHand();
             int timer = 8; // In seconds
@@ -53,29 +49,30 @@ public class MoCItemSword extends SwordItem {
                     target.addPotionEffect(new PotionEffect(MobEffects.POISON, (timer * 20) + poisonous, 1));
                     break;
                 case 2: // Slowness
-                    target.addPotionEffect(new EffectInstance(Effects.SLOWNESS, timer * 20, 0));
+                    target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, timer, 0));
                     break;
                 case 3: // Fire
                     target.setFire(timer + fire_aspect);
                     break;
                 case 4: // Weakness (Nausea for players)
-                    target.addPotionEffect(new EffectInstance(target instanceof PlayerEntity ? Effects.NAUSEA : Effects.WEAKNESS, timer * 20, 0));
+                    target.addEffect(new MobEffectInstance(
+                            target instanceof Player ? MobEffects.CONFUSION : MobEffects.WEAKNESS, timer, 0));
                     break;
                 case 5: // Wither (Blindness for players)
-                    target.addPotionEffect(new EffectInstance(target instanceof PlayerEntity ? Effects.BLINDNESS : Effects.WITHER, timer * 20, 0));
-                    break;
-                default:
+                    target.addEffect(new MobEffectInstance(
+                            target instanceof Player ? MobEffects.BLINDNESS : MobEffects.WITHER, timer, 0));
                     break;
             }
         }
 
-        return super.hitEntity(stack, target, attacker);
+        return super.hurtEnemy(stack, target, attacker);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (MoCreatures.proxy.weaponEffects) {
+            String translationKey = null;
             switch (this.specialWeaponType) {
                 case 1: // Poison 2
                     tooltip.add(TextFormatting.BLUE + I18n.format("info." + MoCConstants.MOD_ID + ".sting_weapon_dirt", 8));
@@ -94,6 +91,9 @@ public class MoCItemSword extends SwordItem {
                     break;
                 default:
                     break;
+            }
+            if (translationKey != null) {
+                tooltip.add(Component.translatable(translationKey).withStyle(ChatFormatting.BLUE));
             }
         }
     }

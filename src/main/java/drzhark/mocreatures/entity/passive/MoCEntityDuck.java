@@ -32,7 +32,7 @@ public class MoCEntityDuck extends MoCEntityAnimal {
     public float field_70888_h;
     public float field_70889_i = 1.0F;
 
-    public MoCEntityDuck(EntityType<? extends MoCEntityDuck> type, World world) {
+    public MoCEntityDuck(EntityType<? extends MoCEntityDuck> type, Level world) {
         super(type, world);
         this.texture = "duck.png";
         //setSize(0.4F, 0.7F);
@@ -40,14 +40,14 @@ public class MoCEntityDuck extends MoCEntityAnimal {
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 1.4D));
         this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 1.0D));
-        this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
     }
 
-    public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return MoCEntityAnimal.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 4.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+    public static AttributeSupplier.Builder registerAttributes() {
+        return MoCEntityAnimal.createAttributes().add(Attributes.MAX_HEALTH, 4.0D).add(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     // TODO: Add proper death sound event
@@ -72,16 +72,17 @@ public class MoCEntityDuck extends MoCEntityAnimal {
         this.playSound(MoCSoundEvents.ENTITY_DUCK_STEP, 0.15F, 1.0F);
     }
 
-    @Nullable
-    protected ResourceLocation getLootTable() {        return MoCLootTables.DUCK;
+    @Override
+    protected ResourceLocation getDefaultLootTable() {
+        return MoCLootTables.DUCK;
     }
 
     @Override
-    public void livingTick() {
-        super.livingTick();
+    public void aiStep() {
+        super.aiStep();
         this.field_70888_h = this.field_70886_e;
         this.field_70884_g = this.destPos;
-        this.destPos = (float) (this.destPos + (this.onGround ? -1 : 4) * 0.3D);
+        this.destPos = (float) (this.destPos + (this.onGround() ? -1 : 4) * 0.3D);
 
         if (this.destPos < 0.0F) {
             this.destPos = 0.0F;
@@ -91,25 +92,26 @@ public class MoCEntityDuck extends MoCEntityAnimal {
             this.destPos = 1.0F;
         }
 
-        if (!this.onGround && this.field_70889_i < 1.0F) {
+        if (!this.onGround() && this.field_70889_i < 1.0F) {
             this.field_70889_i = 1.0F;
         }
 
         this.field_70889_i = (float) (this.field_70889_i * 0.9D);
 
-        if (!this.onGround && this.getMotion().getY() < 0.0D) {
-            this.setMotion(this.getMotion().mul(1.0D, 0.6D, 1.0D));
+        if (!this.onGround() && this.getDeltaMovement().y < 0.0D) {
+            this.setDeltaMovement(this.getDeltaMovement().multiply(1.0D, 0.6D, 1.0D));
         }
 
         this.field_70886_e += this.field_70889_i * 2.0F;
     }
 
     @Override
-    public boolean onLivingFall(float distance, float damageMultiplier) {
+    public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource source) {
         return false;
     }
 
-    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
-        return this.getHeight() * 0.945F;
+    @Override
+    protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
+        return this.getBbHeight() * 0.945F;
     }
 }

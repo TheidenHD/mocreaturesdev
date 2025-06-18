@@ -21,9 +21,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldEntitySpawner;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -33,34 +33,25 @@ public class MoCEventHooks {
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public void onWorldUnload(WorldEvent.Unload event) {
+    public void onWorldUnload(LevelEvent.Unload event) {
         // if overworld has been deleted or unloaded, reset our flag
-        if (((World)event.getWorld()).getDimensionKey() == World.OVERWORLD) {
+        if (event.getLevel() instanceof Level && ((Level)event.getLevel()).dimension() == Level.OVERWORLD) {
             MoCreatures.proxy.worldInitDone = false;
         }
     }
 
-    /*@OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public void onWorldLoad(WorldEvent.Load event) {
-        if (event.getWorld() != null && !MoCreatures.proxy.worldInitDone) // if overworld has loaded, use its mapstorage
-        {
-            MoCPetMapData data = ServerLifecycleHooks.getCurrentServer().getWorld(World.OVERWORLD).getSavedData().getOrCreate(() -> new MoCPetMapData(MoCConstants.MOD_ID), MoCConstants.MOD_ID);
-            MoCreatures.instance.mapData = data;
-            MoCreatures.proxy.worldInitDone = true;
-        }
-    }*/
+    public void onWorldLoad(LevelEvent.Load event) {
+        if (!(event.getLevel() instanceof ServerLevel)) return;
 
-    @SubscribeEvent
-    public void onWorldLoad(WorldEvent.Load event) {
-        if (!(event.getWorld() instanceof ServerWorld)) return;
-
-        ServerWorld serverWorld = (ServerWorld) event.getWorld();
-        if (serverWorld.getDimensionKey() != World.OVERWORLD) return;
+        ServerLevel serverLevel = (ServerLevel) event.getLevel();
+        if (!serverLevel.dimension().equals(Level.OVERWORLD)) return;
 
         if (!MoCreatures.proxy.worldInitDone) {
-            MoCPetMapData data = serverWorld.getSavedData().getOrCreate(
-                    () -> new MoCPetMapData(MoCConstants.MOD_ID), MoCConstants.MOD_ID);
+            MoCPetMapData data = serverLevel.getDataStorage().computeIfAbsent(
+                    MoCPetMapData::load, 
+                    () -> new MoCPetMapData(MoCConstants.MOD_ID), 
+                    MoCConstants.MOD_ID);
             MoCreatures.instance.mapData = data;
             MoCreatures.proxy.worldInitDone = true;
         }
@@ -91,27 +82,41 @@ public class MoCEventHooks {
     }
 
     @SubscribeEvent
-    public void onLivingSpawnEvent(LivingSpawnEvent event) {
-        LivingEntity entity = event.getEntityLiving();
+    public void onLivingSpawnEvent(MobSpawnEvent.FinalizeSpawn event) {
+        LivingEntity entity = event.getEntity();
         Class<? extends LivingEntity> entityClass = entity.getClass();
         MoCEntityData data = MoCreatures.entityMap.get(entityClass);
         if (data == null) return; // not a MoC entity
-        World world = (World) event.getWorld();
-        List<RegistryKey<World>> dimensionIDs = Arrays.asList(data.getDimensions());
-        if (!dimensionIDs.contains(world.getDimensionKey())) {
-            event.setResult(Event.Result.DENY);
+        
+        Level level = entity.level();
+        List<ResourceKey<Level>> dimensionIDs = Arrays.asList(data.getDimensions());
+        
+        // Check if we're in the Wyvern dimension
+        if (MoCTools.isInWyvernLair(entity)) {
+            // If this is not an allowed mob for the Wyvern dimension, cancel spawning
+            if (!MoCTools.canSpawnInWyvernLair(entity)) {
+                event.setSpawnCancelled(true);
+                return;
+            }
+            // Explicitly allow Wyvern Lair mobs
+            event.setResult(Event.Result.ALLOW);
+            return;
+        }
+        
+        if (!dimensionIDs.contains(level.dimension())) {
+            event.setSpawnCancelled(true);
         } else if (data.getFrequency() <= 0) {
-            event.setResult(Event.Result.DENY);
-        } else if (dimensionIDs.contains(MoCreatures.proxy.wyvernDimension) && world.getDimensionKey() == MoCreatures.proxy.wyvernDimension) {
+            event.setSpawnCancelled(true);
+        } else if (dimensionIDs.contains(MoCreatures.proxy.wyvernDimension) && level.dimension().equals(MoCreatures.proxy.wyvernDimension)) {
             event.setResult(Event.Result.ALLOW);
         }
     }
 
     @SubscribeEvent
     public void onLivingDeathEvent(LivingDeathEvent event) {
-        if (!event.getEntity().world.isRemote) {
-            if (IMoCTameable.class.isAssignableFrom(event.getEntityLiving().getClass())) {
-                IMoCTameable mocEntity = (IMoCTameable) event.getEntityLiving();
+        if (!event.getEntity().level().isClientSide()) {
+            if (IMoCTameable.class.isAssignableFrom(event.getEntity().getClass())) {
+                IMoCTameable mocEntity = (IMoCTameable) event.getEntity();
                 if (mocEntity.getIsTamed() && mocEntity.getPetHealth() > 0 && !mocEntity.isRiderDisconnecting()) {
                     return;
                 }
@@ -150,16 +155,16 @@ public class MoCEventHooks {
         int maxTries = 24;
         BlockPos testing;
         for (int i = 0; i < maxTries; i++) {
-            int x = near.getX() + entity.getEntityWorld().rand.nextInt(radius * 2) - radius;
-            int z = near.getZ() + entity.getEntityWorld().rand.nextInt(radius * 2) - radius;
-            int y = entity.getEntityWorld().getHeight(Heightmap.Type.MOTION_BLOCKING, new BlockPos(x, 0, z)).getY() + 16;
+            int x = near.getX() + entity.level().getRandom().nextInt(radius * 2) - radius;
+            int z = near.getZ() + entity.level().getRandom().nextInt(radius * 2) - radius;
+            int y = entity.level().getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) + 16;
             testing = new BlockPos(x, y, z);
-            while (entity.getEntityWorld().isAirBlock(testing) && testing.getY() > 0) {
-                testing = testing.down(1);
+            while (entity.level().isEmptyBlock(testing) && testing.getY() > 0) {
+                testing = testing.below();
             }
-            BlockState iblockstate = entity.getEntityWorld().getBlockState(testing);
-            if (iblockstate.canEntitySpawn(entity.getEntityWorld(), testing, entity.getType())) {
-                return testing.up(1);
+            BlockState blockstate = entity.level().getBlockState(testing);
+            if (blockstate.isValidSpawn(entity.level(), testing, EntityType.PIG)) {
+                return testing.above();
             }
         }
         return null;

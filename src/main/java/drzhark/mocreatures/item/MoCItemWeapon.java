@@ -1,6 +1,3 @@
-/*
- * GNU GENERAL PUBLIC LICENSE Version 3
- */
 package drzhark.mocreatures.item;
 
 import com.google.common.collect.ImmutableMultimap;
@@ -43,7 +40,7 @@ import java.util.List;
 
 public class MoCItemWeapon extends MoCItem {
 
-    private final IItemTier material;
+    private final Tier material;
     private final float attackDamage;
     private int specialWeaponType = 0;
     private final Multimap<Attribute, AttributeModifier> attributeModifiers;
@@ -56,26 +53,27 @@ public class MoCItemWeapon extends MoCItem {
         this.attackDamage = 3F + material.getAttackDamage();
     }
 
-    public MoCItemWeapon(Item.Properties properties, String name, IItemTier par2ToolMaterial, int damageType) {
-        this(properties, name, par2ToolMaterial);
+    public MoCItemWeapon(Item.Properties properties, Tier material, int damageType) {
+        this(properties, material);
         this.specialWeaponType = damageType;
     }
 
     public float getAttackDamage() {
-        return this.material.getAttackDamage();
+        return this.material.getAttackDamageBonus();
     }
 
-    public float getStrVsBlock(ItemStack stack, BlockState state) {
-        if (state.getBlock() instanceof WebBlock) {
+    public float getDestroySpeed(ItemStack stack, BlockState state) {
+        if (state.is(Blocks.COBWEB)) {
             return 15.0F;
         } else {
-            Material material = state.getMaterial();
-            return material != Material.PLANTS && material != Material.TALL_PLANTS && material != Material.CORAL && material != Material.LEAVES && material != Material.GOURD ? 1.0F : 1.5F;
+            //Material material = state.getMaterial();
+            //return (material != Material.PLANT && material != Material.REPLACEABLE_PLANT && material != Material.CORAL && material != Material.LEAVES && material != Material.VEGETABLE) ? 1.0F : 1.5F;
+            return 1.5F;
         }
     }
 
     @Override
-    public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (MoCreatures.proxy.weaponEffects) {
             EnumHand hand = attacker.getActiveHand() == null ? EnumHand.MAIN_HAND : attacker.getActiveHand();
             int timer = 15; // In seconds
@@ -103,68 +101,43 @@ public class MoCItemWeapon extends MoCItem {
             }
         }
 
-        stack.damageItem(1, attacker, (entity) -> {
-            entity.sendBreakAnimation(EquipmentSlotType.MAINHAND);
-        });
+        stack.hurtAndBreak(1, attacker, (e) -> e.broadcastBreakEvent(EquipmentSlot.MAINHAND));
         return true;
     }
 
-    /**
-     * Called whenever this item is equipped and the right mouse button is
-     * pressed. Args: itemStack, world, entityPlayer
-     */
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, Hand hand) {
-        final ItemStack stack = player.getHeldItem(hand);
-        player.setActiveHand(hand);
-        return new ActionResult<>(ActionResultType.SUCCESS, stack);
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        final ItemStack stack = player.getItemInHand(hand);
+        player.startUsingItem(hand);
+        return InteractionResultHolder.success(stack);
     }
 
-    /**
-     * Returns if the item (tool) can harvest results from the block type.
-     */
-    @Override
+    // TODO: Cobweb harvesting
+    /*@Override
     public boolean canHarvestBlock(BlockState state) {
-        return state.getBlock() instanceof WebBlock;
-    }
+        return state.is(Blocks.COBWEB);
+    }*/
 
-    /**
-     * Return the enchantability factor of the item, most of the time is based
-     * on material.
-     */
     @Override
-    public int getItemEnchantability() {
-        return this.material.getEnchantability();
+    public int getEnchantmentValue() {
+        return this.material.getEnchantmentValue();
     }
 
-    /**
-     * Called when a Block is destroyed using this Item. Return true to trigger the "Use Item" statistic.
-     */
-    public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity playerIn) {
-        if (!worldIn.isRemote && state.getBlockHardness(worldIn, pos) != 0.0F) {
-            stack.damageItem(1, playerIn, (entity) -> {
-                entity.sendBreakAnimation(EquipmentSlotType.MAINHAND);
-            });
+    @Override
+    public boolean mineBlock(ItemStack stack, Level world, BlockState state, net.minecraft.core.BlockPos pos, LivingEntity entity) {
+        if (!world.isClientSide && state.getDestroySpeed(world, pos) != 0.0F) {
+            stack.hurtAndBreak(1, entity, (e) -> e.broadcastBreakEvent(EquipmentSlot.MAINHAND));
         }
-
         return true;
     }
 
-    /**
-     * Return the name for this tool's material.
-     */
     public String getToolMaterialName() {
         return this.material.toString();
     }
 
-    /**
-     * Return whether this item is repairable in an anvil.
-     *
-     * @param toRepair The ItemStack to be repaired
-     * @param repair   The ItemStack that should repair this Item (leather for leather armor, etc.)
-     */
-    public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-        return this.material.getRepairMaterial().test(repair) || super.getIsRepairable(toRepair, repair);
+    @Override
+    public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
+        return this.material.getRepairIngredient().test(repair) || super.isValidRepairItem(toRepair, repair);
     }
 
     /**

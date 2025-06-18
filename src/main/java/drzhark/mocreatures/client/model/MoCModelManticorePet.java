@@ -4,12 +4,22 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.hunter.MoCEntityManticorePet;
+
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class MoCModelManticorePet<T extends MoCEntityManticorePet> extends MoCModelBigCat<T> {
 
+    public MoCModelManticorePet(ModelPart root) {
+        super(root);
+    }
+
+    /**
+     * In 1.20.1, override prepareMobModel(...) instead of setLivingAnimations(...).
+     */
     @Override
     public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
         this.isFlyer = entityIn.isFlyer();
@@ -25,5 +35,18 @@ public class MoCModelManticorePet<T extends MoCEntityManticorePet> extends MoCMo
         this.isMovingVertically = manticorePet.motionY != 0 && !manticorePet.onGround;
         this.hasChest = false;
         this.isTamed = false;
+    }
+    
+    @Override
+    public void setupAnim(
+            T entity,
+            float limbSwing,
+            float limbSwingAmount,
+            float ageInTicks,
+            float netHeadYaw,
+            float headPitch
+    ) {
+        super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        // No extra per-limb adjustments in this subclass.
     }
 }

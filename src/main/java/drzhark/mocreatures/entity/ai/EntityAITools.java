@@ -4,25 +4,29 @@
 package drzhark.mocreatures.entity.ai;
 
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 public class EntityAITools {
 
-    protected static boolean IsNearPlayer(MobEntity entityliving, double d) {
-        EntityPlayer entityplayer1 = entityliving.world.getClosestPlayerToEntity(entityliving, d);
+    protected static boolean IsNearPlayer(Mob entityliving, double d) {
+        Player entityplayer1 = entityliving.level().getNearestPlayer(entityliving, d);
         return entityplayer1 != null;
     }
 
-    protected static EntityPlayer getIMoCTameableOwner(IMoCTameable pet) {
+    protected static Player getIMoCTameableOwner(IMoCTameable pet) {
         if (pet.getOwnerId() == null) {
             return null;
         }
 
-        for (int i = 0; i < ((MobEntity) pet).world.playerEntities.size(); ++i) {
-            EntityPlayer entityplayer = ((MobEntity) pet).world.playerEntities.get(i);
+        Mob mobEntity = (Mob)pet;
+        Level level = mobEntity.level();
+        
+        for (int i = 0; i < level.players().size(); ++i) {
+            Player entityplayer = level.players().get(i);
 
-            if (pet.getOwnerId().equals(entityplayer.getUniqueID())) {
+            if (pet.getOwnerId().equals(entityplayer.getUUID())) {
                 return entityplayer;
             }
         }

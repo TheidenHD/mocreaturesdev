@@ -328,8 +328,6 @@ public class MoCEntities {
 
         @SubscribeEvent(priority = EventPriority.HIGH)
         public static void registerSpawns(BiomeLoadingEvent event) {
-            MoCreatures.proxy.readMocConfigValues();
-
             if (event.getName() != null) {
                 Biome biome = ForgeRegistries.BIOMES.getValue(event.getName());
                 if (biome == null) return;
@@ -339,9 +337,7 @@ public class MoCEntities {
 
                 for (MoCEntityData entityData : MoCreatures.mocEntityMap.values()) {
                     if (!entityData.getCanSpawn() || entityData.getFrequency() <= 0) {
-                        if (MoCreatures.proxy.debug) {
-                            MoCreatures.LOGGER.debug("[Spawn Skip] " + entityData.getEntityName() + " is disabled or has 0 frequency");
-                        }
+                        //MoCreatures.LOGGER.debug("[Spawn Skip] " + entityData.getEntityName() + " is disabled or has 0 frequency");
                         continue;
                     }
 
@@ -352,23 +348,19 @@ public class MoCEntities {
                             && biomeTypes.stream().anyMatch(includeList::contains);
 
                     if (!biomeAllowed) {
-                        if (MoCreatures.proxy.debug) {
-                            MoCreatures.LOGGER.debug("[Biome Skip] " + entityData.getEntityName()
-                                    + " does not match biome " + event.getName()
-                                    + " (types=" + biomeTypes + ", includes=" + includeList + ", excludes=" + excludeList + ")");
-                        }
+                        /*MoCreatures.LOGGER.debug("[Biome Skip] " + entityData.getEntityName()
+                                + " does not match biome " + event.getName()
+                                + " (types=" + biomeTypes + ", includes=" + includeList + ", excludes=" + excludeList + ")");*/
                         continue;
                     }
 
                     event.getSpawns().getSpawner(entityData.getType()).add(entityData.getSpawnListEntry());
 
-                    if (MoCreatures.proxy.debug) {
-                        MoCreatures.LOGGER.info("[Spawn Registered] " + entityData.getEntityName()
-                                + " in biome " + event.getName()
-                                + " with weight=" + entityData.getSpawnListEntry().itemWeight
-                                + ", min=" + entityData.getSpawnListEntry().minCount
-                                + ", max=" + entityData.getSpawnListEntry().maxCount);
-                    }
+                    /*MoCreatures.LOGGER.info("[Spawn Registered] " + entityData.getEntityName()
+                            + " in biome " + event.getName()
+                            + " with weight=" + entityData.getSpawnListEntry().itemWeight
+                            + ", min=" + entityData.getSpawnListEntry().minCount
+                            + ", max=" + entityData.getSpawnListEntry().maxCount);*/
                 }
             }
         }

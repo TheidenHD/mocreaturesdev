@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 
 public class MoCEntityRay extends MoCEntityTameableAquatic {
 
-    public MoCEntityRay(EntityType<? extends MoCEntityRay> type, World world) {
+    public MoCEntityRay(EntityType<? extends MoCEntityRay> type, Level world) {
         super(type, world);
     }
 
@@ -28,23 +28,23 @@ public class MoCEntityRay extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
-        final ActionResultType tameResult = this.processTameInteract(player, hand);
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
+        final InteractionResult tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
 
-        if (!this.isBeingRidden() && getTypeMoC() == 1) {
-            if (!this.world.isRemote && player.startRiding(this)) {
-                player.rotationYaw = this.rotationYaw;
-                player.rotationPitch = this.rotationPitch;
-                player.setPosition(player.getPosX(), this.getPosY(), player.getPosZ());
+        if (!this.isVehicle() && getTypeMoC() == 1) {
+            if (!this.level().isClientSide() && player.startRiding(this)) {
+                player.setYRot(this.getYRot());
+                player.setXRot(this.getXRot());
+                player.setPos(player.getX(), this.getY(), player.getZ());
             }
 
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
-        return super.getEntityInteractionResult(player, hand);
+        return super.mobInteract(player, hand);
     }
 
     @Override
@@ -66,13 +66,13 @@ public class MoCEntityRay extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public double getMountedYOffset() {
-        return this.getHeight() * 0.15D * getSizeFactor();
+    public double getPassengersRidingOffset() {
+        return this.getBbHeight() * 0.15D * getSizeFactor();
     }
 
     @Override
     public float getSizeFactor() {
-        float f = getAge() * 0.01F;
+        float f = getMoCAge() * 0.01F;
         if (f > 1.5F) {
             f = 1.5F;
         }
@@ -85,7 +85,7 @@ public class MoCEntityRay extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public float getAIMoveSpeed() {
+    public float getSpeed() {
         return 0.06F;
     }
 

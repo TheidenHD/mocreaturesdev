@@ -27,11 +27,10 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.common.BiomeDictionary.Type;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
 
 import javax.annotation.Nullable;
 
@@ -42,7 +41,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     public int bunnyReproduceTickerB;
     private int jumpTimer;
 
-    public MoCEntityBunny(EntityType<? extends MoCEntityBunny> type, World world) {
+    public MoCEntityBunny(EntityType<? extends MoCEntityBunny> type, Level world) {
         super(type, world);
         setAdult(true);
         setTamed(false);
@@ -67,8 +66,8 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
         this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
     }
 
-    public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.FOLLOW_RANGE, 12.0D).createMutableAttribute(Attributes.MAX_HEALTH, 4.0D).createMutableAttribute(Attributes.ARMOR, 1.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.35D);
+    public static AttributeSupplier.Builder registerAttributes() {
+        return MoCEntityTameableAnimal.createAttributes().add(Attributes.FOLLOW_RANGE, 12.0D).add(Attributes.MAX_HEALTH, 4.0D).add(Attributes.ARMOR, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.35D);
     }
 
     @Override
@@ -77,6 +76,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
         this.dataManager.register(HAS_EATEN, false);
     }
 
+    @Nullable
     @Override
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData entityLivingData) {
         if (this.world.provider.getDimension() == MoCreatures.proxy.wyvernDimension) this.enablePersistence();
@@ -84,11 +84,11 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     }
 
     public boolean getHasEaten() {
-        return this.dataManager.get(HAS_EATEN);
+        return this.entityData.get(HAS_EATEN);
     }
 
     public void setHasEaten(boolean flag) {
-        this.dataManager.set(HAS_EATEN, flag);
+        this.entityData.set(HAS_EATEN, flag);
     }
 
     @Override
@@ -98,19 +98,19 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
         if (getType() == 0) {
             setType(getRNG().nextInt(5) + 1);
         }
-
     }
 
     @Override
     public boolean checkSpawningBiome() {
-        int i = MathHelper.floor(this.getPosX());
-        int j = MathHelper.floor(getBoundingBox().minY);
-        int k = MathHelper.floor(this.getPosZ());
+        int i = Mth.floor(this.getX());
+        int j = Mth.floor(getBoundingBox().minY);
+        int k = Mth.floor(this.getZ());
         BlockPos pos = new BlockPos(i, j, k);
 
-        RegistryKey<Biome> currentbiome = MoCTools.biomeKind(this.world, pos);
         try {
-            if (BiomeDictionary.hasType(currentbiome, Type.SNOWY)) {
+            // In 1.20.1, check biome directly
+            String biomeName = this.level().getBiome(pos).unwrapKey().orElseThrow().location().getPath();
+            if (biomeName.contains("snow")) {
                 setTypeMoC(3); //snow-white bunnies!
                 return true;
             }
@@ -136,7 +136,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean onLivingFall(float distance, float damageMultiplier) {
+    public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource source) {
         return false;
     }
 
@@ -152,17 +152,17 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.ENTITY_RABBIT_AMBIENT;
+        return SoundEvents.RABBIT_AMBIENT;
     }
 
-    @Nullable
-    protected ResourceLocation getLootTable() {
+    @Override
+    protected ResourceLocation getDefaultLootTable() {
         return MoCLootTables.BUNNY;
     }
 
     @Override
-    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
-        final ActionResultType tameResult = this.processTameInteract(player, hand);
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
+        final InteractionResult tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -185,15 +185,15 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
             return true;
         }
 
-        return super.getEntityInteractionResult(player, hand);
+        return super.mobInteract(player, hand);
     }
 
     @Override
     public void tick() {
         super.tick();
 
-        if (this.getRidingEntity() != null) {
-            this.rotationYaw = this.getRidingEntity().rotationYaw;
+        if (this.getVehicle() != null) {
+            this.setYRot(this.getVehicle().getYRot());
         }
 
         if (!this.world.isRemote) {
@@ -208,24 +208,30 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     public int nameYOffset() {
         return -40;
     }
-
+    
     @Override
     public boolean isReadyToFollowOwnerPlayer() { return !this.isMovementCeased(); }
 
     @Override
     public boolean isMyHealFood(ItemStack stack) {
-        return !stack.isEmpty() && stack.getItem() == Items.CARROT;
-    }
-
-    /**
-     * So bunny-hats don't suffer damage
-     */
-    @Override
-    public boolean attackEntityFrom(DamageSource damagesource, float i) {
-        if (this.getRidingEntity() != null) {
+        if (stack.isEmpty()) {
             return false;
         }
-        return super.attackEntityFrom(damagesource, i);
+        return (stack.getItem() == Items.CARROT);
+    }
+
+    @Override
+    public boolean hurt(DamageSource damagesource, float i) {
+        if (this.isInvulnerableTo(damagesource)) {
+            return false;
+        }
+        
+        // Add protection for bunny-hats (bunnies that are riding)
+        if (this.getVehicle() != null) {
+            return false;
+        }
+        
+        return super.hurt(damagesource, i);
     }
 
     @Override
@@ -234,12 +240,12 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public double getYOffset() {
-        if (this.getRidingEntity() instanceof PlayerEntity) {
-            return this.getRidingEntity().isSneaking() ? 0.25 : 0.5F;
+    public double getMyRidingOffset() {
+        if (this.getVehicle() instanceof Player) {
+            return this.getVehicle().isCrouching() ? 0.25 : 0.5F;
         }
 
-        return super.getYOffset();
+        return super.getMyRidingOffset();
     }
 
     @Override
@@ -252,8 +258,9 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
         return true;
     }
 
-    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
-        return this.getHeight() * 0.675F;
+    @Override
+    protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
+        return this.getBbHeight() * 0.675F;
     }
 
     @Override

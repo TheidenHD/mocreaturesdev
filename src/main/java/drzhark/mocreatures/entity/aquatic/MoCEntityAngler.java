@@ -10,11 +10,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
-
 public class MoCEntityAngler extends MoCEntitySmallFish {
 
-    public MoCEntityAngler(EntityType<? extends MoCEntityAngler> type, World world) {
+    public MoCEntityAngler(EntityType<? extends MoCEntityAngler> type, Level world) {
         super(type, world);
         this.setTypeMoC(3);
     }
@@ -24,8 +22,9 @@ public class MoCEntityAngler extends MoCEntitySmallFish {
         return MoCreatures.proxy.getModelTexture("smallfish_anglerfish.png");
     }
 
-    @Nullable
-    protected ResourceLocation getLootTable() {        return MoCLootTables.ANGLERFISH;
+    @Override
+    protected ResourceLocation getDefaultLootTable() {
+        return MoCLootTables.ANGLERFISH;
     }
     
     protected SoundEvent getDeathSound() {

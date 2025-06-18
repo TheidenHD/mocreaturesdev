@@ -1,86 +1,28 @@
-/*
- * GNU GENERAL PUBLIC LICENSE Version 3
- */
 package drzhark.mocreatures.item;
 
 import drzhark.mocreatures.entity.item.MoCEntityEgg;
 import drzhark.mocreatures.init.MoCEntities;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-/*
- * ID LIST:
- * [0] Blue Fishy
- * [1] Regal Blue Fishy
- * [2] Orange White Stripe Fishy
- * [3] Light Blue Fishy
- * [4] Green Yellow Fishy
- * [5] Green Fishy
- * [6] Purple Fishy
- * [7] Yellow Fishy
- * [8] Orange Blue Stripe Fishy
- * [9] Black White Fishy
- * [10] Red Fishy
- * [11] Shark
- * [21] Dark Snake
- * [22] Spotted Snake
- * [23] Orange Snake
- * [24] Green Snake
- * [25] Coral Snake
- * [26] Cobra
- * [27] Rattlesnake
- * [28] Python
- * [30] Ostrich
- * [31] Stolen Ostrich
- * [33] Komodo Dragon
- * [41] Earth Scorpion
- * [42] Dark Scorpion
- * [43] Fire Scorpion
- * [44] Frost Scorpion
- * [45] Undead Scorpion
- * [50] Jungle Wyvern (Green)
- * [51] Swamp Wyvern (Lime)
- * [52] Savanna Wyvern (Russet)
- * [53] Sand Wyvern (Yellow)
- * [54] Mother Wyvern (Red)
- * [55] Undead Wyvern
- * [56] Light Wyvern
- * [57] Dark Wyvern
- * [58] Arctic Wyvern (Light Blue)
- * [59] Cave Wyvern (Gray)
- * [60] Mountain Wyvern (Brown)
- * [61] Sea Wyvern (Turquoise)
- * [62] Fire Manticore
- * [63] Dark Manticore
- * [64] Frost Manticore
- * [65] Toxic Manticore
- * [66] Manticore (Plain)
- * [70] Salmon
- * [71] Cod
- * [72] Bass
- * [80] Anchovy
- * [81] Angelfish
- * [82] Anglerfish
- * [83] Clownfish
- * [84] Goldfish
- * [85] Hippo Tang
- * [86] Mandarinfish
- * [90] Piranha
- */
+import javax.annotation.Nullable;
 
 public class MoCItemEgg extends MoCItem {
 
-    public MoCItemEgg(Item.Properties properties, String name) {
-        super(properties.maxStackSize(16), name);
+    public MoCItemEgg(Item.Properties properties) {
+        super(properties.stacksTo(16));
     }
 
     @Override
@@ -102,8 +44,6 @@ public class MoCItemEgg extends MoCItem {
 
             System.out.println("[DEBUG] Placing egg with type: " + eggType);
         }
-        return new ActionResult<>(ActionResultType.SUCCESS, stack);
-    }
 
     @Override
     @SideOnly(Side.CLIENT)
