@@ -270,7 +270,8 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
      */
     private void shootBlock(Entity entity) {
         if (entity == null) return;
-
+    
+        // Collect available arm cubes
         List<Integer> armBlocks = new ArrayList<>();
         for (int i = 9; i < 15; i++) {
             if (this.golemCubes[i] != 30) armBlocks.add(i);
@@ -290,8 +291,11 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
         MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_LAUNCH, 3F);
         MoCTools.throwStone(this, entity, Block.getStateById(generateBlock(this.golemCubes[x])), 10D, 0.4D);
         saveGolemCube((byte) x, (byte) 30);
+    
+        // Reset throw timer
         this.tCounter = 0;
     }
+    
 
     private boolean canShoot() {
         int x = 0;
