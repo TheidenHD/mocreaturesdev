@@ -212,7 +212,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean isPushable() {
         return !this.isVehicle();
     }
 
