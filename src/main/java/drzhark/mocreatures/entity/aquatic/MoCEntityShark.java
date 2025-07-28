@@ -5,6 +5,7 @@ package drzhark.mocreatures.entity.aquatic;
 
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityAquatic;
+import drzhark.mocreatures.entity.ai.EntityAIHunt;
 import drzhark.mocreatures.entity.ai.EntityAITargetNonTamedMoC;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.item.MoCEntityEgg;
@@ -146,10 +147,6 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
             return;
         }
         super.setDead();
-    }
-
-    public boolean isMyHealFood(Item item1) {
-        return false;
     }
 
     @Override
