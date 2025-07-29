@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
 import org.joml.Matrix4f;
 import com.mojang.math.Axis;
@@ -35,8 +36,45 @@ public class MoCRenderMoC<T extends Mob, M extends EntityModel<T>> extends MobRe
 
     @Override
     public void render(T entityIn, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        renderMoC(entityIn, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        IMoCEntity entityMoC = (IMoCEntity) entityIn;
+        
+        // Check if we need to handle transparency
+        if (shouldHandleTransparency(entityIn)) {
+            renderWithTransparency(entityIn, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        } else {
+            renderMoC(entityIn, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        }
     }
+    
+    /**
+     * Checks if the entity should be rendered with transparency handling
+     */
+    protected boolean shouldHandleTransparency(T entityIn) {
+        if (!(entityIn instanceof IMoCEntity)) {
+            return false;
+        }
+        
+        IMoCEntity entityMoC = (IMoCEntity) entityIn;
+        return entityMoC.getIsGhost() || hasVanishingEffect(entityIn) || entityMoC.shouldRenderTransparent();
+    }
+    
+    /**
+     * Checks if the entity has a vanishing effect
+     */
+    protected boolean hasVanishingEffect(T entityIn) {
+        // Override in subclasses for entities with vanish counters
+        return false;
+    }
+    
+    /**
+     * Renders the entity with transparency handling
+     */
+    protected void renderWithTransparency(T entityIn, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+        IMoCEntity entityMoC = (IMoCEntity) entityIn;
+        
+        poseStack.pushPose();
+        poseStack.scale(1.0F, -1.0F, 1.0F);
+        poseStack.translate(0.0D, (double) (-1.501F), 0.0D);
 
     @Override
     protected float getDeathMaxRotation(EntityLiving entity) {
