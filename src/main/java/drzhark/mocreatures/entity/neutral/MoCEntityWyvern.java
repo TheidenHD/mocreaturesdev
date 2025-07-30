@@ -137,6 +137,18 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
         return this.world.getDimensionKey() != MoCreatures.proxy.wyvernDimension;
     }
 
+    @Override
+    public void setTamed(boolean tamed) {
+        super.setTamed(tamed);
+        // Set persistence when wyvern becomes tamed
+        if (tamed) {
+            this.setPersistenceRequired();
+            if (MoCreatures.proxy.debug) {
+                MoCreatures.LOGGER.info("Wyvern tamed - setting persistence required for entity {}", this.getId());
+            }
+        }
+    }
+
     public boolean getIsFlying() {
         return this.dataManager.get(FLYING);
     }
