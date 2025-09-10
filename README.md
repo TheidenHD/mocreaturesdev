@@ -6,7 +6,7 @@
 
 * Lead Developer, Codebase Cleanup, Spawn Logic, General Maintenance ~ ACGaming
 * Developer, Sound/Texture Artist, Language/Model Adjustments, General Maintenance ~ IcarussOne
-* Developer, General Maintenance ~ DemonLexe (Alexis Kaufman)
+* Collaborator ~ DemonLexe (Alexis Kaufman)
 * QA Analyst, Testing, Entity Spawn Rules ~ xJon
 
 **Legacy Team [v12.0.5 and below]:**
