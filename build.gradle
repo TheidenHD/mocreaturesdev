@@ -130,7 +130,7 @@ dependencies {
 
     // Antique Suite
     implementation "curse.maven:mantle-74924:2713386"
-    implementation "curse.maven:antique-construct-1242239:7242538"
+    implementation "curse.maven:tinkers-antique-1242239:7242538"
     implementation "curse.maven:antique-armory-1394222:7275086"
 
     // Patchouli
