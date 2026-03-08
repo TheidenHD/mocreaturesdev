@@ -18,6 +18,7 @@ import drzhark.mocreatures.event.MoCEventHooksClient;
 import drzhark.mocreatures.event.MoCEventHooksTerrain;
 import drzhark.mocreatures.init.MoCCreativeTabs;
 import drzhark.mocreatures.init.MoCEntities;
+import drzhark.mocreatures.init.MoCRecipes;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.command.CommandMoCPets;
 import drzhark.mocreatures.network.command.CommandMoCSpawn;
@@ -101,6 +102,7 @@ public class MoCreatures {
         MoCEventHooksTerrain.addBiomeTypes();
         MoCEntities.registerSpawns();
         MoCEventHooksTerrain.buildWorldGenSpawnLists();
+        MoCRecipes.registerOreDictionaries();
         CompatHandler.init();
         ModFixs modFixer = FMLCommonHandler.instance().getDataFixer().init(MoCConstants.MOD_ID, MoCConstants.DATAFIXER_VERSION);
         modFixer.registerFix(FixTypes.BLOCK_ENTITY, new BlockIDFixer());

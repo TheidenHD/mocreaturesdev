@@ -89,7 +89,9 @@ public class MoCRecipes {
             GameRegistry.addSmelting(MoCItems.venisonRaw, new ItemStack(MoCItems.venisonCooked), 0.35F);
 
             GameRegistry.addSmelting(Items.EGG, new ItemStack(MoCItems.omelet), 0.35F);
+        }
 
+        public static void registerOreDictionaries() {
             OreDictionary.registerOre("blockGlass", new ItemStack(MoCBlocks.gleamingGlass));
             OreDictionary.registerOre("blockGlassColorless", new ItemStack(MoCBlocks.gleamingGlass));
             OreDictionary.registerOre("blockAncientSilver", new ItemStack(MoCBlocks.ancientSilverBlock));
