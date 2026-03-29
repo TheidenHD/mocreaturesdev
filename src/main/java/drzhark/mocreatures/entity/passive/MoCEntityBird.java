@@ -422,11 +422,11 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
         }
 
         if ((this.getVehicle() != null) && (this.getVehicle() instanceof Player)) {
-            Player entityplayer = (Player) this.getVehicle();
-            this.setYRot(entityplayer.getYRot());
-            entityplayer.fallDistance = 0.0F;
-            if (entityplayer.getDeltaMovement().y < -0.1D)
-                entityplayer.setDeltaMovement(entityplayer.getDeltaMovement().multiply(1.0D, 0.6D, 1.0D));
+            Player Player = (Player) this.getVehicle();
+            this.setYRot(Player.getYRot());
+            Player.fallDistance = 0.0F;
+            if (Player.getDeltaMovement().y < -0.1D)
+                Player.setDeltaMovement(Player.getDeltaMovement().multiply(1.0D, 0.6D, 1.0D));
         }
 
         if (--this.jumpTimer <= 0 && this.onGround()
@@ -465,7 +465,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
     @Override
     public void setDead() {
         // Server check required to prevent tamed entities from being duplicated on client-side
-        if (!this.world.isRemote && (getIsTamed()) && (getHealth() > 0)) {
+        if (!this.level().isRemote && (getIsTamed()) && (getHealth() > 0)) {
             return;
         }
         super.setDead();

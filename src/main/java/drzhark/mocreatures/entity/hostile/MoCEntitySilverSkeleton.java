@@ -10,23 +10,23 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EnumCreatureAttribute;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIAttackMelee;
-import net.minecraft.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.ai.EntityAISwimming;
-import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.monster.EntityIronGolem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.world.entity.EnumCreatureAttribute;
+import net.minecraft.world.entity.SharedMonsterAttributes;
+import net.minecraft.world.entity.ai.EntityAIAttackMelee;
+import net.minecraft.world.entity.ai.EntityAIHurtByTarget;
+import net.minecraft.world.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.world.entity.ai.EntityAISwimming;
+import net.minecraft.world.entity.ai.EntityAIWatchClosest;
+import net.minecraft.world.entity.monster.EntityIronGolem;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -36,20 +36,20 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
     public int attackCounterLeft;
     public int attackCounterRight;
 
-    public MoCEntitySilverSkeleton(EntityType<? extends MoCEntitySilverSkeleton> type, World world) {
+    public MoCEntitySilverSkeleton(EntityType<? extends MoCEntitySilverSkeleton> type, Level world) {
         super(type, world);
         this.texture = "silver_skeleton.png";
         //setSize(0.6F, 2.125F);
-        experienceValue = 5 + this.world.rand.nextInt(4);
+        experienceValue = 5 + this.level().rand.nextInt(4);
     }
 
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(2, new MoCEntitySilverSkeleton.AISkeletonAttack(this, 1.0D, true));
-        this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(8, new LookAtGoal(this, Player.class, 8.0F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(2, new MoCEntitySilverSkeleton.AISkeletonTarget<>(this, PlayerEntity.class, false));
+        this.targetSelector.addGoal(2, new MoCEntitySilverSkeleton.AISkeletonTarget<>(this, Player.class, false));
         this.targetSelector.addGoal(3, new MoCEntitySilverSkeleton.AISkeletonTarget<>(this, IronGolemEntity.class, false));
     }
 
@@ -64,7 +64,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
 
     @Override
     public void livingTick() {
-        if (!this.world.isRemote) {
+        if (!this.level().isRemote) {
             setSprinting(this.getAttackTarget() != null);
         }
 
@@ -96,15 +96,15 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
      * Starts attack counters and synchronizes animations with clients
      */
     private void startAttackAnimation() {
-        if (!this.world.isRemote) {
+        if (!this.level().isRemote) {
             boolean leftArmW = this.rand.nextInt(2) == 0;
 
             if (leftArmW) {
                 this.attackCounterLeft = 1;
-                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 1));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 1));
             } else {
                 this.attackCounterRight = 1;
-                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 2));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 2));
             }
         }
     }

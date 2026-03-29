@@ -28,7 +28,7 @@ public class MoCEntityDragonfly extends MoCEntityInsect {
 
     private int soundCount;
 
-    public MoCEntityDragonfly(World world) {
+    public MoCEntityDragonfly(Level world) {
         super(world);
     }
 

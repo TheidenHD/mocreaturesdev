@@ -17,7 +17,7 @@ public class MoCPetData {
     private final UUID ownerUniqueId;
     private final BitSet idMap = new BitSet(Long.SIZE << 4);
     private final Set<Integer> usedPetIds = new HashSet<>();
-    private NBTTagCompound ownerData = new NBTTagCompound();
+    private CompoundTag ownerData = new CompoundTag();
     private NBTTagList tamedList = new NBTTagList();
 
     public MoCPetData(IMoCTameable pet) {

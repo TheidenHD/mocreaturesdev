@@ -11,15 +11,15 @@ import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageHeart;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityList;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.PlayerMP;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -31,7 +31,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
@@ -139,7 +139,7 @@ public class MoCEntityTameableAquatic extends MoCEntityAquatic implements IMoCTa
 
         //if the player interacting is not the owner, do nothing!
         if (MoCreatures.proxy.enableOwnership && this.getOwnerId() != null && !player.getUniqueID().equals(this.getOwnerId())) {
-            if (!this.world.isRemote) {
+            if (!this.level().isRemote) {
                 ITextComponent message = new TextComponentTranslation("msg.mocreatures.foreignpet");
                 message.getStyle().setColor(TextFormatting.RED);
                 player.sendMessage(message);
@@ -174,7 +174,7 @@ public class MoCEntityTameableAquatic extends MoCEntityAquatic implements IMoCTa
         }
 
         //changes name
-        if (!this.world.isRemote && !stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.scrollOfRenaming) {
+        if (!this.level().isRemote && !stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.scrollOfRenaming) {
             if (!player.capabilities.isCreativeMode) stack.shrink(1);
             return MoCTools.tameWithName(player, this);
         }
@@ -182,7 +182,7 @@ public class MoCEntityTameableAquatic extends MoCEntityAquatic implements IMoCTa
         //sets it free, untamed
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.scrollOfFreedom) {
             if (!player.capabilities.isCreativeMode) stack.shrink(1);
-            if (!this.world.isRemote) {
+            if (!this.level().isRemote) {
                 if (this.getOwnerPetId() != -1) // required since getInt will always return 0 if no key is found
                 {
                     MoCreatures.instance.mapData.removeOwnerPet(this, this.getOwnerPetId());
@@ -212,7 +212,7 @@ public class MoCEntityTameableAquatic extends MoCEntityAquatic implements IMoCTa
         if (!stack.isEmpty() && getIsTamed() && isMyHealFood(stack)) {
             if (!player.capabilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
-            if (!this.world.isRemote) {
+            if (!this.level().isRemote) {
                 this.setHealth(getMaxHealth());
             }
             return InteractionResult.SUCCESS;
@@ -466,12 +466,12 @@ public class MoCEntityTameableAquatic extends MoCEntityAquatic implements IMoCTa
                     baby.setTypeMoC(getOffspringTypeInt((IMoCTameable) mate));
 
                     UUID ownerId = this.getOwnerId();
-                    Player entityplayer = null;
+                    Player Player = null;
                     if (ownerId != null) {
-                        entityplayer = this.level().getPlayerByUUID(this.getOwnerId());
+                        Player = this.level().getPlayerByUUID(this.getOwnerId());
                     }
-                    if (entityplayer != null) {
-                        MoCTools.tameWithName(entityplayer, baby);
+                    if (Player != null) {
+                        MoCTools.tameWithName(Player, baby);
                     }
                 }
                 MoCTools.playCustomSound(this, SoundEvents.CHICKEN_EGG);

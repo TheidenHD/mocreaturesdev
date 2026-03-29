@@ -7,14 +7,14 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 
@@ -22,7 +22,7 @@ public class MoCEntityFly extends MoCEntityInsect {
 
     private int soundCount;// = 50;
 
-    public MoCEntityFly(EntityType<? extends MoCEntityFly> type, World world) {
+    public MoCEntityFly(EntityType<? extends MoCEntityFly> type, Level world) {
         super(type, world);
         this.texture = "fly.png";
     }
@@ -36,9 +36,9 @@ public class MoCEntityFly extends MoCEntityInsect {
     public void onLivingUpdate() {
         super.onLivingUpdate();
 
-        if (!this.world.isRemote) {
+        if (!this.level().isRemote) {
             if (getIsFlying() && --this.soundCount == -1) {
-                PlayerEntity ep = this.world.getClosestPlayer(this, 5D);
+                Player ep = this.level().getClosestPlayer(this, 5D);
                 if (ep != null) {
                     MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_FLY_AMBIENT.get());
                     this.soundCount = 55;

@@ -1,8 +1,8 @@
 package drzhark.mocreatures.compat.tinkers.traits;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import slimeknights.tconstruct.library.tools.ToolNBT;
@@ -24,7 +24,7 @@ public class TraitStingEffect extends AbstractTrait {
     }
 
     @Override
-    public void applyEffect(NBTTagCompound rootCompound, NBTTagCompound modifierTag) {
+    public void applyEffect(CompoundTag rootCompound, CompoundTag modifierTag) {
         // Apply bonus damage if it hasn't been applied yet
         if (!TinkerUtil.hasTrait(rootCompound, identifier)) {
             ToolNBT data = TagUtil.getToolStats(rootCompound);

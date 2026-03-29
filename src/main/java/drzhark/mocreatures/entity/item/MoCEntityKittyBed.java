@@ -33,7 +33,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.HitResult;
 
 // TODO: Fix hitbox
-public class MoCEntityKittyBed extends EntityLiving {
+public class MoCEntityKittyBed extends LivingEntity {
 
     private static final EntityDataAccessor<Boolean> HAS_MILK = SynchedEntityData.defineId(MoCEntityKittyBed.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> HAS_FOOD = SynchedEntityData.defineId(MoCEntityKittyBed.class, EntityDataSerializers.BOOLEAN);

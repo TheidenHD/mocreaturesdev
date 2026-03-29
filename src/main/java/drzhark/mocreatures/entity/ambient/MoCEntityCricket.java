@@ -8,15 +8,15 @@ import drzhark.mocreatures.entity.MoCEntityAmbient;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.EntitySize;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 
@@ -24,7 +24,7 @@ public class MoCEntityCricket extends MoCEntityAmbient {
 
     private int jumpCounter;
     
-    public MoCEntityCricket(World world) {
+    public MoCEntityCricket(Level world) {
         super(world);
         setSize(0.4F, 0.3F);
     }
@@ -71,7 +71,7 @@ public class MoCEntityCricket extends MoCEntityAmbient {
             this.motionY *= 0.6D;
         }
 
-        if (!this.world.isRemote) {
+        if (!this.level().isRemote) {
             if (this.jumpCounter > 0 && ++this.jumpCounter > 30) {
                 this.jumpCounter = 0;
             }
@@ -104,7 +104,7 @@ public class MoCEntityCricket extends MoCEntityAmbient {
     @Override
     public void tick() {
         super.tick();
-        if (!this.world.isRemote) {
+        if (!this.level().isRemote) {
             if (onGround && ((getMotion().getX() > 0.05D) || (getMotion().getZ() > 0.05D) || (getMotion().getX() < -0.05D) || (getMotion().getZ() < -0.05D)))
                 if (this.jumpCounter == 0) {
                     this.setMotion(this.getMotion().getX() * 5D, 0.45D, this.getMotion().getZ() * 5D);

@@ -6,24 +6,24 @@ package drzhark.mocreatures.entity;
 import drzhark.mocreatures.MoCTools;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.controller.FlyingMovementController;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomFlyingGoal;
+import net.minecraft.world.entity.CreatureAttribute;
+import net.minecraft.world.entity.EntitySize;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.controller.FlyingMovementController;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomFlyingGoal;
 import net.minecraft.pathfinding.FlyingPathNavigator;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 public abstract class MoCEntityInsect extends MoCEntityAmbient {
 
     private int climbCounter;
 
-    protected MoCEntityInsect(EntityType<? extends MoCEntityInsect> type, World world) {
+    protected MoCEntityInsect(EntityType<? extends MoCEntityInsect> type, Level world) {
         super(type, world);
         //setSize(0.4F, 0.3F);
         this.moveController = new FlyingMovementController(this, 10, false);
@@ -34,7 +34,7 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
     }
 
     @Override
-    protected PathNavigator createNavigator(World worldIn) {
+    protected PathNavigator createNavigator(Level worldIn) {
         FlyingPathNavigator FlyingPathNavigator = new FlyingPathNavigator(this, worldIn);
         FlyingPathNavigator.setCanEnterDoors(true);
         FlyingPathNavigator.setCanSwim(true);
@@ -70,7 +70,7 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
             this.motionY *= 0.6D;
         }
 
-        if (!this.world.isRemote) {
+        if (!this.level().isRemote) {
             if (this.rand.nextInt(50) == 0) {
                 int[] ai = MoCTools.returnNearestBlockCoord(this, this.isAttractedToLight() ? Blocks.TORCH : Blocks.TALLGRASS, 8D);
                 if (ai[0] > -1000) {

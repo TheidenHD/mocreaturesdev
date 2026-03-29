@@ -8,10 +8,10 @@ import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.world.entity.SharedMonsterAttributes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

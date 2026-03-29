@@ -6,10 +6,10 @@ import com.google.common.collect.ImmutableList;
 
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.entity.MoCEntityAquatic;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.passive.EntityWaterMob;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.world.entity.animal.EntityWaterMob;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import slimeknights.tconstruct.library.Util;
 import slimeknights.tconstruct.library.traits.AbstractTrait;
 
@@ -33,7 +33,7 @@ public class TraitSeaPredator extends AbstractTrait {
     }
 
     @Override
-    public List<String> getExtraInfo(ItemStack tool, NBTTagCompound modifierTag) {
+    public List<String> getExtraInfo(ItemStack tool, CompoundTag modifierTag) {
         String loc = String.format(LOC_Extra, getModifierIdentifier());
 
         return ImmutableList.of(Util.translateFormatted(loc, Util.dfPercent.format(bonus)));

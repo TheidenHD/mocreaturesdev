@@ -3,10 +3,10 @@
  */
 package drzhark.mocreatures.item;
 
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemArmor;
+import net.minecraft.world.entity.SharedMonsterAttributes;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.inventory.EntityEquipmentSlot;
+import net.minecraft.world.item.ItemArmor;
 
 import com.google.common.collect.Multimap;
 

@@ -11,8 +11,8 @@ import net.minecraft.world.level.Level;
 public class EntityAITools {
 
     protected static boolean IsNearPlayer(Mob entityliving, double d) {
-        Player entityplayer1 = entityliving.level().getNearestPlayer(entityliving, d);
-        return entityplayer1 != null;
+        Player Player1 = entityliving.level().getNearestPlayer(entityliving, d);
+        return Player1 != null;
     }
 
     protected static Player getIMoCTameableOwner(IMoCTameable pet) {
@@ -24,10 +24,10 @@ public class EntityAITools {
         Level level = mobEntity.level();
         
         for (int i = 0; i < level.players().size(); ++i) {
-            Player entityplayer = level.players().get(i);
+            Player Player = level.players().get(i);
 
-            if (pet.getOwnerId().equals(entityplayer.getUUID())) {
-                return entityplayer;
+            if (pet.getOwnerId().equals(Player.getUUID())) {
+                return Player;
             }
         }
         return null;

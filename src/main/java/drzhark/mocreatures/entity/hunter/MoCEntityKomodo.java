@@ -71,7 +71,7 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
         this.goalSelector.addGoal(7, new EntityAIWanderMoC2(this, 0.9D));
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        //this.targetSelector.addGoal(2, new EntityAIHunt<>(this, AnimalEntity.class, true));
+        //this.targetSelector.addGoal(2, new EntityAIHunt<>(this, Animal.class, true));
         this.targetSelector.addGoal(3, new EntityAIHunt<>(this, Player.class, false));
     }
 

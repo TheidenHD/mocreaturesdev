@@ -43,7 +43,7 @@ public class MoCEntityBoar extends MoCEntityAnimal {
         this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.0D, false));
         this.goalSelector.addGoal(7, new EntityAIWanderMoC2(this, 1.0D));
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        //this.targetSelector.addGoal(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
+        //this.targetSelector.addGoal(1, new EntityAIHunt<>(this, Animal.class, true));
     }
 
     public static AttributeSupplier.Builder createAttributes() {

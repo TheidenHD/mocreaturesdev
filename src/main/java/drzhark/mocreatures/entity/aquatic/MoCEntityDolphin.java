@@ -47,7 +47,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     private static final EntityDataAccessor<Boolean> HAS_EATEN = SynchedEntityData.defineId(MoCEntityDolphin.class, EntityDataSerializers.BOOLEAN);
     public int gestationtime;
 
-    public MoCEntityDolphin(World world) {
+    public MoCEntityDolphin(Level world) {
         super(world);
         setSize(1.3F, 0.605F);
         // TODO: Make hitboxes adjust depending on size
@@ -412,12 +412,12 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
                             babydolphin.setOwnerId(this.getOwnerId());
                             babydolphin.setTamed(true);
                             UUID ownerId = this.getOwnerId();
-                            Player entityplayer = null;
+                            Player Player = null;
                             if (ownerId != null) {
-                                entityplayer = this.level().getPlayerByUUID(this.getOwnerId());
+                                Player = this.level().getPlayerByUUID(this.getOwnerId());
                             }
-                            if (entityplayer != null) {
-                                MoCTools.tameWithName(entityplayer, babydolphin);
+                            if (Player != null) {
+                                MoCTools.tameWithName(Player, babydolphin);
                             }
                             babydolphin.setTypeInt(l);
                             break;
@@ -437,7 +437,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     @Override
     public void setDead() {
         // Server check required to prevent tamed entities from being duplicated on client-side
-        if (!this.world.isRemote && (getIsTamed()) && (getHealth() > 0)) {
+        if (!this.level().isRemote && (getIsTamed()) && (getHealth() > 0)) {
             return;
         }
         super.setDead();

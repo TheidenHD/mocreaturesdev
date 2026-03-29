@@ -4,10 +4,12 @@
 package drzhark.mocreatures.block;
 
 import drzhark.mocreatures.init.MoCBlocks;
+import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
@@ -76,7 +78,7 @@ import java.util.Random;
     }
 
     @Override
-    public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, ItemStack stack) {
+    public void harvestBlock(Level worldIn, Player player, BlockPos pos, IBlockState state, @Nullable TileEntity te, ItemStack stack) {
         if (!worldIn.isRemote && stack.getItem() == Items.SHEARS) {
             player.addStat(StatList.getBlockStats(this));
             spawnAsEntity(worldIn, pos, new ItemStack(this));
@@ -134,7 +136,7 @@ import java.util.Random;
     }
 
     @Override
-    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
+    public IBlockState getStateForPlacement(Level world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
         return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand).withProperty(DECAYABLE, false);
     }
 
@@ -144,7 +146,7 @@ import java.util.Random;
     }
 
     @Override
-    protected void dropApple(final World world, final BlockPos pos, final IBlockState state, final int chance) {
+    protected void dropApple(final Level world, final BlockPos pos, final IBlockState state, final int chance) {
         if (world.rand.nextInt(chance) == 0) {
             if (this == MoCBlocks.wyvwoodLeaves) {
                 spawnAsEntity(world, pos, new ItemStack(MoCItems.mysticPear));

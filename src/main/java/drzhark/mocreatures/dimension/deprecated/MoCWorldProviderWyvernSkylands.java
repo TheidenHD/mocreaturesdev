@@ -9,13 +9,13 @@
 //import net.minecraft.block.Block;
 //import net.minecraft.block.BlockState;
 //import net.minecraft.block.material.Material;
-//import net.minecraft.entity.player.PlayerEntity;
+//import net.minecraft.world.entity.player.Player;
 //import net.minecraft.util.math.BlockPos;
 //import net.minecraft.util.math.MathHelper;
 //import net.minecraft.util.math.vector.Vector3d;
 //import net.minecraft.util.text.TranslationTextComponent;
 //import net.minecraft.world.DimensionType;
-//import net.minecraft.world.WorldProviderSurface;
+//import net.minecraft.world.level.LevelProviderSurface;
 //import net.minecraft.world.biome.Biome;
 //import net.minecraft.world.biome.BiomeProvider;
 //import net.minecraft.world.chunk.Chunk;
@@ -30,7 +30,7 @@
 //
 //    @Override
 //    protected void init() {
-//        this.biomeProvider = new MoCBiomeProviderWyvernSkylands(this.world);
+//        this.biomeProvider = new MoCBiomeProviderWyvernSkylands(this.level());
 //        this.hasSkyLight = true;
 //        setDimension(MoCreatures.wyvernSkylandsDimensionID);
 //        setCustomSky();
@@ -38,11 +38,11 @@
 //
 //    @Override
 //    public IChunkGenerator createChunkGenerator() {
-//        return new MoCChunkProviderWyvernSkylands(this.world);
+//        return new MoCChunkProviderWyvernSkylands(this.level());
 //    }
 //
 //    private void setCustomSky() {
-//        if (!this.world.isRemote) {
+//        if (!this.level().isRemote) {
 //            return;
 //        }
 //
@@ -128,11 +128,11 @@
 //
 //    @Override
 //    public boolean canCoordinateBeSpawn(int xPos, int zPos) {
-//        BlockPos pos = this.world.getTopSolidOrLiquidBlock(new BlockPos(xPos, 0, zPos));
-//        BlockState blockState = this.world.getBlockState(pos);
+//        BlockPos pos = this.level().getTopSolidOrLiquidBlock(new BlockPos(xPos, 0, zPos));
+//        BlockState blockState = this.level().getBlockState(pos);
 //        Block block = blockState.getBlock();
 //        Material material = blockState.getMaterial();
-//        return material.blocksMovement() && !block.isLeaves(blockState, this.world, pos) && !block.isFoliage(this.world, pos);
+//        return material.blocksMovement() && !block.isLeaves(blockState, this.level(), pos) && !block.isFoliage(this.level(), pos);
 //    }
 //
 //    @Override
@@ -159,19 +159,19 @@
 //
 //            // Check for a valid spawn point
 //            if (canCoordinateBeSpawn(i, k)) {
-//                return this.world.getHeight(new BlockPos(i, j, k)).up();
+//                return this.level().getHeight(new BlockPos(i, j, k)).up();
 //            }
 //
 //            attempts++;
 //        }
 //
 //        // If no valid spawn point is found after 1000 attempts, return a default spawn point
-//        return this.world.getHeight(new BlockPos(i, j, k)).up();
+//        return this.level().getHeight(new BlockPos(i, j, k)).up();
 //    }
 //
 //    // No bed explosions allowed
 //    @Override
-//    public WorldSleepResult canSleepAt(PlayerEntity player, BlockPos pos) {
+//    public WorldSleepResult canSleepAt(Player player, BlockPos pos) {
 //        Random message = player.world.rand;
 //        int random;
 //        random = message.nextInt(4);
@@ -233,13 +233,13 @@ import drzhark.mocreatures.init.MoCBiomes;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.DimensionType;
-import net.minecraft.world.WorldProviderSurface;
+import net.minecraft.world.level.LevelProviderSurface;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProvider;
 import net.minecraft.world.chunk.Chunk;
@@ -255,7 +255,7 @@ public class MoCWorldProviderWyvernSkylands extends WorldProviderSurface {
 
     @Override
     protected void init() {
-        this.biomeProvider = FMLLaunchHandler.isDeobfuscatedEnvironment() ? new MoCBiomeProviderWyvernSkylands(this.world) : new MoCBiomeProviderWyvernLair(MoCBiomes.wyvernIsles, 0.5F, 0.0F);
+        this.biomeProvider = FMLLaunchHandler.isDeobfuscatedEnvironment() ? new MoCBiomeProviderWyvernSkylands(this.level()) : new MoCBiomeProviderWyvernLair(MoCBiomes.wyvernIsles, 0.5F, 0.0F);
         this.hasSkyLight = true;
         setDimension(MoCreatures.wyvernSkylandsDimensionID);
         setCustomSky();
@@ -263,11 +263,11 @@ public class MoCWorldProviderWyvernSkylands extends WorldProviderSurface {
 
     @Override
     public IChunkGenerator createChunkGenerator() {
-        return FMLLaunchHandler.isDeobfuscatedEnvironment() ? new MoCChunkProviderWyvernSkylands(this.world) : new MoCChunkGeneratorWyvernLair(this.world, false, this.world.getSeed());
+        return FMLLaunchHandler.isDeobfuscatedEnvironment() ? new MoCChunkProviderWyvernSkylands(this.level()) : new MoCChunkGeneratorWyvernLair(this.level(), false, this.level().getSeed());
     }
 
     private void setCustomSky() {
-        if (!this.world.isRemote) {
+        if (!this.level().isRemote) {
             return;
         }
 
@@ -353,14 +353,14 @@ public class MoCWorldProviderWyvernSkylands extends WorldProviderSurface {
 
     @Override
     public boolean canCoordinateBeSpawn(int xPos, int zPos) {
-        BlockPos pos = this.world.getTopSolidOrLiquidBlock(new BlockPos(xPos, 0, zPos));
+        BlockPos pos = this.level().getTopSolidOrLiquidBlock(new BlockPos(xPos, 0, zPos));
         if (FMLLaunchHandler.isDeobfuscatedEnvironment()) {
-            IBlockState blockState = this.world.getBlockState(pos);
+            IBlockState blockState = this.level().getBlockState(pos);
             Block block = blockState.getBlock();
             Material material = blockState.getMaterial();
-            return material.blocksMovement() && !block.isLeaves(blockState, this.world, pos) && !block.isFoliage(this.world, pos);
+            return material.blocksMovement() && !block.isLeaves(blockState, this.level(), pos) && !block.isFoliage(this.level(), pos);
         } else {
-            return this.world.getBlockState(pos).getMaterial().blocksMovement();
+            return this.level().getBlockState(pos).getMaterial().blocksMovement();
         }
     }
 
@@ -389,14 +389,14 @@ public class MoCWorldProviderWyvernSkylands extends WorldProviderSurface {
 
                 // Check for a valid spawn point
                 if (canCoordinateBeSpawn(i, k)) {
-                    return this.world.getHeight(new BlockPos(i, j, k)).up();
+                    return this.level().getHeight(new BlockPos(i, j, k)).up();
                 }
 
                 attempts++;
             }
 
             // If no valid spawn point is found after 1000 attempts, return a default spawn point
-            return this.world.getHeight(new BlockPos(i, j, k)).up();
+            return this.level().getHeight(new BlockPos(i, j, k)).up();
         } else {
             return new BlockPos(0, 70, 0);
         }
@@ -404,7 +404,7 @@ public class MoCWorldProviderWyvernSkylands extends WorldProviderSurface {
 
     // No bed explosions allowed
     @Override
-    public WorldSleepResult canSleepAt(EntityPlayer player, BlockPos pos) {
+    public WorldSleepResult canSleepAt(Player player, BlockPos pos) {
         Random message = player.world.rand;
         int random;
         random = message.nextInt(4);

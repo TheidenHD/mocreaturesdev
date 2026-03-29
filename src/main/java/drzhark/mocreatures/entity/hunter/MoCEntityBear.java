@@ -75,7 +75,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
         this.goalSelector.addGoal(6, new EntityAIWanderMoC2(this, 1.0D));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        //this.targetSelector.addGoal(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
+        //this.targetSelector.addGoal(1, new EntityAIHunt<>(this, Animal.class, true));
         this.targetSelector.addGoal(3, new EntityAIHunt<>(this, Player.class, false));
     }
 
@@ -205,35 +205,35 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
         if (this.attackCounter > 0 && ++this.attackCounter > 9) {
             this.attackCounter = 0;
         }
-        if (!this.world.isRemote && getBearState() != 3 && !getIsAdult() && getAge() < 80 && (this.rand.nextInt(300) == 0)) {
+        if (!this.level().isRemote && getBearState() != 3 && !getIsAdult() && getAge() < 80 && (this.rand.nextInt(300) == 0)) {
             setBearState(2); // randomly perform an idle sit
         }
         /*
          * Sitting bears will resume on fours stance every now and then, if not sat via WHIP
          */
-        if (!this.world.isRemote && getBearState() == 2 && this.rand.nextInt(800) == 0) {
+        if (!this.level().isRemote && getBearState() == 2 && this.rand.nextInt(800) == 0) {
             setBearState(0);
         }
-        if (!this.world.isRemote && getBearState() == 2 && !this.getNavigator().noPath()) {
+        if (!this.level().isRemote && getBearState() == 2 && !this.getNavigator().noPath()) {
             setBearState(0);
         }
-        if (!this.world.isRemote && this.standingCounter > 0 && ++this.standingCounter > 100 && getBearState() != 3) {
+        if (!this.level().isRemote && this.standingCounter > 0 && ++this.standingCounter > 100 && getBearState() != 3) {
             this.standingCounter = 0;
             setBearState(0);
         }
         /*
          * Standing if close to a vulnerable player
          */
-        if (!this.world.isRemote && !getIsTamed() && getIsStanding()
+        if (!this.level().isRemote && !getIsTamed() && getIsStanding()
                 && !this.isMovementCeased() && getIsAdult() && (this.rand.nextInt(200) == 0) && shouldAttackPlayers()) {
-            EntityPlayer entityplayer1 = this.world.getClosestPlayerToEntity(this, 4D);
-            if ((entityplayer1 != null && this.canEntityBeSeen(entityplayer1) && !entityplayer1.capabilities.disableDamage)) {
+            Player Player1 = this.level().getClosestPlayerToEntity(this, 4D);
+            if ((Player1 != null && this.canEntityBeSeen(Player1) && !Player1.capabilities.disableDamage)) {
                 this.setStand();
                 setBearState(1);
             }
         }
         //TODO move to AI
-        if (!this.world.isRemote && getType() == 3 && (this.deathTime == 0) && !this.isMovementCeased()) {
+        if (!this.level().isRemote && getType() == 3 && (this.deathTime == 0) && !this.isMovementCeased()) {
             EntityItem entityitem = getClosestItem(this, 12D, Items.REEDS, Items.SUGAR);
             if (entityitem != null) {
 
@@ -346,7 +346,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
         setAttackTarget(null);
     }
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
+    public boolean processInteract(Player player, EnumHand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.whip)) {
             this.processBearWhipped();

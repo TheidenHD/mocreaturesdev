@@ -2,10 +2,10 @@ package drzhark.mocreatures.entity.ai;
 
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.passive.MoCEntityBunny;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.EntityAIBase;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class EntityAIBunnyReproduce extends EntityAIBase {
         } else if (bunny.bunnyReproduceTickerB < 127) {
             bunny.bunnyReproduceTickerB++;
         } else {
-            World world = bunny.world;
+            Level world = bunny.world;
             List<Entity> nearbyEntities = world.getEntitiesWithinAABBExcludingEntity(bunny, bunny.getEntityBoundingBox().grow(4.0D));
 
             for (Entity entity : nearbyEntities) {

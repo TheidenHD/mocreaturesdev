@@ -6,10 +6,10 @@ package drzhark.mocreatures.entity.ai;
 import com.google.common.base.Predicate;
 import drzhark.mocreatures.entity.MoCEntityAquatic;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.entity.EntityCreature;
+import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.world.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.world.entity.player.Player;
 
 public class EntityAIHuntAquatic<T extends EntityLivingBase> extends EntityAINearestAttackableTarget<T> {
 
@@ -35,7 +35,7 @@ public class EntityAIHuntAquatic<T extends EntityLivingBase> extends EntityAINea
     public boolean shouldExecute() {
         // Conditions: Don't hunt when tamed and target entity is of class Player
         boolean hunterHasOwner = ((MoCEntityTameableAquatic)this.hunter).getIsTamed();
-        boolean hunterTargetsPlayers = EntityPlayer.class.isAssignableFrom(this.targetClass);
+        boolean hunterTargetsPlayers = Player.class.isAssignableFrom(this.targetClass);
         return (!hunterTargetsPlayers || !hunterHasOwner) && ((MoCEntityAquatic) this.hunter).getIsHunting() && super.shouldExecute();
     }
 }

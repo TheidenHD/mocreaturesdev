@@ -10,21 +10,21 @@ import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.HurtByTargetGoal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.CreatureAttribute;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.LookAtGoal;
+import net.minecraft.world.entity.ai.goal.LookRandomlyGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 
 public class MoCEntityCrab extends MoCEntityTameableAnimal {
 
-    public MoCEntityCrab(EntityType<? extends MoCEntityCrab> type, World world) {
+    public MoCEntityCrab(EntityType<? extends MoCEntityCrab> type, Level world) {
         super(type, world);
         //setSize(0.45F, 0.3F);
         setAge(50 + this.rand.nextInt(50));
@@ -43,7 +43,7 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
         this.goalSelector.addGoal(1, new EntityAIFollowOwnerPlayer(this, 0.8D, 6F, 5F));
         this.goalSelector.addGoal(4, new EntityAIWanderMoC2(this, 1.0D));
         this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
-        this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(6, new LookAtGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
     }
@@ -77,8 +77,8 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected int getExperiencePoints(PlayerEntity player) {
-        return 1 + this.world.rand.nextInt(3);
+    protected int getExperiencePoints(Player player) {
+        return 1 + this.level().rand.nextInt(3);
     }
 
     @Nullable
@@ -100,7 +100,7 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
 
     @Override
     protected void collideWithEntity(Entity entity) {
-        if (entity instanceof PlayerEntity && this.getAttackTarget() == null && !(entity.world.getDifficulty() == Difficulty.PEACEFUL)) {
+        if (entity instanceof Player && this.getAttackTarget() == null && !(entity.world.getDifficulty() == Difficulty.PEACEFUL)) {
             entity.attackEntityFrom(DamageSource.causeMobDamage(this), 1.5F);
         }
 

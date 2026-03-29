@@ -28,6 +28,9 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -90,6 +93,8 @@ import java.util.stream.Collectors;
 
 public class MoCTools {
 
+    public static final EntityDataAccessor<Optional<UUID>> MOCEntity_Riding_Player = SynchedEntityData.defineId(Player.class, EntityDataSerializers.OPTIONAL_UUID);
+
     /**
      * spawns tiny slimes
      */
@@ -126,7 +131,7 @@ public class MoCTools {
             return;
         }
 
-        dropCustomItem(entity, level, new ItemStack(MoCItems.HORSE_SADDLE.get(), 1));
+        dropCustomItem(entity, level, new ItemStack(Items.SADDLE, 1));
         entity.setRideable(false);
     }
 
@@ -199,7 +204,8 @@ public class MoCTools {
 
             entityTarget.hurt(source, 2.0F);
             bigSmack(entityAttacker, entityTarget, 0.6F);
-            playCustomSound(entityAttacker, MoCSoundEvents.ENTITY_GENERIC_TUD.get());
+            // TODO: Add equip sound
+            //playCustomSound(entityAttacker, MoCSoundEvents.ENTITY_GENERIC_TUD.get());
         }
     }
 
@@ -222,7 +228,8 @@ public class MoCTools {
 
             target.hurt(source, 2.0F);
             bigSmack(attacker, target, 0.6F);
-            playCustomSound(attacker, MoCSoundEvents.ENTITY_GENERIC_TUD.get());
+            // TODO: Add equip sound
+            //playCustomSound(attacker, MoCSoundEvents.ENTITY_GENERIC_TUD.get());
         }
     }
 
@@ -530,7 +537,7 @@ public class MoCTools {
         Player player = (entity instanceof Player p) ? p : null;
 
         level.playSound(player, x, y, z,
-                MoCSoundEvents.ENTITY_GENERIC_DESTROY.get(),
+                MoCSoundEvents.ENTITY_GENERIC_DESTROY,
                 SoundSource.HOSTILE,
                 4.0F,
                 (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F
@@ -664,50 +671,6 @@ public class MoCTools {
                     }
                 }
             }
-        }
-    }
-
-
-    public static void updatePlayerArmorEffects(Player player) {
-        if (!MoCreatures.proxy.armorSetEffects) return;
-
-        Item boots = player.getItemBySlot(EquipmentSlot.FEET).getItem();
-        Item legs = player.getItemBySlot(EquipmentSlot.LEGS).getItem();
-        Item plate = player.getItemBySlot(EquipmentSlot.CHEST).getItem();
-        Item helmet = player.getItemBySlot(EquipmentSlot.HEAD).getItem();
-
-        // Cave Scorpion Armor Set Effect - Night Vision
-        if (boots == MoCItems.BOOTS_SCORP_C.get() && legs == MoCItems.LEGS_SCORP_C.get() &&
-                plate == MoCItems.PLATE_SCORP_C.get() && helmet == MoCItems.HELMET_SCORP_C.get()) {
-            player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 300, 0));
-            return;
-        }
-
-        // Fire Scorpion Armor Set Effect - Fire Resistance
-        if (boots == MoCItems.BOOTS_SCORP_N.get() && legs == MoCItems.LEGS_SCORP_N.get() &&
-                plate == MoCItems.PLATE_SCORP_N.get() && helmet == MoCItems.HELMET_SCORP_N.get()) {
-            player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 300, 0));
-            return;
-        }
-
-        // Frost Scorpion Armor Set Effect - Resistance
-        if (boots == MoCItems.BOOTS_SCORP_F.get() && legs == MoCItems.LEGS_SCORP_F.get() &&
-                plate == MoCItems.PLATE_SCORP_F.get() && helmet == MoCItems.HELMET_SCORP_F.get()) {
-            player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 300, 0));
-            return;
-        }
-
-        // Dirt Scorpion Armor Set Effect - Health Boost
-        if (boots == MoCItems.BOOTS_SCORP_D.get() && legs == MoCItems.LEGS_SCORP_D.get() &&
-                plate == MoCItems.PLATE_SCORP_D.get() && helmet == MoCItems.HELMET_SCORP_D.get()) {
-            player.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST, 300, 1));
-            return;
-        }
-
-        // Undead Scorpion Armor Set Effect - Strength
-        if (boots == MoCItems.BOOTS_SCORP_U.get() && legs == MoCItems.LEGS_SCORP_U.get() &&
-                plate == MoCItems.PLATE_SCORP_U.get() && helmet == MoCItems.HELMET_SCORP_U.get()) {
-            player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 300, 0));
         }
     }
 
@@ -862,7 +825,7 @@ public class MoCTools {
                 if (event != null && !event.isCanceled()) {
                     entity.level().removeBlock(pos, false);
                     if (entity.level().random.nextInt(3) == 0) {
-                        playCustomSound(entity, MoCSoundEvents.ENTITY_GOLEM_WALK.get());
+                        playCustomSound(entity, MoCSoundEvents.ENTITY_BIG_GOLEM_STEP);
                         count++; // only counts recovered blocks
                     }
                 }
@@ -1040,7 +1003,7 @@ public class MoCTools {
                 float offsetX = (i % 2 - 0.5F) * 0.25F;
                 float offsetZ = ((float) i / 2 - 0.5F) * 0.25F;
 
-                MoCEntityMaggot maggot = MoCEntities.MAGGOT.get().create(level);
+                MoCEntityMaggot maggot = MoCEntities.MAGGOT.create(level);
                 if (maggot != null) {
                     maggot.moveTo(entity.getX() + offsetX, entity.getY() + 0.5D, entity.getZ() + offsetZ,
                             rand.nextFloat() * 360.0F, 0.0F);
@@ -1240,21 +1203,35 @@ public class MoCTools {
         source.load(tag);
     }
 
-    public static void dismountSneakingPlayer(Mob entity) {
-        if (!entity.isPassenger()) return;
+    public static Entity getEntityRidingPlayer(Player player) {
+        if (player.getPassengers().isEmpty() || player.level().isClientSide()) {
+            return null;
+        }
+        // Get ID for entity that is currently riding player.
+        SynchedEntityData tag = player.getEntityData();
+        UUID animalID = tag.get(MOCEntity_Riding_Player).orElse(null);
+        if (animalID == null || player.getUUID().equals(animalID)) {
+            return null;
+        }
+        return ((ServerLevel)player.level()).getEntity(animalID);
+    }
 
-        Entity ridden = entity.getVehicle();
-        if (ridden instanceof LivingEntity && ridden.isShiftKeyDown()) {
-            entity.stopRiding();
-
-            double dist = -1.5D;
-            double yaw = Math.toRadians(((LivingEntity) ridden).getYRot());
-            double newX = ridden.getX() + (dist * Math.sin(yaw));
-            double newZ = ridden.getZ() - (dist * Math.cos(yaw));
-            double newY = ridden.getY() + 2D;
-
-            entity.teleportTo(newX, newY, newZ);
-            playCustomSound(entity, SoundEvents.CHICKEN_EGG);
+    public static void dismountPassengerFromEntity(Entity passenger, Entity entity, boolean force) {
+        if (!force && (passenger == null || entity == null || passenger.getVehicle() == null)) {
+            return;
+        }
+        if (force || entity.isShiftKeyDown() || passenger.isInWater()) {
+            if (force) MoCreatures.LOGGER.info("Forcing dismount from " + entity + " for passenger " + passenger);
+            passenger.teleportTo(entity.getX(), entity.getY() + 1D, entity.getZ());
+            passenger.stopRiding();
+            MoCTools.playCustomSound(entity, SoundEvents.CHICKEN_EGG);
+            if (entity instanceof Player) {
+                SynchedEntityData tag = entity.getEntityData();
+                tag.set(MOCEntity_Riding_Player, Optional.empty()); // remove the tag
+                if (IMoCEntity.class.isAssignableFrom(passenger.getClass())) {
+                    ((IMoCEntity) passenger).onStopRidingPlayer();
+                }
+            }
         }
     }
 

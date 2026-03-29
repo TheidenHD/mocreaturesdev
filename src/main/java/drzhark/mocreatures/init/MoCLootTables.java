@@ -4,18 +4,10 @@
 package drzhark.mocreatures.init;
 
 import drzhark.mocreatures.MoCConstants;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootEntryItem;
-import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.LootTableList;
-import net.minecraft.world.storage.loot.RandomValueRange;
-import net.minecraft.world.storage.loot.conditions.LootCondition;
-import net.minecraft.world.storage.loot.functions.LootFunction;
-import net.minecraft.world.storage.loot.functions.SetCount;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 // TODO: Ents, Elephants, Horses, Horse Mobs, Snakes
 @Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID)

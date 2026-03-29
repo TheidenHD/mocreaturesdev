@@ -6,17 +6,17 @@ package drzhark.mocreatures.entity.hunter;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 
@@ -87,7 +87,7 @@ public class MoCEntityManticorePet extends MoCEntityBigCat {
         }
 
         if (this.getIsRideable() && this.getIsAdult() && (!this.getIsChested() || !player.isSneaking()) && !this.isBeingRidden()) {
-            if (!this.world.isRemote && player.startRiding(this)) {
+            if (!this.level().isRemote && player.startRiding(this)) {
                 player.rotationYaw = this.rotationYaw;
                 player.rotationPitch = this.rotationPitch;
                 setSitting(false);

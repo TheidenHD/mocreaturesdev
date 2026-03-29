@@ -12,28 +12,17 @@ import drzhark.mocreatures.entity.neutral.MoCEntityOstrich;
 import drzhark.mocreatures.entity.neutral.MoCEntityWyvern;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.block.Block;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+
+import net.minecraft.world.level.Level;
+
 
 import java.util.List;
 
@@ -52,7 +41,7 @@ public class MoCItemWhip extends MoCItemSword {
     }
 
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(Player player, Level worldIn, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         final ItemStack stack = player.getHeldItem(hand);
         Block block = worldIn.getBlockState(pos).getBlock();
         Block block1 = worldIn.getBlockState(pos.up()).getBlock();
@@ -164,7 +153,7 @@ public class MoCItemWhip extends MoCItemSword {
         return super.hitEntity(stack, target, attacker);
     }
 
-    public void whipFX(World world, BlockPos pos) {
+    public void whipFX(Level world, BlockPos pos) {
         double d = pos.getX() + 0.5F;
         double d1 = pos.getY() + 1.0F;
         double d2 = pos.getZ() + 0.5F;
@@ -201,7 +190,7 @@ public class MoCItemWhip extends MoCItemSword {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, @Nullable Level worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         tooltip.add(TextFormatting.BLUE + I18n.format("info." + MoCConstants.MOD_ID + ".whip"));
     }
 }

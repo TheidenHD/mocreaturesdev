@@ -2,8 +2,8 @@ package drzhark.mocreatures.compat.tinkers.traits.armor;
 
 import c4.conarm.lib.traits.AbstractArmorTrait;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
@@ -24,7 +24,7 @@ public class TraitShellFireArmor extends AbstractArmorTrait {
     }
 
     @Override
-    public float onDamaged(ItemStack armor, EntityPlayer player, DamageSource source, float damage, float newDamage, LivingDamageEvent event) {
+    public float onDamaged(ItemStack armor, Player player, DamageSource source, float damage, float newDamage, LivingDamageEvent event) {
         if (random.nextFloat() <= chance) {
             // Completely cancel out the damage
             event.setCanceled(true);
@@ -34,7 +34,7 @@ public class TraitShellFireArmor extends AbstractArmorTrait {
             if (!player.world.isRemote) {
                 source.getTrueSource().setFire(15);
 
-                if (player instanceof EntityPlayer) {
+                if (player instanceof Player) {
                     player.addPotionEffect(new PotionEffect(playerEffect, 30 * 20, 0));
                     TinkerTools.proxy.spawnEffectParticle(ParticleEffect.Type.HEART_ARMOR, player, (int) damage);
                 }

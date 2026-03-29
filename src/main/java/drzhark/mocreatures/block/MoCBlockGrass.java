@@ -12,30 +12,21 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.GrassBlock;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.block.BonemealableBlock;
-import net.minecraft.world.level.block.MushroomBlock;
 import net.minecraftforge.common.IPlantable;
 
 import java.util.List;
 
-public class MoCBlockGrass extends GrassBlock implements BonemealableBlock {
+public class MoCBlockGrass extends Block implements BonemealableBlock {
 
     public MoCBlockGrass(BlockBehaviour.Properties properties) {
-        super(properties
-                .mapColor(MapColor.GRASS)
-                .randomTicks()
-                .strength(0.6F)
-                .sound(SoundType.GRASS));
+        super(properties);
     }
 
-    @Override
     public void randomTick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
         if (!world.isAreaLoaded(pos, 3)) return;
 

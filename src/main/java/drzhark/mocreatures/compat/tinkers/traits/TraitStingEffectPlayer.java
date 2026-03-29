@@ -1,9 +1,9 @@
 package drzhark.mocreatures.compat.tinkers.traits;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import slimeknights.tconstruct.library.tools.ToolNBT;
@@ -25,7 +25,7 @@ public class TraitStingEffectPlayer extends AbstractTrait {
     }
 
     @Override
-    public void applyEffect(NBTTagCompound rootCompound, NBTTagCompound modifierTag) {
+    public void applyEffect(CompoundTag rootCompound, CompoundTag modifierTag) {
         // Apply bonus damage if it hasn't been applied yet
         if (!TinkerUtil.hasTrait(rootCompound, identifier)) {
             ToolNBT data = TagUtil.getToolStats(rootCompound);
@@ -40,12 +40,12 @@ public class TraitStingEffectPlayer extends AbstractTrait {
     public void afterHit(ItemStack tool, EntityLivingBase player, EntityLivingBase target, float damageDealt, boolean wasCritical, boolean wasHit) {
         if (wasHit && target.isEntityAlive()) {
             // Don't set the normal effect on players
-            if (!(target instanceof EntityPlayer)) {
+            if (!(target instanceof Player)) {
                 target.addPotionEffect(new PotionEffect(effect, 20 * 5));
             }
 
             // Set our alternative effect for players
-            if (target instanceof EntityPlayer) {
+            if (target instanceof Player) {
                 target.addPotionEffect(new PotionEffect(playerEffect, 20 * 5));
             }
         }

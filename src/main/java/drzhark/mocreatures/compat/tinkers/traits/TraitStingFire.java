@@ -1,8 +1,8 @@
 package drzhark.mocreatures.compat.tinkers.traits;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import slimeknights.tconstruct.library.tools.ToolNBT;
 import slimeknights.tconstruct.library.traits.AbstractTrait;
 import slimeknights.tconstruct.library.utils.TagUtil;
@@ -18,7 +18,7 @@ public class TraitStingFire extends AbstractTrait {
     }
 
     @Override
-    public void applyEffect(NBTTagCompound rootCompound, NBTTagCompound modifierTag) {
+    public void applyEffect(CompoundTag rootCompound, CompoundTag modifierTag) {
         // Apply bonus damage if it hasn't been applied yet
         if (!TinkerUtil.hasTrait(rootCompound, identifier)) {
             ToolNBT data = TagUtil.getToolStats(rootCompound);

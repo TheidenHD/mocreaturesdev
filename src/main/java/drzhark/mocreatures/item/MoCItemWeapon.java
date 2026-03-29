@@ -13,16 +13,15 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.IItemTier;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.world.entity.SharedMonsterAttributes;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.EquipmentSlotType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.ActionResult;
@@ -31,7 +30,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -91,10 +91,10 @@ public class MoCItemWeapon extends MoCItem {
                     target.setFire(timer + fire_aspect);
                     break;
                 case 4: // Weakness (Nausea for players)
-                    target.addPotionEffect(new EffectInstance(target instanceof PlayerEntity ? Effects.NAUSEA : Effects.WEAKNESS, timer * 20, 0));
+                    target.addPotionEffect(new EffectInstance(target instanceof Player ? Effects.NAUSEA : Effects.WEAKNESS, timer * 20, 0));
                     break;
                 case 5: // Wither (Blindness for players)
-                    target.addPotionEffect(new EffectInstance(target instanceof PlayerEntity ? Effects.BLINDNESS : Effects.WITHER, timer * 20, 0));
+                    target.addPotionEffect(new EffectInstance(target instanceof Player ? Effects.BLINDNESS : Effects.WITHER, timer * 20, 0));
                     break;
                 default:
                     break;
@@ -154,7 +154,7 @@ public class MoCItemWeapon extends MoCItem {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, @Nullable Level world, List<String> tooltip, ITooltipFlag flagIn) {
         if (MoCreatures.proxy.weaponEffects) {
             switch (this.specialWeaponType) {
                 case 1: // Poison 2

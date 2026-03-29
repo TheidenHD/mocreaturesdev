@@ -44,7 +44,7 @@ public class MoCEntityRaccoon extends MoCEntityTameableAnimal {
         this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, false));
         this.goalSelector.addGoal(6, new EntityAIWanderMoC2(this, 1.0D));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        //this.targetSelector.addGoal(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
+        //this.targetSelector.addGoal(1, new EntityAIHunt<>(this, Animal.class, true));
     }
 
     public static AttributeSupplier.Builder createAttributes() {

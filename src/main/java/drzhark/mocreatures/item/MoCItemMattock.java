@@ -11,15 +11,15 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemPickaxe;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemPickaxe;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -27,7 +27,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -58,7 +58,7 @@ public class MoCItemMattock extends ItemPickaxe {
         this.specialWeaponType = damageType;
     }
 
-    public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(Player player, Level worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         ItemStack itemstack = player.getHeldItem(hand);
 
         IBlockState iblockstate = worldIn.getBlockState(pos);
@@ -76,7 +76,7 @@ public class MoCItemMattock extends ItemPickaxe {
         return Items.IRON_HOE.onItemUse(player, worldIn, pos, hand, facing, hitX, hitY, hitZ);
     }
 
-    protected void setBlock(ItemStack stack, EntityPlayer player, World worldIn, BlockPos pos, IBlockState state) {
+    protected void setBlock(ItemStack stack, Player player, Level worldIn, BlockPos pos, IBlockState state) {
         worldIn.playSound(player, pos, SoundEvents.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
 
         if (!worldIn.isRemote) {
@@ -109,10 +109,10 @@ public class MoCItemMattock extends ItemPickaxe {
                     target.setFire(timer + fire_aspect);
                     break;
                 case 4: // Weakness (Nausea for players)
-                    target.addPotionEffect(new PotionEffect(target instanceof EntityPlayer ? MobEffects.NAUSEA : MobEffects.WEAKNESS, timer * 20, 0));
+                    target.addPotionEffect(new PotionEffect(target instanceof Player ? MobEffects.NAUSEA : MobEffects.WEAKNESS, timer * 20, 0));
                     break;
                 case 5: // Wither (Blindness for players)
-                    target.addPotionEffect(new PotionEffect(target instanceof EntityPlayer ? MobEffects.BLINDNESS : MobEffects.WITHER, timer * 20, 0));
+                    target.addPotionEffect(new PotionEffect(target instanceof Player ? MobEffects.BLINDNESS : MobEffects.WITHER, timer * 20, 0));
                     break;
                 default:
                     break;
@@ -125,7 +125,7 @@ public class MoCItemMattock extends ItemPickaxe {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, @Nullable Level worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         if (MoCreatures.proxy.weaponEffects) {
             switch (this.specialWeaponType) {
                 case 1: // Poison 2

@@ -418,15 +418,15 @@ public class MoCEntitySnake extends MoCEntityTameableAnimal {
             setTarget(null);
         }
 
-        Player entityplayer1 = this.level().getNearestPlayer(this, 12D);
-        if (entityplayer1 != null) {
-            double distP = MoCTools.getSqDistanceTo(entityplayer1, this.getX(), this.getY(), this.getZ());
+        Player Player1 = this.level().getNearestPlayer(this, 12D);
+        if (Player1 != null) {
+            double distP = MoCTools.getSqDistanceTo(Player1, this.getX(), this.getY(), this.getZ());
             if (isNotScared()) {
                 setNearPlayer(distP < 5D);
 
-                /*if (entityplayer1.isVehicle()
-                        && (entityplayer1.getPassengers().get(0) instanceof MoCEntityMouse || entityplayer1.getPassengers().get(0) instanceof MoCEntityBird)) {
-                    PathEntity pathentity = this.getNavigation().createPath(entityplayer1, 1.0);
+                /*if (Player1.isVehicle()
+                        && (Player1.getPassengers().get(0) instanceof MoCEntityMouse || Player1.getPassengers().get(0) instanceof MoCEntityBird)) {
+                    PathEntity pathentity = this.getNavigation().createPath(Player1, 1.0);
                     this.getNavigation().moveTo(pathentity, 1D);
                     setPissed(false);
                     this.hissCounter = 0;

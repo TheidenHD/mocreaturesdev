@@ -180,7 +180,7 @@ public class MoCEntityHorseMob extends MoCEntityMob {
         if (!blockIn.getDefaultState().getMaterial().isLiquid()) {
             SoundType soundtype = blockIn.getSoundType();
 
-            if (this.world.getBlockState(pos.up()).getBlock() == Blocks.SNOW_LAYER) {
+            if (this.level().getBlockState(pos.up()).getBlock() == Blocks.SNOW_LAYER) {
                 soundtype = Blocks.SNOW_LAYER.getSoundType();
             } else if (soundtype == SoundType.WOOD) {
                 this.playSound(SoundEvents.HORSE_STEP_WOOD, soundtype.getVolume() * 0.15F, soundtype.getPitch());

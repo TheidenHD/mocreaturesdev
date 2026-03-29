@@ -5,9 +5,9 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 import drzhark.mocreatures.MoCConstants;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import slimeknights.tconstruct.library.Util;
 import slimeknights.tconstruct.library.traits.AbstractTrait;
 
@@ -31,7 +31,7 @@ public class TraitSilverHoplite extends AbstractTrait {
     }
 
     @Override
-    public List<String> getExtraInfo(ItemStack tool, NBTTagCompound modifierTag) {
+    public List<String> getExtraInfo(ItemStack tool, CompoundTag modifierTag) {
         String loc = String.format(LOC_Extra, getIdentifier());
 
         return ImmutableList.of(Util.translateFormatted(loc, Util.df.format(bonus)));

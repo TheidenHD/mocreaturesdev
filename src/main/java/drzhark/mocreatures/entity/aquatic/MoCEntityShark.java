@@ -13,26 +13,26 @@ import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIAttackMelee;
-import net.minecraft.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.entity.passive.EntityWolf;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.world.entity.SharedMonsterAttributes;
+import net.minecraft.world.entity.ai.EntityAIAttackMelee;
+import net.minecraft.world.entity.ai.EntityAIHurtByTarget;
+import net.minecraft.world.entity.animal.EntityWolf;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class MoCEntityShark extends MoCEntityTameableAquatic {
 
-    public MoCEntityShark(EntityType<? extends MoCEntityShark> type, World world) {
+    public MoCEntityShark(EntityType<? extends MoCEntityShark> type, Level world) {
         super(type, world);
         this.texture = "shark.png";
         setSize(1.65F, 0.9F);
@@ -47,9 +47,9 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
         this.tasks.addTask(2, new EntityAIAttackMelee(this, 1.0D, false));
         this.tasks.addTask(5, new EntityAIWanderMoC2(this, 1.0D, 30));
         this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
-        this.targetTasks.addTask(2, new EntityAITargetNonTamedMoC<>(this, EntityPlayer.class, false));
+        this.targetTasks.addTask(2, new EntityAITargetNonTamedMoC<>(this, Player.class, false));
         // Currently doesn't function
-        //this.targetTasks.addTask(3, new EntityAIHuntAquatic<>(this, EntityPlayer.class, false));
+        //this.targetTasks.addTask(3, new EntityAIHuntAquatic<>(this, Player.class, false));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
@@ -69,13 +69,13 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     }
 
     @Override
-    protected int getExperiencePoints(PlayerEntity player) {
+    protected int getExperiencePoints(Player player) {
         return experienceValue;
     }
 
     @Override
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
-        if (super.attackEntityFrom(damagesource, i) && (this.world.getDifficulty().getId() > 0)) {
+        if (super.attackEntityFrom(damagesource, i) && (this.level().getDifficulty().getId() > 0)) {
             Entity entity = damagesource.getTrueSource();
             if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
@@ -97,10 +97,10 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     }
 
     protected Entity findPlayerToAttack() {
-        if ((this.world.getDifficulty().getId() > 0) && (getAge() >= 100)) {
-            PlayerEntity entityplayer = this.world.getClosestPlayer(this, 16D);
-            if ((entityplayer != null) && entityplayer.isInWater() && !getIsTamed()) {
-                return entityplayer;
+        if ((this.level().getDifficulty().getId() > 0) && (getAge() >= 100)) {
+            Player Player = this.level().getClosestPlayer(this, 16D);
+            if ((Player != null) && Player.isInWater() && !getIsTamed()) {
+                return Player;
             }
         }
         return null;
@@ -109,9 +109,9 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     public LivingEntity FindTarget(Entity entity, double d) {
         double d1 = -1D;
         LivingEntity entityliving = null;
-        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(d));
+        List<Entity> list = this.level().getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(d));
         for (Entity o : list) {
-            if (!(o instanceof LivingEntity) || (o instanceof MoCEntityAquatic) || (o instanceof MoCEntityEgg) || (o instanceof PlayerEntity) || ((o instanceof WolfEntity) && !(MoCreatures.proxy.attackWolves)) || ((o instanceof MoCEntityHorse) && !(MoCreatures.proxy.attackHorses))) {
+            if (!(o instanceof LivingEntity) || (o instanceof MoCEntityAquatic) || (o instanceof MoCEntityEgg) || (o instanceof Player) || ((o instanceof WolfEntity) && !(MoCreatures.proxy.attackWolves)) || ((o instanceof MoCEntityHorse) && !(MoCreatures.proxy.attackHorses))) {
                 continue;
             } else {
                 if ((o instanceof MoCEntityDolphin)) {
@@ -130,7 +130,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     @Override
     public void livingTick() {
         super.livingTick();
-        if (!this.world.isRemote) {
+        if (!this.level().isRemote) {
             if (getAge() >= 160) {
                 setAdult(true);
             }
@@ -143,7 +143,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     @Override
     public void setDead() {
         // Server check required to prevent tamed entities from being duplicated on client-side
-        if (!this.world.isRemote && (getIsTamed()) && (getHealth() > 0)) {
+        if (!this.level().isRemote && (getIsTamed()) && (getHealth() > 0)) {
             return;
         }
         super.setDead();

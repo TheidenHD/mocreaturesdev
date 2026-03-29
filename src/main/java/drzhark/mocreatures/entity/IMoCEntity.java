@@ -5,6 +5,7 @@ package drzhark.mocreatures.entity;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.UUID;
 
@@ -23,6 +24,8 @@ public interface IMoCEntity {
     UUID getOwnerId();
 
     boolean getIsTamed();
+
+    boolean shouldRenderNameAndHealth();
 
     boolean getIsAdult();
 
@@ -91,6 +94,12 @@ public interface IMoCEntity {
     boolean isFlyer();
 
     boolean getIsFlying();
+
+    boolean startRidingPlayer(Player player);
+
+    void onStopRidingPlayer();
+
+    boolean canRidePlayer();
     
     /**
      * Returns true if this entity should render with transparency (partial or full model).

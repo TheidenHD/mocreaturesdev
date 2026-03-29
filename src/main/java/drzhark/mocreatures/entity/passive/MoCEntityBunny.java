@@ -10,15 +10,15 @@ import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAISwimming;
-import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.entity.IEntityLivingData;
+import net.minecraft.world.entity.SharedMonsterAttributes;
+import net.minecraft.world.entity.ai.EntityAISwimming;
+import net.minecraft.world.entity.ai.EntityAIWatchClosest;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -63,7 +63,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
         this.tasks.addTask(4, new EntityAIFollowAdult(this, 1.0D));
         this.tasks.addTask(5, new EntityAIBunnyReproduce(this));
         this.tasks.addTask(6, new EntityAIWanderMoC2(this, 0.8D));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
+        this.tasks.addTask(7, new EntityAIWatchClosest(this, Player.class, 6.0F));
     }
 
     public static AttributeSupplier.Builder registerAttributes() {
@@ -79,7 +79,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     @Nullable
     @Override
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData entityLivingData) {
-        if (this.world.provider.getDimension() == MoCreatures.proxy.wyvernDimension) this.enablePersistence();
+        if (this.level().provider.getDimension() == MoCreatures.proxy.wyvernDimension) this.enablePersistence();
         return super.onInitialSpawn(difficulty, entityLivingData);
     }
 
@@ -173,7 +173,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
                 if (!player.capabilities.isCreativeMode) stack.shrink(1);
                 setHasEaten(true);
                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
-                if (!getIsTamed() && !this.world.isRemote) {
+                if (!getIsTamed() && !this.level().isRemote) {
                     MoCTools.tameWithName(player, this);
                 }
                 return true;
@@ -196,7 +196,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
             this.setYRot(this.getVehicle().getYRot());
         }
 
-        if (!this.world.isRemote) {
+        if (!this.level().isRemote) {
             if (--this.jumpTimer <= 0 && this.onGround && ((this.motionX > 0.05D) || (this.motionZ > 0.05D) || (this.motionX < -0.05D) || (this.motionZ < -0.05D))) {
                 this.motionY = 0.3D;
                 this.jumpTimer = 15;

@@ -7,20 +7,20 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.ai.EntityAIFollowHerd;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.HurtByTargetGoal;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.EntityAIHurtByTarget;
+import net.minecraft.world.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 public class MoCEntityPiranha extends MoCEntitySmallFish {
 
@@ -54,9 +54,9 @@ public class MoCEntityPiranha extends MoCEntitySmallFish {
 
     protected Entity findPlayerToAttack() {
         if ((this.level().getDifficulty().getId() > 0)) {
-            Player entityplayer = this.level().getNearestPlayer(this, 12D);
-            if ((entityplayer != null) && entityplayer.isInWater() && !getIsTamed()) {
-                return entityplayer;
+            Player Player = this.level().getNearestPlayer(this, 12D);
+            if ((Player != null) && Player.isInWater() && !getIsTamed()) {
+                return Player;
             }
         }
         return null;

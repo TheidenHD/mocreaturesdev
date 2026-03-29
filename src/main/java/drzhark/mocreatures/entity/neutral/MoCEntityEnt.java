@@ -89,12 +89,12 @@ public class MoCEntityEnt extends MoCEntityAnimal {
 
     @Override
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
-        if (damagesource.getTrueSource() instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer) damagesource.getTrueSource();
+        if (damagesource.getTrueSource() instanceof Player) {
+            Player player = (Player) damagesource.getTrueSource();
             ItemStack heldStack = player.inventory.getCurrentItem();
             Item heldItem = heldStack.getItem();
             if (heldItem.getHarvestLevel(heldStack, "axe", player, null) >= 0) {
-                this.world.getDifficulty();
+                this.level().getDifficulty();
                 if (super.shouldAttackPlayers()) {
                     setAttackTarget(player);
                 }
@@ -196,8 +196,8 @@ public class MoCEntityEnt extends MoCEntityAnimal {
         if (Blocks.DIRT.defaultBlockState().is(blockUnderFeet)) {
             Block block = Blocks.GRASS_BLOCK;
             BlockEvent.BreakEvent event = null;
-            if (!this.world.isRemote) {
-                event = new BlockEvent.BreakEvent(this.world, pos, block.getDefaultState(), FakePlayerFactory.get((WorldServer) this.world, MoCreatures.MOCFAKEPLAYER));
+            if (!this.level().isRemote) {
+                event = new BlockEvent.BreakEvent(this.level(), pos, block.getDefaultState(), FakePlayerFactory.get((WorldServer) this.level(), MoCreatures.MOCFAKEPLAYER));
             }
             if (event != null && !event.isCanceled()) {
                 this.level().setBlock(pos.below(), block.defaultBlockState(), 3);

@@ -129,7 +129,7 @@ public class MoCEntityManticore extends MoCEntityMob {
                 MoCreatures.proxy.StarFX(this);
             }*/
 
-            if (!this.world.isRemote && this.wingFlapCounter == 5) {
+            if (!this.level().isRemote && this.wingFlapCounter == 5) {
                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_FLAP);
             }
         }

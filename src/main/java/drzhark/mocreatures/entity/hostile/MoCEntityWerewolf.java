@@ -170,8 +170,8 @@ public class MoCEntityWerewolf extends MoCEntityMob {
     public boolean hurt(DamageSource damagesource, float i) {
         Entity entity = damagesource.getEntity();
         if (!getIsHumanForm() && (entity instanceof Player)) {
-            Player entityplayer = (Player) entity;
-            ItemStack stack = entityplayer.getMainHandItem();
+            Player Player = (Player) entity;
+            ItemStack stack = Player.getMainHandItem();
             if (!stack.isEmpty()) {
                 if (stack.getItem() == MoCItems.silversword || stack.getItem() == MoCItems.silveraxe || stack.getItem() == MoCItems.silverMattock) {
                     i = 10.0F;

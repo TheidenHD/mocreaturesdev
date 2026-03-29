@@ -21,7 +21,7 @@ import net.minecraft.world.level.biome.MobSpawnSettings;
 public class MoCEntityData {
 
     /**
-     * In 1.20.1, use MobSpawnSettings.SpawnerData instead of MobSpawnInfo.Spawners.
+     * In 1.20.1, use MobSpawnSettings.SpawnerData instead of MobSpawnSettings.SpawnerData.
      */
     private final MobSpawnSettings.SpawnerData spawnListEntry;
 
@@ -32,7 +32,7 @@ public class MoCEntityData {
     private List<TagKey<net.minecraft.world.level.biome.Biome>> blockedBiomeTags = new ArrayList<>();
 
     /**
-     * In 1.20.1, EntityClassification is now called MobCategory.
+     * In 1.20.1, MobCategory is now called MobCategory.
      */
     private MobCategory typeOfCreature;
 
@@ -45,7 +45,7 @@ public class MoCEntityData {
     private int maxSpawnInChunk;
 
     /**
-     * In 1.20.1, ResourceKey<World> became ResourceKey<Level>.
+     * In 1.20.1, ResourceKey<Level> became ResourceKey<Level>.
      */
     private ResourceKey<Level>[] dimensions;
 
@@ -96,7 +96,7 @@ public class MoCEntityData {
         return this.spawnListEntry.type;
     }
 
-    /** Returns the mob category (formerly EntityClassification). */
+    /** Returns the mob category (formerly MobCategory). */
     public MobCategory getType() {
         return this.typeOfCreature;
     }

@@ -7,7 +7,7 @@ import com.buuz135.industrial.api.extractor.ExtractorEntry;
 import com.buuz135.industrial.proxy.FluidsRegistry;
 import drzhark.mocreatures.init.MoCBlocks;
 import drzhark.mocreatures.init.MoCItems;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 // Courtesy of SokyranTheDragon for most entries

@@ -3,6 +3,7 @@
  */
 package drzhark.mocreatures.block;
 
+import drzhark.mocreatures.init.MoCBlocks;
 import net.minecraft.world.level.block.TallGrassBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -36,10 +37,6 @@ public class MoCBlockTallGrass extends TallGrassBlock {
 
     @Override
     protected boolean mayPlaceOn(BlockState state, BlockGetter level, BlockPos pos) {
-        return state.getBlock() instanceof GrassBlock
-                || state.getBlock() instanceof MoCBlockGrass
-                || state.getBlock() instanceof MoCBlockDirt
-                || state.getBlock() instanceof FarmBlock
-                || state.is(net.minecraft.tags.BlockTags.DIRT);
+        return super.mayPlaceOn(state, level, pos) || state.is(MoCBlocks.wyvgrass.get()) || state.is(MoCBlocks.wyvdirt.get());
     }
 }

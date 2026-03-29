@@ -66,15 +66,15 @@ public class EntityAIFollowOwnerPlayer extends Goal {
             return false;
         }
 
-        Player entityplayer = EntityAITools.getIMoCTameableOwner((IMoCTameable) this.thePet);
+        Player Player = EntityAITools.getIMoCTameableOwner((IMoCTameable) this.thePet);
 
-        if (entityplayer == null) {
+        if (Player == null) {
             return false;
-        } else if (this.thePet.distanceToSqr(entityplayer) < this.minDist * this.minDist
-                || this.thePet.distanceToSqr(entityplayer) > this.maxDist * this.maxDist) {
+        } else if (this.thePet.distanceToSqr(Player) < this.minDist * this.minDist
+                || this.thePet.distanceToSqr(Player) > this.maxDist * this.maxDist) {
             return false;
         } else {
-            this.theOwner = entityplayer;
+            this.theOwner = Player;
             return true;
         }
     }

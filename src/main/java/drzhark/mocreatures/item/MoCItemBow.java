@@ -6,20 +6,20 @@ package drzhark.mocreatures.item;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.EntityArrow;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemArrow;
-import net.minecraft.item.ItemBow;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.ItemArrow;
+import net.minecraft.world.item.ItemBow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.stats.StatList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.ForgeEventFactory;
 
 public class MoCItemBow extends ItemBow {
@@ -40,7 +40,7 @@ public class MoCItemBow extends ItemBow {
         this.drawTimeMult = drawTimeMult;
         this.inaccuracy = inaccuracy;
         this.repairMaterial = repairMaterial;
-        this.addPropertyOverride(new ResourceLocation("pull"), (ItemStack bow, World world, EntityLivingBase entity) -> {
+        this.addPropertyOverride(new ResourceLocation("pull"), (ItemStack bow, Level world, EntityLivingBase entity) -> {
             if (entity == null) {
             	return 0.0F;
             }
@@ -52,9 +52,9 @@ public class MoCItemBow extends ItemBow {
     }
 
     @Override
-    public void onPlayerStoppedUsing(ItemStack itemStack, World world, EntityLivingBase entityLiving, int timeInUse) {
-        if (entityLiving instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer) entityLiving;
+    public void onPlayerStoppedUsing(ItemStack itemStack, Level world, EntityLivingBase entityLiving, int timeInUse) {
+        if (entityLiving instanceof Player) {
+            Player player = (Player) entityLiving;
             boolean isInfinityEnchant = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, itemStack) > 0;
             ItemStack stack = this.findAmmo(player);
 

@@ -12,27 +12,36 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EnumCreatureAttribute;
-import net.minecraft.entity.ai.*;
-import net.minecraft.entity.monster.EntityIronGolem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.CreatureAttribute;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EnumCreatureAttribute;
+import net.minecraft.world.entity.ai.*;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.monster.EntityIronGolem;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.ClimberPathNavigator;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 
@@ -54,7 +63,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
         this.poisontimer = 0;
         this.getTypeMoC = typeMoc;
 
-        if (!this.world.isRemote) {
+        if (!this.level().isRemote) {
             setHasBabies(this.getIsAdult() && this.rand.nextInt(4) == 0);
         }
         this.xpReward = 5;
@@ -221,33 +230,33 @@ public class MoCEntityScorpion extends MoCEntityMob {
     public void die(DamageSource damagesource) {
         super.die(damagesource);
 
-        if (!this.world.isRemote && getIsAdult()) {
+        if (!this.level().isRemote && getIsAdult()) {
             if (getHasBabies()) {
                 int k = this.rand.nextInt(5);
                 for (int i = 0; i < k; i++) {
                     MoCEntityScorpion babyScorpion;
                     switch (this.getType) {
                         case 2:
-                            babyScorpion = new MoCEntityCaveScorpion(this.world);
+                            babyScorpion = new MoCEntityCaveScorpion(this.level());
                             break;
                         case 3:
-                            babyScorpion = new MoCEntityFireScorpion(this.world);
+                            babyScorpion = new MoCEntityFireScorpion(this.level());
                             break;
                         case 4:
-                            babyScorpion = new MoCEntityFrostScorpion(this.world);
+                            babyScorpion = new MoCEntityFrostScorpion(this.level());
                             break;
                         case 5:
-                            babyScorpion = new MoCEntityUndeadScorpion(this.world);
+                            babyScorpion = new MoCEntityUndeadScorpion(this.level());
                             break;
                         default:
-                            babyScorpion = new MoCEntityDirtScorpion(this.world);
+                            babyScorpion = new MoCEntityDirtScorpion(this.level());
                             break;
                     }
                     babyScorpion.setPosition(this.posX, this.posY, this.posZ);
                     babyScorpion.setAdult(false);
                     babyScorpion.setAge(20);
                     babyScorpion.setType(this.getType);
-                    this.world.spawnEntity(babyScorpion);
+                    this.level().spawnEntity(babyScorpion);
                     MoCTools.playCustomSound(babyScorpion, SoundEvents.ENTITY_SLIME_SQUISH);
                 }
             }

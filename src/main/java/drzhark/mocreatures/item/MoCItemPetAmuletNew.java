@@ -5,17 +5,17 @@ package drzhark.mocreatures.item;
 
 import drzhark.mocreatures.MoCTools;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityList;
+import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -30,7 +30,7 @@ public class MoCItemPetAmuletNew extends MoCItem {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(Level world, Player player, EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (!world.isRemote && stack.hasTagCompound()) {
             Entity entity = EntityList.createEntityFromNBT(stack.getTagCompound(), world);
@@ -49,9 +49,9 @@ public class MoCItemPetAmuletNew extends MoCItem {
     }
 
     @Override
-    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity, EnumHand hand) {
+    public boolean itemInteractionForEntity(ItemStack stack, Player player, EntityLivingBase entity, EnumHand hand) {
         if (!entity.world.isRemote && !stack.hasTagCompound()/* && entity.hasCustomName()*/) {
-            NBTTagCompound entityNBT = new NBTTagCompound();
+            CompoundTag entityNBT = new CompoundTag();
             entity.writeToNBT(entityNBT);
             entityNBT.setString("id", EntityList.getKey(entity.getClass()).toString());
             entityNBT.setString("name", entity.getName());
@@ -64,7 +64,7 @@ public class MoCItemPetAmuletNew extends MoCItem {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, @Nullable Level worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("name")) {
             tooltip.add(TextFormatting.BLUE + stack.getTagCompound().getString("name"));
         }

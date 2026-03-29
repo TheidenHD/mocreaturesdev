@@ -548,13 +548,13 @@ public abstract class MoCEntityAmbient extends PathfinderMob implements IMoCEnti
     }
 
     @Override
-    public boolean startRidingPlayer(EntityPlayer player) {
+    public boolean startRidingPlayer(Player player) {
         if (MoCTools.getEntityRidingPlayer(player) != null) {
             return false; // Something is already riding this player.
         }
         boolean ret = super.startRiding(player);
         if (ret) {
-            NBTTagCompound tag = player.getEntityData();
+            CompoundTag tag = player.getEntityData();
             tag.setUniqueId("MOCEntity_Riding_Player", this.getUniqueID());
             return true;
         }

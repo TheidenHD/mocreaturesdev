@@ -8,11 +8,11 @@ import c4.conarm.lib.armor.ArmorModifications;
 import c4.conarm.lib.traits.AbstractArmorTrait;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.entity.MoCEntityAquatic;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.passive.EntityWaterMob;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.world.entity.animal.EntityWaterMob;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -34,7 +34,7 @@ public class TraitThresherArmor extends AbstractArmorTrait {
     }
 
     @Override
-    public float onHurt(ItemStack armor, EntityPlayer player, DamageSource source, float damage, float newDamage, LivingHurtEvent event) {
+    public float onHurt(ItemStack armor, Player player, DamageSource source, float damage, float newDamage, LivingHurtEvent event) {
         if (source.getImmediateSource() instanceof EntityLivingBase) {
             attackEntitySecondary(new EntityDamageSource("thresher", player).setIsThornsDamage(), (float) calcAttack(armor), source.getImmediateSource(), true, false, false);
         }
@@ -43,7 +43,7 @@ public class TraitThresherArmor extends AbstractArmorTrait {
     }
 
     @Override
-    public ArmorModifications getModifications(EntityPlayer player, ArmorModifications mods, ItemStack armor, DamageSource source, double damage, int slot) {
+    public ArmorModifications getModifications(Player player, ArmorModifications mods, ItemStack armor, DamageSource source, double damage, int slot) {
         if (source.getImmediateSource() instanceof EntityWaterMob || source.getImmediateSource() instanceof MoCEntityAquatic) {
             return super.getModifications(player, mods, armor, source, damage, slot);
         }
@@ -53,7 +53,7 @@ public class TraitThresherArmor extends AbstractArmorTrait {
     }
 
     @Override
-    public List<String> getExtraInfo(ItemStack tool, NBTTagCompound modifierTag) {
+    public List<String> getExtraInfo(ItemStack tool, CompoundTag modifierTag) {
         String damage = String.format(LOC_Extra + ".damage", getModifierIdentifier());
         String protection = String.format(LOC_Extra + ".protection", getModifierIdentifier());
 

@@ -17,7 +17,7 @@ import jeresources.api.IJERAPI;
 import jeresources.api.IMobRegistry;
 import jeresources.api.conditionals.LightLevel;
 import jeresources.compatibility.JERAPI;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.BiomeDictionary;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class JERIntegration {
     public static void init() {
 //        IJERAPI jerApi = JERAPI.getInstance();
 //        IMobRegistry jerMobRegistry = jerApi.getMobRegistry();
-//        World jerWorld = jerApi.getWorld();
+//        Level jerWorld = jerApi.getWorld();
 //
 //        jerMobRegistry.register(new MoCEntityAnchovy(jerWorld), LightLevel.any, getBiomeTypeNames("Anchovy"), MoCLootTables.ANCHOVY);
 //        jerMobRegistry.register(new MoCEntityAngelFish(jerWorld), LightLevel.any, getBiomeTypeNames("AngelFish"), MoCLootTables.ANGELFISH);

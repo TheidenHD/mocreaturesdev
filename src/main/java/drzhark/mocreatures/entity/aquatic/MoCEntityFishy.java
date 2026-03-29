@@ -232,9 +232,9 @@ public class MoCEntityFishy extends MoCEntityTameableAquatic {
                         this.gestationtime = 0;
                         entityfishy.gestationtime = 0;
 
-                        Player entityplayer = this.level().getNearestPlayer(this, 24D);
-                        if (entityplayer != null) {
-                            MoCTools.tameWithName(entityplayer, entityfishy1);
+                        Player Player = this.level().getNearestPlayer(this, 24D);
+                        if (Player != null) {
+                            MoCTools.tameWithName(Player, entityfishy1);
                         }
 
                         entityfishy1.setMoCAge(20);

@@ -226,8 +226,8 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         if (getEating()) {
             this.eatcount += 1;
             if (this.eatcount == 2) {
-                Player entityplayer1 = this.level().getNearestPlayer(this, 3D);
-                if (entityplayer1 != null) {
+                Player Player1 = this.level().getNearestPlayer(this, 3D);
+                if (Player1 != null) {
                     MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EATING.get());
                 }
             }
@@ -480,8 +480,8 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         if (getEating()) {
             this.eatcount += 1;
             if (this.eatcount == 2) {
-                PlayerEntity entityplayer1 = this.world.getClosestPlayer(this, 3D);
-                if (entityplayer1 != null) {
+                Player Player1 = this.level().getClosestPlayer(this, 3D);
+                if (Player1 != null) {
                     MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EAT);
                 }
             }
@@ -581,7 +581,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
 
         if (!getIsTamed() && !stack.isEmpty() && MoCTools.isItemEdible(stack.getItem())) {
             if (!player.capabilities.isCreativeMode) stack.shrink(1);
-            if (!this.world.isRemote) {
+            if (!this.level().isRemote) {
                 MoCTools.tameWithName(player, this);
             }
 

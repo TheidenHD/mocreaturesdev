@@ -23,7 +23,7 @@ public class MoCPOI {
     // Wyvern Portal POI used for teleportation targeting
     public static final ResourceKey<PoiType> WYVERN_PORTAL_KEY = ResourceKey.create(
             Registries.POINT_OF_INTEREST_TYPE,
-            new ResourceLocation(MoCConstants.MOD_ID, "wyvern_portal"));
+            ResourceLocation.fromNamespaceAndPath(MoCConstants.MOD_ID, "wyvern_portal"));
     
     public static final RegistryObject<PoiType> WYVERN_PORTAL = POI_TYPES.register("wyvern_portal", 
             () -> new PoiType(

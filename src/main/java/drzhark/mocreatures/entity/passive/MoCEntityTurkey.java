@@ -330,9 +330,9 @@ public class MoCEntityTurkey extends MoCEntityTameableAnimal {
                 // Set owner if available
                 UUID ownerId = this.getOwnerId();
                 if (ownerId != null && this.level() instanceof ServerLevel) {
-                    Player entityplayer = ((ServerLevel)this.level()).getServer().getPlayerList().getPlayer(ownerId);
-                    if (entityplayer != null) {
-                        MoCTools.tameWithName(entityplayer, baby);
+                    Player Player = ((ServerLevel)this.level()).getServer().getPlayerList().getPlayer(ownerId);
+                    if (Player != null) {
+                        MoCTools.tameWithName(Player, baby);
                     }
                 }
             }

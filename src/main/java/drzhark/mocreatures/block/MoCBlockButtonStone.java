@@ -3,8 +3,8 @@
  */
 package drzhark.mocreatures.block;
 
-import net.minecraft.block.BlockButtonStone;
-import net.minecraft.block.SoundType;
+
+import net.minecraft.world.level.block.SoundType;
 
 public class MoCBlockButtonStone extends BlockButtonStone {
     public MoCBlockButtonStone() {

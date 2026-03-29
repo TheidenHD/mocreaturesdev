@@ -19,16 +19,16 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.*;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.LookAtGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.SwimGoal;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.EquipmentSlotType;
+import net.minecraft.world.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -38,7 +38,7 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.*;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -84,7 +84,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     private boolean isImmuneToFire;
 
 
-    public MoCEntityOstrich(EntityType<? extends MoCEntityOstrich> type, World world) {
+    public MoCEntityOstrich(EntityType<? extends MoCEntityOstrich> type, Level world) {
         super(type, world);
         //setSize(0.8F, 2.225F);
         setAdult(true);
@@ -99,7 +99,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         this.goalSelector.addGoal(4, new EntityAIFollowAdult(this, 1.0D));
         this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, false));
         this.goalSelector.addGoal(6, new EntityAIWanderMoC2(this, 1.0D));
-        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(7, new LookAtGoal(this, Player.class, 8.0F));
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
@@ -230,7 +230,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         if (super.attackEntityFrom(damagesource, i)) {
             Entity entity = damagesource.getTrueSource();
 
-            if (!(entity instanceof LivingEntity) || ((this.isBeingRidden()) && (entity == this.getRidingEntity())) || (entity instanceof PlayerEntity && getIsTamed())) {
+            if (!(entity instanceof LivingEntity) || ((this.isBeingRidden()) && (entity == this.getRidingEntity())) || (entity instanceof Player && getIsTamed())) {
                 return false;
             }
 
@@ -252,7 +252,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
 
     @Override
     public boolean attackEntityAsMob(Entity entityIn) {
-        if (entityIn instanceof PlayerEntity && !shouldAttackPlayers()) {
+        if (entityIn instanceof Player && !shouldAttackPlayers()) {
             return false;
         }
         openMouth();
@@ -414,8 +414,8 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     }
 
     public void transform(int tType) {
-        if (!this.world.isRemote) {
-            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world.getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), tType));
+        if (!this.level().isRemote) {
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), tType));
         }
         this.transformType = tType;
         if (!this.isBeingRidden() && this.transformType != 0) {
@@ -438,14 +438,14 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     public void livingTick() {
         super.livingTick();
 
-        if (getIsTamed() && !this.world.isRemote && (this.rand.nextInt(300) == 0) && (getHealth() <= getMaxHealth()) && (this.deathTime == 0)) {
+        if (getIsTamed() && !this.level().isRemote && (this.rand.nextInt(300) == 0) && (getHealth() <= getMaxHealth()) && (this.deathTime == 0)) {
             this.setHealth(getHealth() + 1);
         }
 
-        if (!this.world.isRemote) {
+        if (!this.level().isRemote) {
             //ostrich buckle!
             if (getTypeMoC() == 8 && (this.sprintCounter > 0 && this.sprintCounter < 150) && (this.isBeingRidden()) && rand.nextInt(15) == 0) {
-                MoCTools.buckleMobs(this, 2D, this.world);
+                MoCTools.buckleMobs(this, 2D, this.level());
             }
 
             // TODO
@@ -480,10 +480,10 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                 int ostrichEggType = 30;
                 MoCEntityOstrich maleOstrich = getClosestMaleOstrich(this, 8D);
                 if (maleOstrich != null && this.rand.nextInt(100) < MoCreatures.proxy.ostrichEggDropChance) {
-                    MoCEntityEgg entityegg = MoCEntities.EGG.create(this.world);
+                    MoCEntityEgg entityegg = MoCEntities.EGG.create(this.level());
                     entityegg.setEggType(ostrichEggType);
                     entityegg.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
-                    this.world.addEntity(entityegg);
+                    this.level().addEntity(entityegg);
 
                     if (!this.getIsTamed()) {
                         setEggWatching(true);
@@ -510,10 +510,10 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                 if (myEgg == null) {
                     setEggWatching(false);
 
-                    PlayerEntity eggStealer = this.world.getClosestPlayer(this, 10D);
+                    Player eggStealer = this.level().getClosestPlayer(this, 10D);
                     if (eggStealer != null) {
-                        this.world.getDifficulty();
-                        if (!getIsTamed() && this.world.getDifficulty() != Difficulty.PEACEFUL) {
+                        this.level().getDifficulty();
+                        if (!getIsTamed() && this.level().getDifficulty() != Difficulty.PEACEFUL) {
                             setAttackTarget(eggStealer);
                             flapWings();
                         }
@@ -526,7 +526,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     protected MoCEntityOstrich getClosestMaleOstrich(Entity entity, double d) {
         double d1 = -1D;
         MoCEntityOstrich entityliving = null;
-        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(entity, entity.getBoundingBox().grow(d));
+        List<Entity> list = this.level().getEntitiesWithinAABBExcludingEntity(entity, entity.getBoundingBox().grow(d));
         for (Entity entity1 : list) {
             if (!(entity1 instanceof MoCEntityOstrich) || ((MoCEntityOstrich) entity1).getTypeMoC() < 3) {
                 continue;
@@ -547,7 +547,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(Player player, Hand hand) {
         final ActionResultType tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -653,7 +653,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         if (!stack.isEmpty() && (getTypeMoC() > 1) && getIsTamed() && !getIsChested() && (stack.getItem() == Item.getItemFromBlock(Blocks.CHEST))) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
 
-            //entityplayer.inventory.addItemStackToInventory(new ItemStack(MoCreatures.key));
+            //Player.inventory.addItemStackToInventory(new ItemStack(MoCreatures.key));
             setIsChested(true);
             MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
             return ActionResultType.SUCCESS;
@@ -664,7 +664,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             if (this.localchest == null) {
                 this.localchest = new MoCAnimalChest("OstrichChest", MoCAnimalChest.Size.tiny);
             }
-            if (!this.world.isRemote) {
+            if (!this.level().isRemote) {
                 player.openContainer(this.localchest);
             }
             return ActionResultType.SUCCESS;
@@ -711,7 +711,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             }
         }
         if (this.getIsRideable() && this.getIsAdult() && (!this.getIsChested() || !player.isSneaking()) && !this.isBeingRidden()) {
-            if (!this.world.isRemote && player.startRiding(this)) {
+            if (!this.level().isRemote && player.startRiding(this)) {
                 player.rotationYaw = this.rotationYaw;
                 player.rotationPitch = this.rotationPitch;
                 setHiding(false);
@@ -725,11 +725,11 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
      * Drops a block of the color of the flag if carrying one
      */
     private void dropFlag() {
-        if (!this.world.isRemote && getFlagColor() != null) {
+        if (!this.level().isRemote && getFlagColor() != null) {
             DyeColor color = getFlagColor();
-            ItemEntity entityitem = new ItemEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), new ItemStack(WOOL_BY_COLOR.get(color), 1));
+            ItemEntity entityitem = new ItemEntity(this.level(), this.getPosX(), this.getPosY(), this.getPosZ(), new ItemStack(WOOL_BY_COLOR.get(color), 1));
             entityitem.setDefaultPickupDelay();
-            this.world.addEntity(entityitem);
+            this.level().addEntity(entityitem);
             setFlagColor(null);
         }
     }
@@ -872,13 +872,13 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
 
     @Override
     public void dropMyStuff() {
-        if (!this.world.isRemote) {
+        if (!this.level().isRemote) {
             dropArmor();
-            MoCTools.dropSaddle(this, this.world);
+            MoCTools.dropSaddle(this, this.level());
 
             if (getIsChested()) {
                 MoCTools.dropInventory(this, this.localchest);
-                MoCTools.dropCustomItem(this, this.world, new ItemStack(Blocks.CHEST, 1));
+                MoCTools.dropCustomItem(this, this.level(), new ItemStack(Blocks.CHEST, 1));
                 setIsChested(false);
             }
         }
@@ -889,12 +889,12 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
      */
     @Override
     public void dropArmor() {
-        if (!this.world.isRemote) {
+        if (!this.level().isRemote) {
             final ItemStack itemStack = this.getItemStackFromSlot(EquipmentSlotType.HEAD);
             if (!itemStack.isEmpty() && itemStack.getItem() instanceof ArmorItem) {
-                final ItemEntity entityitem = new ItemEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), itemStack.copy());
+                final ItemEntity entityitem = new ItemEntity(this.level(), this.getPosX(), this.getPosY(), this.getPosZ(), itemStack.copy());
                 entityitem.setDefaultPickupDelay();
-                this.world.addEntity(entityitem);
+                this.level().addEntity(entityitem);
             }
             setHelmet((byte) 0);
         }

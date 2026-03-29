@@ -703,7 +703,7 @@ public abstract class MoCEntityAquatic extends WaterAnimal implements IMoCEntity
 
     @Override
     public void onDeath(DamageSource damagesource) {
-        if (!this.world.isRemote) {
+        if (!this.level().isRemote) {
             dropMyStuff();
             dropLegacyEgg();
         }
@@ -1055,13 +1055,13 @@ public abstract class MoCEntityAquatic extends WaterAnimal implements IMoCEntity
     }
 
     @Override
-    public boolean startRidingPlayer(EntityPlayer player) {
+    public boolean startRidingPlayer(Player player) {
         if (MoCTools.getEntityRidingPlayer(player) != null) {
             return false; // Something is already riding this player.
         }
         boolean ret = super.startRiding(player);
         if (ret) {
-            NBTTagCompound tag = player.getEntityData();
+            CompoundTag tag = player.getEntityData();
             tag.setUniqueId("MOCEntity_Riding_Player", this.getUniqueID());
             return true;
         }

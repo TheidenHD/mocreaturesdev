@@ -3,6 +3,7 @@
  */
 package drzhark.mocreatures.event;
 
+import com.google.common.primitives.Ints;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
@@ -11,15 +12,18 @@ import drzhark.mocreatures.entity.MoCEntityData;
 import drzhark.mocreatures.entity.neutral.MoCEntityKitty;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.entity.tameable.MoCPetMapData;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldEntitySpawner;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -63,7 +67,7 @@ public class MoCEventHooks {
         if (event.isHasVillageGenerated()) {
             MoCEntityData data = MoCreatures.entityMap.get(MoCEntityKitty.class);
             if (data == null) return;
-            World world = event.getWorld();
+            Level world = event.getWorld();
             List<Integer> dimensionIDs = Ints.asList(data.getDimensions());
             if (!data.getCanSpawn() || data.getFrequency() <= 0 || !dimensionIDs.contains(world.provider.getDimension()))
                 return;
@@ -71,7 +75,7 @@ public class MoCEventHooks {
                 BlockPos pos = new BlockPos(event.getChunkX() * 16, 100, event.getChunkZ() * 16);
                 MoCEntityKitty kitty = new MoCEntityKitty(world);
                 BlockPos spawnPos = getSafeSpawnPos(kitty, pos.add(8, 0, 8));
-                if (spawnPos == null || !WorldEntitySpawner.canCreatureTypeSpawnAtLocation(EntityLiving.SpawnPlacementType.ON_GROUND, world, spawnPos))
+                if (spawnPos == null || !WorldEntitySpawner.canCreatureTypeSpawnAtLocation(LivingEntity.SpawnPlacementType.ON_GROUND, world, spawnPos))
                     return;
                 kitty.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(kitty)), null);
                 kitty.setPosition(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ());
@@ -131,7 +135,7 @@ public class MoCEventHooks {
 
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
-        EntityPlayer player = event.player;
+        Player player = event.player;
 
         // Handles the ENTITY that the PLAYER is riding
         if (player.getRidingEntity() instanceof IMoCTameable) {

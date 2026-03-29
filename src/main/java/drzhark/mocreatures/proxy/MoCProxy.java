@@ -142,7 +142,7 @@ public class MoCProxy {
     public void VacuumFX(MoCEntityGolem entity) {
     }
 
-    public void hammerFX(Player entityplayer) {
+    public void hammerFX(Player Player) {
     }
 
     public void teleportFX(Player entity) {

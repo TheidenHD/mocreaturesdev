@@ -1,9 +1,9 @@
 package drzhark.mocreatures.entity.ai;
 
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.world.entity.EntityCreature;
+import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.world.entity.ai.EntityAINearestAttackableTarget;
 
 public class EntityAITargetNonTamedMoC<T extends EntityLivingBase> extends EntityAINearestAttackableTarget<T> {
     private final EntityCreature tameable;

@@ -4,9 +4,7 @@
 package drzhark.mocreatures.init;
 
 import drzhark.mocreatures.MoCConstants;
-import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;

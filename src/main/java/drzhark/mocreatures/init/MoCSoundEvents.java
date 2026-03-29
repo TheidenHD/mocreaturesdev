@@ -4,9 +4,12 @@
 package drzhark.mocreatures.init;
 
 import drzhark.mocreatures.MoCConstants;
+import drzhark.mocreatures.config.MoCConfigCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -270,6 +273,7 @@ public class MoCSoundEvents {
     /* Music */
     // Record
     public static final SoundEvent MUSIC_DISC_SHUFFLING;
+    public static final MoCConfigCategory ENTITY_GENERIC_TUD = ;
 
     static {
         if (!Bootstrap.isRegistered()) {

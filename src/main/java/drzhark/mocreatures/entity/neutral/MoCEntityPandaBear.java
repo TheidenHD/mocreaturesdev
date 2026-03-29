@@ -137,7 +137,7 @@ public class MoCEntityPandaBear extends MoCEntityBear {
         /*
          * panda bears and cubs will sit down sometimes
          */
-        if (!this.world.isRemote && getBearState() != 3 && !getIsTamed() && this.rand.nextInt(300) == 0) {
+        if (!this.level().isRemote && getBearState() != 3 && !getIsTamed() && this.rand.nextInt(300) == 0) {
             setBearState(2);
         }
     }

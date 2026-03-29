@@ -154,7 +154,7 @@ public class MoCEntityMouse extends MoCEntityAnimal {
     }
 
     @Override
-    public ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
+    public ActionResultType getEntityInteractionResult(Player player, Hand hand) {
         if (this.getRidingEntity() == null) {
             if (this.startRidingPlayer(player)) {
                 this.rotationYaw = player.rotationYaw;

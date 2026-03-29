@@ -18,7 +18,7 @@ import drzhark.mocreatures.init.MoCBlocks;
 import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 

@@ -9,9 +9,9 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.MoCEntityAmbient;
 import drzhark.mocreatures.entity.ambient.MoCEntityCrab;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderState;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -71,13 +71,15 @@ public class MoCRenderMoC<T extends Mob, M extends EntityModel<T>> extends MobRe
      */
     protected void renderWithTransparency(T entityIn, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         IMoCEntity entityMoC = (IMoCEntity) entityIn;
-        
+
         poseStack.pushPose();
         poseStack.scale(1.0F, -1.0F, 1.0F);
         poseStack.translate(0.0D, (double) (-1.501F), 0.0D);
+        //TODO TheidenHD fix missing funktions!!
+    }
 
     @Override
-    protected float getDeathMaxRotation(EntityLiving entity) {
+    protected float getDeathMaxRotation(LivingEntity entity) {
         if (entity instanceof MoCEntityAmbient || entity instanceof MoCEntityCrab) {
             return 180.0F;
         }
@@ -85,9 +87,9 @@ public class MoCRenderMoC<T extends Mob, M extends EntityModel<T>> extends MobRe
         return 90.0F;
     }
 
-    public void doRenderMoC(T entity, double d, double d1, double d2, float f, float f1) {
-        super.doRender(entity, d, d1, d2, f, f1);
-        IMoCEntity entityMoC = (IMoCEntity) entity;
+    public void renderMoC(T entityIn, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+        super.render(entityIn, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        IMoCEntity entityMoC = (IMoCEntity) entityIn;
         boolean flag = MoCreatures.proxy.getDisplayPetName() && !(entityMoC.getPetName().isEmpty());
         boolean flag1 = MoCreatures.proxy.getDisplayPetHealth();
         if (entityMoC.shouldRenderNameAndHealth()) {

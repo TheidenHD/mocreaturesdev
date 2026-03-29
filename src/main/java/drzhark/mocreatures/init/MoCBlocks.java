@@ -3,111 +3,99 @@
  */
 package drzhark.mocreatures.init;
 
-import com.google.common.base.Preconditions;
 import drzhark.mocreatures.MoCConstants;
-import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.block.*;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockDoor;
-import net.minecraft.block.BlockSlab;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.MapColor;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.StateMap;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemSlab;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.flag.FeatureFlag;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.block.state.properties.WoodType;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.RegistryObject;
 
-import javax.annotation.Nonnull;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MoCBlocks {
+
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MoCConstants.MOD_ID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MoCConstants.MOD_ID);
+
+    public static final BlockSetType BLOCK_SET_WYVWOOD = BlockSetType.register(new BlockSetType("wyvwood"));
+    public static final WoodType WOOD_WYVWOOD = WoodType.register(new WoodType("wyvwood", BLOCK_SET_WYVWOOD));
+
+    public static final RegistryObject<ButtonBlock> deepWyvwstoneButton = register("deep_wyvstone_button", MoCBlocks::stoneButton);
+    public static final RegistryObject<ButtonBlock> wyvwstoneButton = register("wyvwstoneButton", MoCBlocks::stoneButton);
+    public static final RegistryObject<ButtonBlock> wyvwoodButton = register("wyvwood_button", () -> woodenButton(BLOCK_SET_WYVWOOD));
+    public static final RegistryObject<Block> wyvdirt = register("wyvdirt", () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.DIRT).strength(0.5F, 0.6F).sound(SoundType.GRAVEL)));
+    public static final RegistryObject<DoorBlock> wyvwoodDoor = register("wyvwood_door", () -> new DoorBlock(BlockBehaviour.Properties.of().mapColor(MapColor.DIAMOND).instrument(NoteBlockInstrument.BASS).strength(3.0F).noOcclusion().ignitedByLava().pushReaction(PushReaction.DESTROY), BLOCK_SET_WYVWOOD));
+    public static final RegistryObject<FenceGateBlock> wyvwoodFenceGate = register("wyvwood_fence_gate", () -> new FenceGateBlock(BlockBehaviour.Properties.of().mapColor(MapColor.DIAMOND).forceSolidOn().instrument(NoteBlockInstrument.BASS).strength(2.0F, 5.0F).ignitedByLava(), WOOD_WYVWOOD));
+    public static final RegistryObject<FenceBlock> wyvwoodFence = register("wyvwood_button", () -> new FenceBlock(BlockBehaviour.Properties.of().mapColor(MapColor.DIAMOND).forceSolidOn().instrument(NoteBlockInstrument.BASS).strength(2.0F, 5.0F).sound(SoundType.WOOD).ignitedByLava()));
+    public static final RegistryObject<Block> firestone = register("firestone", () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.3F).lightLevel(state -> 7).sound(SoundType.GLASS)));
+    public static final RegistryObject<GlassBlock> gleamingGlass = register("gleaming_glass", () -> new GlassBlock(BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.HAT).strength(0.4F).sound(SoundType.GLASS).noOcclusion().isValidSpawn(MoCBlocks::never).isRedstoneConductor(MoCBlocks::never).isSuffocating(MoCBlocks::never).isViewBlocking(MoCBlocks::never)));
+    public static final RegistryObject<MoCBlockGrass> wyvgrass = register("wyvwood_button", () -> new MoCBlockGrass(BlockBehaviour.Properties.of().mapColor(MapColor.GRASS).randomTicks().strength(0.6F).sound(SoundType.GRASS)));
+    public static final RegistryObject<LeavesBlock> wyvwoodLeaves = register("wyvwood_leaves", () -> leaves(MapColor.DIAMOND, SoundType.GRASS));
 
     public static MoCBlockOre ancientOre;
     public static Block ancientSilverBlock;
     public static Block carvedSilverSandstone;
     public static Block cobbledWyvstone;
-    @GameRegistry.ObjectHolder("cobbled_wyvstone_slab")
     public static MoCBlockSlab.Half cobbledWyvstoneSlab;
-    @GameRegistry.ObjectHolder("cobbled_wyvstone_slab_double")
     public static MoCBlockSlab.Double cobbledWyvstoneSlabDouble;
-    @GameRegistry.ObjectHolder("cobbled_wyvstone_stairs")
     public static MoCBlockStairs cobbledWyvstoneStairs;
-    @GameRegistry.ObjectHolder("cobbled_wyvstone_wall")
     public static MoCBlockWall cobbledWyvstoneWall;
-    @GameRegistry.ObjectHolder("cobbled_deep_wyvstone")
     public static Block cobbledDeepWyvstone;
-    @GameRegistry.ObjectHolder("cobbled_deep_wyvstone_slab")
     public static MoCBlockSlab.Half cobbledDeepWyvstoneSlab;
-    @GameRegistry.ObjectHolder("cobbled_deep_wyvstone_slab_double")
     public static MoCBlockSlab.Double cobbledDeepWyvstoneSlabDouble;
-    @GameRegistry.ObjectHolder("cobbled_deep_wyvstone_stairs")
     public static MoCBlockStairs cobbledDeepWyvstoneStairs;
-    @GameRegistry.ObjectHolder("cobbled_deep_wyvstone_wall")
     public static MoCBlockWall cobbledDeepWyvstoneWall;
-    @GameRegistry.ObjectHolder("deep_wyvstone")
     public static Block deepWyvstone;
-    @GameRegistry.ObjectHolder("deep_wyvwstone_button")
-    public static MoCBlockButtonStone deepWyvwstoneButton;
-    @GameRegistry.ObjectHolder("deep_wyvstone_pressure_plate")
+    //public static MoCBlockButtonStone deepWyvwstoneButton;
     public static MoCBlockPressurePlateStone deepWyvstonePressurePlate;
-    @GameRegistry.ObjectHolder("deep_wyvstone_slab")
     public static MoCBlockSlab.Half deepWyvstoneSlab;
-    @GameRegistry.ObjectHolder("deep_wyvstone_slab_double")
     public static MoCBlockSlab.Double deepWyvstoneSlabDouble;
-    @GameRegistry.ObjectHolder("deep_wyvstone_stairs")
     public static MoCBlockStairs deepWyvstoneStairs;
-    @GameRegistry.ObjectHolder("deep_wyvstone_wall")
     public static MoCBlockWall deepWyvstoneWall;
-    @GameRegistry.ObjectHolder("fine_silver_block")
     public static Block fineSilverBlock;
-    @GameRegistry.ObjectHolder("firestone")
-    public static Block firestone;
-    public static Block gleamingGlass;
-    @GameRegistry.ObjectHolder("gleaming_glass_pane")
+    //public static Block firestone;
+    //public static Block gleamingGlass;
     public static Block gleamingGlassPane;
-    @GameRegistry.ObjectHolder("mossy_cobbled_wyvstone")
     public static Block mossyCobbledWyvstone;
-    @GameRegistry.ObjectHolder("mossy_cobbled_wyvstone_slab")
     public static MoCBlockSlab.Half mossyCobbledWyvstoneSlab;
-    @GameRegistry.ObjectHolder("mossy_cobbled_wyvstone_slab_double")
     public static MoCBlockSlab.Double mossyCobbledWyvstoneSlabDouble;
-    @GameRegistry.ObjectHolder("mossy_cobbled_wyvstone_stairs")
     public static MoCBlockStairs mossyCobbledWyvstoneStairs;
-    @GameRegistry.ObjectHolder("mossy_cobbled_wyvstone_wall")
     public static MoCBlockWall mossyCobbledWyvstoneWall;
-    @GameRegistry.ObjectHolder("mossy_cobbled_deep_wyvstone")
     public static Block mossyCobbledDeepWyvstone;
-    @GameRegistry.ObjectHolder("mossy_cobbled_deep_wyvstone_slab")
     public static MoCBlockSlab.Half mossyCobbledDeepWyvstoneSlab;
-    @GameRegistry.ObjectHolder("mossy_cobbled_deep_wyvstone_slab_double")
     public static MoCBlockSlab.Double mossyCobbledDeepWyvstoneSlabDouble;
-    @GameRegistry.ObjectHolder("mossy_cobbled_deep_wyvstone_stairs")
     public static MoCBlockStairs mossyCobbledDeepWyvstoneStairs;
-    @GameRegistry.ObjectHolder("mossy_cobbled_deep_wyvstone_wall")
     public static MoCBlockWall mossyCobbledDeepWyvstoneWall;
-    @GameRegistry.ObjectHolder("silver_sand")
     public static Block silverSand;
     public static Block silverSandstone;
-    @GameRegistry.ObjectHolder("silver_sandstone_slab")
     public static MoCBlockSlab.Half silverSandstoneSlab;
-    @GameRegistry.ObjectHolder("silver_sandstone_slab_double")
     public static MoCBlockSlab.Double silverSandstoneSlabDouble;
-    @GameRegistry.ObjectHolder("silver_sandstone_stairs")
     public static MoCBlockStairs silverSandstoneStairs;
-    @GameRegistry.ObjectHolder("silver_sandstone_wall")
     public static MoCBlockWall silverSandstoneWall;
-    @GameRegistry.ObjectHolder("smooth_silver_sandstone")
     public static Block smoothSilverSandstone;
     public static Block tallWyvgrass;
     public static MoCBlockOre wyvernDiamondOre;
@@ -117,59 +105,41 @@ public class MoCBlocks {
     public static MoCBlockOre wyvernLapisOre;
     public static MoCBlockNest wyvernNestBlock;
     public static Block wyvstone;
-    @GameRegistry.ObjectHolder("wyvwstone_button")
-    public static MoCBlockButtonStone wyvwstoneButton;
-    @GameRegistry.ObjectHolder("wyvstone_pressure_plate")
+    //public static MoCBlockButtonStone wyvwstoneButton;
     public static MoCBlockPressurePlateStone wyvstonePressurePlate;
-    @GameRegistry.ObjectHolder("wyvstone_slab")
     public static MoCBlockSlab.Half wyvstoneSlab;
-    @GameRegistry.ObjectHolder("wyvstone_slab_double")
     public static MoCBlockSlab.Double wyvstoneSlabDouble;
-    @GameRegistry.ObjectHolder("wyvstone_stairs")
     public static MoCBlockStairs wyvstoneStairs;
-    @GameRegistry.ObjectHolder("wyvstone_wall")
     public static MoCBlockWall wyvstoneWall;
-    @GameRegistry.ObjectHolder("wyvgrass")
-    public static Block wyvgrass;
-    public static Block wyvdirt;
-    @GameRegistry.ObjectHolder("wyvwood_button")
-    public static MoCBlockButtonWood wyvwoodButton;
-    @GameRegistry.ObjectHolder("wyvwood_door")
-    public static MoCBlockDoorWood wyvwoodDoor;
-    @GameRegistry.ObjectHolder("wyvwood_fence")
-    public static MoCBlockFenceWood wyvwoodFence;
-    @GameRegistry.ObjectHolder("wyvwood_fence_gate")
-    public static MoCBlockFenceGateWood wyvwoodFenceGate;
-    @GameRegistry.ObjectHolder("wyvwood_leaves")
-    public static Block wyvwoodLeaves;
-    @GameRegistry.ObjectHolder("wyvwood_log")
+    //public static Block wyvgrass;
+    //public static Block wyvdirt;
+    //public static MoCBlockButtonWood wyvwoodButton;
+    //public static MoCBlockDoorWood wyvwoodDoor;
+    //public static MoCBlockFenceWood wyvwoodFence;
+    //public static MoCBlockFenceGateWood wyvwoodFenceGate;
+    //public static Block wyvwoodLeaves;
     public static Block wyvwoodLog;
     public static Block wyvwoodPlanks;
-    @GameRegistry.ObjectHolder("wyvwood_sapling")
     public static Block wyvwoodSapling;
-    @GameRegistry.ObjectHolder("wyvwood_slab")
     public static MoCBlockSlab.Half wyvwoodSlab;
-    @GameRegistry.ObjectHolder("wyvwood_slab_double")
     public static MoCBlockSlab.Double wyvwoodSlabDouble;
-    @GameRegistry.ObjectHolder("wyvwood_stairs")
     public static MoCBlockStairs wyvwoodPlanksStairs;
-    @GameRegistry.ObjectHolder("wyvwood_trapdoor")
     public static MoCBlockTrapdoorWood wyvwoodTrapdoor;
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         event.getRegistry().registerAll(
-                setup(new MoCBlockButtonStone(), "deep_wyvstone_button"),
-                setup(new MoCBlockButtonStone(), "wyvstone_button"),
-                setup(new MoCBlockButtonWood(), "wyvwood_button"),
-                setup(new MoCBlockDirt(MapColor.DIRT), "wyvdirt").setHardness(0.6F),
-                setup(new MoCBlockDoorWood(MapColor.DIAMOND), "wyvwood_door"),
-                setup(new MoCBlockFenceGateWood(MapColor.DIAMOND, true), "wyvwood_fence_gate"),
-                setup(new MoCBlockFenceWood(MapColor.DIAMOND, true), "wyvwood_fence"),
-                setup(new MoCBlockFirestone(MapColor.ADOBE), "firestone").setHardness(3.0F).setLightLevel(0.5F),
-                setup(new MoCBlockGlass(true), "gleaming_glass").setHardness(0.4F),
-                setup(new MoCBlockGrass(MapColor.BLUE_STAINED_HARDENED_CLAY), "wyvgrass").setHardness(0.7F),
-                setup(new MoCBlockLeaf(MapColor.DIAMOND, true, 100), "wyvwood_leaves").setHardness(0.2F).setLightOpacity(1),
+                //setup(new MoCBlockButtonStone(), "deep_wyvstone_button"),
+                //setup(new MoCBlockButtonStone(), "wyvstone_button"),
+                //setup(new MoCBlockButtonWood(), "wyvwood_button"),
+                //setup(new MoCBlockDirt(MapColor.DIRT), "wyvdirt").setHardness(0.6F),
+                //setup(new MoCBlockDoorWood(MapColor.DIAMOND), "wyvwood_door"),
+                //setup(new MoCBlockFenceGateWood(MapColor.DIAMOND, true), "wyvwood_fence_gate"),
+                //setup(new MoCBlockFenceWood(MapColor.DIAMOND, true), "wyvwood_fence"),
+                //setup(new MoCBlockFirestone(MapColor.ADOBE), "firestone").setHardness(3.0F).setLightLevel(0.5F),
+                //setup(new MoCBlockGlass(true), "gleaming_glass").setHardness(0.4F),
+                //setup(new MoCBlockGrass(MapColor.BLUE_STAINED_HARDENED_CLAY), "wyvgrass").setHardness(0.7F),
+                //setup(new MoCBlockLeaf(MapColor.DIAMOND, true, 100), "wyvwood_leaves").setHardness(0.2F).setLightOpacity(1),
                 setup(new MoCBlockLog(MapColor.CYAN_STAINED_HARDENED_CLAY, true), "wyvwood_log").setHardness(2.0F),
                 setup(new MoCBlockMetal(MapColor.IRON), "ancient_silver_block").setHardness(3.0F).setResistance(10.0F),
                 setup(new MoCBlockMetal(MapColor.CLAY), "fine_silver_block").setHardness(3.0F).setResistance(10.0F),
@@ -232,60 +202,79 @@ public class MoCBlocks {
         );
     }
 
-    @SubscribeEvent
-    public static void registerItemBlocks(RegistryEvent.Register<Item> event) {
-        final IForgeRegistry<Item> registry = event.getRegistry();
-        ForgeRegistries.BLOCKS.getValues().stream()
-                .filter(block -> block.getRegistryName().getNamespace().equals(MoCConstants.MOD_ID))
-                .filter(block -> !(block instanceof BlockDoor)) // Doors should not have an item block registered
-                .filter(block -> !(block instanceof BlockSlab)) // Slabs should not have an item block registered
-                .forEach(block -> registry.register(setup(new ItemBlock(block), block.getRegistryName())));
-
-        registry.register(setup(new ItemSlab(silverSandstoneSlab, silverSandstoneSlab, silverSandstoneSlabDouble), silverSandstoneSlab.getRegistryName()));
-        registry.register(setup(new ItemSlab(cobbledDeepWyvstoneSlab, cobbledDeepWyvstoneSlab, cobbledDeepWyvstoneSlabDouble), cobbledDeepWyvstoneSlab.getRegistryName()));
-        registry.register(setup(new ItemSlab(cobbledWyvstoneSlab, cobbledWyvstoneSlab, cobbledWyvstoneSlabDouble), cobbledWyvstoneSlab.getRegistryName()));
-        registry.register(setup(new ItemSlab(deepWyvstoneSlab, deepWyvstoneSlab, deepWyvstoneSlabDouble), deepWyvstoneSlab.getRegistryName()));
-        registry.register(setup(new ItemSlab(mossyCobbledDeepWyvstoneSlab, mossyCobbledDeepWyvstoneSlab, mossyCobbledDeepWyvstoneSlabDouble), mossyCobbledDeepWyvstoneSlab.getRegistryName()));
-        registry.register(setup(new ItemSlab(mossyCobbledWyvstoneSlab, mossyCobbledWyvstoneSlab, mossyCobbledWyvstoneSlabDouble), mossyCobbledWyvstoneSlab.getRegistryName()));
-        registry.register(setup(new ItemSlab(wyvstoneSlab, wyvstoneSlab, wyvstoneSlabDouble), wyvstoneSlab.getRegistryName()));
-        registry.register(setup(new ItemSlab(wyvwoodSlab, wyvwoodSlab, wyvwoodSlabDouble), wyvwoodSlab.getRegistryName()));
+    private static RotatedPillarBlock log(MapColor p_285370_, MapColor p_285126_) {
+        return new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor((p_152624_) -> {
+            return p_152624_.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? p_285370_ : p_285126_;
+        }).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(SoundType.WOOD).ignitedByLava());
     }
 
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public static void registerModels(ModelRegistryEvent event) {
-        for (Item item : ForgeRegistries.ITEMS.getValues()) {
-            if (item.getRegistryName().getNamespace().equals(MoCConstants.MOD_ID)) {
-                ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "normal"));
-            }
+    private static RotatedPillarBlock log(MapColor p_285425_, MapColor p_285292_, SoundType p_285418_) {
+        return new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor((p_258972_) -> {
+            return p_258972_.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? p_285425_ : p_285292_;
+        }).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(p_285418_).ignitedByLava());
+    }
+
+    private static LeavesBlock leaves(MapColor color, SoundType type) {
+        return new LeavesBlock(BlockBehaviour.Properties.of().mapColor(color).strength(0.2F).randomTicks().sound(type).noOcclusion().isValidSpawn(MoCBlocks::ocelotOrParrot).isSuffocating(MoCBlocks::never).isViewBlocking(MoCBlocks::never).ignitedByLava().pushReaction(PushReaction.DESTROY).isRedstoneConductor(MoCBlocks::never));
+    }
+
+    private static ButtonBlock woodenButton(BlockSetType type, FeatureFlag... flag) {
+        BlockBehaviour.Properties blockbehaviour$properties = BlockBehaviour.Properties.of().noCollission().strength(0.5F).pushReaction(PushReaction.DESTROY);
+        if (flag.length > 0) {
+            blockbehaviour$properties = blockbehaviour$properties.requiredFeatures(flag);
         }
 
-        // All doors, fence gates, slabs, and walls go here
-        ModelLoader.setCustomStateMapper(wyvwoodDoor, (new StateMap.Builder()).ignore(MoCBlockDoorWood.POWERED).build());
-
-        ModelLoader.setCustomStateMapper(wyvwoodFenceGate, (new StateMap.Builder()).ignore(MoCBlockFenceGateWood.POWERED).build());
-
-        ModelLoader.setCustomStateMapper(cobbledWyvstoneWall, (new StateMap.Builder()).ignore(MoCBlockWall.VARIANT).build());
-        ModelLoader.setCustomStateMapper(cobbledDeepWyvstoneWall, (new StateMap.Builder()).ignore(MoCBlockWall.VARIANT).build());
-        ModelLoader.setCustomStateMapper(deepWyvstoneWall, (new StateMap.Builder()).ignore(MoCBlockWall.VARIANT).build());
-        ModelLoader.setCustomStateMapper(mossyCobbledWyvstoneWall, (new StateMap.Builder()).ignore(MoCBlockWall.VARIANT).build());
-        ModelLoader.setCustomStateMapper(mossyCobbledDeepWyvstoneWall, (new StateMap.Builder()).ignore(MoCBlockWall.VARIANT).build());
-        ModelLoader.setCustomStateMapper(silverSandstoneWall, (new StateMap.Builder()).ignore(MoCBlockWall.VARIANT).build());
-        ModelLoader.setCustomStateMapper(wyvstoneWall, (new StateMap.Builder()).ignore(MoCBlockWall.VARIANT).build());
+        return new ButtonBlock(blockbehaviour$properties, type, 30, true);
     }
 
-    @Nonnull
-    public static <T extends Block> T  setup(T entry, String name) {
-        ForgeRegistries.BLOCKS.register(setup(entry, new ResourceLocation(MoCConstants.MOD_ID, name)));
-        ForgeRegistries.ITEMS.register(setup(new BlockItem(entry, new Item.Properties().group(MoCreatures.tabMoC)), new ResourceLocation(MoCConstants.MOD_ID, name)));
-        return entry;
+    private static ButtonBlock stoneButton() {
+        return new ButtonBlock(BlockBehaviour.Properties.of().noCollission().strength(0.5F).pushReaction(PushReaction.DESTROY), BlockSetType.STONE, 20, false);
     }
 
-    @Nonnull
-    public static <T extends IForgeRegistryEntry<T>> T setup(T entry, ResourceLocation registryName) {
-        Preconditions.checkNotNull(entry, "Entry to setup must not be null!");
-        Preconditions.checkNotNull(registryName, "Registry name to assign must not be null!");
-        entry.setRegistryName(registryName);
-        return entry;
+    private static boolean always(BlockState state, BlockGetter getter, BlockPos pos) {
+        return true;
+    }
+
+    private static boolean never(BlockState state, BlockGetter getter, BlockPos pos) {
+        return false;
+    }
+
+    private static Boolean never(BlockState state, BlockGetter getter, BlockPos pos, EntityType<?> type) {
+        return false;
+    }
+
+    private static Boolean always(BlockState state, BlockGetter getter, BlockPos pos, EntityType<?> type) {
+        return true;
+    }
+
+    private static Boolean ocelotOrParrot(BlockState state, BlockGetter getter, BlockPos pos, EntityType<?> type) {
+        return (boolean)(type == EntityType.OCELOT || type == EntityType.PARROT);
+    }
+
+    private static <T extends Block> RegistryObject<T> register(String name, Supplier<T> blockSupplier) {
+        RegistryObject<T> block = BLOCKS.register(name, blockSupplier);
+        ITEMS.register(name, () -> {
+            return new BlockItem(block.get(), new Item.Properties());
+        });
+        return block;
+    }
+
+    public static void register(IEventBus eventBus) {
+        BLOCKS.register(eventBus);
+        ITEMS.register(eventBus);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = MoCConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class ClientEvents {
+        @SubscribeEvent
+        public static void registerRenderLayers(FMLClientSetupEvent event) {
+            event.enqueueWork(() -> {
+                ItemBlockRenderTypes.setRenderLayer(wyvwoodLeaves.get(), RenderType.cutoutMipped());
+                ItemBlockRenderTypes.setRenderLayer(wyvwoodSapling.get(), RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(tallWyvgrass.get(), RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(gleamingGlass.get(), RenderType.translucent());
+            });
+        }
     }
 }

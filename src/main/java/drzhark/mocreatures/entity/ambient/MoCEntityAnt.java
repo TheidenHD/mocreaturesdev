@@ -7,21 +7,21 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.MoCEntityAmbient;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EntitySize;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 
@@ -29,7 +29,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
 
     private static final DataParameter<Boolean> FOUND_FOOD = EntityDataManager.createKey(MoCEntityAnt.class, DataSerializers.BOOLEAN);
 
-    public MoCEntityAnt(EntityType<? extends MoCEntityAnt> type, World world) {
+    public MoCEntityAnt(EntityType<? extends MoCEntityAnt> type, Level world) {
         super(type, world);
         //setSize(0.3F, 0.2F);
         this.texture = "ant.png";
@@ -66,7 +66,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
             this.motionY *= 0.6D;
         }
 
-        if (!this.world.isRemote) {
+        if (!this.level().isRemote) {
             if (!getHasFood()) {
                 ItemEntity entityitem = MoCTools.getClosestFood(this, 8D);
                 if (entityitem == null || entityitem.removed) {
@@ -110,10 +110,10 @@ public class MoCEntityAnt extends MoCEntityAmbient {
     }
 
     private void exchangeItem(ItemEntity entityitem) {
-        ItemEntity cargo = new ItemEntity(this.world, this.getPosX(), this.getPosY() + 0.2D, this.getPosZ(), entityitem.getItem());
+        ItemEntity cargo = new ItemEntity(this.level(), this.getPosX(), this.getPosY() + 0.2D, this.getPosZ(), entityitem.getItem());
         entityitem.remove();
-        if (!this.world.isRemote) {
-            this.world.addEntity(cargo);
+        if (!this.level().isRemote) {
+            this.level().addEntity(cargo);
         }
     }
 

@@ -422,7 +422,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
             this.temper += 2;
             this.setHealth(getMaxHealth());
-            if (!this.world.isRemote && !getIsAdult() && !getIsTamed() && this.temper >= 10) {
+            if (!this.level().isRemote && !getIsAdult() && !getIsTamed() && this.temper >= 10) {
                 MoCTools.tameWithName(player, this);
             }
             return InteractionResult.sidedSuccess(this.level().isClientSide());
@@ -433,7 +433,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
             this.temper += 1;
             this.setHealth(getMaxHealth());
-            if (!this.world.isRemote && !getIsAdult() && !getIsTamed() && this.temper >= 10) {
+            if (!this.level().isRemote && !getIsAdult() && !getIsTamed() && this.temper >= 10) {
                 setTamed(true);
                 MoCTools.tameWithName(player, this);
             }

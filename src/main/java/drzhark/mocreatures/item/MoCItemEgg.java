@@ -26,7 +26,7 @@ public class MoCItemEgg extends MoCItem {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
+    public ActionResult<ItemStack> onItemRightClick(Level world, Player player, Hand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (!player.abilities.isCreativeMode) stack.shrink(1);
         if (!world.isRemote && player.isOnGround()) {

@@ -4,9 +4,9 @@
 package drzhark.mocreatures.compat.datafixes;
 
 import drzhark.mocreatures.MoCConstants;
-import net.minecraft.item.Item;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.datafix.IFixableData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -35,7 +35,7 @@ public class ItemIDFixer implements IFixableData {
     }
 
     @Override
-    public NBTTagCompound fixTagCompound(NBTTagCompound compound) {
+    public CompoundTag fixTagCompound(CompoundTag compound) {
         return compound;
     }
 

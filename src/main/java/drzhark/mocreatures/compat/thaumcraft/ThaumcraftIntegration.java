@@ -6,7 +6,7 @@ package drzhark.mocreatures.compat.thaumcraft;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.init.MoCBlocks;
 import drzhark.mocreatures.init.MoCItems;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;

@@ -35,7 +35,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.List;
 
 // TODO: Fix hitbox
-public class MoCEntityLitterBox extends EntityLiving {
+public class MoCEntityLitterBox extends LivingEntity {
 
     private static final EntityDataAccessor<Boolean> PICKED_UP = SynchedEntityData.defineId(MoCEntityLitterBox.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> USED_LITTER = SynchedEntityData.defineId(MoCEntityLitterBox.class, EntityDataSerializers.BOOLEAN);

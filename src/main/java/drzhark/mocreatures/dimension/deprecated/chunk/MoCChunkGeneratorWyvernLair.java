@@ -10,12 +10,12 @@ import drzhark.mocreatures.init.MoCBlocks;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
@@ -44,9 +44,9 @@ public class MoCChunkGeneratorWyvernLair implements IChunkGenerator {
      */
     private final Random rand;
     /**
-     * Reference to the World object.
+     * Reference to the Level object.
      */
-    private final World world;
+    private final Level world;
     /**
      * are map structures going to be generated (e.g. strongholds)
      */
@@ -79,8 +79,8 @@ public class MoCChunkGeneratorWyvernLair implements IChunkGenerator {
     private boolean towerDone = false;
     private boolean portalDone = false;
 
-    public MoCChunkGeneratorWyvernLair(World worldIn, boolean mapFeaturesEnabledIn, long seed) {
-        this.world = worldIn;
+    public MoCChunkGeneratorWyvernLair(Level worldIn, boolean mapFeaturesEnabledIn, long seed) {
+        this.level() = worldIn;
         this.mapFeaturesEnabled = mapFeaturesEnabledIn;
         this.rand = new Random(seed);
         this.lperlinNoise1 = new NoiseGeneratorOctaves(this.rand, 16);
@@ -164,7 +164,7 @@ public class MoCChunkGeneratorWyvernLair implements IChunkGenerator {
     }
 
     public void buildSurfaces(ChunkPrimer primer) {
-        if (!ForgeEventFactory.onReplaceBiomeBlocks(this, this.chunkX, this.chunkZ, primer, this.world)) return;
+        if (!ForgeEventFactory.onReplaceBiomeBlocks(this, this.chunkX, this.chunkZ, primer, this.level())) return;
         for (int i = 0; i < 16; ++i) {
             for (int j = 0; j < 16; ++j) {
                 byte b0 = 5;
@@ -195,11 +195,11 @@ public class MoCChunkGeneratorWyvernLair implements IChunkGenerator {
         this.chunkZ = z;
         this.rand.setSeed((long) x * 341873128712L + (long) z * 132897987541L);
         ChunkPrimer chunkprimer = new ChunkPrimer();
-        this.biomesForGeneration = this.world.getBiomeProvider().getBiomes(this.biomesForGeneration, x * 16, z * 16, 16, 16);
+        this.biomesForGeneration = this.level().getBiomeProvider().getBiomes(this.biomesForGeneration, x * 16, z * 16, 16, 16);
         this.setBlocksInChunk(x, z, chunkprimer);
         this.buildSurfaces(chunkprimer);
 
-        Chunk chunk = new Chunk(this.world, chunkprimer, x, z);
+        Chunk chunk = new Chunk(this.level(), chunkprimer, x, z);
         byte[] abyte = chunk.getBiomeArray();
 
         for (int i = 0; i < abyte.length; ++i) {
@@ -317,12 +317,12 @@ public class MoCChunkGeneratorWyvernLair implements IChunkGenerator {
 
     public void populate(int x, int z) {
         BlockFalling.fallInstantly = true;
-        ForgeEventFactory.onChunkPopulate(true, this, this.world, this.rand, x, z, false);
+        ForgeEventFactory.onChunkPopulate(true, this, this.level(), this.rand, x, z, false);
 
         int var4 = x * 16;
         int var5 = z * 16;
         BlockPos blockpos = new BlockPos(var4 + 16, 0, var5 + 16);
-        Biome var6 = this.world.getBiome(blockpos);
+        Biome var6 = this.level().getBiome(blockpos);
         boolean var11 = false;
 
         int var12;
@@ -333,7 +333,7 @@ public class MoCChunkGeneratorWyvernLair implements IChunkGenerator {
             var12 = var4 + this.rand.nextInt(16) + 8;
             var13 = this.rand.nextInt(128);
             var14 = var5 + this.rand.nextInt(16) + 8;
-            (new WorldGenLakes(Blocks.WATER)).generate(this.world, this.rand, new BlockPos(var12, var13, var14));
+            (new WorldGenLakes(Blocks.WATER)).generate(this.level(), this.rand, new BlockPos(var12, var13, var14));
         }
 
         if (!var11 && this.rand.nextInt(8) == 0) {
@@ -342,27 +342,27 @@ public class MoCChunkGeneratorWyvernLair implements IChunkGenerator {
             var14 = var5 + this.rand.nextInt(16) + 8;
 
             if (var13 < 63 || this.rand.nextInt(10) == 0) {
-                (new WorldGenLakes(Blocks.LAVA)).generate(this.world, this.rand, new BlockPos(var12, var13, var14));
+                (new WorldGenLakes(Blocks.LAVA)).generate(this.level(), this.rand, new BlockPos(var12, var13, var14));
             }
         }
 
-        var6.decorate(this.world, this.rand, new BlockPos(var4, 0, var5));
+        var6.decorate(this.level(), this.rand, new BlockPos(var4, 0, var5));
 
         if (x == 0 && z == 0 && !this.portalDone) {
-            createPortal(this.world, this.rand);
+            createPortal(this.level(), this.rand);
         }
 
         //if (x != 0 && z != 0 && !this.towerDone) {
-        //    generateTower(this.world, this.rand, (int) (this.world.rand.nextGaussian() * 64), (int) (this.world.rand.nextGaussian() * 64));
+        //    generateTower(this.level(), this.rand, (int) (this.level().rand.nextGaussian() * 64), (int) (this.level().rand.nextGaussian() * 64));
         //}
 
-        MoCTools.performCustomWorldGenSpawning(this.world, var6, var4 + 8, var5 + 8, 16, 16, this.rand, this.world.getBiome(blockpos).getSpawnableList(EnumCreatureType.CREATURE), EntityLiving.SpawnPlacementType.ON_GROUND);
+        MoCTools.performCustomWorldGenSpawning(this.level(), var6, var4 + 8, var5 + 8, 16, 16, this.rand, this.level().getBiome(blockpos).getSpawnableList(EnumCreatureType.CREATURE), LivingEntity.SpawnPlacementType.ON_GROUND);
 
-        ForgeEventFactory.onChunkPopulate(false, this, this.world, this.rand, x, z, false);
+        ForgeEventFactory.onChunkPopulate(false, this, this.level(), this.rand, x, z, false);
         BlockFalling.fallInstantly = false;
     }
 
-    public void generateTower(World par1World, Random par2Random, int par3, int par4) {
+    public void generateTower(Level par1World, Random par2Random, int par3, int par4) {
         MoCWorldGenTower myTower = new MoCWorldGenTower(Blocks.GRASS, Blocks.DOUBLE_STONE_SLAB, Blocks.LAPIS_ORE);
         if (!this.towerDone) {
             int randPosX = par3 + par2Random.nextInt(16) + 8;
@@ -371,7 +371,7 @@ public class MoCChunkGeneratorWyvernLair implements IChunkGenerator {
         }
     }
 
-    public void createPortal(World par1World, Random par2Random) {
+    public void createPortal(Level par1World, Random par2Random) {
         MoCWorldGenPortal myPortal = new MoCWorldGenPortal(Blocks.QUARTZ_BLOCK, 2, Blocks.QUARTZ_STAIRS, 0, Blocks.QUARTZ_BLOCK, 1, Blocks.QUARTZ_BLOCK, 0);
         for (int i = 0; i < 16; i++) {
             if (!this.portalDone) {
@@ -386,16 +386,16 @@ public class MoCChunkGeneratorWyvernLair implements IChunkGenerator {
     }
 
     public List<Biome.SpawnListEntry> getPossibleCreatures(EnumCreatureType creatureType, BlockPos pos) {
-        return this.world.getBiome(pos).getSpawnableList(creatureType);
+        return this.level().getBiome(pos).getSpawnableList(creatureType);
     }
 
     @Override
-    public BlockPos getNearestStructurePos(World worldIn, String structureName, BlockPos position, boolean findUnexplored) {
+    public BlockPos getNearestStructurePos(Level worldIn, String structureName, BlockPos position, boolean findUnexplored) {
         return null;
     }
 
     @Override
-    public boolean isInsideStructure(World worldIn, String structureName, BlockPos pos) {
+    public boolean isInsideStructure(Level worldIn, String structureName, BlockPos pos) {
         return false;
     }
 

@@ -4,17 +4,13 @@ import java.util.Random;
 
 import drzhark.mocreatures.init.MoCBlocks;
 import drzhark.mocreatures.init.MoCItems;
-import net.minecraft.block.BlockDoor;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.MapColor;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.MapColor;
 
 // NOTE: Wooden doors are not flammable in vanilla
 public class MoCBlockDoorWood extends BlockDoor {
@@ -30,7 +26,7 @@ public class MoCBlockDoorWood extends BlockDoor {
     }
 
     @Override
-    public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
+    public ItemStack getItem(Level worldIn, BlockPos pos, IBlockState state) {
         return new ItemStack(getItemBlock());
     }
 

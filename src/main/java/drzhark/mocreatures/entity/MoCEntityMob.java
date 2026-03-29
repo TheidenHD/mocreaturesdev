@@ -13,28 +13,26 @@ import drzhark.mocreatures.entity.item.MoCEntityLitterBox;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageHealth;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.*;
-import net.minecraft.entity.monster.EntityMob;
-import net.minecraft.entity.passive.EntityWolf;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.pathfinding.SwimmerPathNavigator;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
@@ -92,8 +90,8 @@ public abstract class MoCEntityMob extends Monster implements IMoCEntity {
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty,
-                                   MobSpawnType reason, @Nullable SpawnGroupData spawnData,
-                                   @Nullable CompoundTag dataTag) {
+                                        MobSpawnType reason, @Nullable SpawnGroupData spawnData,
+                                        @Nullable CompoundTag dataTag) {
         selectType();
         return super.finalizeSpawn(world, difficulty, reason, spawnData, dataTag);
     }
@@ -535,13 +533,13 @@ public abstract class MoCEntityMob extends Monster implements IMoCEntity {
     }
 
     @Override
-    public boolean startRidingPlayer(EntityPlayer player) {
+    public boolean startRidingPlayer(Player player) {
         if (MoCTools.getEntityRidingPlayer(player) != null) {
             return false; // Something is already riding this player.
         }
         boolean ret = super.startRiding(player);
         if (ret) {
-            NBTTagCompound tag = player.getEntityData();
+            CompoundTag tag = player.getEntityData();
             tag.setUniqueId("MOCEntity_Riding_Player", this.getUniqueID());
             return true;
         }

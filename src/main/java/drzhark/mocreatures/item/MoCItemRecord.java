@@ -1,9 +1,9 @@
 package drzhark.mocreatures.item;
 
 import drzhark.mocreatures.MoCConstants;
-import net.minecraft.item.Item;
-import net.minecraft.item.MusicDiscItem;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.MusicDiscItem;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 
 public class MoCItemRecord extends RecordItem {

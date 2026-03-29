@@ -11,17 +11,17 @@ import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.world.entity.SharedMonsterAttributes;
+import net.minecraft.world.entity.ai.EntityAIWatchClosest;
+import net.minecraft.world.entity.item.EntityItem;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -134,7 +134,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand) {
+    public boolean processInteract(Player player, EnumHand hand) {
         // Only process one hand to prevent double interactions
         if (hand != EnumHand.MAIN_HAND) {
             return false;
@@ -206,9 +206,9 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
                             	// TODO: Add a turtle eating sound event
                                 entityitem.setDead();
                                 //MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_TURTLE_EATING);
-                                EntityPlayer entityplayer = this.world.getClosestPlayerToEntity(this, 24D);
-                                if (entityplayer != null) {
-                                    MoCTools.tameWithName(entityplayer, this);
+                                Player Player = this.level().getClosestPlayerToEntity(this, 24D);
+                                if (Player != null) {
+                                    MoCTools.tameWithName(Player, this);
                                 }
                             }
                         }
@@ -265,8 +265,8 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
         super.aiStep();
 
         if ((this.getVehicle() != null) && (this.getVehicle() instanceof Player)) {
-            Player entityplayer = (Player) this.getVehicle();
-            this.setYRot(entityplayer.getYRot());
+            Player Player = (Player) this.getVehicle();
+            this.setYRot(Player.getYRot());
         }
 
         if (getIsSwinging()) {

@@ -5,11 +5,11 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.EnumRarity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -43,7 +43,7 @@ public class MoCItem extends Item {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> list, ITooltipFlag flag) {
+    public void addInformation(ItemStack stack, @Nullable Level worldIn, List<String> list, ITooltipFlag flag) {
         if (tooltip != null) {
             list.add(TextFormatting.WHITE + I18n.format(tooltip));
         }
