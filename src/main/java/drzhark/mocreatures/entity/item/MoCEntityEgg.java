@@ -275,7 +275,7 @@ public class MoCEntityEgg extends LivingEntity {
     private void notifyEggHatching() {
         Player Player = this.level().getClosestPlayer(this, 24D);
         if (Player != null) {
-            Player.sendMessage(new TranslationTextComponent("msg.mocreatures.egg", (int) this.getPosX(), (int) this.getPosY(), (int) this.getPosZ()), Player.getUniqueID());
+            Player.sendMessage(new TranslationTextComponent("msg.mocreatures.egg", (int) this.getPosX(), (int) this.getPosY(), (int) this.getPosZ()), Player.getUUID());
         }
     }
 
@@ -295,14 +295,14 @@ public class MoCEntityEgg extends LivingEntity {
     }
 
     @Override
-    public void readAdditional(CompoundNBT nbttagcompound) {
+    public void readAdditional(CompoundTag nbttagcompound) {
         super.readAdditional(nbttagcompound);
         nbttagcompound = MoCTools.getEntityData(this);
         setEggType(nbttagcompound.getInt("EggType"));
     }
 
     @Override
-    public void writeAdditional(CompoundNBT nbttagcompound) {
+    public void writeAdditional(CompoundTag nbttagcompound) {
         super.writeAdditional(nbttagcompound);
         nbttagcompound = MoCTools.getEntityData(this);
         nbttagcompound.putInt("EggType", getEggType());

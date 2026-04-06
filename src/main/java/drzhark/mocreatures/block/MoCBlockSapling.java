@@ -10,19 +10,15 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.grower.AbstractTreeGrower;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.PushReaction;
 
 public class MoCBlockSapling extends SaplingBlock {
 
-    public MoCBlockSapling(BlockBehaviour.Properties properties) {
-        super(new WyvwoodTreeGrower(), properties
-                .noCollission()
-                .randomTicks()
-                .strength(0.0F)
-                .sound(SoundType.GRASS)
-                .pushReaction(PushReaction.DESTROY));
+    public MoCBlockSapling(AbstractTreeGrower grower, BlockBehaviour.Properties properties) {
+        super(grower, properties);
     }
     
     @Override

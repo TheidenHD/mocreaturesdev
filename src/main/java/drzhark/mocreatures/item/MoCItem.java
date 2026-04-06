@@ -19,11 +19,11 @@ import java.util.List;
 public class MoCItem extends Item {
     protected String tooltip = null;
 
-    public MoCItem(String name) {
+    public Item(String name) {
         this(name, 0, false);
     }
 
-    public MoCItem(String name, int meta, boolean hasTooltip) {
+    public Item(String name, int meta, boolean hasTooltip) {
         this.setCreativeTab(MoCreatures.tabMoC);
         this.setRegistryName(MoCConstants.MOD_ID, name);
         this.setTranslationKey(name);

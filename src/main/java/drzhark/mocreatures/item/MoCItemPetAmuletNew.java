@@ -9,6 +9,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityList;
 import net.minecraft.world.entity.EntityLivingBase;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResult;
@@ -22,7 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class MoCItemPetAmuletNew extends MoCItem {
+public class MoCItemPetAmuletNew extends Item {
 
     public MoCItemPetAmuletNew(String name) {
         super(name);

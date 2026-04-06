@@ -6,7 +6,9 @@ package drzhark.mocreatures.init;
 import drzhark.mocreatures.MoCConstants;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 // TODO: Ents, Elephants, Horses, Horse Mobs, Snakes

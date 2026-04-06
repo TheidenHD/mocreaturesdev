@@ -17,7 +17,7 @@ public class EntityAIBunnyReproduce extends EntityAIBase {
     }
 
     @Override
-    public boolean shouldExecute() {
+    public boolean canUse() {
         return bunny.getIsTamed() && bunny.getIsAdult() && bunny.getHasEaten() && bunny.getRidingEntity() == null;
     }
 

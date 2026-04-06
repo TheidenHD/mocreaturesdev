@@ -29,8 +29,8 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.EquipmentSlotType;
 import net.minecraft.world.item.*;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -547,8 +547,8 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public ActionResultType getEntityInteractionResult(Player player, Hand hand) {
-        final ActionResultType tameResult = this.processTameInteract(player, hand);
+    public InteractionResult getEntityInteractionResult(Player player, InteractionHand hand) {
+        final InteractionResult tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -558,7 +558,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             if (!player.capabilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
             setRideable(true);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!getIsFertile() && !stack.isEmpty() && getTypeMoC() == 2 && stack.getItem() == Items.MELON_SEEDS) {
@@ -567,7 +567,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             openMouth();
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
             setFertile(true);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         //makes the ostrich stay by hiding their heads
@@ -647,7 +647,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
             dropFlag();
             setFlagColor(WOOL_BY_COLOR.inverse().get(stack.getItem()));
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && (getTypeMoC() > 1) && getIsTamed() && !getIsChested() && (stack.getItem() == Item.getItemFromBlock(Blocks.CHEST))) {
@@ -656,7 +656,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             //Player.inventory.addItemStackToInventory(new ItemStack(MoCreatures.key));
             setIsChested(true);
             MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (player.isSneaking() && getIsChested()) {
@@ -667,7 +667,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             if (!this.level().isRemote) {
                 player.openContainer(this.localchest);
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (getIsTamed() && (getTypeMoC() > 1) && !stack.isEmpty()) {
@@ -706,7 +706,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                     this.setItemStackToSlot(itemArmor.getEquipmentSlot(), stack);
                     MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_OFF.get());
                     setHelmet(helmetType);
-                    return ActionResultType.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             }
         }
@@ -716,7 +716,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                 player.rotationPitch = this.rotationPitch;
                 setHiding(false);
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         return super.getEntityInteractionResult(player, hand);
     }
@@ -797,7 +797,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void readAdditional(CompoundNBT nbttagcompound) {
+    public void readAdditional(CompoundTag nbttagcompound) {
         super.readAdditional(nbttagcompound);
         setRideable(nbttagcompound.getBoolean("Saddle"));
         setEggWatching(nbttagcompound.getBoolean("EggWatch"));
@@ -808,20 +808,20 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         setFertile(nbttagcompound.getBoolean("Fertile"));
 
         if (getIsChested()) {
-            ListNBT nbttaglist = nbttagcompound.getList("Items", 10);
+            ListTag nbttaglist = nbttagcompound.getList("Items", 10);
             this.localchest = new MoCAnimalChest("OstrichChest", MoCAnimalChest.Size.small);
             for (int i = 0; i < nbttaglist.size(); i++) {
-                CompoundNBT nbttagcompound1 = nbttaglist.getCompound(i);
+                CompoundTag nbttagcompound1 = nbttaglist.getCompound(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
                 if (j < this.localchest.getSizeInventory()) {
-                    this.localchest.setInventorySlotContents(j, ItemStack.read(nbttagcompound1));
+                    this.localchest.setInventorySlotContents(j, ItemStack.of(nbttagcompound1));
                 }
             }
         }
     }
 
     @Override
-    public void writeAdditional(CompoundNBT nbttagcompound) {
+    public void writeAdditional(CompoundTag nbttagcompound) {
         super.writeAdditional(nbttagcompound);
         nbttagcompound.putBoolean("Saddle", getIsRideable());
         nbttagcompound.putBoolean("EggWatch", getEggWatching());
@@ -832,11 +832,11 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         nbttagcompound.putBoolean("Fertile", getIsFertile());
 
         if (getIsChested() && this.localchest != null) {
-            ListNBT nbttaglist = new ListNBT();
+            ListTag nbttaglist = new ListTag();
             for (int i = 0; i < this.localchest.getSizeInventory(); i++) {
                 this.localstack = this.localchest.getStackInSlot(i);
                 if (!this.localstack.isEmpty()) {
-                    CompoundNBT nbttagcompound1 = new CompoundNBT();
+                    CompoundTag nbttagcompound1 = new CompoundTag();
                     nbttagcompound1.putByte("Slot", (byte) i);
                     this.localstack.write(nbttagcompound1);
                     nbttaglist.add(nbttagcompound1);

@@ -75,9 +75,9 @@ public class MoCEntityAnt extends MoCEntityAmbient {
                 if (entityitem.getRidingEntity() == null) {
                     float f = entityitem.getDistance(this);
                     if (f > 1.0F) {
-                        int i = MathHelper.floor(entityitem.getPosX());
-                        int j = MathHelper.floor(entityitem.getPosY());
-                        int k = MathHelper.floor(entityitem.getPosZ());
+                        int i = Mth.floor(entityitem.getPosX());
+                        int j = Mth.floor(entityitem.getPosY());
+                        int k = Mth.floor(entityitem.getPosZ());
                         faceLocation(i, j, k, 30F);
 
                         getMyOwnPath(entityitem, f);

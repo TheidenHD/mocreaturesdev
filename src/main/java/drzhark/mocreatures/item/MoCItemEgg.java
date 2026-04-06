@@ -19,14 +19,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
-public class MoCItemEgg extends MoCItem {
+public class MoCItemEgg extends Item {
 
     public MoCItemEgg(Item.Properties properties) {
         super(properties.stacksTo(16));
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(Level world, Player player, Hand hand) {
+    public ActionResult<ItemStack> onItemRightClick(Level world, Player player, InteractionHand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (!player.abilities.isCreativeMode) stack.shrink(1);
         if (!world.isRemote && player.isOnGround()) {

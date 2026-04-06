@@ -13,6 +13,10 @@ import drzhark.mocreatures.entity.item.MoCEntityLitterBox;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -25,6 +29,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.Path;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Vector3d;
@@ -37,10 +42,10 @@ import java.util.UUID;
 
 public abstract class MoCEntityAnimal extends Animal implements IMoCEntity {
 
-    protected static final DataParameter<Boolean> ADULT = EntityDataManager.createKey(MoCEntityAnimal.class, DataSerializers.BOOLEAN);
-    protected static final DataParameter<Integer> TYPE = EntityDataManager.createKey(MoCEntityAnimal.class, DataSerializers.VARINT);
-    protected static final DataParameter<Integer> AGE = EntityDataManager.createKey(MoCEntityAnimal.class, DataSerializers.VARINT);
-    protected static final DataParameter<String> NAME_STR = EntityDataManager.createKey(MoCEntityAnimal.class, DataSerializers.STRING);
+    protected static final EntityDataAccessor<Boolean> ADULT = SynchedEntityData.defineId(MoCEntityAnimal.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Integer> TYPE = SynchedEntityData.defineId(MoCEntityAnimal.class, EntityDataSerializers.VARINT);
+    protected static final EntityDataAccessor<Integer> AGE = SynchedEntityData.defineId(MoCEntityAnimal.class, EntityDataSerializers.VARINT);
+    protected static final EntityDataAccessor<String> NAME_STR = SynchedEntityData.defineId(MoCEntityAnimal.class, EntityDataSerializers.STRING);
     protected boolean divePending;
     protected boolean jumpPending;
     protected int temper;
@@ -91,7 +96,7 @@ public abstract class MoCEntityAnimal extends Animal implements IMoCEntity {
     }
 
     @Override
-    public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
+    public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundTag dataTag) {
         selectType();
         return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
@@ -465,9 +470,9 @@ public abstract class MoCEntityAnimal extends Animal implements IMoCEntity {
     protected void getPathOrWalkableBlock(Entity entity, float f) {
         Path pathentity = this.navigator.getPathToPos(entity.getPosition(), 0);
         if ((pathentity == null) && (f > 8F)) {
-            int i = MathHelper.floor(entity.getPosX()) - 2;
-            int j = MathHelper.floor(entity.getPosZ()) - 2;
-            int k = MathHelper.floor(entity.getBoundingBox().minY);
+            int i = Mth.floor(entity.getPosX()) - 2;
+            int j = Mth.floor(entity.getPosZ()) - 2;
+            int k = Mth.floor(entity.getBoundingBox().minY);
             for (int l = 0; l <= 4; l++) {
                 for (int i1 = 0; i1 <= 4; i1++) {
                     BlockPos pos = new BlockPos(i, k, j);
@@ -493,7 +498,7 @@ public abstract class MoCEntityAnimal extends Animal implements IMoCEntity {
     }
 
     @Override
-    public void writeAdditional(CompoundNBT nbttagcompound) {
+    public void writeAdditional(CompoundTag nbttagcompound) {
         super.writeAdditional(nbttagcompound);
         nbttagcompound.putBoolean("Adult", getIsAdult());
         nbttagcompound.putInt("Edad", getAge());
@@ -502,7 +507,7 @@ public abstract class MoCEntityAnimal extends Animal implements IMoCEntity {
     }
 
     @Override
-    public void readAdditional(CompoundNBT nbttagcompound) {
+    public void readAdditional(CompoundTag nbttagcompound) {
         super.readAdditional(nbttagcompound);
         setAdult(nbttagcompound.getBoolean("Adult"));
         setAge(nbttagcompound.getInt("Edad"));
@@ -752,7 +757,7 @@ public abstract class MoCEntityAnimal extends Animal implements IMoCEntity {
     }
 
     public boolean isOnAir() {
-        return (this.level().isAirBlock(new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(this.getPosY() - 0.2D), MathHelper.floor(this.getPosZ()))) && this.level().isAirBlock(new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(this.getPosY() - 1.2D), MathHelper.floor(this.getPosZ()))));
+        return (this.level().isAirBlock(new BlockPos(Mth.floor(this.getPosX()), Mth.floor(this.getPosY() - 0.2D), Mth.floor(this.getPosZ()))) && this.level().isAirBlock(new BlockPos(Mth.floor(this.getPosX()), Mth.floor(this.getPosY() - 1.2D), Mth.floor(this.getPosZ()))));
     }
 
     @Override
@@ -865,7 +870,7 @@ public abstract class MoCEntityAnimal extends Animal implements IMoCEntity {
 
     @Override
     public boolean canBeLeashedTo(Player player) {
-        if (!this.level().isRemote && !MoCTools.isThisPlayerAnOP(player) && this.getIsTamed() && !player.getUniqueID().equals(this.getOwnerId())) {
+        if (!this.level().isRemote && !MoCTools.isThisPlayerAnOP(player) && this.getIsTamed() && !player.getUUID().equals(this.getOwnerId())) {
             return false;
         }
         return super.canBeLeashedTo(player);
@@ -1027,7 +1032,7 @@ public abstract class MoCEntityAnimal extends Animal implements IMoCEntity {
         boolean ret = super.startRiding(player);
         if (ret) {
             CompoundTag tag = player.getEntityData();
-            tag.setUniqueId("MOCEntity_Riding_Player", this.getUniqueID());
+            tag.setUniqueId("MOCEntity_Riding_Player", this.getUUID());
             return true;
         } else {
             TextComponentTranslation msg = new TextComponentTranslation("msg.mocreatures.petnotreadytorideplayer");
@@ -1045,7 +1050,7 @@ public abstract class MoCEntityAnimal extends Animal implements IMoCEntity {
     public void setLeashHolder(Entity entityIn, boolean sendAttachNotification) {
         if (this.getIsTamed() && entityIn instanceof Player) {
             Player Player = (Player) entityIn;
-            if (MoCreatures.proxy.enableOwnership && this.getOwnerId() != null && !Player.getUniqueID().equals(this.getOwnerId()) && !MoCTools.isThisPlayerAnOP((Player))) {
+            if (MoCreatures.proxy.enableOwnership && this.getOwnerId() != null && !Player.getUUID().equals(this.getOwnerId()) && !MoCTools.isThisPlayerAnOP((Player))) {
                 return;
             }
         }

@@ -27,7 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SaddleItem;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -395,8 +395,8 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
 
     // TODO: Make it not give items in creative
     @Override
-    public ActionResultType getEntityInteractionResult(Player player, Hand hand) {
-        final ActionResultType tameResult = this.processTameInteract(player, hand);
+    public InteractionResult getEntityInteractionResult(Player player, InteractionHand hand) {
+        final InteractionResult tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -406,7 +406,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
                 && (stack.getItem() instanceof ItemSaddle)) {
             if (!player.capabilities.isCreativeMode) stack.shrink(1);
             setRideable(true);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && (stack.getItem() == MoCItems.whip) && getIsTamed() && (!this.isBeingRidden())) {
@@ -442,7 +442,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
                 }
 
                 transform(3);
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
 
             // Frost Scorpion (Essence of Ice)
@@ -468,7 +468,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
                 }
 
                 transform(5);
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
 
@@ -480,12 +480,12 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
                 }
             }
 
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         } else if (this.getRidingEntity() != null) {
             MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
             this.dismount();
             this.setMotion(player.getMotion().getX() * 5D, (player.getMotion().getY() / 2D) + 0.5D, player.getMotion().getZ() * 5D);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (getIsRideable() && getIsTamed() && getIsAdult() && (!this.isBeingRidden())) {
@@ -495,21 +495,21 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
                 player.startRiding(this);
             }
 
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         return super.getEntityInteractionResult(player, hand);
     }
 
     @Override
-    public void readAdditional(CompoundNBT nbttagcompound) {
+    public void readAdditional(CompoundTag nbttagcompound) {
         super.readAdditional(nbttagcompound);
         setHasBabies(nbttagcompound.getBoolean("Babies"));
         setRideable(nbttagcompound.getBoolean("Saddled"));
     }
 
     @Override
-    public void writeAdditional(CompoundNBT nbttagcompound) {
+    public void writeAdditional(CompoundTag nbttagcompound) {
         super.writeAdditional(nbttagcompound);
         nbttagcompound.putBoolean("Babies", getHasBabies());
         nbttagcompound.putBoolean("Saddled", getIsRideable());

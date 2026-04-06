@@ -33,8 +33,8 @@ import net.minecraft.world.entity.animal.horse.DonkeyEntity;
 import net.minecraft.world.entity.animal.horse.HorseEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -172,7 +172,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         Entity entity = damagesource.getTrueSource();
         if ((this.isBeingRidden()) && (entity == this.getRidingEntity())) return false;
         if (entity instanceof WolfEntity) {
-            CreatureEntity entitycreature = (CreatureEntity) entity;
+            PathfinderMob entitycreature = (PathfinderMob) entity;
             entitycreature.setAttackTarget(null);
             return false;
         } else {
@@ -189,7 +189,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
     @Override
     public boolean checkSpawningBiome() {
-        BlockPos pos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(getBoundingBox().minY), this.getPosZ());
+        BlockPos pos = new BlockPos(Mth.floor(this.getPosX()), Mth.floor(getBoundingBox().minY), this.getPosZ());
         RegistryKey<Biome> currentbiome = MoCTools.biomeKind(this.level(), pos);
         try {
             if (BiomeDictionary.hasType(currentbiome, Type.SAVANNA)) setTypeMoC(60); // zebra
@@ -1261,18 +1261,18 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public ActionResultType getEntityInteractionResult(Player player, Hand hand) {
-        final ActionResultType tameResult = this.processTameInteract(player, hand);
+    public InteractionResult getEntityInteractionResult(Player player, InteractionHand hand) {
+        final InteractionResult tameResult = this.processTameInteract(player, hand);
 
         if (tameResult != null) return tameResult;
 
-        if (this.getTypeMoC() == 60 && !getIsTamed() && isZebraRunning()) return ActionResultType.FAIL;
+        if (this.getTypeMoC() == 60 && !getIsTamed() && isZebraRunning()) return InteractionResult.FAIL;
 
         final ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty() && !getIsRideable() && (stack.getItem() instanceof ItemSaddle)) {
             if (!player.capabilities.isCreativeMode) stack.shrink(1);
             setRideable(true);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == Items.IRON_HORSE_ARMOR && isArmored()) {
@@ -1280,7 +1280,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             dropArmor();
             setArmorType((byte) 1);
             if (!player.abilities.isCreativeMode) stack.shrink(1);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == Items.GOLDEN_HORSE_ARMOR && isArmored()) {
@@ -1288,7 +1288,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             dropArmor();
             setArmorType((byte) 2);
             if (!player.abilities.isCreativeMode) stack.shrink(1);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == Items.DIAMOND_HORSE_ARMOR && isArmored()) {
@@ -1296,7 +1296,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             dropArmor();
             setArmorType((byte) 3);
             if (!player.abilities.isCreativeMode) stack.shrink(1);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.horsearmorcrystal && isMagicHorse()) {
@@ -1304,7 +1304,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             dropArmor();
             setArmorType((byte) 4);
             if (!player.abilities.isCreativeMode) stack.shrink(1);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         // transform to undead, or heal undead horse
@@ -1330,7 +1330,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 transform(23);
             }
             drinkingHorse();
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         // to transform to nightmares: only pure breeds
@@ -1348,7 +1348,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 transform(38);
             }
             drinkingHorse();
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         // transform to dark pegasus
@@ -1370,7 +1370,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 transform(40);
             }
             drinkingHorse();
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.essencelight) {
@@ -1401,29 +1401,29 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 if (this.getTypeMoC() >= 26) setTypeMoC(getTypeMoC() - 3);
             }
             drinkingHorse();
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && this.isAmuletHorse() && getIsTamed()) {
             if ((this.getTypeMoC() == 26 || this.getTypeMoC() == 27 || this.getTypeMoC() == 28) && stack.getItem() == MoCItems.amuletbone) {
                 player.setHeldItem(hand, ItemStack.EMPTY);
                 vanishHorse();
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
             if ((this.getTypeMoC() > 47 && this.getTypeMoC() < 60) && stack.getItem() == MoCItems.amuletfairy) {
                 player.setHeldItem(hand, ItemStack.EMPTY);
                 vanishHorse();
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
             if ((this.getTypeMoC() == 39 || this.getTypeMoC() == 40) && (stack.getItem() == MoCItems.amuletpegasus)) {
                 player.setHeldItem(hand, ItemStack.EMPTY);
                 vanishHorse();
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
             if ((this.getTypeMoC() == 21 || this.getTypeMoC() == 22) && (stack.getItem() == MoCItems.amuletghost)) {
                 player.setHeldItem(hand, ItemStack.EMPTY);
                 vanishHorse();
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
 
@@ -1480,7 +1480,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             eatingHorse();
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         // zebra easter egg
@@ -1492,7 +1492,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 this.level().addEntity(entityitem1);
             }
             eatingHorse();
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         if (!stack.isEmpty() && (stack.getItem() == Items.WHEAT) && !isMagicHorse() && !isUndead()) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
@@ -1503,7 +1503,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             if ((getHealth() + 5) > getMaxHealth()) this.setHealth(getMaxHealth());
             eatingHorse();
             if (!getIsAdult() && (getAge() < getMaxAge())) setAge(getAge() + 1);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && (stack.getItem() == MoCItems.sugarlump) && !isMagicHorse() && !isUndead()) {
@@ -1515,7 +1515,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             if ((getHealth() + 10) > getMaxHealth()) this.setHealth(getMaxHealth());
             eatingHorse();
             if (!getIsAdult() && (getAge() < getMaxAge())) setAge(getAge() + 2);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && (stack.getItem() == Items.BREAD) && !isMagicHorse() && !isUndead()) {
@@ -1527,7 +1527,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             if ((getHealth() + 20) > getMaxHealth()) this.setHealth(getMaxHealth());
             eatingHorse();
             if (!getIsAdult() && (getAge() < getMaxAge())) setAge(getAge() + 3);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && ((stack.getItem() == Items.APPLE) || (stack.getItem() == Items.GOLDEN_APPLE)) && !isMagicHorse() && !isUndead()) {
@@ -1536,37 +1536,37 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             this.setHealth(getMaxHealth());
             eatingHorse();
             if (!getIsAdult() && (getAge() < getMaxAge()) && !this.level().isRemote) setAge(getAge() + 1);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == Item.getItemFromBlock(Blocks.CHEST)) && (isBagger())) {
-            if (getIsChested()) return ActionResultType.FAIL;
+            if (getIsChested()) return InteractionResult.FAIL;
             if (!player.abilities.isCreativeMode) stack.shrink(1);
 
             setIsChested(true);
             MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == Item.getItemFromBlock(Blocks.HAY_BLOCK))) {
             if (!player.capabilities.isCreativeMode) stack.shrink(1);
             setSitting(true);
             eatingHorse();
             if (!isMagicHorse() && !isUndead()) this.setHealth(getMaxHealth());
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         if (getIsChested() && player.isSneaking()) {
             // if first time opening horse chest, we must initialize it
             if (this.localChest == null) this.localChest = new MoCAnimalChest("HorseChest", getInventorySize());// , new
             // only open this chest on server side
             if (!this.level().isRemote) player.openContainer(this.localChest);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
 
         }
 
         if (!stack.isEmpty()
                 && ((stack.getItem() == Item.getItemFromBlock(Blocks.PUMPKIN)) || (stack.getItem() == Items.MUSHROOM_STEW)
                 || (stack.getItem() == Items.CAKE) || (stack.getItem() == Items.GOLDEN_CARROT))) {
-            if (!getIsAdult() || isMagicHorse() || isUndead()) return ActionResultType.FAIL;
+            if (!getIsAdult() || isMagicHorse() || isUndead()) return InteractionResult.FAIL;
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (stack.getItem() == Items.MUSHROOM_STEW) {
                 if (stack.isEmpty()) player.setHeldItem(hand, new ItemStack(Items.BOWL));
@@ -1575,7 +1575,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             this.eatenPumpkin = true;
             this.setHealth(getMaxHealth());
             eatingHorse();
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && (stack.getItem() == MoCItems.whip) && getIsTamed() && (!this.isBeingRidden())) {
@@ -1593,7 +1593,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 setSitting(false);
                 this.gestationTime = 0;
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         return super.getEntityInteractionResult(player, hand);
@@ -1775,9 +1775,9 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             setNightmareInt(getNightmareInt() - 1);
             return;
         }
-        int i = MathHelper.floor(this.getPosX());
-        int j = MathHelper.floor(getBoundingBox().minY);
-        int k = MathHelper.floor(this.getPosZ());
+        int i = Mth.floor(this.getPosX());
+        int j = Mth.floor(getBoundingBox().minY);
+        int k = Mth.floor(this.getPosZ());
         BlockPos pos = new BlockPos(i, j, k);
         BlockState blockstate = this.level().getBlockState(pos.add(-1, 0, -1));
         BlockEvent.BreakEvent event = null;
@@ -2237,7 +2237,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void writeAdditional(CompoundNBT nbttagcompound) {
+    public void writeAdditional(CompoundTag nbttagcompound) {
         super.writeAdditional(nbttagcompound);
         nbttagcompound.putBoolean("Saddle", getIsRideable());
         nbttagcompound.putBoolean("EatingHaystack", getIsSitting());
@@ -2247,12 +2247,12 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         nbttagcompound.putInt("ArmorType", getArmorType());
 
         if (getIsChested() && this.localChest != null) {
-            ListNBT nbttaglist = new ListNBT();
+            ListTag nbttaglist = new ListTag();
             for (int i = 0; i < this.localChest.getSizeInventory(); i++) {
                 // grab the current item stack
                 this.localStack = this.localChest.getStackInSlot(i);
                 if (!this.localStack.isEmpty()) {
-                    CompoundNBT nbttagcompound1 = new CompoundNBT();
+                    CompoundTag nbttagcompound1 = new CompoundTag();
                     nbttagcompound1.putByte("Slot", (byte) i);
                     this.localStack.write(nbttagcompound1);
                     nbttaglist.add(nbttagcompound1);
@@ -2263,7 +2263,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void readAdditional(CompoundNBT nbttagcompound) {
+    public void readAdditional(CompoundTag nbttagcompound) {
         super.readAdditional(nbttagcompound);
         setRideable(nbttagcompound.getBoolean("Saddle"));
         setSitting(nbttagcompound.getBoolean("EatingHaystack"));
@@ -2272,13 +2272,13 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         setReproduced(nbttagcompound.getBoolean("HasReproduced"));
         setArmorType((byte) nbttagcompound.getInt("ArmorType"));
         if (getIsChested()) {
-            ListNBT nbttaglist = nbttagcompound.getList("Items", 10);
+            ListTag nbttaglist = nbttagcompound.getList("Items", 10);
             this.localChest = new MoCAnimalChest("HorseChest", getInventorySize());
             for (int i = 0; i < nbttaglist.size(); i++) {
-                CompoundNBT nbttagcompound1 = nbttaglist.getCompound(i);
+                CompoundTag nbttagcompound1 = nbttaglist.getCompound(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
                 if (j < this.localChest.getSizeInventory()) {
-                    this.localChest.setInventorySlotContents(j, ItemStack.read(nbttagcompound1));
+                    this.localChest.setInventorySlotContents(j, ItemStack.of(nbttagcompound1));
                 }
             }
         }

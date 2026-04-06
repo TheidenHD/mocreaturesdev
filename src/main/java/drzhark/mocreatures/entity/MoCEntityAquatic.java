@@ -1062,7 +1062,7 @@ public abstract class MoCEntityAquatic extends WaterAnimal implements IMoCEntity
         boolean ret = super.startRiding(player);
         if (ret) {
             CompoundTag tag = player.getEntityData();
-            tag.setUniqueId("MOCEntity_Riding_Player", this.getUniqueID());
+            tag.setUniqueId("MOCEntity_Riding_Player", this.getUUID());
             return true;
         }
         return false;

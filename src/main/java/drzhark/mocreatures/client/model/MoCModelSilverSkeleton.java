@@ -108,7 +108,7 @@ public class MoCModelSilverSkeleton<T extends MoCEntitySilverSkeleton> extends E
                 PartPose.offsetAndRotation(0F, 2F, 2F, -0.1570796F, 0F, 0F)
         );
 
-        // --- Right Arm, Hand, and Swords ---
+        // --- Right Arm, InteractionHand, and Swords ---
         PartDefinition rightArm = root.addOrReplaceChild("rightArm",
                 CubeListBuilder.create()
                         .texOffs(48, 31).addBox(-3F, -2.5F, -2.5F, 4, 11, 4, CubeDeformation.NONE),
@@ -137,7 +137,7 @@ public class MoCModelSilverSkeleton<T extends MoCEntitySilverSkeleton> extends E
                 PartPose.offset(-5F, 1F, 0F)
         );
 
-        // --- Left Arm, Hand, and Swords ---
+        // --- Left Arm, InteractionHand, and Swords ---
         PartDefinition leftArm = root.addOrReplaceChild("leftArm",
                 CubeListBuilder.create()
                         .texOffs(48, 16).addBox(-1F, -2.5F, -2.5F, 4, 11, 4, CubeDeformation.NONE),

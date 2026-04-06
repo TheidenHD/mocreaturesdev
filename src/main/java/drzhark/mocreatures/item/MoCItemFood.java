@@ -5,7 +5,7 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public class MoCItemFood extends MoCItem {
+public class MoCItemFood extends Item {
     public int itemUseDuration;
 
     protected MoCItemFood(MoCItemFood.Builder builder) {

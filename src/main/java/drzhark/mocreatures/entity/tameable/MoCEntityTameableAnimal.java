@@ -138,7 +138,7 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
         }
 
         //if the player interacting is not the owner, do nothing!
-        if (MoCreatures.proxy.enableOwnership && this.getOwnerId() != null && !player.getUniqueID().equals(this.getOwnerId())) {
+        if (MoCreatures.proxy.enableOwnership && this.getOwnerId() != null && !player.getUUID().equals(this.getOwnerId())) {
             if (!this.level().isRemote) {
                 ITextComponent message = new TextComponentTranslation("msg.mocreatures.foreignpet");
                 message.getStyle().setColor(TextFormatting.RED);

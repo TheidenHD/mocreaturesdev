@@ -19,6 +19,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
@@ -540,7 +541,7 @@ public abstract class MoCEntityMob extends Monster implements IMoCEntity {
         boolean ret = super.startRiding(player);
         if (ret) {
             CompoundTag tag = player.getEntityData();
-            tag.setUniqueId("MOCEntity_Riding_Player", this.getUniqueID());
+            tag.setUniqueId("MOCEntity_Riding_Player", this.getUUID());
             return true;
         }
         return false;

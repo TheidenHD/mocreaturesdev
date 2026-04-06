@@ -9,25 +9,18 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
-import net.minecraft.block.Block;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityLivingBase;
-import net.minecraft.world.entity.EnumCreatureAttribute;
-import net.minecraft.world.entity.SharedMonsterAttributes;
-import net.minecraft.world.entity.ai.EntityAIAttackMelee;
-import net.minecraft.world.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.world.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.world.entity.ai.EntityAISwimming;
-import net.minecraft.world.entity.ai.EntityAIWatchClosest;
-import net.minecraft.world.entity.monster.EntityIronGolem;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.DamageSource;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraft.world.level.block.Block;
 
 import javax.annotation.Nullable;
 
@@ -182,9 +175,9 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
         }
 
         @Override
-        public boolean shouldExecute() {
+        public boolean canUse() {
             float f = this.goalOwner.getBrightness();
-            return f < 0.5F && super.shouldExecute();
+            return f < 0.5F && super.canUse();
         }
     }
 }

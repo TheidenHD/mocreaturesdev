@@ -33,8 +33,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SaddleItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -122,7 +122,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
+    public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundTag dataTag) {
         if (this.level().getDimensionKey() == MoCreatures.proxy.wyvernDimension) this.enablePersistence();
         return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
@@ -491,8 +491,8 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public ActionResultType getEntityInteractionResult(Player player, Hand hand) {
-        final ActionResultType tameResult = this.processTameInteract(player, hand);
+    public InteractionResult getEntityInteractionResult(Player player, InteractionHand hand) {
+        final InteractionResult tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -509,7 +509,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
         if (!stack.isEmpty() && !getIsRideable() && getAge() > 90 && this.getIsTamed() && (stack.getItem() instanceof ItemSaddle)) {
             if (!player.capabilities.isCreativeMode) stack.shrink(1);
             setRideable(true);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && this.getIsTamed() && getAge() > 90 && stack.getItem() == Items.IRON_HORSE_ARMOR) {
@@ -520,7 +520,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             setArmorType((byte) 1);
             if (!player.abilities.isCreativeMode) stack.shrink(1);
 
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && this.getIsTamed() && getAge() > 90 && stack.getItem() == Items.GOLDEN_HORSE_ARMOR) {
@@ -530,7 +530,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             dropArmor();
             setArmorType((byte) 2);
             if (!player.abilities.isCreativeMode) stack.shrink(1);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && this.getIsTamed() && getAge() > 90 && stack.getItem() == Items.DIAMOND_HORSE_ARMOR) {
@@ -540,14 +540,14 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             dropArmor();
             setArmorType((byte) 3);
             if (!player.abilities.isCreativeMode) stack.shrink(1);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && getIsTamed() && getAge() > 90 && !getIsChested() && (stack.getItem() == Item.getItemFromBlock(Blocks.CHEST))) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             setIsChested(true);
             MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (getIsChested() && player.isSneaking()) {
@@ -557,7 +557,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             if (!this.level().isRemote) {
                 player.openContainer(this.localchest);
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && this.getIsGhost() && this.getIsTamed() && stack.getItem() == MoCItems.amuletghost) {
@@ -573,7 +573,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
                 this.removed = true;
             }
 
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
 
         }
 
@@ -593,7 +593,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
                 player.world.addEntity(entityegg);
                 entityegg.setMotion(entityegg.getMotion().add((this.level().rand.nextFloat() - this.level().rand.nextFloat()) * 0.3F, this.level().rand.nextFloat() * 0.05F, (this.level().rand.nextFloat() - this.level().rand.nextFloat()) * 0.3F));
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && this.transformCounter == 0 && !this.getIsGhost() && getTypeMoC() == 5 && (stack.getItem() == MoCItems.essenceundead) && getIsTamed()) {
@@ -607,7 +607,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             if (!this.level().isRemote) {
                 transform(6);
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && this.transformCounter == 0 && !this.getIsGhost() && getTypeMoC() == 5 && (stack.getItem() == MoCItems.essencelight) && getIsTamed()) {
@@ -621,7 +621,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             if (!this.level().isRemote) {
                 transform(7);
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && this.transformCounter == 0 && !this.getIsGhost() && getTypeMoC() == 5 && (stack.getItem() == MoCItems.essencedarkness) && getIsTamed()) {
@@ -635,7 +635,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             if (!this.level().isRemote) {
                 transform(8);
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (this.getIsRideable() && getAge() > 90 && (!this.getIsChested() || !player.isSneaking()) && !this.isBeingRidden()) {
@@ -645,7 +645,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
                 setSitting(false);
             }
 
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         return super.getEntityInteractionResult(player, hand);
@@ -789,7 +789,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }*/
 
     @Override
-    public void writeAdditional(CompoundNBT nbttagcompound) {
+    public void writeAdditional(CompoundTag nbttagcompound) {
         super.writeAdditional(nbttagcompound);
         nbttagcompound.putBoolean("Saddle", getIsRideable());
         nbttagcompound.putBoolean("Chested", getIsChested());
@@ -797,11 +797,11 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
         nbttagcompound.putBoolean("isSitting", getIsSitting());
         nbttagcompound.putBoolean("isGhost", getIsGhost());
         if (getIsChested() && this.localchest != null) {
-            ListNBT nbttaglist = new ListNBT();
+            ListTag nbttaglist = new ListTag();
             for (int i = 0; i < this.localchest.getSizeInventory(); i++) {
                 this.localstack = this.localchest.getStackInSlot(i);
                 if (!this.localstack.isEmpty()) {
-                    CompoundNBT nbttagcompound1 = new CompoundNBT();
+                    CompoundTag nbttagcompound1 = new CompoundTag();
                     nbttagcompound1.putByte("Slot", (byte) i);
                     this.localstack.write(nbttagcompound1);
                     nbttaglist.add(nbttagcompound1);
@@ -812,7 +812,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void readAdditional(CompoundNBT nbttagcompound) {
+    public void readAdditional(CompoundTag nbttagcompound) {
         super.readAdditional(nbttagcompound);
         setRideable(nbttagcompound.getBoolean("Saddle"));
         setIsChested(nbttagcompound.getBoolean("Chested"));
@@ -820,13 +820,13 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
         setSitting(nbttagcompound.getBoolean("isSitting"));
         setIsGhost(nbttagcompound.getBoolean("isGhost"));
         if (getIsChested()) {
-            ListNBT nbttaglist = nbttagcompound.getList("Items", 10);
+            ListTag nbttaglist = nbttagcompound.getList("Items", 10);
             this.localchest = new MoCAnimalChest("WyvernChest", MoCAnimalChest.Size.tiny);
             for (int i = 0; i < nbttaglist.size(); i++) {
-                CompoundNBT nbttagcompound1 = nbttaglist.getCompound(i);
+                CompoundTag nbttagcompound1 = nbttaglist.getCompound(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
                 if (j < this.localchest.getSizeInventory()) {
-                    this.localchest.setInventorySlotContents(j, ItemStack.read(nbttagcompound1));
+                    this.localchest.setInventorySlotContents(j, ItemStack.of(nbttagcompound1));
                 }
             }
         }

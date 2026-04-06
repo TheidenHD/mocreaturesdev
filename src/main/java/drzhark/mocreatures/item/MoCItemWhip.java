@@ -54,7 +54,7 @@ public class MoCItemWhip extends MoCItemSword {
             for (Entity entity : list) {
                 if (entity instanceof MoCEntityAnimal) {
                     MoCEntityAnimal animal = (MoCEntityAnimal) entity;
-                    if (MoCreatures.proxy.enableOwnership && animal.getOwnerId() != null && !player.getUniqueID().equals(animal.getOwnerId()) && !MoCTools.isThisPlayerAnOP(player)) {
+                    if (MoCreatures.proxy.enableOwnership && animal.getOwnerId() != null && !player.getUUID().equals(animal.getOwnerId()) && !MoCTools.isThisPlayerAnOP(player)) {
                         continue;
                     }
                 }
@@ -142,9 +142,9 @@ public class MoCItemWhip extends MoCItemSword {
                     }
                 }
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ActionResultType.FAIL;
+        return InteractionResult.FAIL;
     }
 
     @Override

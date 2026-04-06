@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.sounds.SoundEvents;
 
-public class MoCItemLitterBox extends MoCItem {
+public class MoCItemLitterBox extends Item {
 
     public MoCItemLitterBox(Item.Properties properties) {
         super(properties.stacksTo(16));

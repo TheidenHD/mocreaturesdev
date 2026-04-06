@@ -12,7 +12,7 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityCreature;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.IEntityLivingData;
 import net.minecraft.world.entity.SharedMonsterAttributes;
 import net.minecraft.world.entity.ai.*;
@@ -24,7 +24,7 @@ import net.minecraft.world.inventory.EntityEquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.loot.*;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.pathfinding.GroundPathNavigator;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.RegistryKey;
@@ -221,7 +221,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
     }
 
     static class AIAvoidWhenNasty extends EntityAIAvoidEntity<MoCEntityFilchLizard> {
-        public AIAvoidWhenNasty(EntityCreature theEntityIn, Class classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn) {
+        public AIAvoidWhenNasty(PathfinderMob theEntityIn, Class classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn) {
             super(theEntityIn, classToAvoidIn, avoidDistanceIn, farSpeedIn, nearSpeedIn);
         }
 

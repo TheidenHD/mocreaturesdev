@@ -17,7 +17,7 @@ import net.minecraftforge.common.ForgeMod;
 
 import java.util.UUID;
 
-public class MoCItemCrabClaw extends MoCItem {
+public class MoCItemCrabClaw extends Item {
 
     protected static final UUID REACH_DISTANCE_MODIFIER = UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF");
     protected static final UUID TOUGHNESS_MODIFIER = UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF");

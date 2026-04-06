@@ -139,7 +139,7 @@ public class MoCClassUpdater {
      * 
      * Old (1.16.5):
      * this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE))
-     * shouldExecute()
+     * canUse()
      * shouldContinueExecuting() 
      * startExecuting()
      * resetTask()

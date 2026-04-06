@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-public class MoCItemPetAmulet extends MoCItem {
+public class MoCItemPetAmulet extends Item {
 
     private String name = "";
     private float health;

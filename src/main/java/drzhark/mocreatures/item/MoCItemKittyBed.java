@@ -11,7 +11,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.sounds.SoundEvents;
 
-public class MoCItemKittyBed extends MoCItem {
+public class MoCItemKittyBed extends Item {
 
     private int sheetType;
 

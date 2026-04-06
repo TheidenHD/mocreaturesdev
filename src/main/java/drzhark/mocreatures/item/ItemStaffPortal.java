@@ -39,7 +39,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public class ItemStaffPortal extends MoCItem {
+public class ItemStaffPortal extends Item {
 
     private int portalPosX;
     private int portalPosY;

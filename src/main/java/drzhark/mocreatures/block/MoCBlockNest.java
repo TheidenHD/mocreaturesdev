@@ -16,18 +16,12 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class MoCBlockNest extends Block {
 
-    public MoCBlockNest() {
-        super(Material.GRASS, MapColor.WOOD);
-        this.setSoundType(SoundType.PLANT);
+    public MoCBlockNest(BlockBehaviour.Properties properties) {
+        super(properties);
     }
 
     @Override
     public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float distance) {
         entity.causeFallDamage(distance, 0.2F, level.damageSources().fall());
-    }
-
-    @Override
-    public int getFlammability(BlockState state, BlockGetter getter, BlockPos pos, Direction direction) {
-        return Blocks.HAY_BLOCK.getFlammability(state, getter, pos, direction);
     }
 }

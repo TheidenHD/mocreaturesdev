@@ -24,19 +24,18 @@ public class MoCItems {
     // Misc
     public static final RegistryObject<Item> HORSE_GUIDE = ITEMS.register("horseguide", () -> new ItemHorseGuide(new Properties().stacksTo(1)));
     public static final RegistryObject<Item> RECORD_SHUFFLE = ITEMS.register("recordshuffle", () -> new MoCItemRecord(15, MoCSoundEvents.MUSIC_DISC_SHUFFLING::get, new Properties().stacksTo(1).rarity(Rarity.RARE)));
-    public static final RegistryObject<Item> HORSE_SADDLE = ITEMS.register("horsesaddle", () -> new MoCItemHorseSaddle(new Properties()));
-    public static final RegistryObject<Item> SHARK_TEETH = ITEMS.register("sharkteeth", () -> new MoCItem(new Properties()));
-    public static final RegistryObject<Item> HAYSTACK = ITEMS.register("haystack", () -> new MoCItem(new Properties().stacksTo(16)));
+    public static final RegistryObject<Item> SHARK_TEETH = ITEMS.register("sharkteeth", () -> new Item(new Properties()));
+    public static final RegistryObject<Item> HAYSTACK = ITEMS.register("haystack", () -> new Item(new Properties().stacksTo(16)));
 
     public static final RegistryObject<Item> SUGAR_LUMP = ITEMS.register("sugarlump", () -> new MoCItemFood.Builder(new Properties(), 1, 0.1F, false, 12)
             .setPotionEffect(new MobEffectInstance(MobEffects.CONFUSION, 80, 0), 0.15F)
             .setPotionEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 80, 0), 1.0F).build());
 
     public static final RegistryObject<Item> MOC_EGG = ITEMS.register("mocegg", () -> new MoCItemEgg(new Properties()));
-    public static final RegistryObject<Item> BIGCAT_CLAW = ITEMS.register("bigcatclaw", () -> new MoCItem(new Properties()));
+    public static final RegistryObject<Item> BIGCAT_CLAW = ITEMS.register("bigcatclaw", () -> new Item(new Properties()));
     public static final RegistryObject<Item> WHIP = ITEMS.register("whip", () -> new MoCItemWhip(new Properties()));
     public static final RegistryObject<Item> STAFF_PORTAL = ITEMS.register("staffportal", () -> new ItemStaffPortal(new Properties()));
-    public static final RegistryObject<Item> MEDALLION = ITEMS.register("medallion", () -> new MoCItem(new Properties()));
+    public static final RegistryObject<Item> MEDALLION = ITEMS.register("medallion", () -> new Item(new Properties()));
     public static final RegistryObject<Item>[] KITTYBED = new RegistryObject[16];
     static {
         for (int i = 0; i < 16; i++) {
@@ -47,42 +46,42 @@ public class MoCItems {
         }
     }
     public static final RegistryObject<Item> LITTER_BOX = ITEMS.register("kittylitter", () -> new MoCItemLitterBox(new Properties()));
-    public static final RegistryObject<Item> WOOL_BALL = ITEMS.register("woolball", () -> new MoCItem(new Properties()));
-    public static final RegistryObject<Item> PET_FOOD = ITEMS.register("petfood", () -> new MoCItem(new Properties()));
-    public static final RegistryObject<Item> REPTILE_HIDE = ITEMS.register("reptilehide", () -> new MoCItem(new Properties()));
-    public static final RegistryObject<Item> FUR = ITEMS.register("fur", () -> new MoCItem(new Properties()));
-    public static final RegistryObject<Item> ESSENCE_DARKNESS = ITEMS.register("essencedarkness", () -> new MoCItem(new Properties()));
-    public static final RegistryObject<Item> ESSENCE_FIRE = ITEMS.register("essencefire", () -> new MoCItem(new Properties()));
-    public static final RegistryObject<Item> ESSENCE_UNDEAD = ITEMS.register("essenceundead", () -> new MoCItem(new Properties()));
-    public static final RegistryObject<Item> ESSENCE_LIGHT = ITEMS.register("essencelight", () -> new MoCItem(new Properties()));
+    public static final RegistryObject<Item> WOOL_BALL = ITEMS.register("woolball", () -> new Item(new Properties()));
+    public static final RegistryObject<Item> PET_FOOD = ITEMS.register("petfood", () -> new Item(new Properties()));
+    public static final RegistryObject<Item> REPTILE_HIDE = ITEMS.register("reptilehide", () -> new Item(new Properties()));
+    public static final RegistryObject<Item> FUR = ITEMS.register("fur", () -> new Item(new Properties()));
+    public static final RegistryObject<Item> ESSENCE_DARKNESS = ITEMS.register("essencedarkness", () -> new Item(new Properties()));
+    public static final RegistryObject<Item> ESSENCE_FIRE = ITEMS.register("essencefire", () -> new Item(new Properties()));
+    public static final RegistryObject<Item> ESSENCE_UNDEAD = ITEMS.register("essenceundead", () -> new Item(new Properties()));
+    public static final RegistryObject<Item> ESSENCE_LIGHT = ITEMS.register("essencelight", () -> new Item(new Properties()));
 
     // Materials & Drops
-    public static final RegistryObject<Item> HEARTDARKNESS = ITEMS.register("heartdarkness", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> HEARTFIRE = ITEMS.register("heartfire", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> HEARTUNDEAD = ITEMS.register("heartundead", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> UNICORNHORN = ITEMS.register("unicornhorn", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> HORSEARMORCRYSTAL = ITEMS.register("horsearmorcrystal", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> ANIMALHIDE = ITEMS.register("hide", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> CHITINCAVE = ITEMS.register("chitinblack", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> CHITINFROST = ITEMS.register("chitinfrost", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> CHITINNETHER = ITEMS.register("chitinnether", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> CHITINUNDEAD = ITEMS.register("chitinundead", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> CHITIN = ITEMS.register("chitin", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> TUSKSWOOD = ITEMS.register("tuskswood", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> TUSKSIRON = ITEMS.register("tusksiron", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> TUSKSDIAMOND = ITEMS.register("tusksdiamond", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> ELEPHANTHARNESS = ITEMS.register("elephantharness", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> ELEPHANTCHEST = ITEMS.register("elephantchest", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> ELEPHANTGARMENT = ITEMS.register("elephantgarment", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> ELEPHANTHOWDAH = ITEMS.register("elephanthowdah", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> MAMMOTHPLATFORM = ITEMS.register("mammothplatform", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> SCROLLFREEDOM = ITEMS.register("scrolloffreedom", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> SCROLLOFSALE = ITEMS.register("scrollofsale", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> SCROLLOFOWNER = ITEMS.register("scrollofowner", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> ANCIENTSILVERSCRAP = ITEMS.register("ancientsilverscrap", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> ANCIENTSILVERINGOT = ITEMS.register("ancientsilveringot", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> ANCIENTSILVERNUGGET = ITEMS.register("ancientsilvernugget", () -> new MoCItem(new Item.Properties()));
-    public static final RegistryObject<Item> FIRESTONECHUNK = ITEMS.register("firestonechunk", () -> new MoCItem(new Item.Properties()));
+    public static final RegistryObject<Item> HEARTDARKNESS = ITEMS.register("heartdarkness", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> HEARTFIRE = ITEMS.register("heartfire", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> HEARTUNDEAD = ITEMS.register("heartundead", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> UNICORNHORN = ITEMS.register("unicornhorn", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> HORSEARMORCRYSTAL = ITEMS.register("horsearmorcrystal", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> ANIMALHIDE = ITEMS.register("hide", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> CHITINCAVE = ITEMS.register("chitinblack", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> CHITINFROST = ITEMS.register("chitinfrost", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> CHITINNETHER = ITEMS.register("chitinnether", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> CHITINUNDEAD = ITEMS.register("chitinundead", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> CHITIN = ITEMS.register("chitin", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> TUSKSWOOD = ITEMS.register("tuskswood", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> TUSKSIRON = ITEMS.register("tusksiron", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> TUSKSDIAMOND = ITEMS.register("tusksdiamond", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> ELEPHANTHARNESS = ITEMS.register("elephantharness", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> ELEPHANTCHEST = ITEMS.register("elephantchest", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> ELEPHANTGARMENT = ITEMS.register("elephantgarment", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> ELEPHANTHOWDAH = ITEMS.register("elephanthowdah", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> MAMMOTHPLATFORM = ITEMS.register("mammothplatform", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> SCROLLFREEDOM = ITEMS.register("scrolloffreedom", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> SCROLLOFSALE = ITEMS.register("scrollofsale", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> SCROLLOFOWNER = ITEMS.register("scrollofowner", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> ANCIENTSILVERSCRAP = ITEMS.register("ancientsilverscrap", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> ANCIENTSILVERINGOT = ITEMS.register("ancientsilveringot", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> ANCIENTSILVERNUGGET = ITEMS.register("ancientsilvernugget", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> FIRESTONECHUNK = ITEMS.register("firestonechunk", () -> new Item(new Item.Properties()));
 
     // Amulets
     public static final RegistryObject<Item> AMULET_BONE = ITEMS.register("amuletbone", () -> new MoCItemHorseAmulet(new Item.Properties()));

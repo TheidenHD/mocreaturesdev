@@ -23,11 +23,7 @@ public class MoCBlockTallGrass extends TallGrassBlock {
 
     public MoCBlockTallGrass(BlockBehaviour.Properties properties) {
         super(properties
-                .noCollission()
-                .instabreak()
-                .sound(SoundType.GRASS)
-                .offsetType(BlockBehaviour.OffsetType.XYZ)
-                .pushReaction(PushReaction.DESTROY));
+                );
     }
 
     @Override

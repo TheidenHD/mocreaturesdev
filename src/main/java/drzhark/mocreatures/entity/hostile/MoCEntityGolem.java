@@ -24,8 +24,8 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.animal.IronGolemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -399,13 +399,13 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
     }
 
     @Override
-    public void writeAdditional(CompoundNBT nbttagcompound) {
+    public void writeAdditional(CompoundTag nbttagcompound) {
         super.writeAdditional(nbttagcompound);
         nbttagcompound.putInt("golemState", getGolemState());
-        ListNBT cubeLists = new ListNBT();
+        ListTag cubeLists = new ListTag();
 
         for (int i = 0; i < 23; i++) {
-            CompoundNBT nbttag = new CompoundNBT();
+            CompoundTag nbttag = new CompoundTag();
             nbttag.putByte("Slot", this.golemCubes[i]);
             cubeLists.add(nbttag);
         }
@@ -413,12 +413,12 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
     }
 
     @Override
-    public void readAdditional(CompoundNBT nbttagcompound) {
+    public void readAdditional(CompoundTag nbttagcompound) {
         super.readAdditional(nbttagcompound);
         setGolemState(nbttagcompound.getInt("golemState"));
-        ListNBT nbttaglist = nbttagcompound.getList("GolemBlocks", 10);
+        ListTag nbttaglist = nbttagcompound.getList("GolemBlocks", 10);
         for (int i = 0; i < 23; i++) {
-            CompoundNBT var4 = nbttaglist.getCompound(i);
+            CompoundTag var4 = nbttaglist.getCompound(i);
             this.golemCubes[i] = var4.getByte("Slot");
         }
     }
@@ -765,7 +765,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
     }
 
     public static boolean getCanSpawnHere(EntityType<? extends MoCEntityMob> type, IServerWorld world, SpawnReason reason, BlockPos pos, Random randomIn) {
-        return (MoCEntityMob.getCanSpawnHere(type, world, reason, pos, randomIn) && world.canBlockSeeSky(new BlockPos(MathHelper.floor(pos.getX()), MathHelper.floor(pos.getY()), MathHelper.floor(pos.getZ()))) && (pos.getY() > 50D));
+        return (MoCEntityMob.getCanSpawnHere(type, world, reason, pos, randomIn) && world.canBlockSeeSky(new BlockPos(Mth.floor(pos.getX()), Mth.floor(pos.getY()), Mth.floor(pos.getZ()))) && (pos.getY() > 50D));
     }
 
     protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
@@ -796,9 +796,9 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
         }
 
         @Override
-        public boolean shouldExecute() {
+        public boolean canUse() {
             float f = this.goalOwner.getBrightness();
-            return f < 0.5F && super.shouldExecute();
+            return f < 0.5F && super.canUse();
         }
     }
 }

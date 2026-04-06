@@ -20,8 +20,8 @@ import net.minecraft.world.entity.player.PlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -138,7 +138,7 @@ public class MoCEntityTameableAquatic extends MoCEntityAquatic implements IMoCTa
         }
 
         //if the player interacting is not the owner, do nothing!
-        if (MoCreatures.proxy.enableOwnership && this.getOwnerId() != null && !player.getUniqueID().equals(this.getOwnerId())) {
+        if (MoCreatures.proxy.enableOwnership && this.getOwnerId() != null && !player.getUUID().equals(this.getOwnerId())) {
             if (!this.level().isRemote) {
                 ITextComponent message = new TextComponentTranslation("msg.mocreatures.foreignpet");
                 message.getStyle().setColor(TextFormatting.RED);

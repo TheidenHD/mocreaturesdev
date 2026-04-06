@@ -19,13 +19,13 @@ import javax.annotation.Nullable;
 public class WyvwoodTreeGrower extends AbstractTreeGrower {
     
     private static final ResourceKey<ConfiguredFeature<?, ?>> WYVWOOD_DARK_OAK = 
-            ResourceKey.create(Registries.CONFIGURED_FEATURE, new ResourceLocation("mocreatures:wyvwood_dark_oak"));
+            ResourceKey.create(Registries.CONFIGURED_FEATURE, ResourceLocation.parse("mocreatures:wyvwood_dark_oak"));
     private static final ResourceKey<ConfiguredFeature<?, ?>> WYVWOOD_LARGE_DARK_OAK = 
-            ResourceKey.create(Registries.CONFIGURED_FEATURE, new ResourceLocation("mocreatures:wyvwood_large_dark_oak"));
+            ResourceKey.create(Registries.CONFIGURED_FEATURE, ResourceLocation.parse("mocreatures:wyvwood_large_dark_oak"));
     private static final ResourceKey<ConfiguredFeature<?, ?>> WYVWOOD_SPRUCE = 
-            ResourceKey.create(Registries.CONFIGURED_FEATURE, new ResourceLocation("mocreatures:wyvwood_spruce"));
+            ResourceKey.create(Registries.CONFIGURED_FEATURE, ResourceLocation.parse("mocreatures:wyvwood_spruce"));
     private static final ResourceKey<ConfiguredFeature<?, ?>> WYVWOOD_LARGE_SPRUCE = 
-            ResourceKey.create(Registries.CONFIGURED_FEATURE, new ResourceLocation("mocreatures:wyvwood_large_spruce"));
+            ResourceKey.create(Registries.CONFIGURED_FEATURE, ResourceLocation.parse("mocreatures:wyvwood_large_spruce"));
 
     @Nullable
     @Override

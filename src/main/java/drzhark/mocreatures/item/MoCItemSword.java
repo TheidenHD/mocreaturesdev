@@ -2,6 +2,9 @@ package drzhark.mocreatures.item;
 
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -41,7 +44,7 @@ public class MoCItemSword extends SwordItem {
 
             switch (this.specialWeaponType) {
                 case 1: // Poison 2
-                    target.addPotionEffect(new PotionEffect(MobEffects.POISON, (timer * 20) + poisonous, 1));
+                    target.addEffect(new MobEffectInstance(MobEffects.POISON, (timer * 20) + poisonous, 1));
                     break;
                 case 2: // Slowness
                     target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, timer, 0));
