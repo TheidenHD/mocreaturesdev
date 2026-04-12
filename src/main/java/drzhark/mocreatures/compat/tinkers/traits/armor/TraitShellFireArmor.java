@@ -5,7 +5,7 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.MobEffectInstance;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -35,7 +35,7 @@ public class TraitShellFireArmor extends AbstractArmorTrait {
                 source.getTrueSource().setFire(15);
 
                 if (player instanceof Player) {
-                    player.addPotionEffect(new PotionEffect(playerEffect, 30 * 20, 0));
+                    player.addPotionEffect(new MobEffectInstance(playerEffect, 30 * 20, 0));
                     TinkerTools.proxy.spawnEffectParticle(ParticleEffect.Type.HEART_ARMOR, player, (int) damage);
                 }
             }

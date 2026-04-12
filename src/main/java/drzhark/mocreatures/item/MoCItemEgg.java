@@ -26,71 +26,68 @@ public class MoCItemEgg extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(Level world, Player player, InteractionHand hand) {
-        final ItemStack stack = player.getHeldItem(hand);
-        if (!player.abilities.isCreativeMode) stack.shrink(1);
-        if (!world.isRemote && player.isOnGround()) {
-            int i = 0;
-            if (i == 30) {
-                i = 31; // For ostrich eggs. Placed eggs become stolen eggs.
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (!player.isCreative()) {
+            stack.shrink(1);
+        }
+
+        if (!level.isClientSide && player.onGround()) {
+            CompoundTag tag = stack.getOrCreateTag();
+            int eggType = tag.getInt("EggType");
+            if (eggType == 30) eggType = 31; // Ostrich => Stolen Ostrich
+
+            MoCEntityEgg entityEgg = MoCEntities.EGG.get().create(level);
+            if (entityEgg != null) {
+                entityEgg.setEggType(eggType);
+                entityEgg.setPos(player.getX(), player.getY(), player.getZ());
+                entityEgg.setDeltaMovement(
+                        (level.random.nextFloat() - level.random.nextFloat()) * 0.3F,
+                        level.random.nextFloat() * 0.05F,
+                        (level.random.nextFloat() - level.random.nextFloat()) * 0.3F
+                );
+                level.addFreshEntity(entityEgg);
             }
-            MoCEntityEgg entityEgg = MoCEntities.EGG.create(world);
-            assert entityEgg != null;
-            entityEgg.setEggType(eggType);
-            entityEgg.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
-            player.world.addEntity(entityEgg);
+        }
+        return InteractionResultHolder.success(stack);
+    }
 
-            entityEgg.setMotion(entityEgg.getMotion().add((world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F, world.rand.nextFloat() * 0.05F, (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F));
+    public void fillItemCategory(CreativeModeTab.Output output) {
+        // Add all the egg variants to the creative tab
+        addRange(output, 0, 10);   // Fishies
+        addSingle(output, 11);     // Shark
+        addRange(output, 21, 28);  // Snakes
+        addList(output, 30, 31);   // Ostriches
+        addSingle(output, 33);     // Komodo
+        addRange(output, 41, 45);  // Scorpions
+        addRange(output, 50, 61);  // Wyverns
+        addRange(output, 62, 66);  // Manticores
+        addRange(output, 70, 72);  // Medium Fish
+        addRange(output, 80, 86);  // Small Fish
+        addSingle(output, 90);     // Piranha
+    }
 
-            System.out.println("[DEBUG] Placing egg with type: " + eggType);
-        }
+    private void addSingle(CreativeModeTab.Output list, int type) {
+        ItemStack stack = new ItemStack(this);
+        stack.getOrCreateTag().putInt("EggType", type);
+        list.accept(stack);
+    }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-        if (!this.isInCreativeTab(tab)) {
-            return;
+    private void addRange(CreativeModeTab.Output list, int start, int end) {
+        for (int i = start; i <= end; i++) {
+            addSingle(list, i);
         }
+    }
 
-        for (int i = 0; i < 11; i++) { // Fishies
-            items.add(new ItemStack(this, 1, i));
-        }        
-
-        items.add(new ItemStack(this, 1, 11)); // Shark
-        
-        for (int i = 21; i < 29; i++) { // Snakes
-            items.add(new ItemStack(this, 1, i));
+    private void addList(CreativeModeTab.Output list, int... values) {
+        for (int value : values) {
+            addSingle(list, value);
         }
-        
-        items.add(new ItemStack(this, 1, 30)); // Ostrich
-        items.add(new ItemStack(this, 1, 31)); // Ostrich (Stolen)
-        items.add(new ItemStack(this, 1, 33)); // Komodo Dragon
-        
-        for (int i = 41; i < 46; i++) { // Scorpions
-            items.add(new ItemStack(this, 1, i));
-        }
-        
-        for (int i = 50; i < 62; i++) { // Wyverns
-            items.add(new ItemStack(this, 1, i));
-        }
-        
-        for (int i = 62; i < 67; i++) { // Manticores
-            items.add(new ItemStack(this, 1, i));
-        }
-        
-        for (int i = 70; i < 73; i++) { // Medium Fish
-            items.add(new ItemStack(this, 1, i));
-        }
-        
-        for (int i = 80; i < 87; i++) { // Small Fish
-            items.add(new ItemStack(this, 1, i));
-        }
-        
-        items.add(new ItemStack(this, 1, 90)); // Piranha
     }
 
     @Override
-    public String getTranslationKey(ItemStack itemstack) {
-        return getTranslationKey() + "." + itemstack.getItemDamage();
-    }
+        public String getDescriptionId(ItemStack stack) {
+            int eggType = stack.getOrCreateTag().getInt("EggType");
+            return super.getDescriptionId(stack) + "." + eggType;
+        }
 }

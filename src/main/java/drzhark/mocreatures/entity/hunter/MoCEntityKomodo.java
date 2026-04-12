@@ -205,7 +205,7 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
             return tameResult;
         }
 
-        final ItemStack stack = player.getHeldItem(hand);
+        final ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty() && getIsTamed() && (getAge() > 90 || getIsAdult()) && !getIsRideable()
                 && (stack.getItem() instanceof ItemSaddle)) {
             if (!player.capabilities.isCreativeMode) stack.shrink(1);

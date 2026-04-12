@@ -134,9 +134,9 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(Player player, EnumHand hand) {
+    public boolean processInteract(Player player, InteractionHand hand) {
         // Only process one hand to prevent double interactions
-        if (hand != EnumHand.MAIN_HAND) {
+        if (hand != InteractionHand.MAIN_HAND) {
             return false;
         }
         final Boolean tameResult = this.processTameInteract(player, hand);

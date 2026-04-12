@@ -1268,7 +1268,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
         if (this.getTypeMoC() == 60 && !getIsTamed() && isZebraRunning()) return InteractionResult.FAIL;
 
-        final ItemStack stack = player.getHeldItem(hand);
+        final ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty() && !getIsRideable() && (stack.getItem() instanceof ItemSaddle)) {
             if (!player.capabilities.isCreativeMode) stack.shrink(1);
             setRideable(true);
@@ -1310,7 +1310,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         // transform to undead, or heal undead horse
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.essenceundead) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
-            if (stack.isEmpty()) player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+            if (stack.isEmpty()) player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
             else player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
 
             if (this.isUndead() || getIsGhost()) this.setHealth(getMaxHealth());
@@ -1336,7 +1336,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         // to transform to nightmares: only pure breeds
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.essencefire) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
-            if (stack.isEmpty()) player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+            if (stack.isEmpty()) player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
             else player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
 
             if (this.isNightmare()) {
@@ -1354,7 +1354,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         // transform to dark pegasus
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.essencedarkness) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
-            if (stack.isEmpty()) player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+            if (stack.isEmpty()) player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
             else player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
 
             if (this.getTypeMoC() == 32) {
@@ -1376,7 +1376,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.essencelight) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (stack.isEmpty()) {
-                player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
             } else {
                 player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
             }
@@ -1406,22 +1406,22 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
         if (!stack.isEmpty() && this.isAmuletHorse() && getIsTamed()) {
             if ((this.getTypeMoC() == 26 || this.getTypeMoC() == 27 || this.getTypeMoC() == 28) && stack.getItem() == MoCItems.amuletbone) {
-                player.setHeldItem(hand, ItemStack.EMPTY);
+                player.setItemInHand(hand, ItemStack.EMPTY);
                 vanishHorse();
                 return InteractionResult.SUCCESS;
             }
             if ((this.getTypeMoC() > 47 && this.getTypeMoC() < 60) && stack.getItem() == MoCItems.amuletfairy) {
-                player.setHeldItem(hand, ItemStack.EMPTY);
+                player.setItemInHand(hand, ItemStack.EMPTY);
                 vanishHorse();
                 return InteractionResult.SUCCESS;
             }
             if ((this.getTypeMoC() == 39 || this.getTypeMoC() == 40) && (stack.getItem() == MoCItems.amuletpegasus)) {
-                player.setHeldItem(hand, ItemStack.EMPTY);
+                player.setItemInHand(hand, ItemStack.EMPTY);
                 vanishHorse();
                 return InteractionResult.SUCCESS;
             }
             if ((this.getTypeMoC() == 21 || this.getTypeMoC() == 22) && (stack.getItem() == MoCItems.amuletghost)) {
-                player.setHeldItem(hand, ItemStack.EMPTY);
+                player.setItemInHand(hand, ItemStack.EMPTY);
                 vanishHorse();
                 return InteractionResult.SUCCESS;
             }
@@ -1485,7 +1485,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
         // zebra easter egg
         if (!stack.isEmpty() && (this.getTypeMoC() == 60) && stack.getItem() instanceof MusicDiscItem && MoCreatures.proxy.easterEggs) {
-            player.setHeldItem(hand, ItemStack.EMPTY);
+            player.setItemInHand(hand, ItemStack.EMPTY);
             if (!this.level().isRemote) {
                 ItemEntity entityitem1 = new ItemEntity(this.level(), this.getPosX(), this.getPosY(), this.getPosZ(), new ItemStack(MoCItems.recordshuffle, 1));
                 entityitem1.setPickupDelay(20);
@@ -1569,9 +1569,9 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             if (!getIsAdult() || isMagicHorse() || isUndead()) return InteractionResult.FAIL;
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (stack.getItem() == Items.MUSHROOM_STEW) {
-                if (stack.isEmpty()) player.setHeldItem(hand, new ItemStack(Items.BOWL));
+                if (stack.isEmpty()) player.setItemInHand(hand, new ItemStack(Items.BOWL));
                 else player.inventory.addItemStackToInventory(new ItemStack(Items.BOWL));
-            } else if (stack.isEmpty()) player.setHeldItem(hand, ItemStack.EMPTY);
+            } else if (stack.isEmpty()) player.setItemInHand(hand, ItemStack.EMPTY);
             this.eatenPumpkin = true;
             this.setHealth(getMaxHealth());
             eatingHorse();

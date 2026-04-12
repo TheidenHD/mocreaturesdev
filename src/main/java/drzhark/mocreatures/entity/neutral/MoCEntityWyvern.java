@@ -18,7 +18,7 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -497,7 +497,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             return tameResult;
         }
 
-        final ItemStack stack = player.getHeldItem(hand);
+        final ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty() && (stack.getItem() == MoCItems.whip) && getIsTamed() && (!this.isBeingRidden())) {
             setSitting(!getIsSitting());
             setIsJumping(false);
@@ -562,7 +562,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
 
         if (!stack.isEmpty() && this.getIsGhost() && this.getIsTamed() && stack.getItem() == MoCItems.amuletghost) {
 
-            player.setHeldItem(hand, ItemStack.EMPTY);
+            player.setItemInHand(hand, ItemStack.EMPTY);
             if (!this.level().isRemote) {
                 MoCPetData petData = MoCreatures.instance.mapData.getPetData(this.getOwnerId());
                 if (petData != null) {
@@ -580,7 +580,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
         if (!stack.isEmpty() && !this.getIsGhost() && (stack.getItem() == MoCItems.essencelight) && getIsTamed() && getAge() > 90 && getTypeMoC() < 5) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (stack.isEmpty()) {
-                player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
             } else {
                 player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
             }
@@ -599,7 +599,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
         if (!stack.isEmpty() && this.transformCounter == 0 && !this.getIsGhost() && getTypeMoC() == 5 && (stack.getItem() == MoCItems.essenceundead) && getIsTamed()) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (stack.isEmpty()) {
-                player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
             } else {
                 player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
             }
@@ -613,7 +613,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
         if (!stack.isEmpty() && this.transformCounter == 0 && !this.getIsGhost() && getTypeMoC() == 5 && (stack.getItem() == MoCItems.essencelight) && getIsTamed()) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (stack.isEmpty()) {
-                player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
             } else {
                 player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
             }
@@ -627,7 +627,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
         if (!stack.isEmpty() && this.transformCounter == 0 && !this.getIsGhost() && getTypeMoC() == 5 && (stack.getItem() == MoCItems.essencedarkness) && getIsTamed()) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (stack.isEmpty()) {
-                player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
             } else {
                 player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
             }

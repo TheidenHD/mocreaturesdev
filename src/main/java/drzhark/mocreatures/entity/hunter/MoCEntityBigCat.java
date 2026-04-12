@@ -432,7 +432,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
             return tameResult;
         }
 
-        final ItemStack stack = player.getHeldItem(hand);
+        final ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty() && !getIsTamed() && getHasEaten() && !getIsAdult() && (stack.getItem() == MoCItems.medallion)) {
             if (!this.level().isRemote) {
                 setHasAmulet(true);
@@ -474,7 +474,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
 
         if (!stack.isEmpty() && this.getIsGhost() && this.getIsTamed() && stack.getItem() == MoCItems.amuletghost) {
 
-            player.setHeldItem(hand, ItemStack.EMPTY);
+            player.setItemInHand(hand, ItemStack.EMPTY);
             if (!this.level().isRemote) {
                 MoCPetData petData = MoCreatures.instance.mapData.getPetData(this.getOwnerId());
                 if (petData != null) {

@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.InteractionHand;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.relauncher.Side;
@@ -31,8 +31,8 @@ public class MoCItemPetAmuletNew extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(Level world, Player player, EnumHand hand) {
-        ItemStack stack = player.getHeldItem(hand);
+    public ActionResult<ItemStack> onItemRightClick(Level world, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
         if (!world.isRemote && stack.hasTagCompound()) {
             Entity entity = EntityList.createEntityFromNBT(stack.getTagCompound(), world);
             if (entity != null) {
@@ -50,7 +50,7 @@ public class MoCItemPetAmuletNew extends Item {
     }
 
     @Override
-    public boolean itemInteractionForEntity(ItemStack stack, Player player, EntityLivingBase entity, EnumHand hand) {
+    public boolean itemInteractionForEntity(ItemStack stack, Player player, EntityLivingBase entity, InteractionHand hand) {
         if (!entity.world.isRemote && !stack.hasTagCompound()/* && entity.hasCustomName()*/) {
             CompoundTag entityNBT = new CompoundTag();
             entity.writeToNBT(entityNBT);

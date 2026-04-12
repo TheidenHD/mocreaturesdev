@@ -6,7 +6,7 @@ import net.minecraft.world.entity.EntityLivingBase;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.MobEffectInstance;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -37,10 +37,10 @@ public class TraitShellEffectArmor extends AbstractArmorTrait {
 
             // Inflict negative effect on the target (15 seconds) and inflict positive effect on the wielder (30 seconds)
             if (!player.world.isRemote) {
-                ((EntityLivingBase) source.getTrueSource()).addPotionEffect(new PotionEffect(targetEffect, 15 * 20, amplifier));
+                ((EntityLivingBase) source.getTrueSource()).addPotionEffect(new MobEffectInstance(targetEffect, 15 * 20, amplifier));
 
                 if (player instanceof Player) {
-                    player.addPotionEffect(new PotionEffect(playerEffect, 30 * 20, amplifier));
+                    player.addPotionEffect(new MobEffectInstance(playerEffect, 30 * 20, amplifier));
                     TinkerTools.proxy.spawnEffectParticle(ParticleEffect.Type.HEART_ARMOR, player, (int) damage);
                 }
             }

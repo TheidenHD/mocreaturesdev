@@ -3,6 +3,7 @@ package drzhark.mocreatures.item;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -37,10 +38,10 @@ public class MoCItemSword extends SwordItem {
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (MoCreatures.proxy.weaponEffects) {
-            EnumHand hand = attacker.getUsedItemHand() == null ? EnumHand.MAIN_HAND : attacker.getUsedItemHand();
+            InteractionHand hand = attacker.getUsedItemHand() == null ? InteractionHand.MAIN_HAND : attacker.getUsedItemHand();
             int timer = 8; // In seconds
             int fire_aspect = 4 * EnchantmentHelper.getFireAspect(attacker); // Fire Aspect
-            int poisonous = 4 * EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByLocation("mod_lavacow:poisonous"), attacker.getHeldItem(hand)); // Poisonous (Fish's Undead Rising)
+            int poisonous = 4 * EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByLocation("mod_lavacow:poisonous"), attacker.getItemInHand(hand)); // Poisonous (Fish's Undead Rising)
 
             switch (this.specialWeaponType) {
                 case 1: // Poison 2

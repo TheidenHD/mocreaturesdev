@@ -9,7 +9,7 @@ import drzhark.mocreatures.dimension.worldgen.MoCWorldGenTower;
 import drzhark.mocreatures.init.MoCBlocks;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
@@ -35,10 +35,10 @@ import java.util.List;
 import java.util.Random;
 
 public class MoCChunkGeneratorWyvernLair implements IChunkGenerator {
-    protected static final IBlockState WYVERN_STONE = MoCBlocks.wyvstone.getDefaultState();
-    protected static final IBlockState WYVERN_DIRT = MoCBlocks.wyvdirt.getDefaultState();
-    protected static final IBlockState WYVERN_GRASS = MoCBlocks.wyvgrass.getDefaultState();
-    protected static final IBlockState AIR = Blocks.AIR.getDefaultState();
+    protected static final BlockState WYVERN_STONE = MoCBlocks.wyvstone.getDefaultState();
+    protected static final BlockState WYVERN_DIRT = MoCBlocks.wyvdirt.getDefaultState();
+    protected static final BlockState WYVERN_GRASS = MoCBlocks.wyvgrass.getDefaultState();
+    protected static final BlockState AIR = Blocks.AIR.getDefaultState();
     /**
      * RNG.
      */
@@ -136,7 +136,7 @@ public class MoCChunkGeneratorWyvernLair implements IChunkGenerator {
                             double d16 = (d11 - d10) * 0.125D;
 
                             for (int j2 = 0; j2 < 8; ++j2) {
-                                IBlockState iblockstate = AIR;
+                                BlockState iblockstate = AIR;
 
                                 if (d15 > 0.0D) {
                                     iblockstate = WYVERN_STONE;
@@ -171,7 +171,7 @@ public class MoCChunkGeneratorWyvernLair implements IChunkGenerator {
                 int k = -1;
 
                 for (int l = 127; l >= 0; --l) {
-                    IBlockState iblockstate2 = primer.getBlockState(i, l, j);
+                    BlockState iblockstate2 = primer.getBlockState(i, l, j);
 
                     if (iblockstate2.getMaterial() == Material.AIR) {
                         k = -1;

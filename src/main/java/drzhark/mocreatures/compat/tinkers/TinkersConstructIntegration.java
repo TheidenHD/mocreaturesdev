@@ -3,7 +3,7 @@ package drzhark.mocreatures.compat.tinkers;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.compat.tinkers.traits.*;
 import drzhark.mocreatures.init.MoCItems;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.init.MobEffects;
@@ -191,7 +191,7 @@ public class TinkersConstructIntegration {
                 ModelLoader.setCustomModelResourceLocation(itemBlock, 0, new ModelResourceLocation(itemBlock.getRegistryName(), "normal"));
                 ModelLoader.setCustomStateMapper(itemBlock.getBlock(), new StateMapperBase() {
                     @Override
-                    public ModelResourceLocation getModelResourceLocation(IBlockState state) {
+                    public ModelResourceLocation getModelResourceLocation(BlockState state) {
                         return new ModelResourceLocation(itemBlock.getRegistryName(), "normal");
                     }
                 });

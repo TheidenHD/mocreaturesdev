@@ -166,7 +166,7 @@ public class MoCEntityTameableAquatic extends MoCEntityAquatic implements IMoCTa
             return InteractionResult.PASS;
         }
 
-        final ItemStack stack = player.getHeldItem(hand);
+        final ItemStack stack = player.getItemInHand(hand);
         //if the player interacting is not the owner, do nothing!
         if (MoCreatures.proxy.enableOwnership && getOwnerId() != null
                 && !player.getUUID().equals(this.getOwnerId()) && !MoCTools.isThisPlayerAnOP((ServerPlayer) player)) {

@@ -3,14 +3,14 @@ package drzhark.mocreatures.item;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
@@ -37,20 +37,20 @@ public class MoCItemAxe extends AxeItem {
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (MoCreatures.proxy.weaponEffects) {
-            EnumHand hand = attacker.getActiveHand() == null ? EnumHand.MAIN_HAND : attacker.getActiveHand();
+            InteractionHand hand = attacker.getUsedItemHand() == null ? InteractionHand.MAIN_HAND : attacker.getUsedItemHand();
             int timer = 10; // In seconds
-            int fire_aspect = 5 * EnchantmentHelper.getFireAspectModifier(attacker); // Fire Aspect
-            int poisonous = 5 * EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByLocation("mod_lavacow:poisonous"), attacker.getHeldItem(hand)); // Poisonous (Fish's Undead Rising)
+            int fire_aspect = 5 * EnchantmentHelper.getFireAspect(attacker); // Fire Aspect
+            //int poisonous = 5 * EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByLocation("mod_lavacow:poisonous"), attacker.getItemInHand(hand)); // Poisonous (Fish's Undead Rising)
 
             switch (this.specialWeaponType) {
                 case 1: // Poison 2
-                    target.addPotionEffect(new PotionEffect(MobEffects.POISON, (timer * 20) + poisonous, 1));
+                    target.addEffect(new MobEffectInstance(MobEffects.POISON, (timer * 20), 1));
                     break;
                 case 2: // Slowness
                     target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, timer * 20, 0));
                     break;
                 case 3: // Fire
-                    target.setFire(timer + fire_aspect);
+                    target.setSecondsOnFire(timer + fire_aspect);
                     break;
                 case 4: // Weakness or Nausea
                     if (target instanceof Player) {
@@ -71,32 +71,23 @@ public class MoCItemAxe extends AxeItem {
             }
         }
 
-        stack.damageItem(1, attacker);
-        return true;
+        return super.hurtEnemy(stack, target, attacker);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
         if (MoCreatures.proxy.weaponEffects) {
-            switch (this.specialWeaponType) {
-                case 1: // Poison 2
-                    tooltip.add(TextFormatting.BLUE + I18n.format("info." + MoCConstants.MOD_ID + ".sting_weapon_dirt", 10));
-                    break;
-                case 2: // Slowness
-                    tooltip.add(TextFormatting.BLUE + I18n.format("info." + MoCConstants.MOD_ID + ".sting_weapon_frost", 10));
-                    break;
-                case 3: // Fire
-                    tooltip.add(TextFormatting.BLUE + I18n.format("info." + MoCConstants.MOD_ID + ".sting_weapon_fire", 10));
-                    break;
-                case 4: // Weakness (Nausea for players)
-                    tooltip.add(TextFormatting.BLUE + I18n.format("info." + MoCConstants.MOD_ID + ".sting_weapon_cave", 10));
-                    break;
-                case 5: // Wither (Blindness for players)
-                    tooltip.add(TextFormatting.BLUE + I18n.format("info." + MoCConstants.MOD_ID + ".sting_weapon_undead", 10));
-                    break;
-                default:
-                    break;
+            String key = switch (this.specialWeaponType) {
+                case 1 -> "info.mocreatures.stingaxe1";
+                case 2 -> "info.mocreatures.stingaxe2";
+                case 3 -> "info.mocreatures.stingaxe3";
+                case 4 -> "info.mocreatures.stingaxe4";
+                case 5 -> "info.mocreatures.stingaxe5";
+                default -> null;
+            };
+            if (key != null) {
+                tooltip.add(Component.translatable(key).withStyle(ChatFormatting.BLUE));
             }
         }
     }

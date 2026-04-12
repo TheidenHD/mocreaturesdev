@@ -13,6 +13,7 @@ import drzhark.mocreatures.entity.neutral.MoCEntityWyvern;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
@@ -30,6 +31,8 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 public class MoCItemWhip extends MoCItemSword {
     private float AttackSpeed;
@@ -41,8 +44,8 @@ public class MoCItemWhip extends MoCItemSword {
     }
 
     @Override
-    public EnumActionResult onItemUse(Player player, Level worldIn, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        final ItemStack stack = player.getHeldItem(hand);
+    public EnumActionResult onItemUse(Player player, Level worldIn, BlockPos pos, InteractionHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        final ItemStack stack = player.getItemInHand(hand);
         Block block = worldIn.getBlockState(pos).getBlock();
         Block block1 = worldIn.getBlockState(pos.up()).getBlock();
         if (side != EnumFacing.DOWN && (block1 == Blocks.AIR) && (block != Blocks.AIR) && (block != Blocks.STANDING_SIGN)) {

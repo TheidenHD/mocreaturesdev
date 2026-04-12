@@ -5,7 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.MobEffectInstance;
 import slimeknights.tconstruct.library.tools.ToolNBT;
 import slimeknights.tconstruct.library.traits.AbstractTrait;
 import slimeknights.tconstruct.library.utils.TagUtil;
@@ -41,12 +41,12 @@ public class TraitStingEffectPlayer extends AbstractTrait {
         if (wasHit && target.isEntityAlive()) {
             // Don't set the normal effect on players
             if (!(target instanceof Player)) {
-                target.addPotionEffect(new PotionEffect(effect, 20 * 5));
+                target.addPotionEffect(new MobEffectInstance(effect, 20 * 5));
             }
 
             // Set our alternative effect for players
             if (target instanceof Player) {
-                target.addPotionEffect(new PotionEffect(playerEffect, 20 * 5));
+                target.addPotionEffect(new MobEffectInstance(playerEffect, 20 * 5));
             }
         }
     }

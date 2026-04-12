@@ -4,7 +4,7 @@ import net.minecraft.world.entity.EntityLivingBase;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.MobEffectInstance;
 import slimeknights.tconstruct.library.tools.ToolNBT;
 import slimeknights.tconstruct.library.traits.AbstractTrait;
 import slimeknights.tconstruct.library.utils.TagUtil;
@@ -37,7 +37,7 @@ public class TraitStingEffect extends AbstractTrait {
     @Override
     public void afterHit(ItemStack tool, EntityLivingBase player, EntityLivingBase target, float damageDealt, boolean wasCritical, boolean wasHit) {
         if (wasHit && target.isEntityAlive()) {
-            target.addPotionEffect(new PotionEffect(effect, 20 * 5, amplifier));
+            target.addPotionEffect(new MobEffectInstance(effect, 20 * 5, amplifier));
         }
     }
 }

@@ -5,35 +5,26 @@ package drzhark.mocreatures.item;
 
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.init.MobEffects;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemPickaxe;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Sets;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import java.util.List;
 import java.util.Set;
@@ -58,10 +49,10 @@ public class MoCItemMattock extends ItemPickaxe {
         this.specialWeaponType = damageType;
     }
 
-    public EnumActionResult onItemUse(Player player, Level worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        ItemStack itemstack = player.getHeldItem(hand);
+    public EnumActionResult onItemUse(Player player, Level worldIn, BlockPos pos, InteractionHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        ItemStack itemstack = player.getItemInHand(hand);
 
-        IBlockState iblockstate = worldIn.getBlockState(pos);
+        BlockState iblockstate = worldIn.getBlockState(pos);
         Block block = iblockstate.getBlock();
 
         if (facing != EnumFacing.DOWN && worldIn.isAirBlock(pos.up())) {
@@ -76,7 +67,7 @@ public class MoCItemMattock extends ItemPickaxe {
         return Items.IRON_HOE.onItemUse(player, worldIn, pos, hand, facing, hitX, hitY, hitZ);
     }
 
-    protected void setBlock(ItemStack stack, Player player, Level worldIn, BlockPos pos, IBlockState state) {
+    protected void setBlock(ItemStack stack, Player player, Level worldIn, BlockPos pos, BlockState state) {
         worldIn.playSound(player, pos, SoundEvents.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
 
         if (!worldIn.isRemote) {
@@ -93,26 +84,26 @@ public class MoCItemMattock extends ItemPickaxe {
     @Override
     public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
         if (MoCreatures.proxy.weaponEffects) {
-            EnumHand hand = attacker.getActiveHand() == null ? EnumHand.MAIN_HAND : attacker.getActiveHand();
+            InteractionHand hand = attacker.getUsedItemHand() == null ? InteractionHand.MAIN_HAND : attacker.getUsedItemHand();
             int timer = 10; // In seconds
             int fire_aspect = 5 * EnchantmentHelper.getFireAspectModifier(attacker); // Fire Aspect
-            int poisonous = 5 * EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByLocation("mod_lavacow:poisonous"), attacker.getHeldItem(hand)); // Poisonous (Fish's Undead Rising)
+            int poisonous = 5 * EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByLocation("mod_lavacow:poisonous"), attacker.getItemInHand(hand)); // Poisonous (Fish's Undead Rising)
 
             switch (this.specialWeaponType) {
                 case 1: // Poison 2
-                    target.addPotionEffect(new PotionEffect(MobEffects.POISON, (timer * 20) + poisonous, 1));
+                    target.addPotionEffect(new MobEffectInstance(MobEffects.POISON, (timer * 20) + poisonous, 1));
                     break;
                 case 2: // Slowness
-                    target.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, timer * 20, 0));
+                    target.addPotionEffect(new MobEffectInstance(MobEffects.SLOWNESS, timer * 20, 0));
                     break;
                 case 3: // Fire
                     target.setFire(timer + fire_aspect);
                     break;
                 case 4: // Weakness (Nausea for players)
-                    target.addPotionEffect(new PotionEffect(target instanceof Player ? MobEffects.NAUSEA : MobEffects.WEAKNESS, timer * 20, 0));
+                    target.addPotionEffect(new MobEffectInstance(target instanceof Player ? MobEffects.NAUSEA : MobEffects.WEAKNESS, timer * 20, 0));
                     break;
                 case 5: // Wither (Blindness for players)
-                    target.addPotionEffect(new PotionEffect(target instanceof Player ? MobEffects.BLINDNESS : MobEffects.WITHER, timer * 20, 0));
+                    target.addPotionEffect(new MobEffectInstance(target instanceof Player ? MobEffects.BLINDNESS : MobEffects.WITHER, timer * 20, 0));
                     break;
                 default:
                     break;
@@ -124,7 +115,7 @@ public class MoCItemMattock extends ItemPickaxe {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @SideOnly(MixinEnvironment.Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable Level worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         if (MoCreatures.proxy.weaponEffects) {
             switch (this.specialWeaponType) {

@@ -6,7 +6,7 @@ import net.minecraft.world.entity.EntityLivingBase;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.MobEffectInstance;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -39,16 +39,16 @@ public class TraitShellEffectPlayerArmor extends AbstractArmorTrait {
             if (!player.world.isRemote) {
                 // Don't set the normal effect on player targets
                 if (!(source.getTrueSource() instanceof Player)) {
-                    ((EntityLivingBase) source.getTrueSource()).addPotionEffect(new PotionEffect(targetEffect, 15 * 20, 0));
+                    ((EntityLivingBase) source.getTrueSource()).addPotionEffect(new MobEffectInstance(targetEffect, 15 * 20, 0));
                 }
 
                 // Set our alternative effect on player targets
                 if (source.getTrueSource() instanceof Player) {
-                    ((EntityLivingBase) source.getTrueSource()).addPotionEffect(new PotionEffect(playerTargetEffect, 15 * 20, 0));
+                    ((EntityLivingBase) source.getTrueSource()).addPotionEffect(new MobEffectInstance(playerTargetEffect, 15 * 20, 0));
                 }
 
                 if (player instanceof Player) {
-                    player.addPotionEffect(new PotionEffect(playerEffect, 30 * 20, 0));
+                    player.addPotionEffect(new MobEffectInstance(playerEffect, 30 * 20, 0));
                     TinkerTools.proxy.spawnEffectParticle(ParticleEffect.Type.HEART_ARMOR, player, (int) damage);
                 }
             }

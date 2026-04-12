@@ -401,7 +401,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
             return tameResult;
         }
 
-        final ItemStack stack = player.getHeldItem(hand);
+        final ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty() && getIsAdult() && !getIsRideable()
                 && (stack.getItem() instanceof ItemSaddle)) {
             if (!player.capabilities.isCreativeMode) stack.shrink(1);
@@ -423,7 +423,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
             if (stack.getItem() == MoCItems.essencedarkness && this.getType() != 2) {
                 if (!player.capabilities.isCreativeMode) stack.shrink(1);
                 if (stack.isEmpty()) {
-                    player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                    player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
                 } else {
                     player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
                 }
@@ -436,7 +436,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
             if (stack.getItem() == MoCItems.essencefire && this.getTypeMoC() != 3) {
                 if (!player.abilities.isCreativeMode) stack.shrink(1);
                 if (stack.isEmpty()) {
-                    player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                    player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
                 } else {
                     player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
                 }
@@ -449,7 +449,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
             if (stack.getItem() == MoCItems.essenceIce && this.getType() != 4) {
                 if (!player.capabilities.isCreativeMode) stack.shrink(1);
                 if (stack.isEmpty()) {
-                    player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                    player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
                 } else {
                     player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
                 }
@@ -462,7 +462,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
             if (!stack.isEmpty() && this.getIsTamed() && !this.isBeingRidden() && !this.isPassenger() && this.transformCounter < 1 && stack.getItem() == MoCItems.essenceundead && this.getTypeMoC() != 5) {
                 if (!player.abilities.isCreativeMode) stack.shrink(1);
                 if (stack.isEmpty()) {
-                    player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                    player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
                 } else {
                     player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
                 }

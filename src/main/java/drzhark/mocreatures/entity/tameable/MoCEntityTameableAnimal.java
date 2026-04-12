@@ -166,7 +166,7 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
             return InteractionResult.PASS;
         }
 
-        final ItemStack stack = player.getHeldItem(hand);
+        final ItemStack stack = player.getItemInHand(hand);
         //changes name
         if (!this.level().isRemote && !stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.scrollOfRenaming) {
             if (!player.capabilities.isCreativeMode) stack.shrink(1);

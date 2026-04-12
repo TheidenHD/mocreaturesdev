@@ -553,7 +553,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             return tameResult;
         }
 
-        final ItemStack stack = player.getHeldItem(hand);
+        final ItemStack stack = player.getItemInHand(hand);
         if (getIsTamed() && (getType() > 1) && !stack.isEmpty() && !getIsRideable() && (stack.getItem() instanceof ItemSaddle)) {
             if (!player.capabilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
@@ -582,7 +582,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         if (!stack.isEmpty() && this.getIsTamed() && getTypeMoC() > 1 && stack.getItem() == MoCItems.essencedarkness) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (stack.isEmpty()) {
-                player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
             } else {
                 player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
             }
@@ -598,7 +598,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         if (!stack.isEmpty() && this.getIsTamed() && getTypeMoC() > 1 && stack.getItem() == MoCItems.essenceundead) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (stack.isEmpty()) {
-                player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
             } else {
                 player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
             }
@@ -614,7 +614,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         if (!stack.isEmpty() && this.getIsTamed() && getTypeMoC() > 1 && stack.getItem() == MoCItems.essencelight) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (stack.isEmpty()) {
-                player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
             } else {
                 player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
             }
@@ -630,7 +630,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         if (!stack.isEmpty() && this.getIsTamed() && getTypeMoC() > 1 && stack.getItem() == MoCItems.essencefire) {
             if (!player.abilities.isCreativeMode) stack.shrink(1);
             if (stack.isEmpty()) {
-                player.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
             } else {
                 player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
             }
@@ -701,7 +701,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                 }
 
                 if (helmetType != 0) {
-                    player.setHeldItem(hand, ItemStack.EMPTY);
+                    player.setItemInHand(hand, ItemStack.EMPTY);
                     dropArmor();
                     this.setItemStackToSlot(itemArmor.getEquipmentSlot(), stack);
                     MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_OFF.get());

@@ -10,7 +10,7 @@ import drzhark.mocreatures.entity.item.MoCEntityThrowableRock;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.world.entity.EntityLivingBase;
 import net.minecraft.world.entity.SharedMonsterAttributes;
 import net.minecraft.world.entity.ai.*;

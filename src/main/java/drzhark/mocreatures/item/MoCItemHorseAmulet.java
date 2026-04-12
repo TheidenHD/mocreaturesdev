@@ -110,18 +110,18 @@ public class MoCItemHorseAmulet extends Item {
 //                    MoCTools.transferPetOwnershipIfNeeded(this.ownerUniqueId, player, storedCreature);
 //                }
 
-                if (player.world.spawnEntity(storedCreature)) {
-                    MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAppear(storedCreature.getEntityId()), new TargetPoint(player.world.provider.getDimensionType().getId(), player.posX, player.posY, player.posZ, 64));
+                if (player.level().spawnEntity(storedCreature)) {
+                    MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAppear(storedCreature.getEntityId()), new TargetPoint(player.level().provider.getDimensionType().getId(), player.posX, player.posY, player.posZ, 64));
                     MoCTools.playCustomSound(storedCreature, MoCSoundEvents.ENTITY_GENERIC_MAGIC_ENCHANTED);
                     //gives an empty amulet
                     if (storedCreature instanceof MoCEntityBigCat || storedCreature instanceof MoCEntityWyvern || this.creatureType == 21 || this.creatureType == 22) {
-                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletghost, 1));
+                        player.setItemInHand(hand, new ItemStack(MoCItems.amuletghost, 1));
                     } else if (this.creatureType == 26 || this.creatureType == 27 || this.creatureType == 28) {
-                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletbone, 1));
+                        player.setItemInHand(hand, new ItemStack(MoCItems.amuletbone, 1));
                     } else if ((this.creatureType > 47 && this.creatureType < 60)) {
-                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletfairy, 1));
+                        player.setItemInHand(hand, new ItemStack(MoCItems.amuletfairy, 1));
                     } else if (this.creatureType == 39 || this.creatureType == 40) {
-                        player.setHeldItem(hand, new ItemStack(MoCItems.amuletpegasus, 1));
+                        player.setItemInHand(hand, new ItemStack(MoCItems.amuletpegasus, 1));
                     }
 
                     MoCPetData petData = MoCreatures.instance.mapData.getPetData(storedCreature.getOwnerId());

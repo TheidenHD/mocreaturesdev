@@ -8,7 +8,7 @@ import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.InteractionHand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.level.Level;
 

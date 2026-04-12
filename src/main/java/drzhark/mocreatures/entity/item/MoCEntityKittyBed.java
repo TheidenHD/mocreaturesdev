@@ -8,10 +8,7 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.neutral.MoCEntityKitty;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -151,7 +148,7 @@ public class MoCEntityKittyBed extends LivingEntity {
                 setHasMilk(false);
                 setHasFood(true);
             } else if (stack.getItem() == Items.MILK_BUCKET) {
-                player.setHeldItem(hand, new ItemStack(Items.BUCKET, 1));
+                player.setItemInHand(hand, new ItemStack(Items.BUCKET, 1));
                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_BED_POUR_MILK);
                 setHasMilk(true);
                 setHasFood(false);

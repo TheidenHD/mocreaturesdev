@@ -77,7 +77,7 @@ public class MoCEntityManticorePet extends MoCEntityBigCat {
             return tameResult;
         }
 
-        final ItemStack stack = player.getHeldItem(hand);
+        final ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.whip)) {
             setSitting(!getIsSitting());
             setIsJumping(false);

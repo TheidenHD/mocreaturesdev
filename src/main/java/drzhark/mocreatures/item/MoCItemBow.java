@@ -5,14 +5,22 @@ package drzhark.mocreatures.item;
 
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
-import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ArrowItem;
+import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.ForgeEventFactory;
 
-public class MoCItemBow extends ItemBow {
+public class MoCItemBow extends BowItem {
     public float damageMult;
     public float velocityMult;
     public float inaccuracy;
@@ -42,76 +50,65 @@ public class MoCItemBow extends ItemBow {
     }
 
     @Override
-    public void onPlayerStoppedUsing(ItemStack itemStack, Level world, EntityLivingBase entityLiving, int timeInUse) {
-        if (entityLiving instanceof Player) {
-            Player player = (Player) entityLiving;
-            boolean isInfinityEnchant = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, itemStack) > 0;
-            ItemStack stack = this.findAmmo(player);
+    public void releaseUsing(ItemStack p_40667_, Level p_40668_, LivingEntity p_40669_, int p_40670_) {
+        if (p_40669_ instanceof Player player) {
+            boolean flag = player.getAbilities().instabuild || net.minecraft.world.item.enchantment.EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, p_40667_) > 0;
+            ItemStack itemstack = player.getProjectile(p_40667_);
 
-            float chargeDivider = 1 * drawTimeMult;
+            int i = (int) ((this.getUseDuration(p_40667_) - p_40670_) * drawTimeMult);
+            i = net.minecraftforge.event.ForgeEventFactory.onArrowLoose(p_40667_, p_40668_, player, i, !itemstack.isEmpty() || flag);
+            if (i < 0) return;
 
-            int charge = (int) ((this.getMaxItemUseDuration(itemStack) - timeInUse) / chargeDivider);
-            charge = ForgeEventFactory.onArrowLoose(itemStack, world, player, charge, !stack.isEmpty() || isInfinityEnchant);
-            if (charge < 0) return;
-
-            if ((!stack.isEmpty() || isInfinityEnchant)) {
-                if (stack.isEmpty()) {
-                	stack = new ItemStack(Items.ARROW);
+            if (!itemstack.isEmpty() || flag) {
+                if (itemstack.isEmpty()) {
+                    itemstack = new ItemStack(Items.ARROW);
                 }
 
-                float arrowVelocity = getArrowVelocity(charge);
-
-                if ((double) arrowVelocity >= 0.1D) {
-                    boolean arrowInfinite = player.capabilities.isCreativeMode || (stack.getItem() instanceof ItemArrow && ((ItemArrow) stack.getItem()).isInfinite(stack, itemStack, player));
-
-                    if (!world.isRemote) {
-                        ItemArrow itemArrow = (ItemArrow) (stack.getItem() instanceof ItemArrow ? stack.getItem() : Items.ARROW);
-                        EntityArrow entityArrow = itemArrow.createArrow(world, stack, player);
-                        entityArrow = this.customizeArrow(entityArrow);
-                        entityArrow.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, (arrowVelocity * 3.0F) * velocityMult, inaccuracy);
-
-                        if (arrowVelocity == 1.0F) {
-                            entityArrow.setIsCritical(true);
+                float f = getPowerForTime(i);
+                if (!((double)f < 0.1D)) {
+                    boolean flag1 = player.getAbilities().instabuild || (itemstack.getItem() instanceof ArrowItem && ((ArrowItem)itemstack.getItem()).isInfinite(itemstack, p_40667_, player));
+                    if (!p_40668_.isClientSide) {
+                        ArrowItem arrowitem = (ArrowItem)(itemstack.getItem() instanceof ArrowItem ? itemstack.getItem() : Items.ARROW);
+                        AbstractArrow abstractarrow = arrowitem.createArrow(p_40668_, itemstack, player);
+                        abstractarrow = customArrow(abstractarrow);
+                        abstractarrow.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, (f * 3.0F) * velocityMult, 1.0F);
+                        if (f == 1.0F) {
+                            abstractarrow.setCritArrow(true);
                         }
 
-                        entityArrow.setDamage(entityArrow.getDamage() * damageMult);
-
-                        int power = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, itemStack);
-
-                        if (power > 0) {
-                            entityArrow.setDamage(entityArrow.getDamage() + (double) power * 0.5D + 0.5D);
+                        int j = net.minecraft.world.item.enchantment.EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, p_40667_);
+                        if (j > 0) {
+                            abstractarrow.setBaseDamage((abstractarrow.getBaseDamage() * damageMult)+ (double)j * 0.5D + 0.5D);
                         }
 
-                        int punch = EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH, itemStack);
-
-                        if (punch > 0) {
-                            entityArrow.setKnockbackStrength(punch);
+                        int k = net.minecraft.world.item.enchantment.EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PUNCH_ARROWS, p_40667_);
+                        if (k > 0) {
+                            abstractarrow.setKnockback(k);
                         }
 
-                        if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FLAME, itemStack) > 0) {
-                            entityArrow.setFire(100);
+                        if (net.minecraft.world.item.enchantment.EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS, p_40667_) > 0) {
+                            abstractarrow.setSecondsOnFire(100);
                         }
 
-                        itemStack.damageItem(1, player);
-
-                        if (arrowInfinite || player.capabilities.isCreativeMode && (stack.getItem() == Items.SPECTRAL_ARROW || stack.getItem() == Items.TIPPED_ARROW)) {
-                            entityArrow.pickupStatus = EntityArrow.PickupStatus.CREATIVE_ONLY;
+                        p_40667_.hurtAndBreak(1, player, (p_289501_) -> {
+                            p_289501_.broadcastBreakEvent(player.getUsedItemHand());
+                        });
+                        if (flag1 || player.getAbilities().instabuild && (itemstack.is(Items.SPECTRAL_ARROW) || itemstack.is(Items.TIPPED_ARROW))) {
+                            abstractarrow.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
                         }
 
-                        world.spawnEntity(entityArrow);
+                        p_40668_.addFreshEntity(abstractarrow);
                     }
 
-                    world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + arrowVelocity * 0.5F);
-
-                    if (!arrowInfinite && !player.capabilities.isCreativeMode) {
-                    	stack.shrink(1);
-
-                        if (stack.isEmpty()) {
-                            player.inventory.deleteStack(stack);
+                    p_40668_.playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F / (p_40668_.getRandom().nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+                    if (!flag1 && !player.getAbilities().instabuild) {
+                        itemstack.shrink(1);
+                        if (itemstack.isEmpty()) {
+                            player.getInventory().removeItem(itemstack);
                         }
                     }
 
-                    player.addStat(StatList.getObjectUseStats(this));
+                    player.awardStat(Stats.ITEM_USED.get(this));
                 }
             }
         }

@@ -416,7 +416,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
             return InteractionResult.sidedSuccess(this.level().isClientSide());
         }
 
-        final ItemStack stack = player.getHeldItem(hand);
+        final ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty() && !getIsTamed() && !getIsAdult() && stack.getItem() == Items.CAKE) {
             if (!player.capabilities.isCreativeMode) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);

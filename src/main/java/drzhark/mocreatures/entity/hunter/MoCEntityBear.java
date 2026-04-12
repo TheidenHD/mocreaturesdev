@@ -346,8 +346,8 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
         setAttackTarget(null);
     }
     @Override
-    public boolean processInteract(Player player, EnumHand hand) {
-        final ItemStack stack = player.getHeldItem(hand);
+    public boolean processInteract(Player player, InteractionHand hand) {
+        final ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.whip)) {
             this.processBearWhipped();
             return true;

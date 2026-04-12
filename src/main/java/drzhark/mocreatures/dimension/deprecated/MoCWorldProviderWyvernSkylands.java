@@ -232,7 +232,7 @@ import drzhark.mocreatures.dimension.chunk.MoCChunkProviderWyvernSkylands;
 import drzhark.mocreatures.init.MoCBiomes;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -355,7 +355,7 @@ public class MoCWorldProviderWyvernSkylands extends WorldProviderSurface {
     public boolean canCoordinateBeSpawn(int xPos, int zPos) {
         BlockPos pos = this.level().getTopSolidOrLiquidBlock(new BlockPos(xPos, 0, zPos));
         if (FMLLaunchHandler.isDeobfuscatedEnvironment()) {
-            IBlockState blockState = this.level().getBlockState(pos);
+            BlockState blockState = this.level().getBlockState(pos);
             Block block = blockState.getBlock();
             Material material = blockState.getMaterial();
             return material.blocksMovement() && !block.isLeaves(blockState, this.level(), pos) && !block.isFoliage(this.level(), pos);
