@@ -10,22 +10,19 @@ import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.block.material.Material;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityLivingBase;
-import net.minecraft.world.entity.SharedMonsterAttributes;
-import net.minecraft.world.entity.ai.EntityAIWatchClosest;
-import net.minecraft.world.entity.item.EntityItem;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
@@ -37,8 +34,8 @@ import net.minecraft.world.InteractionHand;
 
 public class MoCEntityTurtle extends MoCEntityTameableAnimal {
 
-    private static final DataParameter<Boolean> IS_UPSIDE_DOWN = EntityDataManager.createKey(MoCEntityTurtle.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> IS_HIDING = EntityDataManager.createKey(MoCEntityTurtle.class, DataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IS_UPSIDE_DOWN = SynchedEntityData.defineId(MoCEntityTurtle.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IS_HIDING = SynchedEntityData.defineId(MoCEntityTurtle.class, EntityDataSerializers.BOOLEAN);
 
     private static final float TURTLE_ARMOR = 4.0F;
     private boolean isSwinging;
@@ -187,7 +184,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
                 LivingEntity entityliving = getBoogey(4D);
                 if ((entityliving != null) && this.hasLineOfSight(entityliving)) {
                     if (!getIsHiding() && !isInWater()) {
-                        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_TURTLE_HISS);
+                        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_TURTLE_HISS.get());
                         setIsHiding(true);
                     }
 
@@ -206,7 +203,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
                             	// TODO: Add a turtle eating sound event
                                 entityitem.setDead();
                                 //MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_TURTLE_EATING);
-                                Player Player = this.level().getClosestPlayerToEntity(this, 24D);
+                                Player Player = this.level().getNearestPlayerToEntity(this, 24D);
                                 if (Player != null) {
                                     MoCTools.tameWithName(Player, this);
                                 }
@@ -322,7 +319,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_GENERIC_CLANG;
+        return MoCSoundEvents.ENTITY_GENERIC_CLANG.get();
     }
 
     @Override
@@ -366,9 +363,6 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
     public int nameYOffset() {
         return -10 - (getMoCAge() / 5);
     }
-
-    @Override
-    public boolean isReadyToFollowOwnerPlayer() { return !this.isMovementCeased(); }
 
     @Override
     public boolean isAmphibian() {

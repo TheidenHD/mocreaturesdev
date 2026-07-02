@@ -13,7 +13,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -35,7 +34,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 import net.minecraft.util.RandomSource;
 
@@ -309,7 +307,7 @@ public abstract class MoCEntityAmbient extends PathfinderMob implements IMoCEnti
         }
     }
 
-    /** Sets a flag that will make the Entity "jump" in the next onGround update */
+    /** Sets a flag that will make the Entity "jump" in the next onGround() update */
     @Override
     public void makeEntityJump() {
         // Default no-op; override if your mob needs special behavior

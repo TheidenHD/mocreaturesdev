@@ -17,45 +17,46 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import drzhark.mocreatures.util.MoCTags;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.SwimGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.SaddleItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.network.PacketDistributor;
 
 public class MoCEntityBigCat extends MoCEntityTameableAnimal {
 
-    private static final DataParameter<Boolean> RIDEABLE = EntityDataManager.createKey(MoCEntityBigCat.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> HAS_AMULET = EntityDataManager.createKey(MoCEntityBigCat.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> SITTING = EntityDataManager.createKey(MoCEntityBigCat.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> GHOST = EntityDataManager.createKey(MoCEntityBigCat.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> CHESTED = EntityDataManager.createKey(MoCEntityBigCat.class, DataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> RIDEABLE = SynchedEntityData.defineId(MoCEntityBigCat.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> HAS_AMULET = SynchedEntityData.defineId(MoCEntityBigCat.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> SITTING = SynchedEntityData.defineId(MoCEntityBigCat.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> GHOST = SynchedEntityData.defineId(MoCEntityBigCat.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> CHESTED = SynchedEntityData.defineId(MoCEntityBigCat.class, EntityDataSerializers.BOOLEAN);
     public int mouthCounter;
     public int tailCounter;
     public int wingFlapCounter;
@@ -86,8 +87,8 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
         this.targetSelector.addGoal(3, new EntityAIHunt<>(this, Player.class, false));
     }
 
-    public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE).createMutableAttribute(Attributes.FOLLOW_RANGE, 24.0D);
+    public static AttributeSupplier.Builder registerAttributes() {
+        return MoCEntityTameableAnimal.registerAttributes().add(Attributes.ATTACK_DAMAGE).add(Attributes.FOLLOW_RANGE, 24.0D);
     }
 
     @Override
@@ -107,56 +108,56 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
      * server data to client.
      */
     @Override
-    protected void registerData() {
-        super.registerData();
-        this.dataManager.register(RIDEABLE, Boolean.FALSE);
-        this.dataManager.register(SITTING, Boolean.FALSE);
-        this.dataManager.register(GHOST, Boolean.FALSE);
-        this.dataManager.register(HAS_AMULET, Boolean.FALSE);
-        this.dataManager.register(CHESTED, Boolean.FALSE);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(RIDEABLE, Boolean.FALSE);
+        this.entityData.define(SITTING, Boolean.FALSE);
+        this.entityData.define(GHOST, Boolean.FALSE);
+        this.entityData.define(HAS_AMULET, Boolean.FALSE);
+        this.entityData.define(CHESTED, Boolean.FALSE);
     }
 
     public boolean getHasAmulet() {
-        return this.dataManager.get(HAS_AMULET);
+        return this.entityData.get(HAS_AMULET);
     }
 
     public void setHasAmulet(boolean flag) {
-        this.dataManager.set(HAS_AMULET, flag);
+        this.entityData.set(HAS_AMULET, flag);
     }
 
     @Override
     public boolean getIsSitting() {
-        return this.dataManager.get(SITTING);
+        return this.entityData.get(SITTING);
     }
 
     @Override
     public boolean getIsRideable() {
-        return this.dataManager.get(RIDEABLE);
+        return this.entityData.get(RIDEABLE);
     }
 
     public boolean getIsChested() {
-        return this.dataManager.get(CHESTED);
+        return this.entityData.get(CHESTED);
     }
 
     public void setIsChested(boolean flag) {
-        this.dataManager.set(CHESTED, flag);
+        this.entityData.set(CHESTED, flag);
     }
 
     @Override
     public boolean getIsGhost() {
-        return this.dataManager.get(GHOST);
+        return this.entityData.get(GHOST);
     }
 
     public void setIsGhost(boolean flag) {
-        this.dataManager.set(GHOST, flag);
+        this.entityData.set(GHOST, flag);
     }
 
     public void setSitting(boolean flag) {
-        this.dataManager.set(SITTING, flag);
+        this.entityData.set(SITTING, flag);
     }
 
     public void setRideable(boolean flag) {
-        this.dataManager.set(RIDEABLE, flag);
+        this.entityData.set(RIDEABLE, flag);
     }
 
     @Override
@@ -235,12 +236,12 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
             MobEntity templiving = (MobEntity) this.getType().create(this.level());
             if (templiving instanceof MoCEntityBigCat) {
                 MoCEntityBigCat ghost = (MoCEntityBigCat) templiving;
-                ghost.setPosition(this.posX, this.posY, this.posZ);
+                ghost.setPos(this.posX, this.posY, this.posZ);
                 this.level().spawnEntity(ghost);
                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_MAGIC_ENCHANTED);
                 ghost.setOwnerId(this.getOwnerId());
                 ghost.setTamed(true);
-                Player Player = this.level().getClosestPlayer(this, 24D);
+                Player Player = this.level().getNearestPlayer(this, 24D);
                 if (Player != null) {
                     MoCTools.tameWithName(Player, ghost);
                 }
@@ -263,7 +264,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
         super.livingTick();
 
         if (!this.level().isRemote) {
-            setSprinting(this.getAttackTarget() != null);
+            setSprinting(this.getTarget() != null);
         }
 
         if (this.level().isRemote) //animation counters
@@ -351,7 +352,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
 
         if (this.wingFlapCounter == 0) {
             this.wingFlapCounter = 1;
-            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 3));
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getId(), 3));
         }
     }
 
@@ -373,7 +374,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
         double dist = getSizeFactor() * (0.1D);
         double newPosX = this.getPosX() + (dist * Math.sin(this.renderYawOffset / 57.29578F));
         double newPosZ = this.getPosZ() - (dist * Math.cos(this.renderYawOffset / 57.29578F));
-        passenger.setPosition(newPosX, this.getPosY() + getMountedYOffset() + passenger.getYOffset(), newPosZ);
+        passenger.setPos(newPosX, this.getPosY() + getMountedYOffset() + passenger.getYOffset(), newPosZ);
     }
 
     @Override
@@ -438,7 +439,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
                 setHasAmulet(true);
                 MoCTools.tameWithName(player, this);
             }
-            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             return InteractionResult.SUCCESS;
         }
 
@@ -446,21 +447,21 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
             if (!this.level().isRemote) {
                 setHasAmulet(true);
             }
-            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.whip)) {
             setSitting(!getIsSitting());
             setIsJumping(false);
-            getNavigator().clearPath();
-            setAttackTarget(null);
+            getNavigation().stop();
+            setTarget(null);
             return true;
         }
         if (!stack.isEmpty() && getIsTamed() && (MoCTools.isItemEdibleforCarnivores(stack.getItem()))) {
-            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             this.setHealth(getMaxHealth());
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT.get());
             setIsHunting(false);
             setHasEaten(true);
             return InteractionResult.SUCCESS;
@@ -490,13 +491,13 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
         }
 
         if (!stack.isEmpty() && getIsTamed() && getIsAdult() && !getIsChested() && (stack.getItem() == Item.getItemFromBlock(Blocks.CHEST))) {
-            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             setIsChested(true);
             MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
             return InteractionResult.SUCCESS;
         }
 
-        if (getIsChested() && player.isSneaking()) {
+        if (getIsChested() && player.isCrouching()) {
             if (this.localchest == null) {
                 this.localchest = new MoCAnimalChest(this.chestName, MoCAnimalChest.Size.small);
             }

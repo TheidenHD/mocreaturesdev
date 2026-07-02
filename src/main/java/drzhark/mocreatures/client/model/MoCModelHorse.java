@@ -9,11 +9,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 
 @OnlyIn(Dist.CLIENT)
 public class MoCModelHorse<T extends MoCEntityHorse> extends MoCModelAbstractHorse<T> {

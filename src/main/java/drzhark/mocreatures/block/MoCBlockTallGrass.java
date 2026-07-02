@@ -5,14 +5,9 @@ package drzhark.mocreatures.block;
 
 import drzhark.mocreatures.init.MoCBlocks;
 import net.minecraft.world.level.block.TallGrassBlock;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.FarmBlock;
-import net.minecraft.world.level.block.GrassBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.level.BlockGetter;

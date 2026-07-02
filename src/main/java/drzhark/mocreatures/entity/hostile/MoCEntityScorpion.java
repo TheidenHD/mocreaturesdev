@@ -11,38 +11,30 @@ import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
-import net.minecraft.block.BlockState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.CreatureAttribute;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityLivingBase;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EnumCreatureAttribute;
-import net.minecraft.world.entity.ai.*;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.monster.EntityIronGolem;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.ClimberPathNavigator;
-import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.util.DamageSource;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.network.PacketDistributor;
 
 
 public class MoCEntityScorpion extends MoCEntityMob {
@@ -150,7 +142,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
     public boolean doHurtTarget(Entity entity) {
         // Claw Attack Sound
         if (this.poisontimer != 1) {
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SCORPION_ATTACK);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SCORPION_ATTACK.get());
         }
         return super.doHurtTarget(entity);
     }
@@ -252,7 +244,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
                             babyScorpion = new MoCEntityDirtScorpion(this.level());
                             break;
                     }
-                    babyScorpion.setPosition(this.posX, this.posY, this.posZ);
+                    babyScorpion.setPos(this.posX, this.posY, this.posZ);
                     babyScorpion.setAdult(false);
                     babyScorpion.setAge(20);
                     babyScorpion.setType(this.getType);

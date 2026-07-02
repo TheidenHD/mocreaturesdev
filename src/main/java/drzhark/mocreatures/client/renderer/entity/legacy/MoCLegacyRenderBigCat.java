@@ -4,18 +4,13 @@
 package drzhark.mocreatures.client.renderer.entity.legacy;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.client.model.legacy.MoCLegacyModelBigCat1;
 import drzhark.mocreatures.client.model.legacy.MoCLegacyModelBigCat2;
 import drzhark.mocreatures.entity.hunter.MoCEntityBigCat;
 import drzhark.mocreatures.entity.hunter.MoCEntityLion;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

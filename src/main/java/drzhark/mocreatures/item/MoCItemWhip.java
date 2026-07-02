@@ -13,15 +13,17 @@ import drzhark.mocreatures.entity.neutral.MoCEntityWyvern;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 
+import net.minecraft.world.item.Tier;
 import net.minecraft.world.level.Level;
 
 
@@ -37,20 +39,19 @@ import net.minecraft.world.level.block.Blocks;
 public class MoCItemWhip extends MoCItemSword {
     private float AttackSpeed;
 
-    public MoCItemWhip(String name, Item.ToolMaterial material, float attackSpeedIn) {
-        super(name, 0, material);
-        this.maxStackSize = 1;
+    public MoCItemWhip(Item.Properties properties, Tier material, float attackSpeedIn) {
+        super(properties.stacksTo(1), material);
         this.AttackSpeed = attackSpeedIn;
     }
 
     @Override
-    public EnumActionResult onItemUse(Player player, Level worldIn, BlockPos pos, InteractionHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public InteractionResult onItemUse(Player player, Level worldIn, BlockPos pos, InteractionHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         final ItemStack stack = player.getItemInHand(hand);
         Block block = worldIn.getBlockState(pos).getBlock();
-        Block block1 = worldIn.getBlockState(pos.up()).getBlock();
+        Block block1 = worldIn.getBlockState(pos.above()).getBlock();
         if (side != EnumFacing.DOWN && (block1 == Blocks.AIR) && (block != Blocks.AIR) && (block != Blocks.STANDING_SIGN)) {
             whipFX(worldIn, pos);
-            worldIn.playSound(player, pos, MoCSoundEvents.ENTITY_GENERIC_WHIP, SoundCategory.PLAYERS, 0.5F, 0.4F / ((itemRand.nextFloat() * 0.4F) + 0.8F));
+            worldIn.playSound(player, pos, MoCSoundEvents.ENTITY_GENERIC_WHIP, SoundSource.PLAYERS, 0.5F, 0.4F / ((itemRand.nextFloat() * 0.4F) + 0.8F));
             player.getCooldownTracker().setCooldown(this, 20);
             stack.damageItem(2, player);
             List<Entity> list = worldIn.getEntitiesWithinAABBExcludingEntity(player, player.getEntityBoundingBox().grow(12D));
@@ -67,10 +68,10 @@ public class MoCItemWhip extends MoCItemSword {
                     if (entitybigcat.getIsTamed()) {
                         entitybigcat.setSitting(!entitybigcat.getIsSitting());
                         entitybigcat.setIsJumping(false);
-                        entitybigcat.getNavigator().clearPath();
-                        entitybigcat.setAttackTarget(null);
+                        entitybigcat.getNavigation().stop();
+                        entitybigcat.setTarget(null);
                     } else if ((worldIn.getDifficulty().getId() > 0) && entitybigcat.getIsAdult()) {
-                        entitybigcat.setAttackTarget(player);
+                        entitybigcat.setTarget(player);
                     }
                 }
 
@@ -80,8 +81,8 @@ public class MoCItemWhip extends MoCItemSword {
                         if (entityhorse.getRidingEntity() == null) {
                             entityhorse.setSitting(!entityhorse.getIsSitting());
                             entityhorse.setIsJumping(false);
-                            entityhorse.getNavigator().clearPath();
-                            entityhorse.setAttackTarget(null);
+                            entityhorse.getNavigation().stop();
+                            entityhorse.setTarget(null);
                         } else if (entityhorse.isNightmare()) {
                             entityhorse.setNightmareInt(100);
                         } else if (entityhorse.sprintCounter == 0) {
@@ -95,8 +96,8 @@ public class MoCItemWhip extends MoCItemSword {
                     if ((entitykitty.getKittyState() > 2) && entitykitty.whipable()) {
                         entitykitty.setSitting(!entitykitty.getIsSitting());
                         entitykitty.setIsJumping(false);
-                        entitykitty.getNavigator().clearPath();
-                        entitykitty.setAttackTarget(null);
+                        entitykitty.getNavigation().stop();
+                        entitykitty.setTarget(null);
                     }
                 }
 
@@ -105,8 +106,8 @@ public class MoCItemWhip extends MoCItemSword {
                     if (entitywyvern.getIsTamed() && entitywyvern.getRidingEntity() == null && !entitywyvern.isOnAir()) {
                         entitywyvern.setSitting(!entitywyvern.getIsSitting());
                         entitywyvern.setIsJumping(false);
-                        entitywyvern.getNavigator().clearPath();
-                        entitywyvern.setAttackTarget(null);
+                        entitywyvern.getNavigation().stop();
+                        entitywyvern.setTarget(null);
                     }
                 }
 
@@ -115,8 +116,8 @@ public class MoCItemWhip extends MoCItemSword {
                     if (petscorpion.getIsTamed() && petscorpion.getRidingEntity() == null) {
                         petscorpion.setSitting(!petscorpion.getIsSitting());
                         petscorpion.setIsJumping(false);
-                        petscorpion.getNavigator().clearPath();
-                        petscorpion.setAttackTarget(null);
+                        petscorpion.getNavigation().stop();
+                        petscorpion.setTarget(null);
                     }
                 }
 
@@ -130,13 +131,10 @@ public class MoCItemWhip extends MoCItemSword {
                     if (entityostrich.getIsTamed() && entityostrich.getRidingEntity() == null) {
                         entityostrich.setHiding(!entityostrich.getHiding());
                         entityostrich.setIsJumping(false);
-                        entityostrich.getNavigator().clearPath();
-                        entityostrich.setAttackTarget(null);
+                        entityostrich.getNavigation().stop();
+                        entityostrich.setTarget(null);
                     }
                 }
-
-                if (entity instanceof MoCEntityElephant) {
-                    MoCEntityElephant entityelephant = (MoCEntityElephant) entity;
 
                 if (entity instanceof MoCEntityElephant) {
                     MoCEntityElephant elephant = (MoCEntityElephant) entity;

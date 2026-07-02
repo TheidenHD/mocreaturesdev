@@ -1,8 +1,6 @@
 package drzhark.mocreatures.client.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import drzhark.mocreatures.MoCConstants;
-import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.network.MoCMessageHandler;

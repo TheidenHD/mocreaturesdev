@@ -55,8 +55,8 @@ public class MoCEntityGrasshopper extends MoCEntityInsect {
     public void livingTick() {
         super.livingTick();
         if (!this.level().isRemote) {
-            /*if (getIsFlying() || !this.onGround) {
-                Player ep = this.level().getClosestPlayerToEntity(this, 5D);
+            /*if (getIsFlying() || !this.onGround()) {
+                Player ep = this.level().getNearestPlayerToEntity(this, 5D);
                 if (ep != null && --this.soundCounter == -1) {
                     MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GRASSHOPPER_FLY.get());
                     this.soundCounter = 10;

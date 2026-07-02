@@ -46,7 +46,7 @@ public class MoCEntityFXStar extends TextureSheetParticle {
         this.yd *= 0.2D;
         this.zd *= 0.9D;
 
-        if (this.onGround) {
+        if (this.onGround()) {
             this.xd *= 0.7D;
             this.zd *= 0.7D;
         }

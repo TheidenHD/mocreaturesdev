@@ -7,16 +7,12 @@ import drzhark.mocreatures.client.renderer.fx.impl.MoCEntityFXUndead;
 import drzhark.mocreatures.client.renderer.fx.impl.MoCEntityFXVacuum;
 import drzhark.mocreatures.client.renderer.fx.impl.MoCEntityFXVanish;
 import drzhark.mocreatures.client.renderer.fx.MoCParticles;
-import drzhark.mocreatures.init.MoCBlocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MoCClientEvents {

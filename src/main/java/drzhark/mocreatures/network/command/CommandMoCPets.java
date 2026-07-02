@@ -18,7 +18,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class CommandMoCPets {

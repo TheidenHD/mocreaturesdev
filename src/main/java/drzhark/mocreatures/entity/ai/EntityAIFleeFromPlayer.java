@@ -5,7 +5,6 @@ package drzhark.mocreatures.entity.ai;
 
 import drzhark.mocreatures.entity.IMoCEntity;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;

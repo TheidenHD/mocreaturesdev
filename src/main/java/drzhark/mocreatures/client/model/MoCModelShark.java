@@ -8,7 +8,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import drzhark.mocreatures.entity.aquatic.MoCEntityShark;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Mth;
 
 public class MoCModelShark<T extends MoCEntityShark> extends EntityModel<T> {
     private final ModelRenderer body;
@@ -327,6 +327,6 @@ public class MoCModelShark<T extends MoCEntityShark> extends EntityModel<T> {
     }
 
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.tail.rotateAngleY = (MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount) / 4;
+        this.tail.rotateAngleY = (Mth.cos(limbSwing * 0.6662F) * limbSwingAmount) / 4;
     }
 }

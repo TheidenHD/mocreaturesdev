@@ -78,7 +78,7 @@ public class MoCEventHooks {
                 if (spawnPos == null || !WorldEntitySpawner.canCreatureTypeSpawnAtLocation(LivingEntity.SpawnPlacementType.ON_GROUND, world, spawnPos))
                     return;
                 kitty.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(kitty)), null);
-                kitty.setPosition(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ());
+                kitty.setPos(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ());
                 if (!kitty.getCanSpawnHere()) return;
                 world.spawnEntity(kitty);
             }

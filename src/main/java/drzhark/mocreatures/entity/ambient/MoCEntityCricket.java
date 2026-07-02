@@ -9,10 +9,8 @@ import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.world.entity.EntitySize;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -105,7 +103,7 @@ public class MoCEntityCricket extends MoCEntityAmbient {
     public void tick() {
         super.tick();
         if (!this.level().isRemote) {
-            if (onGround && ((getMotion().getX() > 0.05D) || (getMotion().getZ() > 0.05D) || (getMotion().getX() < -0.05D) || (getMotion().getZ() < -0.05D)))
+            if (onGround() && ((getMotion().getX() > 0.05D) || (getMotion().getZ() > 0.05D) || (getMotion().getX() < -0.05D) || (getMotion().getZ() < -0.05D)))
                 if (this.jumpCounter == 0) {
                     this.setMotion(this.getMotion().getX() * 5D, 0.45D, this.getMotion().getZ() * 5D);
                     this.jumpCounter = 1;

@@ -3,7 +3,6 @@
  */
 package drzhark.mocreatures.entity.item;
 
-import drzhark.mocreatures.MoCreatures;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;

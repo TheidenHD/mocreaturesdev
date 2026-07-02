@@ -13,7 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.InteractionResult;
 import net.minecraft.util.InteractionHand;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.level.Level;
@@ -40,13 +40,13 @@ public class MoCItemPetAmuletNew extends Item {
                 double newPosX = player.posX - (dist * Math.cos((MoCTools.realAngle(player.rotationYaw - 90F)) / 57.29578F));
                 double newPosY = player.posY;
                 double newPosZ = player.posZ - (dist * Math.sin((MoCTools.realAngle(player.rotationYaw - 90F)) / 57.29578F));
-                entity.setLocationAndAngles(newPosX, newPosY, newPosZ, player.rotationYaw, 0.0F);
+                entity.moveTo(newPosX, newPosY, newPosZ, player.rotationYaw, 0.0F);
                 world.spawnEntity(entity);
                 stack.setTagCompound(null);
-                return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+                return new ActionResult<>(InteractionResult.SUCCESS, stack);
             }
         }
-        return new ActionResult<>(EnumActionResult.PASS, stack);
+        return new ActionResult<>(InteractionResult.PASS, stack);
     }
 
     @Override

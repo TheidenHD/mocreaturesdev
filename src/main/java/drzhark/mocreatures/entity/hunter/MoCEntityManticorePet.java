@@ -11,7 +11,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.InteractionResult;
 import net.minecraft.util.InteractionHand;
 import net.minecraft.resources.ResourceLocation;
@@ -81,12 +80,12 @@ public class MoCEntityManticorePet extends MoCEntityBigCat {
         if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.whip)) {
             setSitting(!getIsSitting());
             setIsJumping(false);
-            getNavigator().clearPath();
-            setAttackTarget(null);
+            getNavigation().stop();
+            setTarget(null);
             return true;
         }
 
-        if (this.getIsRideable() && this.getIsAdult() && (!this.getIsChested() || !player.isSneaking()) && !this.isBeingRidden()) {
+        if (this.getIsRideable() && this.getIsAdult() && (!this.getIsChested() || !player.isCrouching()) && !this.isBeingRidden()) {
             if (!this.level().isRemote && player.startRiding(this)) {
                 player.rotationYaw = this.rotationYaw;
                 player.rotationPitch = this.rotationPitch;

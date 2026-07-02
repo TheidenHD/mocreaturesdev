@@ -15,8 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
-
 public class MoCEntityHellRat extends MoCEntityRat {
 
     private int textCounter;

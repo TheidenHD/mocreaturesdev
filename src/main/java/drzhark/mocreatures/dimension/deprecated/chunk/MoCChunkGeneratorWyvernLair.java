@@ -14,7 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
@@ -213,7 +213,7 @@ public class MoCChunkGeneratorWyvernLair implements IChunkGenerator {
     private float getIslandHeightValue(int p_185960_1_, int p_185960_2_, int p_185960_3_, int p_185960_4_) {
         float f = (float) (p_185960_1_ * 2 + p_185960_3_);
         float f1 = (float) (p_185960_2_ * 2 + p_185960_4_);
-        float f2 = 100.0F - MathHelper.sqrt(f * f + f1 * f1) * 8.0F;
+        float f2 = 100.0F - Mth.sqrt(f * f + f1 * f1) * 8.0F;
 
         if (f2 > 80.0F) {
             f2 = 80.0F;
@@ -229,10 +229,10 @@ public class MoCChunkGeneratorWyvernLair implements IChunkGenerator {
                 long l = p_185960_2_ + j;
 
                 if (k * k + l * l > 4096L && this.islandNoise.getValue((double) k, (double) l) < -0.8999999761581421D) {
-                    float f3 = (MathHelper.abs((float) k) * 3439.0F + MathHelper.abs((float) l) * 147.0F) % 13.0F + 9.0F;
+                    float f3 = (Mth.abs((float) k) * 3439.0F + Mth.abs((float) l) * 147.0F) % 13.0F + 9.0F;
                     f = (float) (p_185960_3_ - i * 2);
                     f1 = (float) (p_185960_4_ - j * 2);
-                    float f4 = 100.0F - MathHelper.sqrt(f * f + f1 * f1) * f3;
+                    float f4 = 100.0F - Mth.sqrt(f * f + f1 * f1) * f3;
 
                     if (f4 > 80.0F) {
                         f4 = 80.0F;
@@ -295,7 +295,7 @@ public class MoCChunkGeneratorWyvernLair implements IChunkGenerator {
 
                     if (j1 > p_185963_6_ / 2 - k1) {
                         double d6 = (float) (j1 - (p_185963_6_ / 2 - k1)) / 64.0F;
-                        d6 = MathHelper.clamp(d6, 0.0D, 1.0D);
+                        d6 = Mth.clamp(d6, 0.0D, 1.0D);
                         d4 = d4 * (1.0D - d6) + -3000.0D * d6;
                     }
 

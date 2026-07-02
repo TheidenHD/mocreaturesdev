@@ -13,20 +13,17 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.world.entity.EntityLivingBase;
 import net.minecraft.world.entity.SharedMonsterAttributes;
-import net.minecraft.world.entity.ai.*;
 import net.minecraft.world.entity.monster.EntityIronGolem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataAccessor;
+import net.minecraft.network.datasync.EntityDataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.level.Level;
-
-import javax.annotation.Nullable;
 
 public class MoCEntityMiniGolem extends MoCEntityMob {
 

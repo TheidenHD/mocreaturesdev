@@ -5,7 +5,6 @@ package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.hostile.MoCEntityManticore;
 
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

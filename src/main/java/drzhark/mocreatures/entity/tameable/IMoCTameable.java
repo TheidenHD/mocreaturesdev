@@ -5,7 +5,6 @@ package drzhark.mocreatures.entity.tameable;
 
 import drzhark.mocreatures.entity.IMoCEntity;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
 
 import javax.annotation.Nullable;

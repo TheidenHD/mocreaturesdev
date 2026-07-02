@@ -480,7 +480,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         if (getEating()) {
             this.eatcount += 1;
             if (this.eatcount == 2) {
-                Player Player1 = this.level().getClosestPlayer(this, 3D);
+                Player Player1 = this.level().getNearestPlayer(this, 3D);
                 if (Player1 != null) {
                     MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EAT);
                 }

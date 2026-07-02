@@ -108,7 +108,7 @@ public class MoCRenderHorse extends MoCRenderMoC<MoCEntityHorse, MoCModelHorse<M
                         float barWidth = 40F * healthRatio;
 
                         // Use static white texture for health bars
-                        ResourceLocation WHITE_TEXTURE = new ResourceLocation("textures/misc/white.png");
+                        ResourceLocation WHITE_TEXTURE = ResourceLocation.parse("textures/misc/white.png");
 
                         // Red background (empty health)
                         VertexConsumer vertexconsumer = buffer.getBuffer(RenderType.text(WHITE_TEXTURE));

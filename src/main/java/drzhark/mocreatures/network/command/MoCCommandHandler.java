@@ -1,6 +1,5 @@
 package drzhark.mocreatures.network.command;
 
-import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.network.command.multision.CommandSpawnMoCHorse;
 import drzhark.mocreatures.network.command.multision.MoCDebugSpawnCommand;
 import drzhark.mocreatures.network.command.multision.ReloadSpawnConfigCommand;

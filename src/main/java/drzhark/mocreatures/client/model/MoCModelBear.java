@@ -1184,7 +1184,7 @@ public class MoCModelBear<T extends MoCEntityBear> extends EntityModel<T> {
             /*
              * Arm breathing movement
              */
-            float breathing = MathHelper.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
+            float breathing = Mth.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
             this.BLegFR1.rotateAngleZ = 0.2617994F + breathing;
             this.BLegFR2.rotateAngleZ = breathing;
             this.BLegFR3.rotateAngleZ = breathing;

@@ -17,10 +17,13 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 
@@ -58,7 +61,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
     @Override
     public void livingTick() {
         if (!this.level().isRemote) {
-            setSprinting(this.getAttackTarget() != null);
+            setSprinting(this.getTarget() != null);
         }
 
         if (this.attackCounterLeft > 0 && ++this.attackCounterLeft > 10) {
@@ -94,17 +97,17 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
 
             if (leftArmW) {
                 this.attackCounterLeft = 1;
-                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 1));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getId(), 1));
             } else {
                 this.attackCounterRight = 1;
-                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 2));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getId(), 2));
             }
         }
     }
 
     @Override
     public boolean attackEntityAsMob(Entity entityIn) {
-    	MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SILVER_SKELETON_ATTACK);
+    	MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SILVER_SKELETON_ATTACK.get());
         startAttackAnimation();
         return super.attackEntityAsMob(entityIn);
     }
@@ -120,17 +123,17 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_SILVER_SKELETON_DEATH;
+        return MoCSoundEvents.ENTITY_SILVER_SKELETON_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_SILVER_SKELETON_HURT;
+        return MoCSoundEvents.ENTITY_SILVER_SKELETON_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MoCSoundEvents.ENTITY_SILVER_SKELETON_AMBIENT;
+        return MoCSoundEvents.ENTITY_SILVER_SKELETON_AMBIENT.get();
     }
 
     @Override
@@ -140,7 +143,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
 
     @Override
     protected void playStepSound(BlockPos pos, Block block) {
-        this.playSound(MoCSoundEvents.ENTITY_SILVER_SKELETON_STEP, 0.3F, 1.0F);
+        this.playSound(MoCSoundEvents.ENTITY_SILVER_SKELETON_STEP.get(), 0.3F, 1.0F);
     }
 
     @Nullable
@@ -161,7 +164,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
             float f = this.attacker.getBrightness();
 
             if (f >= 0.5F && this.attacker.getRNG().nextInt(100) == 0) {
-                this.attacker.setAttackTarget(null);
+                this.attacker.setTarget(null);
                 return false;
             } else {
                 return super.shouldContinueExecuting();

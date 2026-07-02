@@ -31,7 +31,7 @@ public class MoCEntityFXUndead extends TextureSheetParticle {
     @Override
     public void tick() {
         super.tick();
-        this.setSprite(this.onGround ? spriteGround : spriteAir);
+        this.setSprite(this.onGround() ? spriteGround : spriteAir);
     }
 
     @Override

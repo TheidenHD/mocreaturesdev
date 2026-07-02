@@ -3,7 +3,6 @@
  */
 package drzhark.mocreatures.entity.passive;
 
-import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityAnimal;
 import drzhark.mocreatures.entity.ai.EntityAIFleeFromPlayer;
@@ -24,7 +23,6 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.sounds.SoundEvent;
@@ -32,11 +30,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
-
-import javax.annotation.Nullable;
 
 public class MoCEntityMouse extends MoCEntityAnimal {
     private static final EntityDataAccessor<Boolean> CLIMBING = SynchedEntityData.defineId(MoCEntityMouse.class, EntityDataSerializers.BOOLEAN);

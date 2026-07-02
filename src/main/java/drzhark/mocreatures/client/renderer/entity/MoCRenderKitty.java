@@ -11,7 +11,6 @@ import drzhark.mocreatures.entity.neutral.MoCEntityKitty;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.math.Axis;
 import net.minecraftforge.api.distmarker.Dist;

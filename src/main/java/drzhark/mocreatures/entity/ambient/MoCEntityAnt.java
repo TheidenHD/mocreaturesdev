@@ -7,27 +7,22 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.MoCEntityAmbient;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
-import net.minecraft.world.entity.EntitySize;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 
 public class MoCEntityAnt extends MoCEntityAmbient {
 
-    private static final DataParameter<Boolean> FOUND_FOOD = EntityDataManager.createKey(MoCEntityAnt.class, DataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> FOUND_FOOD = SynchedEntityData.defineId(MoCEntityAnt.class, EntityDataSerializers.BOOLEAN);
 
     public MoCEntityAnt(EntityType<? extends MoCEntityAnt> type, Level world) {
         super(type, world);
@@ -41,21 +36,21 @@ public class MoCEntityAnt extends MoCEntityAmbient {
     }
 
     @Override
-    protected void registerData() {
-        super.registerData();
-        this.dataManager.register(FOUND_FOOD, Boolean.FALSE);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(FOUND_FOOD, Boolean.FALSE);
     }
 
-    public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return MoCEntityAmbient.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 3.0D).createMutableAttribute(Attributes.ARMOR, 1.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.28D);
+    public static AttributeSupplier.Builder registerAttributes() {
+        return MoCEntityAmbient.registerAttributes().add(Attributes.MAX_HEALTH, 3.0D).add(Attributes.ARMOR, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.28D);
     }
 
     public boolean getHasFood() {
-        return this.dataManager.get(FOUND_FOOD);
+        return this.entityData.get(FOUND_FOOD);
     }
 
     public void setHasFood(boolean flag) {
-        this.dataManager.set(FOUND_FOOD, flag);
+        this.entityData.set(FOUND_FOOD, flag);
     }
 
     @Override
@@ -113,7 +108,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
         ItemEntity cargo = new ItemEntity(this.level(), this.getPosX(), this.getPosY() + 0.2D, this.getPosZ(), entityitem.getItem());
         entityitem.remove();
         if (!this.level().isRemote) {
-            this.level().addEntity(cargo);
+            this.level().addFreshEntity(cargo);
         }
     }
 

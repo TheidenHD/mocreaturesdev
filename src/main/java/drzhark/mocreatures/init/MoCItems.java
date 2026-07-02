@@ -4,19 +4,13 @@ import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.item.*;
 import drzhark.mocreatures.util.MoCArmorMaterial;
 import drzhark.mocreatures.util.MoCItemTier;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.Registry;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
-
-import java.util.function.Supplier;
 
 public class MoCItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, MoCConstants.MOD_ID);

@@ -21,8 +21,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
-
 public class MoCEntityDuck extends MoCEntityAnimal {
 
     public boolean field_70885_d = false;

@@ -19,7 +19,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -144,12 +143,12 @@ public class MoCEntityKittyBed extends LivingEntity {
         if (!stack.isEmpty() && !getHasFood() && !getHasMilk()) {
             if (stack.getItem() == MoCItems.petfood) {
                 if (!player.capabilities.isCreativeMode) stack.shrink(1);
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_BED_POUR_FOOD);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_BED_POUR_FOOD.get());
                 setHasMilk(false);
                 setHasFood(true);
             } else if (stack.getItem() == Items.MILK_BUCKET) {
                 player.setItemInHand(hand, new ItemStack(Items.BUCKET, 1));
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_BED_POUR_MILK);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_BED_POUR_MILK.get());
                 setHasMilk(true);
                 setHasFood(false);
             }

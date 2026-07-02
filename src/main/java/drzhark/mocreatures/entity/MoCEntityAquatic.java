@@ -57,7 +57,7 @@ import java.util.UUID;
  */
 public abstract class MoCEntityAquatic extends WaterAnimal implements IMoCEntity {
 
-    // === Data parameters (formerly EntityDataManager + DataSerializers) ===
+    // === Data parameters (formerly EntityDataManager + EntityDataSerializers) ===
     private static final EntityDataAccessor<Boolean> ADULT =
             SynchedEntityData.defineId(MoCEntityAquatic.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> TYPE =

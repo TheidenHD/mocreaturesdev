@@ -5,9 +5,6 @@ package drzhark.mocreatures.entity.aquatic;
 
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
-import drzhark.mocreatures.entity.ai.EntityAIFleeFromEntityMoC;
-import drzhark.mocreatures.entity.ai.EntityAIPanicMoC;
-import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
 import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCItems;

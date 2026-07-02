@@ -5,7 +5,6 @@ package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.hunter.MoCEntityManticorePet;
 
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -32,7 +31,7 @@ public class MoCModelManticorePet<T extends MoCEntityManticorePet> extends MoCMo
         this.onAir = entityIn.isOnAir();
         this.hasStinger = true;
         this.isSitting = manticorePet.getIsSitting();
-        this.isMovingVertically = manticorePet.motionY != 0 && !manticorePet.onGround;
+        this.isMovingVertically = manticorePet.motionY != 0 && !manticorePet.onGround();
         this.hasChest = false;
         this.isTamed = false;
     }

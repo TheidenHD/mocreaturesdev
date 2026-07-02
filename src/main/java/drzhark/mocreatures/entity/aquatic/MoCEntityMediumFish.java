@@ -6,11 +6,20 @@ package drzhark.mocreatures.entity.aquatic;
 import drzhark.mocreatures.entity.ai.EntityAIFleeFromEntityMoC;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
+import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.material.Material;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SharedMonsterAttributes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -169,16 +178,16 @@ public class MoCEntityMediumFish extends MoCEntityTameableAquatic {
     
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_FISH_FLOP;
+        return MoCSoundEvents.ENTITY_FISH_FLOP.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_FISH_HURT;
+        return MoCSoundEvents.ENTITY_FISH_HURT.get();
     }
 
     @Override
     protected SoundEvent getSwimSound() {
-        return MoCSoundEvents.ENTITY_FISH_SWIM;
+        return MoCSoundEvents.ENTITY_FISH_SWIM.get();
     }
 }

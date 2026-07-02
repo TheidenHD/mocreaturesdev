@@ -9,22 +9,21 @@ import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageEntityDive;
 import drzhark.mocreatures.network.message.MoCMessageEntityJump;
 import drzhark.mocreatures.proxy.MoCProxyClient;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import com.mojang.blaze3d.platform.InputConstants;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class MoCKeyHandler {
 
-    static KeyBinding diveBinding = new KeyBinding("Flying Mount Descent (Mo' Creatures)", Keyboard.KEY_Z, "key.categories.movement");
+    static KeyMapping diveBinding = new KeyMapping("Flying Mount Descent (Mo' Creatures)", Keyboard.KEY_Z, "key.categories.movement");
 
     @SubscribeEvent
     public static void registerKeyMappings(RegisterKeyMappingsEvent event) {

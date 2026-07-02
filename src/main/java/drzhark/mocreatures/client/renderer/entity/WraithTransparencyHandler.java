@@ -2,7 +2,6 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.hostile.MoCEntityWraith;
 import drzhark.mocreatures.entity.hostile.MoCEntityFlameWraith;
-import net.minecraft.world.entity.Mob;
 
 /**
  * Transparency handler specifically for wraiths.

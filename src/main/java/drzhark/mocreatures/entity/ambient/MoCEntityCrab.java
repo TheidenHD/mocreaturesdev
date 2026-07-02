@@ -48,8 +48,8 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
     }
 
-    public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.FOLLOW_RANGE, 12.0D).createMutableAttribute(Attributes.MAX_HEALTH, 6.0D).createMutableAttribute(Attributes.ARMOR, 2.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 1.5D);
+    public static AttributeSupplier.Builder registerAttributes() {
+        return MoCEntityTameableAnimal.registerAttributes().add(Attributes.FOLLOW_RANGE, 12.0D).add(Attributes.MAX_HEALTH, 6.0D).add(Attributes.ARMOR, 2.0D).add(Attributes.MOVEMENT_SPEED, 0.3D).add(Attributes.ATTACK_DAMAGE, 1.5D);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
     }
 
     public boolean climbing() {
-        return !this.onGround && isOnLadder();
+        return !this.onGround() && isOnLadder();
     }
 
     @Override
@@ -100,7 +100,7 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
 
     @Override
     protected void collideWithEntity(Entity entity) {
-        if (entity instanceof Player && this.getAttackTarget() == null && !(entity.world.getDifficulty() == Difficulty.PEACEFUL)) {
+        if (entity instanceof Player && this.getTarget() == null && !(entity.world.getDifficulty() == Difficulty.PEACEFUL)) {
             entity.attackEntityFrom(DamageSource.causeMobDamage(this), 1.5F);
         }
 

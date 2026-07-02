@@ -5,10 +5,7 @@ package drzhark.mocreatures.init;
 
 import drzhark.mocreatures.MoCConstants;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.ObjectHolder;
 
 public class MoCBiomes {
 

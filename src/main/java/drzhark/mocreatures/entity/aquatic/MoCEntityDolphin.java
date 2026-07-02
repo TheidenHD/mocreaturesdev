@@ -34,10 +34,8 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 import net.minecraft.util.RandomSource;
 

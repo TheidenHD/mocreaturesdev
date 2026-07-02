@@ -7,36 +7,33 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.ai.*;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
-import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.world.entity.IEntityLivingData;
-import net.minecraft.world.entity.SharedMonsterAttributes;
-import net.minecraft.world.entity.ai.EntityAISwimming;
-import net.minecraft.world.entity.ai.EntityAIWatchClosest;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
 
 import javax.annotation.Nullable;
 
+import static org.antlr.v4.misc.Utils.setSize;
+
 public class MoCEntityBunny extends MoCEntityTameableAnimal {
 
-    private static final DataParameter<Boolean> HAS_EATEN = EntityDataManager.createKey(MoCEntityBunny.class, DataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> HAS_EATEN = SynchedEntityData.defineId(MoCEntityBunny.class, EntityDataSerializers.BOOLEAN);
     public int bunnyReproduceTickerA;
     public int bunnyReproduceTickerB;
     private int jumpTimer;
@@ -49,7 +46,6 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
         if (getRNG().nextInt(4) == 0) {
             setAdult(false);
         }
-        setSize(0.5F, 0.5F);
         this.bunnyReproduceTickerA = getRNG().nextInt(64);
         this.bunnyReproduceTickerB = 0;
     }
@@ -73,7 +69,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     @Override
     protected void entityInit() {
         super.entityInit();
-        this.dataManager.register(HAS_EATEN, false);
+        this.entityData.define(HAS_EATEN, false);
     }
 
     @Nullable
@@ -197,7 +193,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
         }
 
         if (!this.level().isRemote) {
-            if (--this.jumpTimer <= 0 && this.onGround && ((this.motionX > 0.05D) || (this.motionZ > 0.05D) || (this.motionX < -0.05D) || (this.motionZ < -0.05D))) {
+            if (--this.jumpTimer <= 0 && this.onGround() && ((this.motionX > 0.05D) || (this.motionZ > 0.05D) || (this.motionX < -0.05D) || (this.motionZ < -0.05D))) {
                 this.motionY = 0.3D;
                 this.jumpTimer = 15;
             }

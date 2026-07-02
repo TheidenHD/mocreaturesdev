@@ -9,15 +9,12 @@ import drzhark.mocreatures.client.renderer.fx.MoCParticles;
 import drzhark.mocreatures.client.renderer.fx.data.StarParticleData;
 import drzhark.mocreatures.client.renderer.fx.data.VacuumParticleData;
 import drzhark.mocreatures.client.renderer.fx.data.VanishParticleData;
-import drzhark.mocreatures.client.renderer.fx.impl.MoCEntityFXUndead;
-import drzhark.mocreatures.client.renderer.fx.impl.MoCEntityFXVanish;
 import drzhark.mocreatures.client.renderer.texture.MoCTextures;
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -25,8 +22,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 /**

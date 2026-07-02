@@ -40,9 +40,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.event.RegisterCommandsEvent;
 import drzhark.mocreatures.event.MoCWyvernDimensionHandler;
 
 import java.util.UUID;

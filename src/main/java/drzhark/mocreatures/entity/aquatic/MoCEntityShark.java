@@ -5,7 +5,6 @@ package drzhark.mocreatures.entity.aquatic;
 
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityAquatic;
-import drzhark.mocreatures.entity.ai.EntityAIHunt;
 import drzhark.mocreatures.entity.ai.EntityAITargetNonTamedMoC;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.item.MoCEntityEgg;
@@ -21,7 +20,6 @@ import net.minecraft.world.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.world.entity.animal.EntityWolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.world.item.Item;
 import net.minecraft.util.DamageSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -52,8 +50,8 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
         //this.targetTasks.addTask(3, new EntityAIHuntAquatic<>(this, Player.class, false));
     }
 
-    public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return MoCEntityTameableAquatic.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 30.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.55D).createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.0D).createMutableAttribute(Attributes.FOLLOW_RANGE, 32.0D);
+    public static AttributeSupplier.Builder registerAttributes() {
+        return MoCEntityTameableAquatic.registerAttributes().add(Attributes.MAX_HEALTH, 30.0D).add(Attributes.MOVEMENT_SPEED, 0.55D).add(Attributes.ATTACK_DAMAGE, 5.0D).add(Attributes.FOLLOW_RANGE, 32.0D);
     }
 
     @Override
@@ -98,7 +96,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
 
     protected Entity findPlayerToAttack() {
         if ((this.level().getDifficulty().getId() > 0) && (getAge() >= 100)) {
-            Player Player = this.level().getClosestPlayer(this, 16D);
+            Player Player = this.level().getNearestPlayer(this, 16D);
             if ((Player != null) && Player.isInWater() && !getIsTamed()) {
                 return Player;
             }
@@ -118,7 +116,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
                     getIsTamed();
                 }
             }
-            double d2 = o.getDistanceSq(entity.getPosX(), entity.getPosY(), entity.getPosZ());
+            double d2 = o.distanceToSqr(entity.getPosX(), entity.getPosY(), entity.getPosZ());
             if (((d < 0.0D) || (d2 < (d * d))) && ((d1 == -1D) || (d2 < d1)) && ((LivingEntity) o).canEntityBeSeen(entity)) {
                 d1 = d2;
                 entityliving = (LivingEntity) o;

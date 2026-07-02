@@ -44,7 +44,7 @@ public class EntityAIBunnyReproduce extends EntityAIBase {
                 bunny.getNavigator().tryMoveToEntityLiving(otherBunny, 1.0D);
 
                 MoCEntityBunny babyBunny = new MoCEntityBunny(world);
-                babyBunny.setPosition(bunny.posX, bunny.posY, bunny.posZ);
+                babyBunny.setPos(bunny.posX, bunny.posY, bunny.posZ);
                 babyBunny.setAdult(false);
 
                 int babyType = bunny.getType();

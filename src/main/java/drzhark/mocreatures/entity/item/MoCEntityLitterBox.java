@@ -109,7 +109,7 @@ public class MoCEntityLitterBox extends LivingEntity {
     }
 
     @Override
-    public InteractionResult mobInteract(Player player, InteractionHand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand) {
         final ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty() && stack.is(Item.byBlock(Blocks.SAND))) {
             MoCTools.playCustomSound(this, SoundEvents.SAND_PLACE);

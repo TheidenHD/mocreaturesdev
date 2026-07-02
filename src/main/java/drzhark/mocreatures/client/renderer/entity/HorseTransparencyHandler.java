@@ -1,7 +1,6 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
-import net.minecraft.world.entity.Mob;
 
 /**
  * Transparency handler specifically for horses.

@@ -6,7 +6,6 @@ package drzhark.mocreatures.client.renderer.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import drzhark.mocreatures.entity.item.MoCEntityThrowableRock;
-import drzhark.mocreatures.MoCreatures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;

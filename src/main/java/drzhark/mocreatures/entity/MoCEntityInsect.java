@@ -29,8 +29,8 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
         this.moveController = new FlyingMovementController(this, 10, false);
     }
 
-    public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return MoCEntityAmbient.registerAttributes().createMutableAttribute(Attributes.MAX_HEALTH, 4.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D).createMutableAttribute(Attributes.FLYING_SPEED, 0.6D);
+    public static AttributeSupplier.Builder registerAttributes() {
+        return MoCEntityAmbient.registerAttributes().add(Attributes.MAX_HEALTH, 4.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.FLYING_SPEED, 0.6D);
     }
 
     @Override
@@ -42,8 +42,8 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
     }
 
     @Override
-    protected void registerData() {
-        super.registerData();
+    protected void defineSynchedData() {
+        super.defineSynchedData();
     }
 
     @Override

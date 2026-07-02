@@ -15,41 +15,20 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import drzhark.mocreatures.network.message.MoCMessageHeart;
-import drzhark.mocreatures.network.message.MoCMessageVanish;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.LookAtGoal;
-import net.minecraft.world.entity.ai.goal.SwimGoal;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.animal.WolfEntity;
-import net.minecraft.world.entity.animal.horse.AbstractHorseEntity;
-import net.minecraft.world.entity.animal.horse.DonkeyEntity;
-import net.minecraft.world.entity.animal.horse.HorseEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.JukeboxTileEntity;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.List;
 import java.util.UUID;
@@ -57,11 +36,11 @@ import java.util.UUID;
 @SuppressWarnings("deprecation")
 public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
-    private static final DataParameter<Boolean> RIDEABLE = EntityDataManager.createKey(MoCEntityHorse.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> CHESTED = EntityDataManager.createKey(MoCEntityHorse.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> SITTING = EntityDataManager.createKey(MoCEntityHorse.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> BRED = EntityDataManager.createKey(MoCEntityHorse.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> ARMOR_TYPE = EntityDataManager.createKey(MoCEntityHorse.class, DataSerializers.VARINT);
+    private static final EntityDataAccessor<Boolean> RIDEABLE = SynchedEntityData.defineId(MoCEntityHorse.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> CHESTED = SynchedEntityData.defineId(MoCEntityHorse.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> SITTING = SynchedEntityData.defineId(MoCEntityHorse.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> BRED = SynchedEntityData.defineId(MoCEntityHorse.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> ARMOR_TYPE = SynchedEntityData.defineId(MoCEntityHorse.class, EntityDataSerializers.INT);
     public int shuffleCounter;
     public int wingFlapCounter;
     public MoCAnimalChest localChest;
@@ -108,63 +87,63 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         this.goalSelector.addGoal(7, new LookAtGoal(this, Player.class, 8.0F));
     }
 
-    public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return MoCEntityTameableAnimal.registerAttributes().createMutableAttribute(Attributes.FOLLOW_RANGE, 12.0D).createMutableAttribute(Attributes.MAX_HEALTH, 30.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+    public static AttributeSupplier.Builder registerAttributes() {
+        return MoCEntityTameableAnimal.registerAttributes().add(Attributes.FOLLOW_RANGE, 12.0D).add(Attributes.MAX_HEALTH, 30.0D).add(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
-    protected void registerData() {
-        super.registerData();
-        this.dataManager.register(RIDEABLE, Boolean.FALSE); // rideable: 0 nothing, 1 saddle
-        this.dataManager.register(SITTING, Boolean.FALSE); // rideable: 0 nothing, 1 saddle
-        this.dataManager.register(CHESTED, Boolean.FALSE);
-        this.dataManager.register(BRED, Boolean.FALSE);
-        this.dataManager.register(ARMOR_TYPE, 0);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(RIDEABLE, Boolean.FALSE); // rideable: 0 nothing, 1 saddle
+        this.entityData.define(SITTING, Boolean.FALSE); // rideable: 0 nothing, 1 saddle
+        this.entityData.define(CHESTED, Boolean.FALSE);
+        this.entityData.define(BRED, Boolean.FALSE);
+        this.entityData.define(ARMOR_TYPE, 0);
     }
 
     @Override
     public int getArmorType() {
-        return this.dataManager.get(ARMOR_TYPE);
+        return this.entityData.get(ARMOR_TYPE);
     }
 
     @Override
     public void setArmorType(int i) {
-        this.dataManager.set(ARMOR_TYPE, i);
+        this.entityData.set(ARMOR_TYPE, i);
     }
 
     public boolean getIsChested() {
-        return this.dataManager.get(CHESTED);
+        return this.entityData.get(CHESTED);
     }
 
     public void setIsChested(boolean flag) {
-        this.dataManager.set(CHESTED, flag);
+        this.entityData.set(CHESTED, flag);
     }
 
     @Override
     public boolean getIsSitting() {
-        return this.dataManager.get(SITTING);
+        return this.entityData.get(SITTING);
     }
 
     public boolean getHasBred() {
-        return this.dataManager.get(BRED);
+        return this.entityData.get(BRED);
     }
 
     public void setBred(boolean flag) {
-        this.dataManager.set(BRED, flag);
+        this.entityData.set(BRED, flag);
     }
 
     @Override
     public boolean getIsRideable() {
-        return this.dataManager.get(RIDEABLE);
+        return this.entityData.get(RIDEABLE);
     }
 
     @Override
     public void setRideable(boolean flag) {
-        this.dataManager.set(RIDEABLE, flag);
+        this.entityData.set(RIDEABLE, flag);
     }
 
     public void setSitting(boolean flag) {
-        this.dataManager.set(SITTING, flag);
+        this.entityData.set(SITTING, flag);
     }
 
     @Override
@@ -173,7 +152,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         if ((this.isBeingRidden()) && (entity == this.getRidingEntity())) return false;
         if (entity instanceof WolfEntity) {
             PathfinderMob entitycreature = (PathfinderMob) entity;
-            entitycreature.setAttackTarget(null);
+            entitycreature.setTarget(null);
             return false;
         } else {
             i = i - (getArmorType() + 2);
@@ -362,7 +341,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         }
         ItemEntity entityItem = new ItemEntity(this.level(), this.getPosX(), this.getPosY(), this.getPosZ(), armorStack);
         entityItem.setDefaultPickupDelay();
-        this.level().addEntity(entityItem);
+        this.level().addFreshEntity(entityItem);
         setArmorType((byte) 0);
     }
 
@@ -377,7 +356,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         ItemEntity entityitem = new ItemEntity(this.level(), this.getPosX(), this.getPosY(), this.getPosZ(), new ItemStack(Blocks.CHEST, 1));
         double f3 = 0.05D;
         entityitem.setMotion(this.level().rand.nextGaussian() * f3, (this.level().rand.nextGaussian() * f3) + 0.2D, this.level().rand.nextGaussian() * f3);
-        this.level().addEntity(entityitem);
+        this.level().addFreshEntity(entityitem);
         setIsChested(false);
     }
 
@@ -1279,7 +1258,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             if (getArmorType() == 0) MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_ON.get());
             dropArmor();
             setArmorType((byte) 1);
-            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             return InteractionResult.SUCCESS;
         }
 
@@ -1287,7 +1266,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             if (getArmorType() == 0) MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_ON.get());
             dropArmor();
             setArmorType((byte) 2);
-            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             return InteractionResult.SUCCESS;
         }
 
@@ -1295,7 +1274,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             if (getArmorType() == 0) MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_ON.get());
             dropArmor();
             setArmorType((byte) 3);
-            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             return InteractionResult.SUCCESS;
         }
 
@@ -1303,13 +1282,13 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             if (getArmorType() == 0) MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_ARMOR_ON.get());
             dropArmor();
             setArmorType((byte) 4);
-            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             return InteractionResult.SUCCESS;
         }
 
         // transform to undead, or heal undead horse
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.essenceundead) {
-            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             if (stack.isEmpty()) player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
             else player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
 
@@ -1335,7 +1314,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
         // to transform to nightmares: only pure breeds
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.essencefire) {
-            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             if (stack.isEmpty()) player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
             else player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
 
@@ -1353,7 +1332,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
         // transform to dark pegasus
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.essencedarkness) {
-            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             if (stack.isEmpty()) player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
             else player.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
 
@@ -1374,7 +1353,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         }
 
         if (!stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.essencelight) {
-            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             if (stack.isEmpty()) {
                 player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
             } else {
@@ -1478,7 +1457,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                     break;
             }
 
-            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             eatingHorse();
             return InteractionResult.SUCCESS;
         }
@@ -1489,13 +1468,13 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             if (!this.level().isRemote) {
                 ItemEntity entityitem1 = new ItemEntity(this.level(), this.getPosX(), this.getPosY(), this.getPosZ(), new ItemStack(MoCItems.recordshuffle, 1));
                 entityitem1.setPickupDelay(20);
-                this.level().addEntity(entityitem1);
+                this.level().addFreshEntity(entityitem1);
             }
             eatingHorse();
             return InteractionResult.SUCCESS;
         }
         if (!stack.isEmpty() && (stack.getItem() == Items.WHEAT) && !isMagicHorse() && !isUndead()) {
-            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             if (!this.level().isRemote) {
                 setTemper(getTemper() + 25);
                 if (getTemper() > getMaxTemper()) setTemper(getMaxTemper() - 5);
@@ -1507,7 +1486,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         }
 
         if (!stack.isEmpty() && (stack.getItem() == MoCItems.sugarlump) && !isMagicHorse() && !isUndead()) {
-            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             if (!this.level().isRemote) {
                 setTemper(getTemper() + 25);
                 if (getTemper() > getMaxTemper()) setTemper(getMaxTemper() - 5);
@@ -1519,7 +1498,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         }
 
         if (!stack.isEmpty() && (stack.getItem() == Items.BREAD) && !isMagicHorse() && !isUndead()) {
-            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             if (!this.level().isRemote) {
                 setTemper(getTemper() + 100);
                 if (getTemper() > getMaxTemper()) setTemper(getMaxTemper() - 5);
@@ -1531,7 +1510,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         }
 
         if (!stack.isEmpty() && ((stack.getItem() == Items.APPLE) || (stack.getItem() == Items.GOLDEN_APPLE)) && !isMagicHorse() && !isUndead()) {
-            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             if (!this.level().isRemote) MoCTools.tameWithName(player, this);
             this.setHealth(getMaxHealth());
             eatingHorse();
@@ -1541,7 +1520,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
         if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == Item.getItemFromBlock(Blocks.CHEST)) && (isBagger())) {
             if (getIsChested()) return InteractionResult.FAIL;
-            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
 
             setIsChested(true);
             MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
@@ -1554,7 +1533,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             if (!isMagicHorse() && !isUndead()) this.setHealth(getMaxHealth());
             return InteractionResult.SUCCESS;
         }
-        if (getIsChested() && player.isSneaking()) {
+        if (getIsChested() && player.isCrouching()) {
             // if first time opening horse chest, we must initialize it
             if (this.localChest == null) this.localChest = new MoCAnimalChest("HorseChest", getInventorySize());// , new
             // only open this chest on server side
@@ -1567,7 +1546,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 && ((stack.getItem() == Item.getItemFromBlock(Blocks.PUMPKIN)) || (stack.getItem() == Items.MUSHROOM_STEW)
                 || (stack.getItem() == Items.CAKE) || (stack.getItem() == Items.GOLDEN_CARROT))) {
             if (!getIsAdult() || isMagicHorse() || isUndead()) return InteractionResult.FAIL;
-            if (!player.abilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             if (stack.getItem() == Items.MUSHROOM_STEW) {
                 if (stack.isEmpty()) player.setItemInHand(hand, new ItemStack(Items.BOWL));
                 else player.inventory.addItemStackToInventory(new ItemStack(Items.BOWL));
@@ -1581,8 +1560,8 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         if (!stack.isEmpty() && (stack.getItem() == MoCItems.whip) && getIsTamed() && (!this.isBeingRidden())) {
             setSitting(!getIsSitting());
             setIsJumping(false);
-            getNavigator().clearPath();
-            setAttackTarget(null);
+            getNavigation().stop();
+            setTarget(null);
             return true;
         }
 
@@ -1715,7 +1694,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
     public boolean isZebraRunning() {
         boolean flag = false;
-        Player ep1 = this.level().getClosestPlayer(this, 8D);
+        Player ep1 = this.level().getNearestPlayer(this, 8D);
         if (ep1 != null) {
             flag = true;
             if (ep1.getRidingEntity() instanceof MoCEntityHorse) {
@@ -1761,7 +1740,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 flag = true;
                 if (this.shuffleCounter > 1000) {
                     this.shuffleCounter = 0;
-                    MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 102));
+                    MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getId(), 102));
                     flag = false;
                 }
             }
@@ -1804,13 +1783,13 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
             if (getIsTamed() && (isMagicHorse() || isPureBreed()) && !getIsGhost() && this.rand.nextInt(4) == 0) {
                 MoCEntityHorse entityhorse1 = new MoCEntityHorse(this.level());
-                entityhorse1.setPosition(this.posX, this.posY, this.posZ);
+                entityhorse1.setPos(this.posX, this.posY, this.posZ);
                 this.level().spawnEntity(entityhorse1);
                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_MAGIC_ENCHANTED);
 
                 entityhorse1.setOwnerId(this.getOwnerId());
                 entityhorse1.setTamed(true);
-                Player Player = this.level().getClosestPlayer(this, 24D);
+                Player Player = this.level().getNearestPlayer(this, 24D);
                 if (Player != null) MoCTools.tameWithName(Player, entityhorse1);
 
                 entityhorse1.setAdult(false);
@@ -1827,7 +1806,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         /*
          * slow falling
          */
-        if (!this.onGround && this.getMotion().getY() < 0.0D && (isFlyer() || isFloater()))
+        if (!this.onGround() && this.getMotion().getY() < 0.0D && (isFlyer() || isFloater()))
             this.setMotion(this.getMotion().mul(1.0D, 0.6D, 1.0D));
 
         if (this.rand.nextInt(200) == 0) moveTail();
@@ -1865,7 +1844,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
              */
             if (this.getTypeMoC() == 60 && getIsTamed() && this.rand.nextInt(50) == 0 && nearMusicBox() && shuffleCounter == 0) {
                 shuffleCounter = 1;
-                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 101));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getId(), 101));
             }
 
             if ((this.rand.nextInt(300) == 0) && (this.deathTime == 0)) {
@@ -1939,15 +1918,15 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
                 this.gestationTime++; // Always increment, instead of taking a 1% chance
 
                 if (this.gestationTime % 3 == 0) {
-                    MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageHeart(this.getEntityId()));
+                    MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageHeart(this.getId()));
                 }
 
                 //if (this.gestationTime <= 50) continue;
                 if (this.gestationTime <= 300) continue; // Instead of RNG delay, it takes ~15 seconds to breed.
 
                 MoCEntityHorse baby = MoCEntities.WILDHORSE.create(this.level());
-                baby.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
-                this.level().addEntity(baby);
+                baby.setPos(this.getPosX(), this.getPosY(), this.getPosZ());
+                this.level().addFreshEntity(baby);
                 MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
                 this.eatenPumpkin = false;
                 this.gestationTime = 0;
@@ -2026,7 +2005,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
             if (!this.level().isRemote && !nearMusicBox()) {
                 this.shuffleCounter = 0;
-                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 102));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getId(), 102));
             }
         }
 
@@ -2180,7 +2159,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
     public void transform(int tType) {
         if (!this.level().isRemote) {
-            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () ->  new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), tType));
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () ->  new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getId(), tType));
         }
 
         this.transformType = tType;
@@ -2203,7 +2182,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
      */
 
     public void vanishHorse() {
-        this.getNavigator().clearPath();
+        this.getNavigation().stop();
         this.setMotion(0.0D, this.getMotion().getY(), 0.0D);
 
         if (this.isBagger()) {
@@ -2211,7 +2190,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             dropBags();
         }
         if (!this.level().isRemote) {
-            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageVanish(this.getEntityId()));
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageVanish(this.getId()));
             setVanishC((byte) 1);
         }
         MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_MAGIC_CREEPY);
@@ -2231,7 +2210,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         if (this.isFlyer() && this.wingFlapCounter == 0) {
             this.wingFlapCounter = 1;
             if (!this.level().isRemote) {
-                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getEntityId(), 3));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getId(), 3));
             }
         }
     }
@@ -2330,7 +2309,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         double dist = getSizeFactor() * (0.25D);
         double newPosX = this.getPosX() + (dist * Math.sin(this.renderYawOffset / 57.29578F));
         double newPosZ = this.getPosZ() - (dist * Math.cos(this.renderYawOffset / 57.29578F));
-        passenger.setPosition(newPosX, this.getPosY() + getMountedYOffset() + passenger.getYOffset(), newPosZ);
+        passenger.setPos(newPosX, this.getPosY() + getMountedYOffset() + passenger.getYOffset(), newPosZ);
     }
 
     @Override

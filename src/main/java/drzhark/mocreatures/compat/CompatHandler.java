@@ -12,18 +12,12 @@ import drzhark.mocreatures.compat.thermalexpansion.ThermalExpansionIntegration;
 import drzhark.mocreatures.compat.tinkers.ConstructsArmoryIntegration;
 import drzhark.mocreatures.compat.tinkers.TinkersConstructIntegration;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.IRecipe;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
-
-import java.io.*;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
 
 @Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CompatHandler {

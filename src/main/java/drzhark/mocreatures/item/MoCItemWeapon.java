@@ -1,11 +1,11 @@
 package drzhark.mocreatures.item;
 
-import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
 import net.minecraft.client.renderer.EffectInstance;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -14,7 +14,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -24,8 +23,6 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import javax.annotation.Nullable;
@@ -38,10 +35,9 @@ public class MoCItemWeapon extends Item {
     private int specialWeaponType = 0;
     private final Multimap<Attribute, AttributeModifier> attributeModifiers;
 
-    public MoCItemWeapon(String name, Item.ToolMaterial material) {
-        super(name);
+    public MoCItemWeapon(Item.Properties properties, Tier material) {
+        super(properties.stacksTo(1));
         this.material = material;
-        this.maxStackSize = 1;
         this.setMaxDamage(material.getMaxUses());
         this.attackDamage = 3F + material.getAttackDamage();
     }
@@ -70,24 +66,24 @@ public class MoCItemWeapon extends Item {
         if (MoCreatures.proxy.weaponEffects) {
             InteractionHand hand = attacker.getUsedItemHand() == null ? InteractionHand.MAIN_HAND : attacker.getUsedItemHand();
             int timer = 15; // In seconds
-            int fire_aspect = 5 * EnchantmentHelper.getFireAspectModifier(attacker); // Fire Aspect
+            int fire_aspect = 5 * EnchantmentHelper.getFireAspect(attacker); // Fire Aspect
             int poisonous = 5 * EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByLocation("mod_lavacow:poisonous"), attacker.getItemInHand(hand)); // Poisonous (Fish's Undead Rising)
 
             switch (this.specialWeaponType) {
                 case 1: // Poison 2
-                    target.addPotionEffect(new MobEffectInstance(MobEffects.POISON, (timer * 20) + poisonous, 1));
+                    target.addEffect(new MobEffectInstance(MobEffects.POISON, (timer * 20) + poisonous, 1));
                     break;
                 case 2: // Slowness
-                    target.addPotionEffect(new EffectInstance(Effects.SLOWNESS, timer * 20, 0));
+                    target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, timer * 20, 0));
                     break;
                 case 3: // Fire
-                    target.setFire(timer + fire_aspect);
+                    target.setSecondsOnFire(timer + fire_aspect);
                     break;
                 case 4: // Weakness (Nausea for players)
-                    target.addPotionEffect(new EffectInstance(target instanceof Player ? Effects.NAUSEA : Effects.WEAKNESS, timer * 20, 0));
+                    target.addEffect(new MobEffectInstance(target instanceof Player ? MobEffects.CONFUSION : MobEffects.WEAKNESS, timer * 20, 0));
                     break;
                 case 5: // Wither (Blindness for players)
-                    target.addPotionEffect(new EffectInstance(target instanceof Player ? Effects.BLINDNESS : Effects.WITHER, timer * 20, 0));
+                    target.addEffect(new MobEffectInstance(target instanceof Player ? MobEffects.BLINDNESS : MobEffects.WITHER, timer * 20, 0));
                     break;
                 default:
                     break;

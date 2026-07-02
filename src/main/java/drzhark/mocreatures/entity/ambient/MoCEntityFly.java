@@ -38,7 +38,7 @@ public class MoCEntityFly extends MoCEntityInsect {
 
         if (!this.level().isRemote) {
             if (getIsFlying() && --this.soundCount == -1) {
-                Player ep = this.level().getClosestPlayer(this, 5D);
+                Player ep = this.level().getNearestPlayer(this, 5D);
                 if (ep != null) {
                     MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_FLY_AMBIENT.get());
                     this.soundCount = 55;

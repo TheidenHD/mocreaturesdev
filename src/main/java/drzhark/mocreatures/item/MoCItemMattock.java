@@ -49,20 +49,20 @@ public class MoCItemMattock extends ItemPickaxe {
         this.specialWeaponType = damageType;
     }
 
-    public EnumActionResult onItemUse(Player player, Level worldIn, BlockPos pos, InteractionHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public InteractionResult onItemUse(Player player, Level worldIn, BlockPos pos, InteractionHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         ItemStack itemstack = player.getItemInHand(hand);
 
         BlockState iblockstate = worldIn.getBlockState(pos);
         Block block = iblockstate.getBlock();
 
         if (facing != EnumFacing.DOWN && worldIn.isAirBlock(pos.up())) {
-            if (!player.isSneaking() && block == Blocks.FARMLAND || player.isSneaking() && block == Blocks.GRASS_PATH) {
+            if (!player.isCrouching() && block == Blocks.FARMLAND || player.isCrouching() && block == Blocks.GRASS_PATH) {
                 this.setBlock(itemstack, player, worldIn, pos, Blocks.DIRT.getDefaultState());
-                return EnumActionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
 
-        if (!player.isSneaking())
+        if (!player.isCrouching())
             return Items.IRON_SHOVEL.onItemUse(player, worldIn, pos, hand, facing, hitX, hitY, hitZ);
         return Items.IRON_HOE.onItemUse(player, worldIn, pos, hand, facing, hitX, hitY, hitZ);
     }

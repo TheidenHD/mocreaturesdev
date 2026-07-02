@@ -4,12 +4,10 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.MoCConstants;
-import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.client.model.legacy.MoCLegacyModelBigCat1;
 import drzhark.mocreatures.client.model.legacy.MoCLegacyModelBigCat2;
 import drzhark.mocreatures.client.model.legacy.MoCLegacyModelScorpion;
 import drzhark.mocreatures.client.model.legacy.MoCLegacyModelShark;
-import drzhark.mocreatures.init.MoCEntities;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;

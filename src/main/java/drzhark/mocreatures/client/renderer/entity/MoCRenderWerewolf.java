@@ -6,7 +6,6 @@ package drzhark.mocreatures.client.renderer.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import drzhark.mocreatures.MoCreatures;
-import org.slf4j.Logger;
 import drzhark.mocreatures.client.model.MoCModelWerehuman;
 import drzhark.mocreatures.client.model.MoCModelWerewolf;
 import drzhark.mocreatures.entity.hostile.MoCEntityWerewolf;

@@ -11,7 +11,7 @@
 //import net.minecraft.block.material.Material;
 //import net.minecraft.world.entity.player.Player;
 //import net.minecraft.util.math.BlockPos;
-//import net.minecraft.util.math.MathHelper;
+//import net.minecraft.util.math.Mth;
 //import net.minecraft.util.math.vector.Vector3d;
 //import net.minecraft.util.text.TranslationTextComponent;
 //import net.minecraft.world.DimensionType;
@@ -59,7 +59,7 @@
 //    @Override
 //    @OnlyIn(Dist.CLIENT)
 //    public Vector3d getFogColor(float par1, float par2) {
-//        float var4 = MathHelper.cos(par1 * (float) Math.PI * 2.0F) * 2.0F + 0.5F;
+//        float var4 = Mth.cos(par1 * (float) Math.PI * 2.0F) * 2.0F + 0.5F;
 //
 //        // Classic Sky
 //        if (MoCreatures.proxy.legacyWyvernLairSky) {
@@ -235,7 +235,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Mth;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.DimensionType;
@@ -284,7 +284,7 @@ public class MoCWorldProviderWyvernSkylands extends WorldProviderSurface {
     @Override
     @SideOnly(Side.CLIENT)
     public Vec3d getFogColor(float par1, float par2) {
-        float var4 = MathHelper.cos(par1 * (float) Math.PI * 2.0F) * 2.0F + 0.5F;
+        float var4 = Mth.cos(par1 * (float) Math.PI * 2.0F) * 2.0F + 0.5F;
 
         // Classic Sky
         if (MoCreatures.proxy.legacyWyvernLairSky) {

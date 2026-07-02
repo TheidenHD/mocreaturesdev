@@ -19,7 +19,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
 import java.util.Random;
 
 public class MoCEntityDarkManticore extends MoCEntityManticore {
