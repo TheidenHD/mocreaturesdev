@@ -1164,8 +1164,8 @@ public class MoCModelWyvern<T extends MoCEntityWyvern> extends EntityModel<T> {
         this.transparency = entity.tFloat();
         //
         // Copy all the “setRotationAngles(...)” logic here, replacing
-        // ModelRenderer.rotateAngleX/Y/Z with ModelPart.xRot/yRot/zRot,
-        // and ModelRenderer.rotationPointX/Y/Z with ModelPart.setPos(x,y,z) if needed.
+        // ModelPart.rotateAngleX/Y/Z with ModelPart.xRot/yRot/zRot,
+        // and ModelPart.rotationPointX/Y/Z with ModelPart.setPos(x,y,z) if needed.
         //
 
         // 1) Leg swings (exactly as before):

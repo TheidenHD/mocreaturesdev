@@ -1,9 +1,9 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import drzhark.mocreatures.entity.IMoCEntity;
-import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import drzhark.mocreatures.entity.hunter.MoCEntityBigCat;
 import drzhark.mocreatures.entity.neutral.MoCEntityWyvern;
+import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import net.minecraft.world.entity.Mob;
 
 /**

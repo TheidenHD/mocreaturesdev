@@ -7,7 +7,6 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.ai.EntityAIMoverHelperMoC;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
-
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -23,8 +22,8 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -42,7 +41,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeMod;
@@ -428,9 +426,9 @@ public abstract class MoCEntityAquatic extends WaterAnimal implements IMoCEntity
                 }
             }
             
-            if (MoCreatures.proxy.enableHunters && this.isReadyToHunt() && !this.getIsHunting() && this.rand.nextInt(500) == 0) {
+            if (MoCreatures.proxy.enableHunters && this.isReadyToHunt() && !this.getIsHunting() && this.random.nextInt(500) == 0) {
                 setIsHunting(true);
-            } else if (!this.getIsHunting() && this.isReadyToFollowOwnerPlayer() && !this.getIsFollowingOwnerPlayer() && this.rand.nextInt(500) == 0) {
+            } else if (!this.getIsHunting() && this.isReadyToFollowOwnerPlayer() && !this.getIsFollowingOwnerPlayer() && this.random.nextInt(500) == 0) {
                 setIsFollowingOwnerPlayer(true);
             }
 
@@ -438,10 +436,10 @@ public abstract class MoCEntityAquatic extends WaterAnimal implements IMoCEntity
                 setIsHunting(false);
             }
 
-            this.getNavigator().onUpdateNavigation();
+            this.getNavigation().onUpdateNavigation();
 
             //updates diving depth after finishing movement
-            if (!this.getNavigator().noPath())// && !updateDivingDepth)
+            if (!this.getNavigation().noPath())// && !updateDivingDepth)
             {
                 if (!this.updateDivingDepth) {
                     float targetDepth = MoCTools.distanceToSurface(
@@ -703,7 +701,7 @@ public abstract class MoCEntityAquatic extends WaterAnimal implements IMoCEntity
 
     @Override
     public void onDeath(DamageSource damagesource) {
-        if (!this.level().isRemote) {
+        if (!this.level().isClientSide()) {
             dropMyStuff();
             dropLegacyEgg();
         }
@@ -854,7 +852,7 @@ public abstract class MoCEntityAquatic extends WaterAnimal implements IMoCEntity
 
     public void setIsHunting(boolean flag) {
         if (flag) {
-            this.huntingCounter = this.rand.nextInt(30) + 1;
+            this.huntingCounter = this.random.nextInt(30) + 1;
         } else {
             this.huntingCounter = 0;
         }
@@ -866,7 +864,7 @@ public abstract class MoCEntityAquatic extends WaterAnimal implements IMoCEntity
     
     public void setIsFollowingOwnerPlayer(boolean flag) {
         if (flag) {
-            this.followPlayerCounter = this.rand.nextInt(30) + 1;
+            this.followPlayerCounter = this.random.nextInt(30) + 1;
         } else {
             this.followPlayerCounter = 0;
         }

@@ -18,7 +18,7 @@ public abstract class MoCModelAbstractScorpion<T extends net.minecraft.world.ent
     public static final ModelLayerLocation LAYER_LOCATION =
             new ModelLayerLocation(new ResourceLocation("mocreatures", "scorpion"), "main");
 
-    // Fields correspond to all the pieces from the old 1.16 ModelRenderer:
+    // Fields correspond to all the pieces from the old 1.16 ModelPart:
     private final ModelPart head;
     private final ModelPart mouthL;
     private final ModelPart mouthR;

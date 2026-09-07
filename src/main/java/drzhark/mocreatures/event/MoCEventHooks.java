@@ -31,7 +31,8 @@ import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 public class MoCEventHooks {
 

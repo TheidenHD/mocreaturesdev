@@ -4,7 +4,6 @@
 package drzhark.mocreatures.util;
 
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 
 /**
@@ -46,7 +45,7 @@ public class MoCClassUpdater {
      * Old (1.16.5):
      * @Override
      * protected void registerData() { ... }
-     * entity.getNavigator().clearPath();
+     * entity.getNavigation().clearPath();
      * entity.getLookController().setLookPositionWithEntity()
      * entity.getVerticalFaceSpeed()
      * entity.setAttackTarget(target);
@@ -92,7 +91,7 @@ public class MoCClassUpdater {
      * WORLD METHODS
      * 
      * Old (1.16.5):
-     * world.isRemote
+     * world.isClientSide()
      * world.addEntity(entity)
      * world.getClosestPlayer(entity, distance)
      * world.getPlayers()

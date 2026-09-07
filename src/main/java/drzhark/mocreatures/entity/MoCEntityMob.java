@@ -22,6 +22,8 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Difficulty;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -29,9 +31,7 @@ import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.player.Player;;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraftforge.api.distmarker.Dist;
@@ -41,6 +41,8 @@ import net.minecraftforge.network.PacketDistributor;
 import javax.annotation.Nullable;
 import java.util.Random;
 import java.util.UUID;
+
+;
 
 /**
  * Updated for Minecraft 1.20.1 (Forge/Mojang mappings).
@@ -274,7 +276,7 @@ public abstract class MoCEntityMob extends Monster implements IMoCEntity {
             }
         }
 
-        this.getNavigation().tick(); // was getNavigator().tick() :contentReference[oaicite:17]{index=17}
+        this.getNavigation().tick(); // was getNavigation().tick() :contentReference[oaicite:17]{index=17}
         super.tick();
     }
 

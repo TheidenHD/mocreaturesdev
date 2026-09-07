@@ -4,11 +4,11 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import drzhark.mocreatures.client.model.MoCModelBunny;
 import drzhark.mocreatures.entity.passive.MoCEntityBunny;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import com.mojang.math.Axis;
 
 public class MoCRenderBunny extends MoCRenderMoC<MoCEntityBunny, MoCModelBunny<MoCEntityBunny>> {
 

@@ -12,6 +12,10 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -20,16 +24,10 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.util.*;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionHand;
 
 import javax.annotation.Nullable;
-
-import static org.antlr.v4.misc.Utils.setSize;
 
 public class MoCEntityBunny extends MoCEntityTameableAnimal {
 
@@ -138,12 +136,12 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_BUNNY_DEATH;
+        return MoCSoundEvents.ENTITY_BUNNY_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_BUNNY_HURT;
+        return MoCSoundEvents.ENTITY_BUNNY_HURT.get();
     }
 
     @Override
@@ -166,10 +164,10 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
         final ItemStack stack = player.getHeldItemMainhand();
         if (!stack.isEmpty()) {
             if (stack.getItem() == Items.CARROT && !getHasEaten()) {
-                if (!player.capabilities.isCreativeMode) stack.shrink(1);
+                if (!player.isCreative()) stack.shrink(1);
                 setHasEaten(true);
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
-                if (!getIsTamed() && !this.level().isRemote) {
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT.get());
+                if (!getIsTamed() && !this.level().isClientSide()) {
                     MoCTools.tameWithName(player, this);
                 }
                 return true;
@@ -192,7 +190,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
             this.setYRot(this.getVehicle().getYRot());
         }
 
-        if (!this.level().isRemote) {
+        if (!this.level().isClientSide()) {
             if (--this.jumpTimer <= 0 && this.onGround() && ((this.motionX > 0.05D) || (this.motionZ > 0.05D) || (this.motionX < -0.05D) || (this.motionZ < -0.05D))) {
                 this.motionY = 0.3D;
                 this.jumpTimer = 15;

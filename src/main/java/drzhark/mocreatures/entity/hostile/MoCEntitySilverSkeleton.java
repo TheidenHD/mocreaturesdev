@@ -10,6 +10,7 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -20,7 +21,6 @@ import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.network.PacketDistributor;
@@ -36,7 +36,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
         super(type, world);
         this.texture = "silver_skeleton.png";
         //setSize(0.6F, 2.125F);
-        experienceValue = 5 + this.level().rand.nextInt(4);
+        experienceValue = 5 + this.level().random.nextInt(4);
     }
 
     @Override
@@ -59,8 +59,8 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
     }
 
     @Override
-    public void livingTick() {
-        if (!this.level().isRemote) {
+    public void aiStep() {
+        if (!this.level().isClientSide()) {
             setSprinting(this.getTarget() != null);
         }
 
@@ -72,7 +72,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
             this.attackCounterRight = 0;
         }
 
-        super.livingTick();
+        super.aiStep();
     }
 
     @Override
@@ -92,15 +92,15 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
      * Starts attack counters and synchronizes animations with clients
      */
     private void startAttackAnimation() {
-        if (!this.level().isRemote) {
-            boolean leftArmW = this.rand.nextInt(2) == 0;
+        if (!this.level().isClientSide()) {
+            boolean leftArmW = this.random.nextInt(2) == 0;
 
             if (leftArmW) {
                 this.attackCounterLeft = 1;
-                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getId(), 1));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getX(), this.getY(), this.getZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getId(), 1));
             } else {
                 this.attackCounterRight = 1;
-                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getId(), 2));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getX(), this.getY(), this.getZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getId(), 2));
             }
         }
     }
@@ -151,7 +151,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
     }
 
     protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
-        return this.getHeight() * 0.905F;
+        return this.getBbHeight() * 0.905F;
     }
 
     static class AISkeletonAttack extends MeleeAttackGoal {

@@ -3,12 +3,11 @@
  */
 package drzhark.mocreatures.item;
 
+import com.google.common.collect.Multimap;
 import net.minecraft.world.entity.SharedMonsterAttributes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.inventory.EntityEquipmentSlot;
 import net.minecraft.world.item.ItemArmor;
-
-import com.google.common.collect.Multimap;
 
 public class MoCItemLuckyArmor extends MoCItemArmor {
     public AttributeModifier luck;

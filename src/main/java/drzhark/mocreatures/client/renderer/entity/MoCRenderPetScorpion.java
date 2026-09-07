@@ -4,11 +4,11 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import drzhark.mocreatures.client.model.MoCModelPetScorpion;
 import drzhark.mocreatures.entity.hunter.MoCEntityPetScorpion;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import com.mojang.math.Axis;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

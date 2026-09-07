@@ -9,6 +9,10 @@ import drzhark.mocreatures.entity.hunter.MoCEntityBear;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -18,10 +22,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
 public class MoCEntityPandaBear extends MoCEntityBear {
@@ -137,7 +137,7 @@ public class MoCEntityPandaBear extends MoCEntityBear {
         /*
          * panda bears and cubs will sit down sometimes
          */
-        if (!this.level().isRemote && getBearState() != 3 && !getIsTamed() && this.rand.nextInt(300) == 0) {
+        if (!this.level().isClientSide() && getBearState() != 3 && !getIsTamed() && this.random.nextInt(300) == 0) {
             setBearState(2);
         }
     }

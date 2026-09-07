@@ -7,13 +7,13 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.util.DamageSource;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -36,7 +36,7 @@ public class MoCEntityFly extends MoCEntityInsect {
     public void onLivingUpdate() {
         super.onLivingUpdate();
 
-        if (!this.level().isRemote) {
+        if (!this.level().isClientSide()) {
             if (getIsFlying() && --this.soundCount == -1) {
                 Player ep = this.level().getNearestPlayer(this, 5D);
                 if (ep != null) {

@@ -7,7 +7,10 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -1158,7 +1161,7 @@ public class MoCModelElephant<T extends MoCEntityElephant> extends EntityModel<T
 
     /**
      * Exactly the same logic as the old setRotationAngles(...) in 1.16,
-     * but all ModelRenderer.setRotationPoint() calls have already been
+     * but all ModelPart.setRotationPoint() calls have already been
      * baked into PartPose.offset in createBodyLayer().
      */
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount,
@@ -1474,7 +1477,7 @@ public class MoCModelElephant<T extends MoCEntityElephant> extends EntityModel<T
     /**
      * When a child part is "attached" to a rotating parent, we must recalculate
      * the child's pivot so that it "follows" the parent.  This helper mimics
-     * the old ModelRenderer chaining, but with ModelPart coordinates.
+     * the old ModelPart chaining, but with ModelPart coordinates.
      */
     private void repositionChildFromParent(ModelPart child, ModelPart parent) {
         // original Y distance from parent → child

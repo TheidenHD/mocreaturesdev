@@ -1,10 +1,8 @@
 package drzhark.mocreatures.item;
 
 import com.google.common.collect.Multimap;
-
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
-import net.minecraft.client.renderer.EffectInstance;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;

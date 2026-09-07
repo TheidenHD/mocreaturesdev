@@ -3,10 +3,10 @@
  */
 package drzhark.mocreatures.entity.inventory;
 
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.LockCode;
+import net.minecraft.world.SimpleContainer;
 
 /**
  * Container for animal inventories

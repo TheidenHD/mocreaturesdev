@@ -5,21 +5,19 @@ package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import drzhark.mocreatures.entity.passive.MoCEntityMouse;
-
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.util.Mth;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
- * Ported from 1.16.5 → 1.20.1. All ModelRenderer fields have become ModelParts,
+ * Ported from 1.16.5 → 1.20.1. All ModelPart fields have become ModelParts,
  * built via createBodyLayer(). Animations moved to setupAnim(...), rendering
  * moved to renderToBuffer(...).
  */

@@ -42,7 +42,7 @@
 //    }
 //
 //    private void setCustomSky() {
-//        if (!this.level().isRemote) {
+//        if (!this.level().isClientSide()) {
 //            return;
 //        }
 //
@@ -205,7 +205,7 @@
 //    }
 //
 //    @Override
-//    public DimensionType getDimensionType() {
+//    public DimensionType dimensionType() {
 //        return MoCreatures.WYVERN_SKYLANDS;
 //    }
 //
@@ -233,16 +233,15 @@ import drzhark.mocreatures.init.MoCBiomes;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Mth;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.DimensionType;
-import net.minecraft.world.level.LevelProviderSurface;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProvider;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -267,7 +266,7 @@ public class MoCWorldProviderWyvernSkylands extends WorldProviderSurface {
     }
 
     private void setCustomSky() {
-        if (!this.level().isRemote) {
+        if (!this.level().isClientSide()) {
             return;
         }
 
@@ -438,7 +437,7 @@ public class MoCWorldProviderWyvernSkylands extends WorldProviderSurface {
     }
 
     @Override
-    public DimensionType getDimensionType() {
+    public DimensionType dimensionType() {
         return MoCreatures.WYVERN_SKYLANDS;
     }
 

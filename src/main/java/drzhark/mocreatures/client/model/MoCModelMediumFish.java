@@ -5,22 +5,20 @@ package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import com.mojang.math.Axis;
 import drzhark.mocreatures.entity.aquatic.MoCEntityMediumFish;
-
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.util.Mth;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
- * Ported from 1.16.5 → 1.20.1. All ModelRenderer fields are now ModelParts,
+ * Ported from 1.16.5 → 1.20.1. All ModelPart fields are now ModelParts,
  * built via createBodyLayer(). Animations have been moved into setupAnim(...),
  * and render(...) is now renderToBuffer(...).
  */
@@ -34,7 +32,7 @@ public class MoCModelMediumFish<T extends MoCEntityMediumFish> extends EntityMod
     );
 
     // ----------------------------------------------------------------
-    // 2) All ModelRenderer fields become ModelPart fields
+    // 2) All ModelPart fields become ModelPart fields
     // ----------------------------------------------------------------
     private final ModelPart Head;
     private final ModelPart LowerHead;
@@ -78,7 +76,7 @@ public class MoCModelMediumFish<T extends MoCEntityMediumFish> extends EntityMod
 
     /**
      * Build the LayerDefinition (MeshDefinition → PartDefinition).
-     * Each child here matches one of the old ModelRenderer fields.
+     * Each child here matches one of the old ModelPart fields.
      */
     public static LayerDefinition createBodyLayer() {
         MeshDefinition mesh = new MeshDefinition();

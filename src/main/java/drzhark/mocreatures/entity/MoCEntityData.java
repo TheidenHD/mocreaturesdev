@@ -4,16 +4,15 @@
 package drzhark.mocreatures.entity;
 
 import drzhark.mocreatures.MoCreatures;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.MobSpawnSettings;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Updated for Minecraft 1.20.1 (Yarn mappings + Forge).

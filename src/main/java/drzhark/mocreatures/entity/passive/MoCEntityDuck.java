@@ -8,18 +8,21 @@ import drzhark.mocreatures.entity.MoCEntityAnimal;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.block.Block;
-import net.minecraft.world.entity.SharedMonsterAttributes;
-import net.minecraft.world.entity.ai.EntityAIPanic;
-import net.minecraft.world.entity.ai.EntityAISwimming;
-import net.minecraft.world.entity.ai.EntityAIWatchClosest;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.DamageSource;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.PanicGoal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 public class MoCEntityDuck extends MoCEntityAnimal {
 
@@ -51,23 +54,23 @@ public class MoCEntityDuck extends MoCEntityAnimal {
     // TODO: Add proper death sound event
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCreatures.proxy.legacyDuckSounds ? MoCSoundEvents.ENTITY_DUCK_HURT_LEGACY : MoCSoundEvents.ENTITY_DUCK_HURT;
+        return MoCreatures.proxy.legacyDuckSounds ? MoCSoundEvents.ENTITY_DUCK_HURT_LEGACY.get() : MoCSoundEvents.ENTITY_DUCK_HURT.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCreatures.proxy.legacyDuckSounds ? MoCSoundEvents.ENTITY_DUCK_HURT_LEGACY : MoCSoundEvents.ENTITY_DUCK_HURT;
+        return MoCreatures.proxy.legacyDuckSounds ? MoCSoundEvents.ENTITY_DUCK_HURT_LEGACY.get() : MoCSoundEvents.ENTITY_DUCK_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MoCreatures.proxy.legacyDuckSounds ? MoCSoundEvents.ENTITY_DUCK_AMBIENT_LEGACY : MoCSoundEvents.ENTITY_DUCK_AMBIENT;
+        return MoCreatures.proxy.legacyDuckSounds ? MoCSoundEvents.ENTITY_DUCK_AMBIENT_LEGACY.get() : MoCSoundEvents.ENTITY_DUCK_AMBIENT.get();
     }
 
     // TODO: Add unique step sound
     @Override
     protected void playStepSound(BlockPos pos, Block blockIn) {
-        this.playSound(MoCSoundEvents.ENTITY_DUCK_STEP, 0.15F, 1.0F);
+        this.playSound(MoCSoundEvents.ENTITY_DUCK_STEP.get(), 0.15F, 1.0F);
     }
 
     @Override

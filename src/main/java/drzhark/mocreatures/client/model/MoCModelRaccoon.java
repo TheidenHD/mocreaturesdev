@@ -1,7 +1,7 @@
 /*
  * GNU GENERAL PUBLIC LICENSE Version 3
  *
- * NOTE: In 1.20.1, ModelRenderer → ModelPart, and
+ * NOTE: In 1.20.1, ModelPart → ModelPart, and
  *       setRotationAngles(...) → setupAnim(...).
  * 
  */
@@ -15,7 +15,10 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;

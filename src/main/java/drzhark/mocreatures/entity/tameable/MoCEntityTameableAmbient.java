@@ -12,6 +12,22 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageHealth;
 import drzhark.mocreatures.network.message.MoCMessageHeart;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,24 +35,8 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.ChatFormatting;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -137,10 +137,10 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
 
         //if the player interacting is not the owner, do nothing!
         if (MoCreatures.proxy.enableOwnership && this.getOwnerId() != null && !player.getUUID().equals(this.getOwnerId())) {
-            if (!this.level().isRemote) {
-                ITextComponent message = new TextComponentTranslation("msg.mocreatures.foreignpet");
-                message.getStyle().setColor(TextFormatting.RED);
-                player.sendMessage(message);
+            if (!this.level().isClientSide()) {
+                Component message = Component.translatable("msg.mocreatures.foreignpet");
+                message.getStyle().withColor(ChatFormatting.RED);
+                player.sendSystemMessage(message);
             }
             return false;
         }
@@ -176,15 +176,15 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
         }
 
         //changes name
-        if (!this.level().isRemote && getIsTamed() && stack.getItem() == MoCItems.scrollOfRenaming) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+        if (!this.level().isClientSide() && getIsTamed() && stack.getItem() == MoCItems.scrollOfRenaming) {
+            if (!player.isCreative()) stack.shrink(1);
             return MoCTools.tameWithName(player, this);
         }
 
         //sets it free, untamed
         if (getIsTamed() && stack.getItem() == MoCItems.scrollOfFreedom) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
-            if (!this.level().isRemote) {
+            if (!player.isCreative()) stack.shrink(1);
+            if (!this.level().isClientSide()) {
                 if (this.getOwnerPetId() != -1) // required since getInt will always return 0 if no key is found
                 {
                     MoCreatures.instance.mapData.removeOwnerPet(this, this.getOwnerPetId());
@@ -212,9 +212,9 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
         }
 
         if (getIsTamed() && isMyHealFood(stack)) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
-            if (!this.level().isRemote) {
+            if (!player.isCreative()) stack.shrink(1);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT.get());
+            if (!this.level().isClientSide()) {
                 this.setHealth(getMaxHealth());
             }
             return InteractionResult.SUCCESS;
@@ -237,9 +237,9 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
 
         //heals
         if (getIsTamed() && isMyHealFood(stack)) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
-            if (!this.level().isRemote) {
+            if (!player.isCreative()) stack.shrink(1);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT.get());
+            if (!this.level().isClientSide()) {
                 this.setHealth(getMaxHealth());
             }
             return InteractionResult.SUCCESS;

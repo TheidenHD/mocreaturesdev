@@ -4,8 +4,8 @@
 package drzhark.mocreatures.client.renderer.entity.legacy;
 
 import drzhark.mocreatures.MoCreatures;
-import drzhark.mocreatures.proxy.MoCProxyClient;
 import drzhark.mocreatures.entity.aquatic.MoCEntityShark;
+import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;

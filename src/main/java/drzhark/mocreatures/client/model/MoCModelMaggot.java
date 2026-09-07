@@ -3,24 +3,17 @@
  */
 package drzhark.mocreatures.client.model;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import drzhark.mocreatures.entity.ambient.MoCEntityMaggot;
-
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.util.Mth;
+import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
-
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -36,7 +29,7 @@ public class MoCModelMaggot<T extends MoCEntityMaggot> extends EntityModel<T> {
     private float limbSwing;
     private float limbSwingAmount;
 
-    // In 1.20.1, each child part is a ModelPart. These replace the old ModelRenderer fields.
+    // In 1.20.1, each child part is a ModelPart. These replace the old ModelPart fields.
     private final ModelPart Head;
     private final ModelPart Body;
     private final ModelPart Tail;
@@ -54,7 +47,7 @@ public class MoCModelMaggot<T extends MoCEntityMaggot> extends EntityModel<T> {
         PartDefinition part = mesh.getRoot();
 
         //---------------------------------------------
-        // Head (was: new ModelRenderer(this, 0,11); addBox(-1,-1,-2, 2,2,2); pivot(0,23,-2))
+        // Head (was: new ModelPart(this, 0,11); addBox(-1,-1,-2, 2,2,2); pivot(0,23,-2))
         //---------------------------------------------
         part.addOrReplaceChild(
                 "Head",
@@ -65,7 +58,7 @@ public class MoCModelMaggot<T extends MoCEntityMaggot> extends EntityModel<T> {
         );
 
         //---------------------------------------------
-        // Body (was: new ModelRenderer(this, 0,0); addBox(-1.5,-2,0, 3,3,4); pivot(0,23,-2))
+        // Body (was: new ModelPart(this, 0,0); addBox(-1.5,-2,0, 3,3,4); pivot(0,23,-2))
         //---------------------------------------------
         part.addOrReplaceChild(
                 "Body",
@@ -76,7 +69,7 @@ public class MoCModelMaggot<T extends MoCEntityMaggot> extends EntityModel<T> {
         );
 
         //---------------------------------------------
-        // Tail (was: new ModelRenderer(this, 0,7); addBox(-1,-1,0, 2,2,2); pivot(0,23,2))
+        // Tail (was: new ModelPart(this, 0,7); addBox(-1,-1,0, 2,2,2); pivot(0,23,2))
         //---------------------------------------------
         part.addOrReplaceChild(
                 "Tail",
@@ -87,7 +80,7 @@ public class MoCModelMaggot<T extends MoCEntityMaggot> extends EntityModel<T> {
         );
 
         //---------------------------------------------
-        // Tailtip (was: new ModelRenderer(this, 8,7); addBox(-0.5,0,0, 1,1,1); pivot(0,23,4))
+        // Tailtip (was: new ModelPart(this, 8,7); addBox(-0.5,0,0, 1,1,1); pivot(0,23,4))
         //---------------------------------------------
         part.addOrReplaceChild(
                 "Tailtip",

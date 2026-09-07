@@ -7,51 +7,51 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.ai.EntityAIFollowAdult;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
+import drzhark.mocreatures.entity.inventory.CombinedContainer;
 import drzhark.mocreatures.entity.inventory.MoCAnimalChest;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PickaxeItem;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.SimpleMenuProvider;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.ChestMenu;
-import drzhark.mocreatures.entity.inventory.CombinedContainer;
 
 import java.util.List;
 
@@ -308,7 +308,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         this.tuskUses += (byte) dmg;
         if ((this.getTusks() == 1 && this.tuskUses > 59) || (this.getTusks() == 2 && this.tuskUses > 250)
                 || (this.getTusks() == 3 && this.tuskUses > 1000)) {
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_CLANG);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_CLANG.get());
             setTusks((byte) 0);
         }
     }
@@ -416,24 +416,23 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
             return InteractionResult.sidedSuccess(this.level().isClientSide());
         }
 
-        final ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty() && !getIsTamed() && !getIsAdult() && stack.getItem() == Items.CAKE) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
+            if (!player.isCreative()) stack.shrink(1);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT.get());
             this.temper += 2;
             this.setHealth(getMaxHealth());
-            if (!this.level().isRemote && !getIsAdult() && !getIsTamed() && this.temper >= 10) {
+            if (!this.level().isClientSide() && !getIsAdult() && !getIsTamed() && this.temper >= 10) {
                 MoCTools.tameWithName(player, this);
             }
             return InteractionResult.sidedSuccess(this.level().isClientSide());
         }
 
         if (!stack.isEmpty() && !getIsTamed() && !getIsAdult() && stack.getItem() == MoCItems.sugarlump) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
+            if (!player.isCreative()) stack.shrink(1);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT.get());
             this.temper += 1;
             this.setHealth(getMaxHealth());
-            if (!this.level().isRemote && !getIsAdult() && !getIsTamed() && this.temper >= 10) {
+            if (!this.level().isClientSide() && !getIsAdult() && !getIsTamed() && this.temper >= 10) {
                 setTamed(true);
                 MoCTools.tameWithName(player, this);
             }
@@ -764,7 +763,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
     @Override
     public boolean isMyHealFood(ItemStack stack) {
         return !stack.isEmpty()
-                && (stack.getItem() == Items.BAKED_POTATO || stack.getItem() == Items.BREAD || stack.getItem() == Item.getItemFromBlock(Blocks.HAY_BLOCK));
+                && (stack.getItem() == Items.BAKED_POTATO || stack.getItem() == Items.BREAD || stack.getItem() == Item.byBlock(Blocks.HAY_BLOCK));
     }
 
     @Override

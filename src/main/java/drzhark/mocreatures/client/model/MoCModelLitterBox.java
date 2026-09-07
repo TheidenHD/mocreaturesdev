@@ -5,19 +5,12 @@ package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import drzhark.mocreatures.entity.item.MoCEntityLitterBox;
-
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
-
+import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -38,7 +31,7 @@ public class MoCModelLitterBox<T extends MoCEntityLitterBox> extends EntityModel
     /** When true, render the “used” litter; otherwise render the clean one. */
     public boolean usedlitter;
 
-    // Each of these corresponds to one ModelRenderer in 1.16.5. In 1.20.1 they are ModelPart children.
+    // Each of these corresponds to one ModelPart in 1.16.5. In 1.20.1 they are ModelPart children.
     private final ModelPart Table1;
     private final ModelPart Table2;
     private final ModelPart Table3;

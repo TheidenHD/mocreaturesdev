@@ -3,9 +3,9 @@
  */
 package drzhark.mocreatures.client.model;
 
-import drzhark.mocreatures.entity.hostile.MoCEntityWraith;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import drzhark.mocreatures.entity.hostile.MoCEntityWraith;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -31,16 +31,16 @@ public class MoCModelWraith<T extends MoCEntityWraith> extends HumanoidModel<T> 
 
     public MoCModelWraith() {
         super(0.0F, 0.0F, 64, 40);
-        this.bipedHead = new ModelRenderer(this, 0, 0);
+        this.bipedHead = new ModelPart(this, 0, 0);
         this.bipedHead.addBox(-4.0F, -4.0F, -4.0F, 8, 8, 8, 0.0F);
         this.bipedHead.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.bipedBody = new ModelRenderer(this, 16, 16);
+        this.bipedBody = new ModelPart(this, 16, 16);
         this.bipedBody.addBox(-4.0F, 4.0F, -2.0F, 8, 20, 4, 0.0F);
         this.bipedBody.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.bipedRightArm = new ModelRenderer(this, 40, 16);
+        this.bipedRightArm = new ModelPart(this, 40, 16);
         this.bipedRightArm.addBox(-2.75F, -2.0F, 2.0F, 4, 12, 4, 0.0F);
         this.bipedRightArm.setRotationPoint(-5.0F, 2.0F, 0.0F);
-        this.bipedLeftArm = new ModelRenderer(this, 40, 16);
+        this.bipedLeftArm = new ModelPart(this, 40, 16);
         this.bipedLeftArm.mirror = true;
         this.bipedLeftArm.addBox(-1.25F, -2.0F, 2.0F, 4, 12, 4, 0.0F);
         this.bipedLeftArm.setRotationPoint(5.0F, 2.0F, 0.0F);

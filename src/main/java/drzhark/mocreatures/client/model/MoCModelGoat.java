@@ -13,18 +13,14 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
- * Port of MoCModelGoat (1.16.5) to 1.20.1. Uses ModelPart instead of ModelRenderer,
+ * Port of MoCModelGoat (1.16.5) to 1.20.1. Uses ModelPart instead of ModelPart,
  * and moves animations into setupAnim.
  * 
  * I think the goatee isn't attached to the chin, but I'm not sure.

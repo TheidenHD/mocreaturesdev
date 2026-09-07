@@ -4,10 +4,10 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import drzhark.mocreatures.entity.MoCEntityInsect;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.model.EntityModel;
 import com.mojang.math.Axis;
+import drzhark.mocreatures.entity.MoCEntityInsect;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

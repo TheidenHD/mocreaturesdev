@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
- * Legacy scorpion model ported to 1.20.1.  All ModelRenderer pieces are now ModelPart children,
+ * Legacy scorpion model ported to 1.20.1.  All ModelPart pieces are now ModelPart children,
  * and setRotationAngles(...) logic has been moved into setupAnim(...).
  */
 @OnlyIn(Dist.CLIENT)

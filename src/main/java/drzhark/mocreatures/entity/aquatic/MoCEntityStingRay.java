@@ -9,12 +9,11 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
-import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.util.DamageSource;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -103,6 +102,6 @@ public class MoCEntityStingRay extends MoCEntityRay {
     }
     
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_FISH_DEATH_VICIOUS;
+        return MoCSoundEvents.ENTITY_FISH_DEATH_VICIOUS.get();
     }
 }

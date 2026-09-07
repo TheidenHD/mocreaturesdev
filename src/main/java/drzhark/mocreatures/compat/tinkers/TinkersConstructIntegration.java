@@ -1,8 +1,5 @@
 package drzhark.mocreatures.compat.tinkers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class TinkersConstructIntegration {
 //    // These materials are used universally between tools and armor
 //    public static final Material ANCIENT_SILVER = new Material(MoCConstants.MOD_ID + "." + "ancient_silver", 0x8E8F93);

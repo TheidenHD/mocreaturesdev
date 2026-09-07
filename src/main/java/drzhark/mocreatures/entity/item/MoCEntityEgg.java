@@ -12,9 +12,14 @@ import drzhark.mocreatures.entity.neutral.MoCEntityWyvern;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCItems;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -57,9 +62,9 @@ public class MoCEntityEgg extends LivingEntity {
         if (i == 30) {
             i = 31;
         }
-        if ((this.lCounter > 10) && Player.inventory.addItemStackToInventory(new ItemStack(MoCItems.mocegg, 1))) {
-            this.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 0.2F, (((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F) + 1.0F) * 2.0F);
-            if (!this.level().isRemote) {
+        if ((this.lCounter > 10) && Player.getInventory().add(new ItemStack(MoCItems.mocegg, 1))) {
+            this.playSound(SoundEvents.ITEM_PICKUP, 0.2F, (((this.random.nextFloat() - this.random.nextFloat()) * 0.7F) + 1.0F) * 2.0F);
+            if (!this.level().isClientSide()) {
                 Player.onItemPickup(this, 1);
 
             }
@@ -68,7 +73,7 @@ public class MoCEntityEgg extends LivingEntity {
     }
 
     @Override
-    public void livingTick() {
+    public void aiStep() {
         this.moveStrafing = 0.0F;
         this.moveForward = 0.0F;
         travel(new Vector3d(this.moveStrafing, this.moveVertical, this.moveForward));
@@ -77,8 +82,8 @@ public class MoCEntityEgg extends LivingEntity {
     @Override
     public void tick() {
         super.tick();
-        if (!this.level().isRemote) {
-            if (this.rand.nextInt(20) == 0) {
+        if (!this.level().isClientSide()) {
+            if (this.random.nextInt(20) == 0) {
                 this.lCounter++;
             }
 
@@ -89,7 +94,7 @@ public class MoCEntityEgg extends LivingEntity {
                 }
             }
 
-            if (isInWater() && (getEggType() < 12 || getEggType() > 69) && (this.rand.nextInt(20) == 0)) {
+            if (isInWater() && (getEggType() < 12 || getEggType() > 69) && (this.random.nextInt(20) == 0)) {
                 this.tCounter++;
                 if (this.tCounter % 5 == 0) {
                     this.setMotion(this.getMotion().add(0.0D, 0.2D, 0.0D));
@@ -103,7 +108,7 @@ public class MoCEntityEgg extends LivingEntity {
                     if (getEggType() <= 10) // fishy
                     {
                         MoCEntityFishy entityspawn = MoCEntities.FISHY.create(this.level());
-                        entityspawn.setPos(this.getPosX(), this.getPosY(), this.getPosZ());
+                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
                         entityspawn.setTypeMoC(getEggType());
                         entityspawn.setAge(30);
                         this.level().addFreshEntity(entityspawn);
@@ -114,7 +119,7 @@ public class MoCEntityEgg extends LivingEntity {
                     } else if (getEggType() == 11) // shark
                     {
                         MoCEntityShark entityspawn = MoCEntities.SHARK.create(this.level());
-                        entityspawn.setPos(this.getPosX(), this.getPosY(), this.getPosZ());
+                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
                         entityspawn.setAge(30);
                         this.level().addFreshEntity(entityspawn);
                         Player Player = this.level().getNearestPlayer(this, 24D);
@@ -124,7 +129,7 @@ public class MoCEntityEgg extends LivingEntity {
                     } else if (getEggType() == 90) // piranha
                     {
                         MoCEntityPiranha entityspawn = MoCEntities.PIRANHA.create(this.level());
-                        entityspawn.setPos(this.getPosX(), this.getPosY(), this.getPosZ());
+                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
                         this.level().addFreshEntity(entityspawn);
                         entityspawn.setAge(30);
                         Player Player = this.level().getNearestPlayer(this, 24D);
@@ -135,7 +140,7 @@ public class MoCEntityEgg extends LivingEntity {
                     {
                         final int type = getEggType() - 79;
                         MoCEntitySmallFish entityspawn = MoCEntitySmallFish.createEntity(this.level(), type);
-                        entityspawn.setPos(this.getPosX(), this.getPosY(), this.getPosZ());
+                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
                         this.level().addFreshEntity(entityspawn);
                         entityspawn.setAge(30);
                         Player Player = this.level().getNearestPlayer(this, 24D);
@@ -146,7 +151,7 @@ public class MoCEntityEgg extends LivingEntity {
                     {
                         final int type = getEggType() - 69;
                         MoCEntityMediumFish entityspawn = MoCEntityMediumFish.createEntity(this.level(), type);
-                        entityspawn.setPos(this.getPosX(), this.getPosY(), this.getPosZ());
+                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
                         this.level().addFreshEntity(entityspawn);
                         entityspawn.setAge(30);
                         Player Player = this.level().getNearestPlayer(this, 24D);
@@ -154,10 +159,10 @@ public class MoCEntityEgg extends LivingEntity {
                             MoCTools.tameWithName(Player, entityspawn);
                         }
                     }
-                    MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
+                    MoCTools.playCustomSound(this, SoundEvents.CHICKEN_EGG);
                     remove();
                 }
-            } else if (!isInWater() && getEggType() > 20 && (this.rand.nextInt(20) == 0)) // non aquatic creatures
+            } else if (!isInWater() && getEggType() > 20 && (this.random.nextInt(20) == 0)) // non aquatic creatures
             {
                 this.tCounter++;
                 //if (getEggType() == 30) tCounter = 0; //with this, wild ostriches won't spawn eggs.
@@ -175,7 +180,7 @@ public class MoCEntityEgg extends LivingEntity {
                     {
                         MoCEntitySnake entityspawn = MoCEntities.SNAKE.create(this.level());
 
-                        entityspawn.setPos(this.getPosX(), this.getPosY(), this.getPosZ());
+                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
                         entityspawn.setTypeMoC(getEggType() - 20);
                         entityspawn.setAge(50);
                         this.level().addFreshEntity(entityspawn);
@@ -189,10 +194,10 @@ public class MoCEntityEgg extends LivingEntity {
                     {
                         MoCEntityOstrich entityspawn = MoCEntities.OSTRICH.create(this.level());
                         int typeInt = 1;
-                        if (this.level().getDimensionType().isUltrawarm() || getEggType() == 32) {
+                        if (this.level().dimensionType().ultraWarm() || getEggType() == 32) {
                             typeInt = 5;
                         }
-                        entityspawn.setPos(this.getPosX(), this.getPosY(), this.getPosZ());
+                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
                         entityspawn.setTypeMoC(typeInt);
                         entityspawn.setAge(35);
                         this.level().addFreshEntity(entityspawn);
@@ -209,9 +214,9 @@ public class MoCEntityEgg extends LivingEntity {
 
                     if (getEggType() == 33) // Komodo
                     {
-                        MoCEntityKomodo entityspawn = MoCEntities.KOMODO_DRAGON.create(this.level());
+                        MoCEntityKomodo entityspawn = MoCEntities.KOMODO_DRAGON.get().create(this.level());
 
-                        entityspawn.setPos(this.getPosX(), this.getPosY(), this.getPosZ());
+                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
                         entityspawn.setAge(30);
                         this.level().addFreshEntity(entityspawn);
                         Player Player = this.level().getNearestPlayer(this, 24D);
@@ -222,9 +227,9 @@ public class MoCEntityEgg extends LivingEntity {
 
                     if (getEggType() > 40 && getEggType() < 46) //scorpions for now it uses 41 - 45
                     {
-                        MoCEntityPetScorpion entityspawn = MoCEntities.PET_SCORPION.create(this.level());
+                        MoCEntityPetScorpion entityspawn = MoCEntities.PET_SCORPION.get().create(this.level());
                         int typeInt = getEggType() - 40;
-                        entityspawn.setPos(this.getPosX(), this.getPosY(), this.getPosZ());
+                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
                         entityspawn.setTypeMoC(typeInt);
                         entityspawn.setAdult(false);
                         this.level().addFreshEntity(entityspawn);
@@ -237,9 +242,9 @@ public class MoCEntityEgg extends LivingEntity {
 
                     if (getEggType() > 49 && getEggType() < 62) //wyverns for now it uses 50 - 61
                     {
-                        MoCEntityWyvern entityspawn = MoCEntities.WYVERN.create(this.level());
+                        MoCEntityWyvern entityspawn = MoCEntities.WYVERN.get().create(this.level());
                         int typeInt = getEggType() - 49;
-                        entityspawn.setPos(this.getPosX(), this.getPosY(), this.getPosZ());
+                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
                         entityspawn.setTypeMoC(typeInt);
                         entityspawn.setAdult(false);
                         entityspawn.setAge(30);
@@ -252,9 +257,9 @@ public class MoCEntityEgg extends LivingEntity {
                     }
                     if (getEggType() > 61 && getEggType() < 67) //manticorePets for now it uses 62 - 66
                     {
-                        MoCEntityManticorePet entityspawn = MoCEntities.MANTICORE_PET.create(this.level());
+                        MoCEntityManticorePet entityspawn = MoCEntities.MANTICORE_PET.get().create(this.level());
                         int typeInt = getEggType() - 61;
-                        entityspawn.setPos(this.getPosX(), this.getPosY(), this.getPosZ());
+                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
                         entityspawn.setTypeMoC(typeInt);
                         entityspawn.setAdult(false);
                         entityspawn.setAge(30);
@@ -265,7 +270,7 @@ public class MoCEntityEgg extends LivingEntity {
                             MoCTools.tameWithName(Player, entityspawn);
                         }
                     }
-                    MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
+                    MoCTools.playCustomSound(this, SoundEvents.CHICKEN_EGG);
                     remove();
                 }
             }
@@ -275,7 +280,7 @@ public class MoCEntityEgg extends LivingEntity {
     private void notifyEggHatching() {
         Player Player = this.level().getNearestPlayer(this, 24D);
         if (Player != null) {
-            Player.sendMessage(new TranslationTextComponent("msg.mocreatures.egg", (int) this.getPosX(), (int) this.getPosY(), (int) this.getPosZ()), Player.getUUID());
+            Player.sendMessage(new TranslationTextComponent("msg.mocreatures.egg", (int) this.getX(), (int) this.getY(), (int) this.getZ()), Player.getUUID());
         }
     }
 

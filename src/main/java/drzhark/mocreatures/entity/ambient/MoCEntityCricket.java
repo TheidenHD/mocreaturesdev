@@ -8,12 +8,10 @@ import drzhark.mocreatures.entity.MoCEntityAmbient;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.world.entity.EntitySize;
-import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.util.DamageSource;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -43,7 +41,7 @@ public class MoCEntityCricket extends MoCEntityAmbient {
     @Override
     public void selectType() {
         if (getTypeMoC() == 0) {
-            int i = this.rand.nextInt(100);
+            int i = this.random.nextInt(100);
             if (i <= 50) {
                 setTypeMoC(1);
             } else {
@@ -69,7 +67,7 @@ public class MoCEntityCricket extends MoCEntityAmbient {
             this.motionY *= 0.6D;
         }
 
-        if (!this.level().isRemote) {
+        if (!this.level().isClientSide()) {
             if (this.jumpCounter > 0 && ++this.jumpCounter > 30) {
                 this.jumpCounter = 0;
             }
@@ -78,10 +76,10 @@ public class MoCEntityCricket extends MoCEntityAmbient {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        if (!world.isDaytime()) {
-            return world.rand.nextDouble() <= 0.1D ? MoCSoundEvents.ENTITY_CRICKET_AMBIENT.get() : null;
+        if (!level().isDaytime()) {
+            return level().random.nextDouble() <= 0.1D ? MoCSoundEvents.ENTITY_CRICKET_AMBIENT.get() : null;
         } else {
-            return world.rand.nextDouble() <= 0.1D ? MoCSoundEvents.ENTITY_CRICKET_CHIRP.get() : null;
+            return level().random.nextDouble() <= 0.1D ? MoCSoundEvents.ENTITY_CRICKET_CHIRP.get() : null;
         }
     }
 
@@ -102,7 +100,7 @@ public class MoCEntityCricket extends MoCEntityAmbient {
     @Override
     public void tick() {
         super.tick();
-        if (!this.level().isRemote) {
+        if (!this.level().isClientSide()) {
             if (onGround() && ((getMotion().getX() > 0.05D) || (getMotion().getZ() > 0.05D) || (getMotion().getX() < -0.05D) || (getMotion().getZ() < -0.05D)))
                 if (this.jumpCounter == 0) {
                     this.setMotion(this.getMotion().getX() * 5D, 0.45D, this.getMotion().getZ() * 5D);

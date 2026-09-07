@@ -4,8 +4,8 @@
 package drzhark.mocreatures.entity.tameable;
 
 import drzhark.mocreatures.entity.IMoCEntity;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.Entity;
 
 import javax.annotation.Nullable;
 import java.util.UUID;

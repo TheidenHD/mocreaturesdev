@@ -11,12 +11,12 @@ import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.MoCEntityData;
 import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.tags.TagKey;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.File;

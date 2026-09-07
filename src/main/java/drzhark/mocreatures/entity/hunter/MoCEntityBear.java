@@ -202,27 +202,27 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
         if (this.attackCounter > 0 && ++this.attackCounter > 9) {
             this.attackCounter = 0;
         }
-        if (!this.level().isRemote && getBearState() != 3 && !getIsAdult() && getAge() < 80 && (this.rand.nextInt(300) == 0)) {
+        if (!this.level().isClientSide() && getBearState() != 3 && !getIsAdult() && getAge() < 80 && (this.random.nextInt(300) == 0)) {
             setBearState(2); // randomly perform an idle sit
         }
         /*
          * Sitting bears will resume on fours stance every now and then, if not sat via WHIP
          */
-        if (!this.level().isRemote && getBearState() == 2 && this.rand.nextInt(800) == 0) {
+        if (!this.level().isClientSide() && getBearState() == 2 && this.random.nextInt(800) == 0) {
             setBearState(0);
         }
-        if (!this.level().isRemote && getBearState() == 2 && !this.getNavigator().noPath()) {
+        if (!this.level().isClientSide() && getBearState() == 2 && !this.getNavigation().noPath()) {
             setBearState(0);
         }
-        if (!this.level().isRemote && this.standingCounter > 0 && ++this.standingCounter > 100 && getBearState() != 3) {
+        if (!this.level().isClientSide() && this.standingCounter > 0 && ++this.standingCounter > 100 && getBearState() != 3) {
             this.standingCounter = 0;
             setBearState(0);
         }
         /*
          * Standing if close to a vulnerable player
          */
-        if (!this.level().isRemote && !getIsTamed() && getIsStanding()
-                && !this.isMovementCeased() && getIsAdult() && (this.rand.nextInt(200) == 0) && shouldAttackPlayers()) {
+        if (!this.level().isClientSide() && !getIsTamed() && getIsStanding()
+                && !this.isMovementCeased() && getIsAdult() && (this.random.nextInt(200) == 0) && shouldAttackPlayers()) {
             Player Player1 = this.level().getNearestPlayerToEntity(this, 4D);
             if ((Player1 != null && this.canEntityBeSeen(Player1) && !Player1.capabilities.disableDamage)) {
                 this.setStand();
@@ -230,7 +230,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
             }
         }
         //TODO move to AI
-        if (!this.level().isRemote && getType() == 3 && (this.deathTime == 0) && !this.isMovementCeased()) {
+        if (!this.level().isClientSide() && getType() == 3 && (this.deathTime == 0) && !this.isMovementCeased()) {
             EntityItem entityitem = getClosestItem(this, 12D, Items.REEDS, Items.SUGAR);
             if (entityitem != null) {
 
@@ -240,7 +240,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
                 }
                 if (f < 2.0F && this.deathTime == 0) {
                     entityitem.setDead();
-                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
+                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT.get());
                     this.setHealth(getMaxHealth());
                 }
 
@@ -303,7 +303,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
 
     protected void eatingAnimal() {
         openMouth();
-        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
+        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT.get());
     }
 
     @Override
@@ -356,14 +356,14 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
 
         if (!stack.isEmpty() && getIsTamed() && !getIsRideable() && getIsAdult()
                 && (stack.getItem() instanceof ItemSaddle)) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             setRideable(true);
             return InteractionResult.SUCCESS;
         }
         if (!stack.isEmpty() && getIsTamed() && MoCTools.isItemEdibleForCarnivores(stack.getItem())) {
             if (!player.isCreative()) stack.shrink(1);
             this.setHealth(getMaxHealth());
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT.get());
             setIsHunting(false);
             setHasEaten(true);
             return InteractionResult.SUCCESS;

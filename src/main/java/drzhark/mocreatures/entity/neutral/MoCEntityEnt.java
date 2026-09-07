@@ -8,27 +8,31 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityAnimal;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SaplingBlock;
-import net.minecraft.world.entity.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SaplingBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.level.BlockEvent;
 
@@ -193,8 +197,8 @@ public class MoCEntityEnt extends MoCEntityAnimal {
         if (Blocks.DIRT.defaultBlockState().is(blockUnderFeet)) {
             Block block = Blocks.GRASS_BLOCK;
             BlockEvent.BreakEvent event = null;
-            if (!this.level().isRemote) {
-                event = new BlockEvent.BreakEvent(this.level(), pos, block.getDefaultState(), FakePlayerFactory.get((WorldServer) this.level(), MoCreatures.MOCFAKEPLAYER));
+            if (!this.level().isClientSide()) {
+                event = new BlockEvent.BreakEvent(this.level(), pos, block.defaultBlockState(), FakePlayerFactory.get((ServerLevel) this.level(), MoCreatures.MOCFAKEPLAYER));
             }
             if (event != null && !event.isCanceled()) {
                 this.level().setBlock(pos.below(), block.defaultBlockState(), 3);
@@ -278,7 +282,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
 
     @Override
     protected void applyEnchantments(EntityLivingBase entityLivingBaseIn, Entity entityIn) {
-        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_SMACK);
+        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_SMACK.get());
         MoCTools.bigSmack(this, entityIn, 1F);
         super.applyEnchantments(entityLivingBaseIn, entityIn);
     }

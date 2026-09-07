@@ -4,20 +4,15 @@
 package drzhark.mocreatures.entity;
 
 import drzhark.mocreatures.MoCTools;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.world.entity.CreatureAttribute;
-import net.minecraft.world.entity.EntitySize;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.controller.FlyingMovementController;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomFlyingGoal;
-import net.minecraft.pathfinding.FlyingPathNavigator;
-import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class MoCEntityInsect extends MoCEntityAmbient {
 
@@ -34,7 +29,7 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
     }
 
     @Override
-    protected PathNavigator createNavigator(Level worldIn) {
+    protected PathNavigation createNavigator(Level worldIn) {
         FlyingPathNavigator FlyingPathNavigator = new FlyingPathNavigator(this, worldIn);
         FlyingPathNavigator.setCanEnterDoors(true);
         FlyingPathNavigator.setCanSwim(true);
@@ -63,18 +58,18 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
     }
 
     @Override
-    public void livingTick() {
-        super.livingTick();
+    public void aiStep() {
+        super.aiStep();
 
         if (this.isInWater()) {
             this.motionY *= 0.6D;
         }
 
-        if (!this.level().isRemote) {
-            if (this.rand.nextInt(50) == 0) {
+        if (!this.level().isClientSide()) {
+            if (this.random.nextInt(50) == 0) {
                 int[] ai = MoCTools.returnNearestBlockCoord(this, this.isAttractedToLight() ? Blocks.TORCH : Blocks.TALLGRASS, 8D);
                 if (ai[0] > -1000) {
-                    this.getNavigator().tryMoveToXYZ(ai[0], ai[1], ai[2], 1.0D);
+                    this.getNavigation().tryMoveToXYZ(ai[0], ai[1], ai[2], 1.0D);
                 }
             }
         } else {

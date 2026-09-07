@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
- * Legacy shark model ported to 1.20.1. All ModelRenderer pieces are now ModelPart children,
+ * Legacy shark model ported to 1.20.1. All ModelPart pieces are now ModelPart children,
  * and tail‐fin animation logic moves into setupAnim().
  */
 @OnlyIn(Dist.CLIENT)
@@ -58,7 +58,7 @@ public class MoCLegacyModelShark<T extends MoCEntityShark> extends EntityModel<T
     }
 
     /**
-     * Builds a LayerDefinition matching the old ModelRenderer.addBox(...) + setRotationPoint(...) + rotateAngle settings.
+     * Builds a LayerDefinition matching the old ModelPart.addBox(...) + setRotationPoint(...) + rotateAngle settings.
      */
     public static LayerDefinition createBodyLayer() {
         MeshDefinition mesh = new MeshDefinition();

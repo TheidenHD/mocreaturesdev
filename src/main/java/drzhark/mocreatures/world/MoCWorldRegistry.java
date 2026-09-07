@@ -1,7 +1,5 @@
 package drzhark.mocreatures.world;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.config.biome.BiomeConfig;
@@ -10,7 +8,6 @@ import drzhark.mocreatures.config.biome.MoCConfig;
 import drzhark.mocreatures.config.biome.SpawnBiomeData;
 import drzhark.mocreatures.entity.MoCEntityData;
 import drzhark.mocreatures.init.MoCEntities;
-import drzhark.mocreatures.world.MoCSpawnRegistryCache;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -22,6 +19,7 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraftforge.common.world.ModifiableBiomeInfo;
 import net.minecraftforge.common.world.ModifiableStructureInfo;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Map;
 

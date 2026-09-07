@@ -63,7 +63,7 @@ public class MoCLegacyModelBigCat2<T extends MoCEntityBigCat> extends EntityMode
 
         /*
          * EARS
-         *   this.ears = new ModelRenderer(this, 16, 25);
+         *   this.ears = new ModelPart(this, 16, 25);
          *   this.ears.addBox(-4F, -7F, -3F, 8, 4, 1);
          *   this.ears.setRotationPoint(0F, 4F, -8F);
          */
@@ -83,7 +83,7 @@ public class MoCLegacyModelBigCat2<T extends MoCEntityBigCat> extends EntityMode
 
         /*
          * HEAD
-         *   this.head = new ModelRenderer(this, 0, 0);
+         *   this.head = new ModelPart(this, 0, 0);
          *   this.head.addBox(-4F, -4F, -6F, 8, 8, 6);
          *   this.head.setRotationPoint(0F, 4F, -8F);
          */
@@ -103,7 +103,7 @@ public class MoCLegacyModelBigCat2<T extends MoCEntityBigCat> extends EntityMode
 
         /*
          * SNOUT
-         *   this.snout = new ModelRenderer(this, 14, 14);
+         *   this.snout = new ModelPart(this, 14, 14);
          *   this.snout.addBox(-2F, 0F, -9F, 4, 4, 6);
          *   this.snout.setRotationPoint(0F, 4F, -8F);
          */
@@ -123,7 +123,7 @@ public class MoCLegacyModelBigCat2<T extends MoCEntityBigCat> extends EntityMode
 
         /*
          * COLLAR
-         *   this.collar = new ModelRenderer(this, 24, 0);
+         *   this.collar = new ModelPart(this, 24, 0);
          *   this.collar.addBox(-2.5F, 4F, -3F, 5, 4, 1);
          *   this.collar.setRotationPoint(0F, 4F, -8F);
          */
@@ -143,7 +143,7 @@ public class MoCLegacyModelBigCat2<T extends MoCEntityBigCat> extends EntityMode
 
         /*
          * BODY
-         *   this.body = new ModelRenderer(this, 28, 0);
+         *   this.body = new ModelPart(this, 28, 0);
          *   this.body.addBox(-5F, -10F, -7F, 10, 18, 8);
          *   this.body.setRotationPoint(0F, 5F, 2F);
          */
@@ -163,7 +163,7 @@ public class MoCLegacyModelBigCat2<T extends MoCEntityBigCat> extends EntityMode
 
         /*
          * TAIL
-         *   this.tail = new ModelRenderer(this, 26, 15);
+         *   this.tail = new ModelPart(this, 26, 15);
          *   this.tail.addBox(-5F, -5F, -2F, 3, 3, 14);
          *   this.tail.setRotationPoint(3.5F, 9.3F, 9F);
          *   this.tail.rotateAngleX = -0.5235988F;
@@ -191,7 +191,7 @@ public class MoCLegacyModelBigCat2<T extends MoCEntityBigCat> extends EntityMode
 
         /*
          * LEG1 (front left)
-         *   this.leg1 = new ModelRenderer(this, 0, 16);
+         *   this.leg1 = new ModelPart(this, 0, 16);
          *   this.leg1.addBox(-2F, 0F, -2F, 4, 12, 4);
          *   this.leg1.setRotationPoint(-3F, 12F, 7F);
          */
@@ -211,7 +211,7 @@ public class MoCLegacyModelBigCat2<T extends MoCEntityBigCat> extends EntityMode
 
         /*
          * LEG2 (front right)
-         *   this.leg2 = new ModelRenderer(this, 0, 16);
+         *   this.leg2 = new ModelPart(this, 0, 16);
          *   this.leg2.addBox(-2F, 0F, -2F, 4, 12, 4);
          *   this.leg2.setRotationPoint(3F, 12F, 7F);
          */
@@ -231,7 +231,7 @@ public class MoCLegacyModelBigCat2<T extends MoCEntityBigCat> extends EntityMode
 
         /*
          * LEG3 (back left)
-         *   this.leg3 = new ModelRenderer(this, 0, 16);
+         *   this.leg3 = new ModelPart(this, 0, 16);
          *   this.leg3.addBox(-2F, 0F, -2F, 4, 12, 4);
          *   this.leg3.setRotationPoint(-3F, 12F, -5F);
          */
@@ -251,7 +251,7 @@ public class MoCLegacyModelBigCat2<T extends MoCEntityBigCat> extends EntityMode
 
         /*
          * LEG4 (back right)
-         *   this.leg4 = new ModelRenderer(this, 0, 16);
+         *   this.leg4 = new ModelPart(this, 0, 16);
          *   this.leg4.addBox(-2F, 0F, -2F, 4, 12, 4);
          *   this.leg4.setRotationPoint(3F, 12F, -5F);
          */

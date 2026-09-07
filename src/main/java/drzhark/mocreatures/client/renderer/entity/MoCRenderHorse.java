@@ -3,11 +3,8 @@
  */
 package drzhark.mocreatures.client.renderer.entity;
 
-import org.joml.Matrix4f;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.client.model.MoCModelHorse;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
@@ -21,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Matrix4f;
 
 @OnlyIn(Dist.CLIENT)
 public class MoCRenderHorse extends MoCRenderMoC<MoCEntityHorse, MoCModelHorse<MoCEntityHorse>> {

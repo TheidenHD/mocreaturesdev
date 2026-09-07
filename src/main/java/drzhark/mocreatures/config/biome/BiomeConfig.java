@@ -4,16 +4,12 @@
  */
 package drzhark.mocreatures.config.biome;
 
+import drzhark.mocreatures.MoCreatures;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
-
-import drzhark.mocreatures.MoCreatures;
-import drzhark.mocreatures.config.biome.BiomeSpawnConfig;
-import drzhark.mocreatures.config.biome.SpawnBiomeConfig;
-import drzhark.mocreatures.config.biome.SpawnBiomeData;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

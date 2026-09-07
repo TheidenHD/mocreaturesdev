@@ -1,5 +1,7 @@
 package drzhark.mocreatures.item;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
@@ -12,6 +14,7 @@ import drzhark.mocreatures.entity.neutral.MoCEntityOstrich;
 import drzhark.mocreatures.entity.neutral.MoCEntityWyvern;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import drzhark.mocreatures.init.MoCSoundEvents;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -21,20 +24,13 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.BlockPos;
-
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.level.Level;
-
-
-import java.util.List;
-
-import javax.annotation.Nullable;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class MoCItemWhip extends MoCItemSword {
     private float AttackSpeed;
@@ -51,10 +47,10 @@ public class MoCItemWhip extends MoCItemSword {
         Block block1 = worldIn.getBlockState(pos.above()).getBlock();
         if (side != EnumFacing.DOWN && (block1 == Blocks.AIR) && (block != Blocks.AIR) && (block != Blocks.STANDING_SIGN)) {
             whipFX(worldIn, pos);
-            worldIn.playSound(player, pos, MoCSoundEvents.ENTITY_GENERIC_WHIP, SoundSource.PLAYERS, 0.5F, 0.4F / ((itemRand.nextFloat() * 0.4F) + 0.8F));
+            worldIn.playSound(player, pos, MoCSoundEvents.ENTITY_GENERIC_WHIP.get(), SoundSource.PLAYERS, 0.5F, 0.4F / ((itemRand.nextFloat() * 0.4F) + 0.8F));
             player.getCooldownTracker().setCooldown(this, 20);
             stack.damageItem(2, player);
-            List<Entity> list = worldIn.getEntitiesWithinAABBExcludingEntity(player, player.getEntityBoundingBox().grow(12D));
+            List<Entity> list = worldIn.getEntities(player, player.getEntityBoundingBox().grow(12D));
             for (Entity entity : list) {
                 if (entity instanceof MoCEntityAnimal) {
                     MoCEntityAnimal animal = (MoCEntityAnimal) entity;
@@ -150,7 +146,7 @@ public class MoCItemWhip extends MoCItemSword {
 
     @Override
     public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
-        target.playSound(MoCSoundEvents.ENTITY_GENERIC_WHIP, 0.5F, 2.0F / ((itemRand.nextFloat() * 0.4F) + 0.8F));
+        target.playSound(MoCSoundEvents.ENTITY_GENERIC_WHIP.get(), 0.5F, 2.0F / ((itemRand.nextFloat() * 0.4F) + 0.8F));
         return super.hitEntity(stack, target, attacker);
     }
 

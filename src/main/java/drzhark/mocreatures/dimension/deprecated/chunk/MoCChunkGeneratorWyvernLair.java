@@ -5,40 +5,26 @@ package drzhark.mocreatures.dimension.chunk;
 
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.dimension.worldgen.MoCWorldGenPortal;
-import drzhark.mocreatures.dimension.worldgen.MoCWorldGenTower;
 import drzhark.mocreatures.init.MoCBlocks;
-import net.minecraft.block.BlockFalling;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.EnumCreatureType;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Mth;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkPrimer;
-import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.gen.NoiseGeneratorOctaves;
-import net.minecraft.world.gen.NoiseGeneratorSimplex;
-import net.minecraft.world.gen.feature.WorldGenEndIsland;
-import net.minecraft.world.gen.feature.WorldGenLakes;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.event.terraingen.ChunkGeneratorEvent;
-import net.minecraftforge.event.terraingen.InitNoiseGensEvent;
-import net.minecraftforge.event.terraingen.TerrainGen;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Event;
 
 import java.util.List;
 import java.util.Random;
 
 public class MoCChunkGeneratorWyvernLair implements IChunkGenerator {
-    protected static final BlockState WYVERN_STONE = MoCBlocks.wyvstone.getDefaultState();
-    protected static final BlockState WYVERN_DIRT = MoCBlocks.wyvdirt.getDefaultState();
-    protected static final BlockState WYVERN_GRASS = MoCBlocks.wyvgrass.getDefaultState();
-    protected static final BlockState AIR = Blocks.AIR.getDefaultState();
+    protected static final BlockState WYVERN_STONE = MoCBlocks.wyvstone.defaultBlockState();
+    protected static final BlockState WYVERN_DIRT = MoCBlocks.wyvdirt.defaultBlockState();
+    protected static final BlockState WYVERN_GRASS = MoCBlocks.wyvgrass.defaultBlockState();
+    protected static final BlockState AIR = Blocks.AIR.defaultBlockState();
     /**
      * RNG.
      */
@@ -80,7 +66,7 @@ public class MoCChunkGeneratorWyvernLair implements IChunkGenerator {
     private boolean portalDone = false;
 
     public MoCChunkGeneratorWyvernLair(Level worldIn, boolean mapFeaturesEnabledIn, long seed) {
-        this.level() = worldIn;
+        this.world = worldIn;
         this.mapFeaturesEnabled = mapFeaturesEnabledIn;
         this.rand = new Random(seed);
         this.lperlinNoise1 = new NoiseGeneratorOctaves(this.rand, 16);

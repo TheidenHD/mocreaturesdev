@@ -12,17 +12,13 @@ import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityLivingBase;
-import net.minecraft.world.entity.SharedMonsterAttributes;
-import net.minecraft.world.entity.ai.EntityAIAttackMelee;
-import net.minecraft.world.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.world.entity.animal.EntityWolf;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.util.DamageSource;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -35,7 +31,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
         this.texture = "shark.png";
         setSize(1.65F, 0.9F);
         // TODO: Make hitboxes adjust depending on size
-        //setAge(60 + this.rand.nextInt(100));
+        //setAge(60 + this.random.nextInt(100));
         setAge(160);
         experienceValue = 5;
     }
@@ -107,7 +103,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     public LivingEntity FindTarget(Entity entity, double d) {
         double d1 = -1D;
         LivingEntity entityliving = null;
-        List<Entity> list = this.level().getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(d));
+        List<Entity> list = this.level().getEntities(this, getBoundingBox().inflate(d));
         for (Entity o : list) {
             if (!(o instanceof LivingEntity) || (o instanceof MoCEntityAquatic) || (o instanceof MoCEntityEgg) || (o instanceof Player) || ((o instanceof WolfEntity) && !(MoCreatures.proxy.attackWolves)) || ((o instanceof MoCEntityHorse) && !(MoCreatures.proxy.attackHorses))) {
                 continue;
@@ -116,7 +112,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
                     getIsTamed();
                 }
             }
-            double d2 = o.distanceToSqr(entity.getPosX(), entity.getPosY(), entity.getPosZ());
+            double d2 = o.distanceToSqr(entity.getX(), entity.getY(), entity.getZ());
             if (((d < 0.0D) || (d2 < (d * d))) && ((d1 == -1D) || (d2 < d1)) && ((LivingEntity) o).canEntityBeSeen(entity)) {
                 d1 = d2;
                 entityliving = (LivingEntity) o;
@@ -126,13 +122,13 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public void livingTick() {
-        super.livingTick();
-        if (!this.level().isRemote) {
+    public void aiStep() {
+        super.aiStep();
+        if (!this.level().isClientSide()) {
             if (getAge() >= 160) {
                 setAdult(true);
             }
-            if (!getIsAdult() && (this.rand.nextInt(50) == 0)) {
+            if (!getIsAdult() && (this.random.nextInt(50) == 0)) {
                 setAge(getAge() + 1);
             }
         }
@@ -141,7 +137,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     @Override
     public void setDead() {
         // Server check required to prevent tamed entities from being duplicated on client-side
-        if (!this.level().isRemote && (getIsTamed()) && (getHealth() > 0)) {
+        if (!this.level().isClientSide() && (getIsTamed()) && (getHealth() > 0)) {
             return;
         }
         super.setDead();
@@ -183,12 +179,12 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     }
 
     protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
-        return this.getHeight() * 0.61F;
+        return this.getBbHeight() * 0.61F;
     }
     
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_FISH_FLOP;
+        return MoCSoundEvents.ENTITY_FISH_FLOP.get();
     }
 
     @Override
@@ -198,6 +194,6 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
 
     @Override
     protected SoundEvent getSwimSound() {
-        return MoCSoundEvents.ENTITY_FISH_SWIM;
+        return MoCSoundEvents.ENTITY_FISH_SWIM.get();
     }
 }

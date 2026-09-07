@@ -4,8 +4,8 @@
 package drzhark.mocreatures.entity.ai;
 
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.level.Level;
 
 /**
  * PathNavigateFlyer - 1.20.1 compatible implementation for MoCreatures flying entities

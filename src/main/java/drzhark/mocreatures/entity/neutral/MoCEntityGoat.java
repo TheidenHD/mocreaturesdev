@@ -11,30 +11,30 @@ import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class MoCEntityGoat extends MoCEntityTameableAnimal {
 
@@ -321,8 +321,8 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
                         setPathToEntity(entityitem, f);
                         return;
                     }
-                    if (f < 2.0F && this.deathTime == 0 && this.rand.nextInt(50) == 0) {
-                        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EAT);
+                    if (f < 2.0F && this.deathTime == 0 && this.random.nextInt(50) == 0) {
+                        MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EAT.get());
                         setEating(true);
 
                         entityitem.remove(Entity.RemovalReason.DISCARDED);
@@ -373,8 +373,8 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         this.attacking = 30;
         if (entityIn instanceof MoCEntityGoat) {
             MoCTools.bigSmack(this, entityIn, 0.4F);
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_SMACK);
-            if (this.rand.nextInt(3) == 0) {
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_SMACK.get());
+            if (this.random.nextInt(3) == 0) {
                 calm();
                 ((MoCEntityGoat) entityIn).calm();
             }
@@ -452,7 +452,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         if (getSwingLeg()) {
             this.movecount += 5;
             if (this.movecount == 30) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_DIG);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_DIG.get());
             }
 
             if (this.movecount > 100) {
@@ -482,7 +482,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
             if (this.eatcount == 2) {
                 Player Player1 = this.level().getNearestPlayer(this, 3D);
                 if (Player1 != null) {
-                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EAT);
+                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EAT.get());
                 }
             }
             if (this.eatcount > 25) {
@@ -575,13 +575,13 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         if (getIsTamed() && !stack.isEmpty() && (MoCTools.isItemEdible(stack.getItem()))) {
             if (!player.getAbilities().instabuild) stack.shrink(1);
             this.setHealth(getMaxHealth());
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EAT);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EAT.get());
             return true;
         }
 
         if (!getIsTamed() && !stack.isEmpty() && MoCTools.isItemEdible(stack.getItem())) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
-            if (!this.level().isRemote) {
+            if (!player.isCreative()) stack.shrink(1);
+            if (!this.level().isClientSide()) {
                 MoCTools.tameWithName(player, this);
             }
 

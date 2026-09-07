@@ -10,20 +10,19 @@ import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.CreatureAttribute;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.LookAtGoal;
 import net.minecraft.world.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.DamageSource;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,7 +34,7 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
     public MoCEntityCrab(EntityType<? extends MoCEntityCrab> type, Level world) {
         super(type, world);
         //setSize(0.45F, 0.3F);
-        setAge(50 + this.rand.nextInt(50));
+        setAge(50 + this.random.nextInt(50));
     }
 
     @Override
@@ -55,7 +54,7 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
     @Override
     public void selectType() {
         if (getTypeMoC() == 0) {
-            setTypeMoC(this.rand.nextInt(5) + 1);
+            setTypeMoC(this.random.nextInt(5) + 1);
         }
 
     }
@@ -78,7 +77,7 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
 
     @Override
     protected int getExperiencePoints(Player player) {
-        return 1 + this.level().rand.nextInt(3);
+        return 1 + this.level().random.nextInt(3);
     }
 
     @Nullable
@@ -109,7 +108,7 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
 
     @Override
     public boolean attackEntityAsMob(Entity entity) {
-        this.playSound(MoCSoundEvents.ENTITY_GENERIC_SMACK, 1.0F, 2.0F);
+        this.playSound(MoCSoundEvents.ENTITY_GENERIC_SMACK.get(), 1.0F, 2.0F);
         return super.attackEntityAsMob(entity);
     }
 

@@ -4,13 +4,13 @@
 package drzhark.mocreatures.client.renderer;
 
 import drzhark.mocreatures.MoCConstants;
+import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.client.model.*;
 import drzhark.mocreatures.client.model.legacy.MoCLegacyModelBigCat1;
 import drzhark.mocreatures.client.model.legacy.MoCLegacyModelBigCat2;
 import drzhark.mocreatures.client.renderer.entity.*;
 import drzhark.mocreatures.client.renderer.entity.legacy.MoCLegacyRenderBigCat;
 import drzhark.mocreatures.init.MoCEntities;
-import drzhark.mocreatures.MoCreatures;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

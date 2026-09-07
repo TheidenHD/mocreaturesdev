@@ -4,18 +4,19 @@
 package drzhark.mocreatures.entity.ambient;
 
 //import drzhark.mocreatures.MoCTools;
+
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.world.entity.SharedMonsterAttributes;
-//import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.DamageSource;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
+
+//import net.minecraft.world.entity.player.Player;
 
 public class MoCEntityGrasshopper extends MoCEntityInsect {
 
@@ -52,9 +53,9 @@ public class MoCEntityGrasshopper extends MoCEntityInsect {
     }
 
     @Override
-    public void livingTick() {
-        super.livingTick();
-        if (!this.level().isRemote) {
+    public void aiStep() {
+        super.aiStep();
+        if (!this.level().isClientSide()) {
             /*if (getIsFlying() || !this.onGround()) {
                 Player ep = this.level().getNearestPlayerToEntity(this, 5D);
                 if (ep != null && --this.soundCounter == -1) {

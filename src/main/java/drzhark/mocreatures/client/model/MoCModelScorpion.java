@@ -3,7 +3,7 @@
  *
  * Ported to Minecraft 1.20.1:
  *  • Replace setLivingAnimations(...) with prepareMobModel(...)
- *  • No ModelRenderer → ModelPart changes here, since all parts live in MoCModelAbstractScorpion
+ *  • No ModelPart → ModelPart changes here, since all parts live in MoCModelAbstractScorpion
  */
 
 package drzhark.mocreatures.client.model;

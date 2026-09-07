@@ -9,10 +9,25 @@ import drzhark.mocreatures.entity.MoCEntityMob;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
@@ -20,18 +35,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TieredItem;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -211,7 +214,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
     @Override
     protected SoundEvent getDeathSound() {
         if (getIsHumanForm()) {
-            return MoCreatures.proxy.legacyWerehumanSounds ? MoCSoundEvents.ENTITY_WEREHUMAN_DEATH_LEGACY : SoundEvents.ENTITY_GENERIC_HURT;
+            return MoCreatures.proxy.legacyWerehumanSounds ? MoCSoundEvents.ENTITY_WEREHUMAN_DEATH_LEGACY.get() : SoundEvents.ENTITY_GENERIC_HURT;
         } else {
             return MoCSoundEvents.ENTITY_WEREWOLF_DEATH.get();
         }
@@ -221,7 +224,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
     protected SoundEvent getHurtSound(DamageSource source) {
         if (getIsHumanForm()) {
             if (!this.transforming)
-                return MoCreatures.proxy.legacyWerehumanSounds ? MoCSoundEvents.ENTITY_WEREHUMAN_HURT_LEGACY : SoundEvents.ENTITY_GENERIC_HURT;
+                return MoCreatures.proxy.legacyWerehumanSounds ? MoCSoundEvents.ENTITY_WEREHUMAN_HURT_LEGACY.get() : SoundEvents.ENTITY_GENERIC_HURT;
             return null;
         } else {
             return MoCSoundEvents.ENTITY_WEREWOLF_HURT.get();
@@ -275,7 +278,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
                     this.setPos(this.getX() - 0.3D, this.getY(), this.getZ());
                 }
                 if (this.tcounter == 10) {
-                    MoCTools.playCustomSound(this, MoCreatures.proxy.legacyWerehumanSounds ? MoCSoundEvents.ENTITY_WEREWOLF_TRANSFORM_LEGACY : MoCSoundEvents.ENTITY_WEREWOLF_TRANSFORM);
+                    MoCTools.playCustomSound(this, MoCreatures.proxy.legacyWerehumanSounds ? MoCSoundEvents.ENTITY_WEREWOLF_TRANSFORM_LEGACY.get() : MoCSoundEvents.ENTITY_WEREWOLF_TRANSFORM.get());
                 }
                 if (this.tcounter > 30) {
                     Transform();

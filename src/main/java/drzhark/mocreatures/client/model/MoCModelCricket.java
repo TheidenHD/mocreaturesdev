@@ -67,7 +67,7 @@ public class MoCModelCricket<T extends MoCEntityCricket> extends EntityModel<T> 
     }
 
     /**
-     * Builds exactly the same cubes/rotations as your old ModelRenderer-based constructor.
+     * Builds exactly the same cubes/rotations as your old ModelPart-based constructor.
      */
     public static LayerDefinition createBodyLayer() {
         MeshDefinition mesh = new MeshDefinition();

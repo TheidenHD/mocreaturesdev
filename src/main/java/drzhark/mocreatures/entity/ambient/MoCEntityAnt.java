@@ -7,6 +7,7 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.MoCEntityAmbient;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -15,7 +16,6 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -54,14 +54,14 @@ public class MoCEntityAnt extends MoCEntityAmbient {
     }
 
     @Override
-    public void livingTick() {
-        super.livingTick();
+    public void aiStep() {
+        super.aiStep();
 
         if (this.isInWater()) {
             this.motionY *= 0.6D;
         }
 
-        if (!this.level().isRemote) {
+        if (!this.level().isClientSide()) {
             if (!getHasFood()) {
                 ItemEntity entityitem = MoCTools.getClosestFood(this, 8D);
                 if (entityitem == null || entityitem.removed) {
@@ -70,9 +70,9 @@ public class MoCEntityAnt extends MoCEntityAmbient {
                 if (entityitem.getRidingEntity() == null) {
                     float f = entityitem.getDistance(this);
                     if (f > 1.0F) {
-                        int i = Mth.floor(entityitem.getPosX());
-                        int j = Mth.floor(entityitem.getPosY());
-                        int k = Mth.floor(entityitem.getPosZ());
+                        int i = Mth.floor(entityitem.getX());
+                        int j = Mth.floor(entityitem.getY());
+                        int k = Mth.floor(entityitem.getZ());
                         faceLocation(i, j, k, 30F);
 
                         getMyOwnPath(entityitem, f);
@@ -105,9 +105,9 @@ public class MoCEntityAnt extends MoCEntityAmbient {
     }
 
     private void exchangeItem(ItemEntity entityitem) {
-        ItemEntity cargo = new ItemEntity(this.level(), this.getPosX(), this.getPosY() + 0.2D, this.getPosZ(), entityitem.getItem());
+        ItemEntity cargo = new ItemEntity(this.level(), this.getX(), this.getY() + 0.2D, this.getZ(), entityitem.getItem());
         entityitem.remove();
-        if (!this.level().isRemote) {
+        if (!this.level().isClientSide()) {
             this.level().addFreshEntity(cargo);
         }
     }

@@ -12,9 +12,11 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
@@ -30,8 +32,6 @@ import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
@@ -55,8 +55,8 @@ public class MoCEntityScorpion extends MoCEntityMob {
         this.poisontimer = 0;
         this.getTypeMoC = typeMoc;
 
-        if (!this.level().isRemote) {
-            setHasBabies(this.getIsAdult() && this.rand.nextInt(4) == 0);
+        if (!this.level().isClientSide()) {
+            setHasBabies(this.getIsAdult() && this.random.nextInt(4) == 0);
         }
         this.xpReward = 5;
     }
@@ -222,9 +222,9 @@ public class MoCEntityScorpion extends MoCEntityMob {
     public void die(DamageSource damagesource) {
         super.die(damagesource);
 
-        if (!this.level().isRemote && getIsAdult()) {
+        if (!this.level().isClientSide() && getIsAdult()) {
             if (getHasBabies()) {
-                int k = this.rand.nextInt(5);
+                int k = this.random.nextInt(5);
                 for (int i = 0; i < k; i++) {
                     MoCEntityScorpion babyScorpion;
                     switch (this.getType) {
@@ -261,7 +261,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
         if (getHasBabies()) {
             chance = MoCreatures.proxy.motherScorpionEggDropChance;
         }
-        if (this.rand.nextInt(100) < chance) {
+        if (this.random.nextInt(100) < chance) {
             entityDropItem(new ItemStack(MoCItems.mocegg, 1, this.getType + 40), 0.0F);
         }
     }

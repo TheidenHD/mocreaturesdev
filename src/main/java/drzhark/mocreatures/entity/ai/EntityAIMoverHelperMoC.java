@@ -6,14 +6,14 @@ package drzhark.mocreatures.entity.ai;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.MoCEntityAquatic;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.level.pathfinder.NodeEvaluator;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
-import net.minecraft.util.Mth;
+import net.minecraft.world.level.pathfinder.NodeEvaluator;
 
 public class EntityAIMoverHelperMoC extends MoveControl {
 

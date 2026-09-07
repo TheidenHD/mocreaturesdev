@@ -6,10 +6,12 @@ package drzhark.mocreatures.entity.aquatic;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
 import drzhark.mocreatures.init.MoCSoundEvents;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.InteractionHand;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.world.level.Level;
 
 public class MoCEntityRay extends MoCEntityTameableAquatic {
@@ -115,16 +117,16 @@ public class MoCEntityRay extends MoCEntityTameableAquatic {
     
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_FISH_FLOP;
+        return MoCSoundEvents.ENTITY_FISH_FLOP.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCSoundEvents.ENTITY_FISH_HURT;
+        return MoCSoundEvents.ENTITY_FISH_HURT.get();
     }
 
     @Override
     protected SoundEvent getSwimSound() {
-        return MoCSoundEvents.ENTITY_FISH_SWIM;
+        return MoCSoundEvents.ENTITY_FISH_SWIM.get();
     }
 }

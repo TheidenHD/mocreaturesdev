@@ -6,8 +6,8 @@ package drzhark.mocreatures.entity.ai;
 import com.google.common.base.Predicate;
 import drzhark.mocreatures.entity.MoCEntityAquatic;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.world.entity.player.Player;
 

@@ -24,7 +24,7 @@ public class MoCModelCrocodile<T extends MoCEntityCrocodile> extends EntityModel
             new ResourceLocation("mocreatures", "crocodile"), "main"
     );
 
-    // All former ModelRenderer fields become ModelPart:
+    // All former ModelPart fields become ModelPart:
     private final ModelPart LJaw;
     private final ModelPart TailA;
     private final ModelPart TailB;

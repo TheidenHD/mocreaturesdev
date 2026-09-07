@@ -35,7 +35,7 @@ public class MoCLegacyModelBigCat1<T extends MoCEntityBigCat> extends EntityMode
     }
 
     /**
-     * Exactly match old ModelRenderer(...) calls:
+     * Exactly match old ModelPart(...) calls:
      *   head.addBox(-7F, -8F, -2F, 14, 14, 8);
      *   head.setRotationPoint(0F, 4F, -8F);
      *   body.addBox(-6F, -11F, -8F, 12, 10, 10);

@@ -7,8 +7,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import drzhark.mocreatures.client.model.MoCModelSnake;
 import drzhark.mocreatures.entity.hunter.MoCEntitySnake;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.FluidTags;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

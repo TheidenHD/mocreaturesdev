@@ -4,19 +4,19 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import drzhark.mocreatures.client.model.MoCModelFilchLizard;
 import drzhark.mocreatures.entity.passive.MoCEntityFilchLizard;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.client.renderer.ItemInHandRenderer;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.resources.ResourceLocation;
-import com.mojang.math.Axis;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 
 // Courtesy of Daveyx0, permission given
 public class MoCRenderFilchLizard extends MobRenderer<MoCEntityFilchLizard, MoCModelFilchLizard<MoCEntityFilchLizard>> {

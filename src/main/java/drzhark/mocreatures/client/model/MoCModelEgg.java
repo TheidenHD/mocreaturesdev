@@ -43,7 +43,7 @@ public class MoCModelEgg<T extends MoCEntityEgg> extends EntityModel<T> {
 
         /*
          * Recreating the five boxes from the 1.16 version. All pivots and box sizes
-         * exactly match the old ModelRenderer.addBox / setRotationPoint calls.
+         * exactly match the old ModelPart.addBox / setRotationPoint calls.
          *
          * Egg1:  addBox(0,0,0, 3,3,3),  pivot at (0,20,0)
          * Egg2:  addBox(0,0,0, 2,1,2),  pivot at (0.5,19.5,0.5)

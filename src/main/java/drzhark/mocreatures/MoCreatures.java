@@ -2,20 +2,14 @@ package drzhark.mocreatures;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
-
 import drzhark.mocreatures.client.renderer.fx.MoCParticles;
 import drzhark.mocreatures.compat.CompatHandler;
 import drzhark.mocreatures.config.biome.BiomeSpawnConfig;
 import drzhark.mocreatures.entity.MoCEntityData;
 import drzhark.mocreatures.entity.tameable.MoCPetMapData;
 import drzhark.mocreatures.event.MoCEventHooks;
-import drzhark.mocreatures.init.MoCBlocks;
-import drzhark.mocreatures.init.MoCCreativeTabs;
-import drzhark.mocreatures.init.MoCEntities;
-import drzhark.mocreatures.init.MoCFeatures;
-import drzhark.mocreatures.init.MoCItems;
-import drzhark.mocreatures.init.MoCSoundEvents;
-import drzhark.mocreatures.init.MoCSpawnEggs;
+import drzhark.mocreatures.event.MoCWyvernDimensionHandler;
+import drzhark.mocreatures.init.*;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.proxy.MoCProxy;
 import drzhark.mocreatures.proxy.MoCProxyClient;
@@ -37,10 +31,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import drzhark.mocreatures.event.MoCWyvernDimensionHandler;
 
 import java.util.UUID;
 
@@ -139,7 +131,7 @@ public class MoCreatures {
     }
 
     public static void registerDeferredRegistries(IEventBus modBus) {
-        MoCSoundEvents.SOUND_DEFERRED.register(modBus);
+        MoCSoundEvents.SOUND_DEFERRED.get().register(modBus);
         MoCParticles.PARTICLES.register(modBus);
         MoCBlocks.BLOCKS.register(modBus);
         MoCBlocks.ITEMS.register(modBus);

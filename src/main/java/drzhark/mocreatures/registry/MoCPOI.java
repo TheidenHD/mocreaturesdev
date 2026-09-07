@@ -1,5 +1,6 @@
 package drzhark.mocreatures.registry;
 
+import drzhark.mocreatures.MoCConstants;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -10,8 +11,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Set;
-
-import drzhark.mocreatures.MoCConstants;
 
 public class MoCPOI {
     public static final DeferredRegister<PoiType> POI_TYPES = DeferredRegister.create(ForgeRegistries.POI_TYPES, MoCConstants.MOD_ID);

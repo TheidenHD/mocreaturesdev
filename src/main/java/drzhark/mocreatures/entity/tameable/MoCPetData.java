@@ -3,14 +3,17 @@ package drzhark.mocreatures.entity.tameable;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 
-import java.util.*;
+import java.util.BitSet;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class MoCPetData {
 

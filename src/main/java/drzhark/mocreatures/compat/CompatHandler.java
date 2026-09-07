@@ -7,16 +7,13 @@ import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.compat.industrialforegoing.IndustrialForegoingIntegration;
 import drzhark.mocreatures.compat.jer.JERIntegration;
 import drzhark.mocreatures.compat.morph.MorphIntegration;
-import drzhark.mocreatures.compat.thaumcraft.ThaumcraftIntegration;
 import drzhark.mocreatures.compat.thermalexpansion.ThermalExpansionIntegration;
 import drzhark.mocreatures.compat.tinkers.ConstructsArmoryIntegration;
 import drzhark.mocreatures.compat.tinkers.TinkersConstructIntegration;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.IRecipe;
-import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)

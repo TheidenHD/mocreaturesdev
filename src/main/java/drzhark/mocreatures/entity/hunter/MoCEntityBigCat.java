@@ -19,11 +19,14 @@ import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import drzhark.mocreatures.util.MoCTags;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -40,9 +43,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -70,7 +70,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
         super(type, world);
         setAge(45);
         //setSize(1.4F, 1.3F);
-        setAdult(this.rand.nextInt(4) != 0);
+        setAdult(this.random.nextInt(4) != 0);
         stepHeight = 1.0F;
         experienceValue = 5;
     }
@@ -218,13 +218,13 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
 
     @Override
     public void onDeath(DamageSource damagesource) {
-        if (!this.level().isRemote) {
+        if (!this.level().isClientSide()) {
             if (getHasAmulet()) {
                 MoCTools.dropCustomItem(this, this.level(), new ItemStack(MoCItems.medallion, 1));
                 setHasAmulet(false);
             }
 
-            if (getIsTamed() && !getIsGhost() && this.rand.nextInt(4) == 0) {
+            if (getIsTamed() && !getIsGhost() && this.random.nextInt(4) == 0) {
                 this.spawnGhost();
             }
         }
@@ -238,7 +238,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
                 MoCEntityBigCat ghost = (MoCEntityBigCat) templiving;
                 ghost.setPos(this.posX, this.posY, this.posZ);
                 this.level().spawnEntity(ghost);
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_MAGIC_ENCHANTED);
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_MAGIC_ENCHANTED.get());
                 ghost.setOwnerId(this.getOwnerId());
                 ghost.setTamed(true);
                 Player Player = this.level().getNearestPlayer(this, 24D);
@@ -259,30 +259,30 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void livingTick() {
+    public void aiStep() {
 
-        super.livingTick();
+        super.aiStep();
 
-        if (!this.level().isRemote) {
+        if (!this.level().isClientSide()) {
             setSprinting(this.getTarget() != null);
         }
 
-        if (this.level().isRemote) //animation counters
+        if (this.level().isClientSide()) //animation counters
         {
             if (this.mouthCounter > 0 && ++this.mouthCounter > 30) {
                 this.mouthCounter = 0;
             }
 
-            if (this.rand.nextInt(250) == 0) {
+            if (this.random.nextInt(250) == 0) {
                 moveTail();
             }
 
-            if (this.tailCounter > 0 && ++this.tailCounter > 10 && this.rand.nextInt(15) == 0) {
+            if (this.tailCounter > 0 && ++this.tailCounter > 10 && this.random.nextInt(15) == 0) {
                 this.tailCounter = 0;
             }
         } else //server stuff
         {
-            if (getIsGhost() && getAge() > 0 && getAge() < 10 && this.rand.nextInt(5) == 0) {
+            if (getIsGhost() && getAge() > 0 && getAge() < 10 && this.random.nextInt(5) == 0) {
                 setAge(getAge() + 1);
                 if (getAge() == 9) {
                     setAge(getMaxAge());
@@ -293,19 +293,19 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
             if (!getIsGhost() && getAge() < 10) {
                 this.remove();
             }
-            /*if (getHasEaten() && rand.nextInt(300) == 0)
+            /*if (getHasEaten() && random.nextInt(300) == 0)
             {
                 setEaten(false);
             }*/
         }
 
-        if (!this.level().isRemote && isFlyer() && isOnAir()) {
+        if (!this.level().isClientSide() && isFlyer() && isOnAir()) {
             float myFlyingSpeed = MoCTools.getMyMovementSpeed(this);
             int wingFlapFreq = (int) (25 - (myFlyingSpeed * 10));
             if (!this.isBeingRidden() || wingFlapFreq < 5) {
                 wingFlapFreq = 5;
             }
-            if (this.rand.nextInt(wingFlapFreq) == 0) {
+            if (this.random.nextInt(wingFlapFreq) == 0) {
                 wingFlap();
             }
         }
@@ -314,12 +314,12 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
             if (this.wingFlapCounter > 0 && ++this.wingFlapCounter > 20) {
                 this.wingFlapCounter = 0;
             }
-            if (!this.level().isRemote && this.wingFlapCounter == 5) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_FLAP_SOFT);
+            if (!this.level().isClientSide() && this.wingFlapCounter == 5) {
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_FLAP_SOFT.get());
             }
         }
 
-        if ((this.rand.nextInt(300) == 0) && (this.getHealth() <= getMaxHealth()) && (this.deathTime == 0) && !this.level().isRemote) {
+        if ((this.random.nextInt(300) == 0) && (this.getHealth() <= getMaxHealth()) && (this.deathTime == 0) && !this.level().isClientSide()) {
             this.setHealth(getHealth() + 1);
         }
 
@@ -334,7 +334,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
                     entityitem.remove();
                     this.setHealth(getMaxHealth());
                     setHasEaten(true);
-                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
+                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT.get());
                 }
             }
         }
@@ -346,13 +346,13 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     }
 
     public void wingFlap() {
-        if (this.level().isRemote) {
+        if (this.level().isClientSide()) {
             return;
         }
 
         if (this.wingFlapCounter == 0) {
             this.wingFlapCounter = 1;
-            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getId(), 3));
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getX(), this.getY(), this.getZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getId(), 3));
         }
     }
 
@@ -372,9 +372,9 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     @Override
     public void updatePassenger(Entity passenger) {
         double dist = getSizeFactor() * (0.1D);
-        double newPosX = this.getPosX() + (dist * Math.sin(this.renderYawOffset / 57.29578F));
-        double newPosZ = this.getPosZ() - (dist * Math.cos(this.renderYawOffset / 57.29578F));
-        passenger.setPos(newPosX, this.getPosY() + getMountedYOffset() + passenger.getYOffset(), newPosZ);
+        double newPosX = this.getX() + (dist * Math.sin(this.renderYawOffset / 57.29578F));
+        double newPosZ = this.getZ() - (dist * Math.cos(this.renderYawOffset / 57.29578F));
+        passenger.setPos(newPosX, this.getY() + getMountedYOffset() + passenger.getYOffset(), newPosZ);
     }
 
     @Override
@@ -435,7 +435,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
 
         final ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty() && !getIsTamed() && getHasEaten() && !getIsAdult() && (stack.getItem() == MoCItems.medallion)) {
-            if (!this.level().isRemote) {
+            if (!this.level().isClientSide()) {
                 setHasAmulet(true);
                 MoCTools.tameWithName(player, this);
             }
@@ -444,7 +444,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
         }
 
         if (!stack.isEmpty() && getIsTamed() && !getHasAmulet() && (stack.getItem() == MoCItems.medallion)) {
-            if (!this.level().isRemote) {
+            if (!this.level().isClientSide()) {
                 setHasAmulet(true);
             }
             if (!player.isCreative()) stack.shrink(1);
@@ -468,7 +468,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
         }
         if (!stack.isEmpty() && getIsTamed() && !getIsRideable() && (getAge() > 80)
                 && (stack.getItem() instanceof ItemSaddle)) {
-            if (!player.capabilities.isCreativeMode) stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
             setRideable(true);
             return InteractionResult.SUCCESS;
         }
@@ -476,7 +476,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
         if (!stack.isEmpty() && this.getIsGhost() && this.getIsTamed() && stack.getItem() == MoCItems.amuletghost) {
 
             player.setItemInHand(hand, ItemStack.EMPTY);
-            if (!this.level().isRemote) {
+            if (!this.level().isClientSide()) {
                 MoCPetData petData = MoCreatures.instance.mapData.getPetData(this.getOwnerId());
                 if (petData != null) {
                     petData.setInAmulet(this.getOwnerPetId(), true);
@@ -493,7 +493,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
         if (!stack.isEmpty() && getIsTamed() && getIsAdult() && !getIsChested() && (stack.getItem() == Item.getItemFromBlock(Blocks.CHEST))) {
             if (!player.isCreative()) stack.shrink(1);
             setIsChested(true);
-            MoCTools.playCustomSound(this, SoundEvents.ENTITY_CHICKEN_EGG);
+            MoCTools.playCustomSound(this, SoundEvents.CHICKEN_EGG);
             return InteractionResult.SUCCESS;
         }
 
@@ -501,7 +501,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
             if (this.localchest == null) {
                 this.localchest = new MoCAnimalChest(this.chestName, MoCAnimalChest.Size.small);
             }
-            if (!this.level().isRemote) {
+            if (!this.level().isClientSide()) {
                 player.openContainer(this.localchest);
             }
             return InteractionResult.SUCCESS;
@@ -521,7 +521,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
             return false;
         }
         float i = (float) (Math.ceil(distance - 3F) / 2F);
-        if (!this.level().isRemote && (i > 0)) {
+        if (!this.level().isClientSide() && (i > 0)) {
             i /= 2;
             if (i > 1F) {
                 attackEntityFrom(DamageSource.FALL, i);
@@ -531,12 +531,12 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
                     entity.attackEntityFrom(DamageSource.FALL, i);
                 }
             }
-            BlockState iblockstate = this.level().getBlockState(new BlockPos(this.getPosX(), this.getPosY() - 0.2D - (double) this.prevRotationYaw, this.getPosZ()));
+            BlockState iblockstate = this.level().getBlockState(new BlockPos(this.getX(), this.getY() - 0.2D - (double) this.prevRotationYaw, this.getZ()));
             Block block = iblockstate.getBlock();
 
             if (iblockstate.getMaterial() != Material.AIR && !this.isSilent()) {
-                SoundType soundtype = block.getSoundType(iblockstate, world, new BlockPos(this.getPosX(), this.getPosY() - 0.2D - (double) this.prevRotationYaw, this.getPosZ()), this);
-                this.level().playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), soundtype.getStepSound(), this.getSoundCategory(), soundtype.getVolume() * 0.5F, soundtype.getPitch() * 0.75F);
+                SoundType soundtype = block.getSoundType(iblockstate, world, new BlockPos(this.getX(), this.getY() - 0.2D - (double) this.prevRotationYaw, this.getZ()), this);
+                this.level().playSound(null, this.getX(), this.getY(), this.getZ(), soundtype.getStepSound(), this.getSoundCategory(), soundtype.getVolume() * 0.5F, soundtype.getPitch() * 0.75F);
             }
             return true;
         }
@@ -585,7 +585,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
 
     @Override
     public void dropMyStuff() {
-        if (!this.level().isRemote) {
+        if (!this.level().isClientSide()) {
             dropArmor();
             MoCTools.dropSaddle(this, this.level());
 
@@ -604,14 +604,14 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     @Override
     public double getMountedYOffset() {
         double Yfactor = ((0.0833D * this.getAge()) - 2.5D) / 10D;
-        return this.getHeight() * Yfactor;
+        return this.getBbHeight() * Yfactor;
     }
 
     public float tFloat() {
 
         if (++this.tCounter > 30) {
             this.tCounter = 0;
-            this.fTransparency = (this.rand.nextFloat() * (0.4F - 0.2F) + 0.15F);
+            this.fTransparency = (this.random.nextFloat() * (0.4F - 0.2F) + 0.15F);
         }
 
         if (this.getAge() < 10) {

@@ -14,30 +14,30 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageHeart;
 import drzhark.mocreatures.util.MoCTags;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraft.tags.TagKey;
 
 import java.util.List;
 import java.util.UUID;
-import net.minecraft.util.RandomSource;
 
 public class MoCEntityDolphin extends MoCEntityTameableAquatic {
 
@@ -249,12 +249,12 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
 
     @Override
     protected SoundEvent getAngrySound() {
-        return MoCSoundEvents.ENTITY_DOLPHIN_ANGRY;
+        return MoCSoundEvents.ENTITY_DOLPHIN_ANGRY.get();
     }
     
     @Override
     protected SoundEvent getSwimSound() {
-        return MoCSoundEvents.ENTITY_FISH_SWIM;
+        return MoCSoundEvents.ENTITY_FISH_SWIM.get();
     }
 
     @Override
@@ -292,7 +292,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
                 }
             }
 
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT.get());
 
             return InteractionResult.SUCCESS;
         }
@@ -304,7 +304,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
                 this.setHealth(getHealth() + 25);
             }
             setHasEaten(true);
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT);
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT.get());
             return true;
         }
         if (!this.isVehicle()) {
@@ -338,7 +338,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
             if (getAge() >= 120) {
                 setAdult(true);
             }
-            if (!getIsAdult() && (rand.nextInt(50) == 0)) {
+            if (!getIsAdult() && (random.nextInt(50) == 0)) {
                 setAge(getAge() + 1);
             }
             //TODO
@@ -435,7 +435,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     @Override
     public void setDead() {
         // Server check required to prevent tamed entities from being duplicated on client-side
-        if (!this.level().isRemote && (getIsTamed()) && (getHealth() > 0)) {
+        if (!this.level().isClientSide() && (getIsTamed()) && (getHealth() > 0)) {
             return;
         }
         super.setDead();

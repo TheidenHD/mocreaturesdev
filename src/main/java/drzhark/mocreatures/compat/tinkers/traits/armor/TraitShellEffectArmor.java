@@ -20,10 +20,10 @@ public class TraitShellEffectArmor {//extends AbstractArmorTrait {
 //        if (random.nextFloat() <= chance) {
 //            // Completely cancel out the damage
 //            event.setCanceled(true);
-//            player.world.playSound(null, player.getPosition(), MoCSoundEvents.ENTITY_GENERIC_CLANG, SoundCategory.PLAYERS, 1.0F, 0.5F / (player.world.rand.nextFloat() * 0.4F + 1.2F));
+//            player.world.playSound(null, player.getPosition(), MoCSoundEvents.ENTITY_GENERIC_CLANG.get(), SoundCategory.PLAYERS, 1.0F, 0.5F / (player.world.rand.nextFloat() * 0.4F + 1.2F));
 //
 //            // Inflict negative effect on the target (15 seconds) and inflict positive effect on the wielder (30 seconds)
-//            if (!player.world.isRemote) {
+//            if (!player.world.isClientSide()) {
 //                ((EntityLivingBase) source.getTrueSource()).addPotionEffect(new MobEffectInstance(targetEffect, 15 * 20, amplifier));
 //
 //                if (player instanceof Player) {

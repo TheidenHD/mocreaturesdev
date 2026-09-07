@@ -534,7 +534,7 @@ public class MoCTools {
         Player player = (entity instanceof Player p) ? p : null;
 
         level.playSound(player, x, y, z,
-                MoCSoundEvents.ENTITY_GENERIC_DESTROY,
+                MoCSoundEvents.ENTITY_GENERIC_DESTROY.get(),
                 SoundSource.HOSTILE,
                 4.0F,
                 (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F
@@ -822,7 +822,7 @@ public class MoCTools {
                 if (event != null && !event.isCanceled()) {
                     entity.level().removeBlock(pos, false);
                     if (entity.level().random.nextInt(3) == 0) {
-                        playCustomSound(entity, MoCSoundEvents.ENTITY_BIG_GOLEM_STEP);
+                        playCustomSound(entity, MoCSoundEvents.ENTITY_BIG_GOLEM_STEP.get());
                         count++; // only counts recovered blocks
                     }
                 }

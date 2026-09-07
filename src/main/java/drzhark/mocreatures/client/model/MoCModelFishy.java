@@ -10,13 +10,9 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.util.Mth;
+import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -94,7 +90,7 @@ public class MoCModelFishy<T extends MoCEntityFishy> extends EntityModel<T> {
         PartDefinition root = mesh.getRoot();
 
         // ─── BODY ──────────────────────────────────────────────────────────────────
-        // In 1.16.5: new ModelRenderer(this, 0, 0).addBox(0,0,-3.5,1,5,5); setRotationPoint(0,18,-1); rotateAngleX = π/4
+        // In 1.16.5: new ModelPart(this, 0, 0).addBox(0,0,-3.5,1,5,5); setRotationPoint(0,18,-1); rotateAngleX = π/4
         root.addOrReplaceChild("body",
                 CubeListBuilder.create()
                         .texOffs(0, 0)
@@ -103,7 +99,7 @@ public class MoCModelFishy<T extends MoCEntityFishy> extends EntityModel<T> {
         );
 
         // ─── TAIL ──────────────────────────────────────────────────────────────────
-        // In 1.16.5: new ModelRenderer(this, 12, 0).addBox(0,0,0,1,3,3); setRotationPoint(0,20.5,3); rotateAngleX = π/4
+        // In 1.16.5: new ModelPart(this, 12, 0).addBox(0,0,0,1,3,3); setRotationPoint(0,20.5,3); rotateAngleX = π/4
         root.addOrReplaceChild("tail",
                 CubeListBuilder.create()
                         .texOffs(12, 0)

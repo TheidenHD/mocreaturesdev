@@ -2,14 +2,15 @@ package drzhark.mocreatures.entity.ai;
 
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.passive.MoCEntityBunny;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.ai.EntityAIBase;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
 
-public class EntityAIBunnyReproduce extends EntityAIBase {
+public class EntityAIBunnyReproduce extends Goal {
     private final MoCEntityBunny bunny;
 
     public EntityAIBunnyReproduce(MoCEntityBunny bunny) {
@@ -28,8 +29,8 @@ public class EntityAIBunnyReproduce extends EntityAIBase {
         } else if (bunny.bunnyReproduceTickerB < 127) {
             bunny.bunnyReproduceTickerB++;
         } else {
-            Level world = bunny.world;
-            List<Entity> nearbyEntities = world.getEntitiesWithinAABBExcludingEntity(bunny, bunny.getEntityBoundingBox().grow(4.0D));
+            Level world = bunny.level();
+            List<Entity> nearbyEntities = world.getEntities(bunny, bunny.getEntityBoundingBox().grow(4.0D));
 
             for (Entity entity : nearbyEntities) {
                 if (!(entity instanceof MoCEntityBunny) || entity == bunny) {
@@ -41,20 +42,21 @@ public class EntityAIBunnyReproduce extends EntityAIBase {
                     continue;
                 }
 
-                bunny.getNavigator().tryMoveToEntityLiving(otherBunny, 1.0D);
+                bunny.getNavigation().tryMoveToEntityLiving(otherBunny, 1.0D);
 
-                MoCEntityBunny babyBunny = new MoCEntityBunny(world);
-                babyBunny.setPos(bunny.posX, bunny.posY, bunny.posZ);
-                babyBunny.setAdult(false);
-
-                int babyType = bunny.getType();
-                if (bunny.getRNG().nextInt(2) == 0) {
+                EntityType<?> babyType = bunny.getType();
+                if (bunny.getRandom().nextInt(2) == 0) {
                     babyType = otherBunny.getType();
                 }
 
-                babyBunny.setType(babyType);
-                world.spawnEntity(babyBunny);
-                MoCTools.playCustomSound(bunny, SoundEvents.ENTITY_CHICKEN_EGG);
+                MoCEntityBunny babyBunny = (MoCEntityBunny) babyType.create(world);
+                babyBunny.setPos(bunny.posX, bunny.posY, bunny.posZ);
+                babyBunny.setAdult(false);
+
+
+
+                world.addFreshEntity(babyBunny);
+                MoCTools.playCustomSound(bunny, SoundEvents.CHICKEN_EGG);
 
                 resetReproduction(bunny);
                 resetReproduction(otherBunny);
@@ -65,7 +67,7 @@ public class EntityAIBunnyReproduce extends EntityAIBase {
 
     private void resetReproduction(MoCEntityBunny bunny) {
         bunny.setHasEaten(false);
-        bunny.bunnyReproduceTickerA = bunny.getRNG().nextInt(64);
+        bunny.bunnyReproduceTickerA = bunny.getRandom().nextInt(64);
         bunny.bunnyReproduceTickerB = 0;
     }
 }

@@ -2,11 +2,11 @@ package drzhark.mocreatures.event;
 
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
+import drzhark.mocreatures.client.renderer.fx.MoCParticles;
 import drzhark.mocreatures.client.renderer.fx.impl.MoCEntityFXStar;
 import drzhark.mocreatures.client.renderer.fx.impl.MoCEntityFXUndead;
 import drzhark.mocreatures.client.renderer.fx.impl.MoCEntityFXVacuum;
 import drzhark.mocreatures.client.renderer.fx.impl.MoCEntityFXVanish;
-import drzhark.mocreatures.client.renderer.fx.MoCParticles;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraftforge.api.distmarker.Dist;

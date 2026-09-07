@@ -18,7 +18,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Ported from 1.16.5 Forge → 1.20.1 Forge.
- * All ModelRenderer → ModelPart; setRotationAngles(...) → setupAnim(...); render(...) → renderToBuffer(...).
+ * All ModelPart → ModelPart; setRotationAngles(...) → setupAnim(...); render(...) → renderToBuffer(...).
  */
 @OnlyIn(Dist.CLIENT)
 public class MoCModelSilverSkeleton<T extends MoCEntitySilverSkeleton> extends EntityModel<T> {

@@ -3,6 +3,7 @@
  */
 package drzhark.mocreatures.item;
 
+import com.google.common.collect.Sets;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
 import net.minecraft.core.BlockPos;
@@ -17,15 +18,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
-
-import javax.annotation.Nullable;
-
-import com.google.common.collect.Sets;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 
@@ -57,7 +55,7 @@ public class MoCItemMattock extends ItemPickaxe {
 
         if (facing != EnumFacing.DOWN && worldIn.isAirBlock(pos.up())) {
             if (!player.isCrouching() && block == Blocks.FARMLAND || player.isCrouching() && block == Blocks.GRASS_PATH) {
-                this.setBlock(itemstack, player, worldIn, pos, Blocks.DIRT.getDefaultState());
+                this.setBlock(itemstack, player, worldIn, pos, Blocks.DIRT.defaultBlockState());
                 return InteractionResult.SUCCESS;
             }
         }
@@ -70,7 +68,7 @@ public class MoCItemMattock extends ItemPickaxe {
     protected void setBlock(ItemStack stack, Player player, Level worldIn, BlockPos pos, BlockState state) {
         worldIn.playSound(player, pos, SoundEvents.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
 
-        if (!worldIn.isRemote) {
+        if (!worldIn.isClientSide()) {
             worldIn.setBlockState(pos, state, 11);
             stack.damageItem(1, player);
         }

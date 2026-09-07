@@ -11,6 +11,10 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,10 +23,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -60,7 +60,7 @@ public class MoCEntityBee extends MoCEntityInsect {
 
     private SoundEvent getMySound() {
         if (getTarget() != null) {
-            return MoCSoundEvents.ENTITY_BEE_ANGRY;
+            return MoCSoundEvents.ENTITY_BEE_ANGRY.get();
         }
         return MoCSoundEvents.ENTITY_BEE_AMBIENT.get();
     }

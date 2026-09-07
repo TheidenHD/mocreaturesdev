@@ -7,15 +7,17 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import drzhark.mocreatures.entity.neutral.MoCEntityOstrich;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.geom.*;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.util.Mth;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
- * Ported from 1.16.5 to 1.20.1. All ModelRenderer fields are now ModelPart
+ * Ported from 1.16.5 to 1.20.1. All ModelPart fields are now ModelPart
  * children of a single root, built via createBodyLayer(). Animations moved to
  * setupAnim(...), rendering to renderToBuffer(...), and entity data captured
  * in prepareMobModel(...).
@@ -31,7 +33,7 @@ public class MoCModelOstrich<T extends MoCEntityOstrich> extends EntityModel<T> 
 
     private static final float RADIAN_CONV = 57.29578F;
 
-    // --- ModelPart fields (formerly ModelRenderer) ---
+    // --- ModelPart fields (formerly ModelPart) ---
     private final ModelPart UBeak;
     private final ModelPart UBeak2;
     private final ModelPart UBeakb;
@@ -229,7 +231,7 @@ public class MoCModelOstrich<T extends MoCEntityOstrich> extends EntityModel<T> 
     /**
      * Build the LayerDefinition: all ModelPart children with correct positions,
      * rotations, and texture offsets. Corresponds line-by-line to the old
-     * ModelRenderer.addBox(...) and setRotation(...) calls.
+     * ModelPart.addBox(...) and setRotation(...) calls.
      */
     public static LayerDefinition createBodyLayer() {
         MeshDefinition mesh = new MeshDefinition();

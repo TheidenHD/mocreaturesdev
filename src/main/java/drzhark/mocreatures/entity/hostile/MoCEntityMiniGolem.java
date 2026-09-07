@@ -11,18 +11,14 @@ import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.BlockState;
-import net.minecraft.world.entity.EntityLivingBase;
-import net.minecraft.world.entity.SharedMonsterAttributes;
-import net.minecraft.world.entity.monster.EntityIronGolem;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.network.datasync.EntityDataAccessor;
 import net.minecraft.network.datasync.EntityDataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 public class MoCEntityMiniGolem extends MoCEntityMob {
@@ -160,7 +156,7 @@ public class MoCEntityMiniGolem extends MoCEntityMob {
     @Override
     protected void playStepSound(BlockPos p_180429_1_, Block p_180429_2_) {
         if (MoCreatures.proxy.legacyMiniGolemSounds) {
-            this.playSound(MoCSoundEvents.ENTITY_GENERIC_STOMP, 1.0F, 1.0F);
+            this.playSound(MoCSoundEvents.ENTITY_GENERIC_STOMP.get(), 1.0F, 1.0F);
         } else {
             this.playSound(SoundEvents.ENTITY_IRONGOLEM_STEP, 1.0F, 1.0F);
         }
@@ -168,17 +164,17 @@ public class MoCEntityMiniGolem extends MoCEntityMob {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCreatures.proxy.legacyMiniGolemSounds ? MoCSoundEvents.ENTITY_BIG_GOLEM_HURT_LEGACY : MoCSoundEvents.ENTITY_MINI_GOLEM_DEATH;
+        return MoCreatures.proxy.legacyMiniGolemSounds ? MoCSoundEvents.ENTITY_BIG_GOLEM_HURT_LEGACY.get() : MoCSoundEvents.ENTITY_MINI_GOLEM_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCreatures.proxy.legacyMiniGolemSounds ? MoCSoundEvents.ENTITY_BIG_GOLEM_HURT_LEGACY : MoCSoundEvents.ENTITY_MINI_GOLEM_HURT;
+        return MoCreatures.proxy.legacyMiniGolemSounds ? MoCSoundEvents.ENTITY_BIG_GOLEM_HURT_LEGACY.get() : MoCSoundEvents.ENTITY_MINI_GOLEM_HURT.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MoCreatures.proxy.legacyMiniGolemSounds ? MoCSoundEvents.ENTITY_BIG_GOLEM_AMBIENT : null;
+        return MoCreatures.proxy.legacyMiniGolemSounds ? MoCSoundEvents.ENTITY_BIG_GOLEM_AMBIENT.get() : null;
     }
 
     @Override

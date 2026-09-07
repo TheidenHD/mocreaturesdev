@@ -1,7 +1,7 @@
 package drzhark.mocreatures.client.renderer.entity;
 
-import drzhark.mocreatures.entity.hostile.MoCEntityWraith;
 import drzhark.mocreatures.entity.hostile.MoCEntityFlameWraith;
+import drzhark.mocreatures.entity.hostile.MoCEntityWraith;
 
 /**
  * Transparency handler specifically for wraiths.

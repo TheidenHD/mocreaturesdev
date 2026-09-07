@@ -4,11 +4,11 @@ import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.item.*;
 import drzhark.mocreatures.util.MoCArmorMaterial;
 import drzhark.mocreatures.util.MoCItemTier;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.Item.Properties;
-import net.minecraft.core.registries.Registries;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -17,7 +17,7 @@ public class MoCItems {
 
     // Misc
     public static final RegistryObject<Item> HORSE_GUIDE = ITEMS.register("horseguide", () -> new ItemHorseGuide(new Properties().stacksTo(1)));
-    public static final RegistryObject<Item> RECORD_SHUFFLE = ITEMS.register("recordshuffle", () -> new MoCItemRecord(15, MoCSoundEvents.MUSIC_DISC_SHUFFLING::get, new Properties().stacksTo(1).rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> RECORD_SHUFFLE = ITEMS.register("recordshuffle", () -> new MoCItemRecord(15, MoCSoundEvents.MUSIC_DISC_SHUFFLING.get()::get, new Properties().stacksTo(1).rarity(Rarity.RARE)));
     public static final RegistryObject<Item> SHARK_TEETH = ITEMS.register("sharkteeth", () -> new Item(new Properties()));
     public static final RegistryObject<Item> HAYSTACK = ITEMS.register("haystack", () -> new Item(new Properties().stacksTo(16)));
 

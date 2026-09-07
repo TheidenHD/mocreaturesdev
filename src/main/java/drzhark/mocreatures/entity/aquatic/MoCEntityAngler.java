@@ -28,6 +28,6 @@ public class MoCEntityAngler extends MoCEntitySmallFish {
     }
     
     protected SoundEvent getDeathSound() {
-        return MoCSoundEvents.ENTITY_FISH_DEATH_VICIOUS;
+        return MoCSoundEvents.ENTITY_FISH_DEATH_VICIOUS.get();
     }
 }

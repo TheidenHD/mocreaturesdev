@@ -24,7 +24,7 @@ public class MoCModelDeer<T extends MoCEntityDeer> extends EntityModel<T> {
             new ResourceLocation("mocreatures", "deer"), "main"
     );
 
-    // All formerly ModelRenderer fields become ModelPart:
+    // All formerly ModelPart fields become ModelPart:
     private final ModelPart Body;
     private final ModelPart Neck;
     private final ModelPart Head;

@@ -11,7 +11,10 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -19,7 +22,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Ported from 1.16.5 Forge → 1.20.1 Forge.
- * All ModelRenderer → ModelPart; setRotationAngles(...) → setupAnim(...); render(...) → renderToBuffer(...).
+ * All ModelPart → ModelPart; setRotationAngles(...) → setupAnim(...); render(...) → renderToBuffer(...).
  */
 @OnlyIn(Dist.CLIENT)
 public class MoCModelSmallFish<T extends MoCEntitySmallFish> extends EntityModel<T> {
@@ -57,7 +60,7 @@ public class MoCModelSmallFish<T extends MoCEntitySmallFish> extends EntityModel
     }
 
     /**
-     * Build the mesh exactly as in the old ModelRenderer version, but using ModelPart builders.
+     * Build the mesh exactly as in the old ModelPart version, but using ModelPart builders.
      */
     public static LayerDefinition createBodyLayer() {
         MeshDefinition mesh = new MeshDefinition();

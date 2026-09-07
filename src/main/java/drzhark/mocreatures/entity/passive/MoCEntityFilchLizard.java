@@ -9,34 +9,30 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
-import net.minecraft.block.Block;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.IEntityLivingData;
-import net.minecraft.world.entity.SharedMonsterAttributes;
-import net.minecraft.world.entity.item.EntityItem;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.world.inventory.EntityEquipmentSlot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.loot.*;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.pathfinding.GroundPathNavigator;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Mth;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-import java.util.EnumSet;
 
 // Courtesy of Daveyx0, permission given
 // TODO: More code cleanup
@@ -197,17 +193,12 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
     
     @Override
     protected SoundEvent getDeathSound() {
-        return MoCreatures.proxy.legacyFilchLizardSounds ? SoundEvents.ENTITY_GENERIC_DEATH : MoCSoundEvents.ENTITY_FILCH_LIZARD_DEATH;
+        return MoCreatures.proxy.legacyFilchLizardSounds ? SoundEvents.GENERIC_DEATH : MoCSoundEvents.ENTITY_FILCH_LIZARD_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MoCreatures.proxy.legacyFilchLizardSounds ? SoundEvents.ENTITY_GENERIC_HURT : MoCSoundEvents.ENTITY_FILCH_LIZARD_HISS;
-    }   
-
-    // Sneaky...
-    @Override
-    protected void playStepSound(BlockPos pos, BlockState block) {
+        return MoCreatures.proxy.legacyFilchLizardSounds ? SoundEvents.GENERIC_HURT : MoCSoundEvents.ENTITY_FILCH_LIZARD_HISS.get();
     }
 
     @Nullable
@@ -285,7 +276,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
             if (!(this.temptedEntity instanceof MoCEntityFilchLizard) || !((MoCEntityFilchLizard)this.temptedEntity).getMainHandItem().isEmpty()) {
                 return false;
             }
-            List<Entity> list = this.temptedEntity.getEntityWorld().getEntitiesWithinAABBExcludingEntity(temptedEntity, temptedEntity.getEntityBoundingBox().grow(6D, 4D, 6D));
+            List<ItemEntity> list = this.temptedEntity.level().getEntitiesOfClass(ItemEntity.class, temptedEntity.getBoundingBox().inflate(6D, 4D, 6D));
             if (this.stealDelay > 0) {
                 --this.stealDelay;
                 if (stealDelay == 0) {

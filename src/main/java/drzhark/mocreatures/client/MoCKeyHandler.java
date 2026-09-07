@@ -11,7 +11,6 @@ import drzhark.mocreatures.network.message.MoCMessageEntityJump;
 import drzhark.mocreatures.proxy.MoCProxyClient;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;

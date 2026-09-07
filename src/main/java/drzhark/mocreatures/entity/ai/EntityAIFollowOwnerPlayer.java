@@ -6,15 +6,15 @@ package drzhark.mocreatures.entity.ai;
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.MoCEntityAnimal;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.EnumSet;
 import java.util.UUID;
@@ -39,7 +39,7 @@ public class EntityAIFollowOwnerPlayer extends Goal {
         this.maxDist = maxDistIn;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 
-        //if (!(thePetIn.getNavigator() instanceof PathNavigateGround)) {
+        //if (!(thePetIn.getNavigation() instanceof PathNavigateGround)) {
         //System.out.println("exiting due to first illegal argument");
         //    throw new IllegalArgumentException("Unsupported mob type for FollowOwnerGoal");
         //}
@@ -93,8 +93,8 @@ public class EntityAIFollowOwnerPlayer extends Goal {
     @Override
     public void start() {
         this.delayCounter = 0;
-        //this.flag = ((PathNavigateGround) this.thePet.getNavigator()).getAvoidsWater();
-        //((PathNavigateGround) this.thePet.getNavigator()).setAvoidsWater(false);
+        //this.flag = ((PathNavigateGround) this.thePet.getNavigation()).getAvoidsWater();
+        //((PathNavigateGround) this.thePet.getNavigation()).setAvoidsWater(false);
     }
 
     /**
@@ -104,7 +104,7 @@ public class EntityAIFollowOwnerPlayer extends Goal {
     public void stop() {
         this.theOwner = null;
         this.petPathfinder.stop();
-        //((PathNavigateGround) this.thePet.getNavigator()).setAvoidsWater(true); //TODO
+        //((PathNavigateGround) this.thePet.getNavigation()).setAvoidsWater(true); //TODO
     }
 
     private boolean isEmptyBlock(BlockPos pos) {
