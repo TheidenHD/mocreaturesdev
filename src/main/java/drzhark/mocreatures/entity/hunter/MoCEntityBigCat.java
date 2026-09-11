@@ -236,7 +236,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
             MobEntity templiving = (MobEntity) this.getType().create(this.level());
             if (templiving instanceof MoCEntityBigCat) {
                 MoCEntityBigCat ghost = (MoCEntityBigCat) templiving;
-                ghost.setPos(this.posX, this.posY, this.posZ);
+                ghost.setPos(this.getX(), this.getY(), this.getZ());
                 this.level().spawnEntity(ghost);
                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_MAGIC_ENCHANTED.get());
                 ghost.setOwnerId(this.getOwnerId());

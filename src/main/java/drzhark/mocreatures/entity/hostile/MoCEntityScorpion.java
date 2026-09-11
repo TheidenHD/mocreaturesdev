@@ -244,7 +244,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
                             babyScorpion = new MoCEntityDirtScorpion(this.level());
                             break;
                     }
-                    babyScorpion.setPos(this.posX, this.posY, this.posZ);
+                    babyScorpion.setPos(this.getX(), this.getY(), this.getZ());
                     babyScorpion.setAdult(false);
                     babyScorpion.setAge(20);
                     babyScorpion.setType(this.getType);

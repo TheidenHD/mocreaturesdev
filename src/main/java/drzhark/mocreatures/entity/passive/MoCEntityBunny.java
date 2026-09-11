@@ -172,7 +172,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
                 }
                 return true;
             }
-        } else if (getRidingEntity() == null) {
+        } else if (getVehicle() == null) {
             if (startRidingPlayer(player)) {
                 this.rotationYaw = player.rotationYaw;
             }

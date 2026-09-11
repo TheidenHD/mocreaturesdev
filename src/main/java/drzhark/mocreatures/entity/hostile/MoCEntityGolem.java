@@ -141,7 +141,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
                     } else {
                         MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_BIG_GOLEM_DEATH.get(), 1.0F);
                     }
-                    MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getId(), 1), new TargetPoint(this.level().provider.dimensionType().getId(), this.posX, this.posY, this.posZ, 64));
+                    MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getId(), 1), new TargetPoint(this.level().provider.dimensionType().getId(), this.getX(), this.getY(), this.getZ(), 64));
                 }
 
                 if (this.dCounter > 140) {

@@ -378,7 +378,7 @@ public abstract class MoCEntityMob extends Monster implements IMoCEntity {
 
     @Override
     public boolean shouldRenderNameAndHealth() {
-        return getIsTamed() && (!this.isBeingRidden()) && (this.getRidingEntity() == null);
+        return getIsTamed() && (!this.isBeingRidden()) && (this.getVehicle() == null);
     }
 
     @Override

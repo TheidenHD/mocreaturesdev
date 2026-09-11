@@ -110,7 +110,7 @@ public class MoCItemHorseAmulet extends Item {
 //                }
 
                 if (player.level().spawnEntity(storedCreature)) {
-                    MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAppear(storedCreature.getId()), new TargetPoint(player.level().provider.dimensionType().getId(), player.posX, player.posY, player.posZ, 64));
+                    MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAppear(storedCreature.getId()), new TargetPoint(player.level().provider.dimensionType().getId(), player.getX(), player.getY(), player.getZ(), 64));
                     MoCTools.playCustomSound(storedCreature, MoCSoundEvents.ENTITY_GENERIC_MAGIC_ENCHANTED.get());
                     //gives an empty amulet
                     if (storedCreature instanceof MoCEntityBigCat || storedCreature instanceof MoCEntityWyvern || this.creatureType == 21 || this.creatureType == 22) {

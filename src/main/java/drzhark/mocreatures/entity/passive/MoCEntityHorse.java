@@ -1718,8 +1718,8 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         Player ep1 = this.level().getNearestPlayer(this, 8D);
         if (ep1 != null) {
             flag = true;
-            if (ep1.getRidingEntity() instanceof MoCEntityHorse) {
-                MoCEntityHorse playerHorse = (MoCEntityHorse) ep1.getRidingEntity();
+            if (ep1.getVehicle() instanceof MoCEntityHorse) {
+                MoCEntityHorse playerHorse = (MoCEntityHorse) ep1.getVehicle();
                 if (playerHorse.getTypeMoC() == 16 || playerHorse.getTypeMoC() == 17 || playerHorse.getTypeMoC() == 60 || playerHorse.getTypeMoC() == 61) {
                     flag = false;
                 }
@@ -1789,7 +1789,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         }
         if (event != null && !event.isCanceled()) {
             this.level().setBlockState(pos, Blocks.FIRE.defaultBlockState(), 3);//MC1.5
-            Player Player = (Player) this.getRidingEntity();
+            Player Player = (Player) this.getVehicle();
             if ((Player != null) && (Player.isBurning())) Player.extinguish();
             setNightmareInt(getNightmareInt() - 1);
         }
@@ -1804,7 +1804,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
             if (getIsTamed() && (isMagicHorse() || isPureBreed()) && !getIsGhost() && this.random.nextInt(4) == 0) {
                 MoCEntityHorse entityhorse1 = new MoCEntityHorse(this.level());
-                entityhorse1.setPos(this.posX, this.posY, this.posZ);
+                entityhorse1.setPos(this.getX(), this.getY(), this.getZ());
                 this.level().spawnEntity(entityhorse1);
                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_MAGIC_ENCHANTED.get());
 
@@ -2096,7 +2096,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
     public boolean readyForParenting(MoCEntityHorse entityhorse) {
         int i = entityhorse.getTypeMoC();
-        return (!entityhorse.isBeingRidden()) && (entityhorse.getRidingEntity() == null) && entityhorse.getIsTamed() && entityhorse.eatenPumpkin
+        return (!entityhorse.isBeingRidden()) && (entityhorse.getVehicle() == null) && entityhorse.getIsTamed() && entityhorse.eatenPumpkin
                 && entityhorse.getIsAdult() && !entityhorse.isUndead() && !entityhorse.getIsGhost() && (i != 61) && (i < 66);
     }
 

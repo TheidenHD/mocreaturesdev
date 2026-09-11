@@ -195,7 +195,7 @@ public class MoCEntityKittyBed extends LivingEntity {
                 }
             }
         }
-        if (this.isRiding()) MoCTools.dismountPassengerFromEntity(this, this.getRidingEntity(), false);
+        if (this.isRiding()) MoCTools.dismountPassengerFromEntity(this, this.getVehicle(), false);
     }
 
     @Override

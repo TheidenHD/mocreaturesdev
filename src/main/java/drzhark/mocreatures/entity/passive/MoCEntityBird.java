@@ -320,7 +320,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
         if (!getIsTamed()) {
             return InteractionResult.FAIL;
         }
-        if (this.getRidingEntity() == null) {
+        if (this.getVehicle() == null) {
             if (this.startRidingPlayer(player)) {
                 this.rotationYaw = player.rotationYaw;
             }

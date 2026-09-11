@@ -171,7 +171,7 @@ public class MoCEntityLitterBox extends LivingEntity {
             setUsedLitter(false);
             this.litterTime = 0;
         }
-        if (this.isRiding()) MoCTools.dismountPassengerFromEntity(this, this.getRidingEntity(), false);
+        if (this.isRiding()) MoCTools.dismountPassengerFromEntity(this, this.getVehicle(), false);
     }
 
     @Override

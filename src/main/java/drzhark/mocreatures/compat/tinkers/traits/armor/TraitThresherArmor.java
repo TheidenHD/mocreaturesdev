@@ -13,8 +13,7 @@
 //import net.minecraft.world.entity.player.Player;
 //import net.minecraft.world.item.ItemStack;
 //import net.minecraft.nbt.CompoundTag;
-//import net.minecraft.util.DamageSource;
-//import net.minecraft.util.EntityDamageSource;
+////import net.minecraft.util.EntityDamageSource;
 //import net.minecraftforge.event.entity.living.LivingHurtEvent;
 //import slimeknights.tconstruct.library.Util;
 //import slimeknights.tconstruct.library.utils.ToolHelper;

@@ -139,8 +139,8 @@ public class MoCEventHooks {
         Player player = event.player;
 
         // Handles the ENTITY that the PLAYER is riding
-        if (player.getRidingEntity() instanceof IMoCTameable) {
-            IMoCTameable mocEntity = (IMoCTameable) player.getRidingEntity();
+        if (player.getVehicle() instanceof IMoCTameable) {
+            IMoCTameable mocEntity = (IMoCTameable) player.getVehicle();
             mocEntity.setRiderDisconnecting(true);
         }
 

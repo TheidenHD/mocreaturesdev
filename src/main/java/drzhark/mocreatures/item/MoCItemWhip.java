@@ -74,7 +74,7 @@ public class MoCItemWhip extends MoCItemSword {
                 if (entity instanceof MoCEntityHorse) {
                     MoCEntityHorse entityhorse = (MoCEntityHorse) entity;
                     if (entityhorse.getIsTamed()) {
-                        if (entityhorse.getRidingEntity() == null) {
+                        if (entityhorse.getVehicle() == null) {
                             entityhorse.setSitting(!entityhorse.getIsSitting());
                             entityhorse.setIsJumping(false);
                             entityhorse.getNavigation().stop();
@@ -99,7 +99,7 @@ public class MoCItemWhip extends MoCItemSword {
 
                 if ((entity instanceof MoCEntityWyvern)) {
                     MoCEntityWyvern entitywyvern = (MoCEntityWyvern) entity;
-                    if (entitywyvern.getIsTamed() && entitywyvern.getRidingEntity() == null && !entitywyvern.isOnAir()) {
+                    if (entitywyvern.getIsTamed() && entitywyvern.getVehicle() == null && !entitywyvern.isOnAir()) {
                         entitywyvern.setSitting(!entitywyvern.getIsSitting());
                         entitywyvern.setIsJumping(false);
                         entitywyvern.getNavigation().stop();
@@ -109,7 +109,7 @@ public class MoCItemWhip extends MoCItemSword {
 
                 if ((entity instanceof MoCEntityPetScorpion)) {
                     MoCEntityPetScorpion petscorpion = (MoCEntityPetScorpion) entity;
-                    if (petscorpion.getIsTamed() && petscorpion.getRidingEntity() == null) {
+                    if (petscorpion.getIsTamed() && petscorpion.getVehicle() == null) {
                         petscorpion.setSitting(!petscorpion.getIsSitting());
                         petscorpion.setIsJumping(false);
                         petscorpion.getNavigation().stop();
@@ -124,7 +124,7 @@ public class MoCItemWhip extends MoCItemSword {
                     }
 
                     //toggles hiding of tamed ostriches
-                    if (entityostrich.getIsTamed() && entityostrich.getRidingEntity() == null) {
+                    if (entityostrich.getIsTamed() && entityostrich.getVehicle() == null) {
                         entityostrich.setHiding(!entityostrich.getHiding());
                         entityostrich.setIsJumping(false);
                         entityostrich.getNavigation().stop();

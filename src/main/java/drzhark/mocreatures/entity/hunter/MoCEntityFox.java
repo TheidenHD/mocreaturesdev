@@ -181,9 +181,6 @@ public class MoCEntityFox extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean isReadyToFollowOwnerPlayer() { return !this.isMovementCeased(); }
-
-    @Override
     public boolean canAttackTarget(LivingEntity entity) {
         return !(entity instanceof MoCEntityFox) && entity.getBbHeight() <= 0.7D && entity.getBbWidth() <= 0.7D;
     }

@@ -67,7 +67,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
                 if (entityitem == null || entityitem.removed) {
                     return;
                 }
-                if (entityitem.getRidingEntity() == null) {
+                if (entityitem.getVehicle() == null) {
                     float f = entityitem.getDistance(this);
                     if (f > 1.0F) {
                         int i = Mth.floor(entityitem.getX());
@@ -91,7 +91,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
         if (getHasFood()) {
             if (!this.isBeingRidden()) {
                 ItemEntity entityitem = MoCTools.getClosestFood(this, 2D);
-                if (entityitem != null && entityitem.getRidingEntity() == null) {
+                if (entityitem != null && entityitem.getVehicle() == null) {
                     entityitem.startRiding(this);
                     return;
 

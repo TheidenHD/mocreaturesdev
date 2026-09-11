@@ -47,11 +47,11 @@ public class MoCEntityThrowableRock extends Entity implements IEntityAdditionalS
 
     public static MoCEntityThrowableRock build(Level world, Entity entitythrower, double posX, double posY, double posZ) {
         MoCEntityThrowableRock rock = new MoCEntityThrowableRock(MoCEntities.TROCK.get(), world);
-        rock.setPos(posX, posY, posZ);
+        rock.setPos(getX(), getY(), getZ());
         rock.rockTimer = 250;
-        rock.xo = rock.oPosX = posX;
-        rock.yo = rock.oPosY = posY;
-        rock.zo = rock.oPosZ = posZ;
+        rock.xo = rock.oPosX = getX();
+        rock.yo = rock.oPosY = getY();
+        rock.zo = rock.oPosZ = getZ();
         rock.setMasterID(entitythrower.getId());
         return rock;
     }

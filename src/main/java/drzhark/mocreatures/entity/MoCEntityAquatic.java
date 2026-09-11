@@ -577,7 +577,7 @@ public abstract class MoCEntityAquatic extends WaterAnimal implements IMoCEntity
 
     @Override
     public boolean shouldRenderNameAndHealth() {
-        return getIsTamed() && (!this.isBeingRidden()) && (this.getRidingEntity() == null);
+        return getIsTamed() && (!this.isBeingRidden()) && (this.getVehicle() == null);
     }
 
     @Override

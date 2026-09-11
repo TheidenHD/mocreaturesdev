@@ -83,8 +83,8 @@ public class EntityAIFollowOwnerPlayer extends Goal {
      * Returns whether an in-progress Goal should continue executing
      */
     @Override
-    public boolean shouldContinueExecuting() {
-        return !this.petPathfinder.noPath() && this.thePet.distanceToSqr(this.theOwner) > this.maxDist * this.maxDist && !((IMoCEntity) this.thePet).getIsSitting();
+    public boolean canContinueToUse() {
+        return !this.petPathfinder.isDone() && this.thePet.distanceToSqr(this.theOwner) > this.maxDist * this.maxDist && !((IMoCEntity) this.thePet).getIsSitting();
     }
 
     /**

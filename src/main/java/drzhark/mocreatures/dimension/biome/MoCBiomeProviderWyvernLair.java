@@ -3,7 +3,6 @@
  */
 package drzhark.mocreatures.dimension.biome;
 
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProvider;
 

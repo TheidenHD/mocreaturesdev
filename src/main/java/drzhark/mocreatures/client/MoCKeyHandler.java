@@ -42,7 +42,7 @@ public class MoCKeyHandler {
         /*
          * this avoids double jumping
          */
-        if (kbJump && ep.getRidingEntity() != null && ep.getRidingEntity() instanceof IMoCEntity) {
+        if (kbJump && ep.isPassenger() && ep.getVehicle() instanceof IMoCEntity) {
             // jump code needs to be executed client/server simultaneously to take
             ((IMoCEntity) e.player.getVehicle()).makeEntityJump();
             MoCMessageHandler.INSTANCE.sendToServer(new MoCMessageEntityJump());

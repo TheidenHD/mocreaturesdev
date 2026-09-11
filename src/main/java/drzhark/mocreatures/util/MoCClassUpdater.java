@@ -57,7 +57,7 @@ public class MoCClassUpdater {
      * entity.setLocationAndAngles()
      * entity.rotationYaw, entity.rotationPitch 
      * entity.isBeingRidden()
-     * entity.getRidingEntity()
+     * entity.getVehicle()
      * entity.getEntityId()
      * entity.getHeldItem(hand)
      * entity.setHeldItem(hand, stack)

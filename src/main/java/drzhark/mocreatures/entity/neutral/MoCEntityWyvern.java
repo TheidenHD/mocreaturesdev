@@ -371,7 +371,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
                 setIsFlying(false);
             }
 
-            if (getTarget() != null && (!this.getIsTamed() || this.getRidingEntity() != null) && !isMovementCeased() && this.random.nextInt(20) == 0) {
+            if (getTarget() != null && (!this.getIsTamed() || this.isPassenger()) && !isMovementCeased() && this.random.nextInt(20) == 0) {
                 setIsFlying(true);
                 if (this.onGround()) {
                     this.setMotion(this.getMotion().add(0, 0.4D, 0));
@@ -987,7 +987,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
 
             if (!getIsGhost() && getIsTamed() && this.random.nextInt(4) == 0) {
                 MoCEntityWyvern entitywyvern = new MoCEntityWyvern(this.level());
-                entitywyvern.setPos(this.posX, this.posY, this.posZ);
+                entitywyvern.setPos(this.getX(), this.getY(), this.getZ());
                 this.level().spawnEntity(entitywyvern);
                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_MAGIC_ENCHANTED.get());
 

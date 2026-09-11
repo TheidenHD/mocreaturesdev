@@ -37,9 +37,9 @@ public class MoCItemPetAmuletNew extends Item {
             Entity entity = EntityList.createEntityFromNBT(stack.getTagCompound(), world);
             if (entity != null) {
                 double dist = 1D;
-                double newPosX = player.posX - (dist * Math.cos((MoCTools.realAngle(player.rotationYaw - 90F)) / 57.29578F));
-                double newPosY = player.posY;
-                double newPosZ = player.posZ - (dist * Math.sin((MoCTools.realAngle(player.rotationYaw - 90F)) / 57.29578F));
+                double newPosX = player.getX() - (dist * Math.cos((MoCTools.realAngle(player.rotationYaw - 90F)) / 57.29578F));
+                double newPosY = player.getY();
+                double newPosZ = player.getZ() - (dist * Math.sin((MoCTools.realAngle(player.rotationYaw - 90F)) / 57.29578F));
                 entity.moveTo(newPosX, newPosY, newPosZ, player.rotationYaw, 0.0F);
                 world.spawnEntity(entity);
                 stack.setTagCompound(null);

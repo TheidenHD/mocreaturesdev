@@ -237,8 +237,8 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     @Override
     public void aiStep() {
 
-        if (!this.onGround() && (this.getRidingEntity() != null)) {
-            this.rotationYaw = this.getRidingEntity().rotationYaw;
+        if (!this.onGround() && (this.isPassenger())) {
+            this.rotationYaw = this.getVehicle().rotationYaw;
         }
 
         if (this.mouthCounter != 0 && this.mouthCounter++ > 50) {
@@ -464,7 +464,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
             }
         }
 
-        if (this.getRidingEntity() == null && this.getAge() < 60 && !getIsAdult()) {
+        if (this.getVehicle() == null && this.getAge() < 60 && !getIsAdult()) {
             if (this.startRidingPlayer(player)) {
                 this.rotationYaw = player.rotationYaw;
                 if (!this.level().isClientSide() && !getIsTamed()) {
@@ -473,7 +473,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
             }
 
             return InteractionResult.SUCCESS;
-        } else if (this.getRidingEntity() != null) {
+        } else if (this.isPassenger()) {
             MoCTools.playCustomSound(this, SoundEvents.CHICKEN_EGG);
             this.dismount();
             this.setMotion(player.getMotion().getX() * 5D, (player.getMotion().getY() / 2D) + 0.5D, player.getMotion().getZ() * 5D);
@@ -583,11 +583,11 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
 
     @Override
     public double getYOffset() {
-        if (this.getRidingEntity() instanceof Player && this.getRidingEntity() == MoCreatures.proxy.getPlayer() && this.level().isClientSide()) {
+        if (this.getVehicle() instanceof Player && this.getVehicle() == MoCreatures.proxy.getPlayer() && this.level().isClientSide()) {
             return 0.1F;
         }
 
-        if ((this.getRidingEntity() instanceof Player) && this.level().isClientSide()) {
+        if ((this.getVehicle() instanceof Player) && this.level().isClientSide()) {
             return (super.getYOffset() + 0.1F);
         } else {
             return super.getYOffset();

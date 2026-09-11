@@ -7,8 +7,7 @@
 //import net.minecraft.world.item.ItemStack;
 //import net.minecraft.potion.Potion;
 //import net.minecraft.potion.MobEffectInstance;
-//import net.minecraft.util.DamageSource;
-//import net.minecraft.util.SoundCategory;
+////import net.minecraft.util.SoundCategory;
 //import net.minecraftforge.event.entity.living.LivingDamageEvent;
 //import slimeknights.tconstruct.shared.client.ParticleEffect;
 //import slimeknights.tconstruct.tools.TinkerTools;

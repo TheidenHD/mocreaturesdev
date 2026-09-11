@@ -144,7 +144,7 @@ public abstract class MoCEntityAnimal extends Animal implements IMoCEntity {
 
     @Override
     public boolean renderName() {
-        return MoCreatures.proxy.getDisplayPetName() && (getPetName() != null && !getPetName().isEmpty() && (!this.isBeingRidden()) && (this.getRidingEntity() == null));
+        return MoCreatures.proxy.getDisplayPetName() && (getPetName() != null && !getPetName().isEmpty() && (!this.isBeingRidden()) && (this.getVehicle() == null));
     }
 
     @Override
@@ -187,7 +187,7 @@ public abstract class MoCEntityAnimal extends Animal implements IMoCEntity {
 
     @Override
     public boolean shouldRenderNameAndHealth() {
-        return getIsTamed() && (!this.isBeingRidden()) && (this.getRidingEntity() == null);
+        return getIsTamed() && (!this.isBeingRidden()) && (this.getVehicle() == null);
     }
 
     @Override
@@ -327,7 +327,7 @@ public abstract class MoCEntityAnimal extends Animal implements IMoCEntity {
             this.randomAttributesUpdated = true;
         }
 
-        if (this.canRidePlayer() && this.isRiding()) MoCTools.dismountPassengerFromEntity(this, this.getRidingEntity(), false);
+        if (this.canRidePlayer() && this.isRiding()) MoCTools.dismountPassengerFromEntity(this, this.getVehicle(), false);
         super.onLivingUpdate();
     }
 
@@ -454,8 +454,8 @@ public abstract class MoCEntityAnimal extends Animal implements IMoCEntity {
      * Called to make ridden entities pass on collision to rider
      */
     public void riding() {
-        if ((this.isBeingRidden()) && (this.getRidingEntity() instanceof Player)) {
-            Player Player = (Player) this.getRidingEntity();
+        if ((this.isBeingRidden()) && (this.getVehicle() instanceof Player)) {
+            Player Player = (Player) this.getVehicle();
             List<Entity> list = this.level().getEntities(this, getBoundingBox().inflate(1.0D, 0.0D, 1.0D));
             for (Entity entity : list) {
                 if (entity.removed) {

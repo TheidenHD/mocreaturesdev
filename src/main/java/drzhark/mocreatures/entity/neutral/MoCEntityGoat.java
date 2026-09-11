@@ -198,7 +198,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         if (getSwingLeg()) {
             this.movecount += 5;
             if (this.movecount == 30) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_DIGG.get());
+                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_DIG.get());
             }
 
             if (this.movecount > 100) {
@@ -228,7 +228,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
             if (this.eatcount == 2) {
                 Player Player1 = this.level().getNearestPlayer(this, 3D);
                 if (Player1 != null) {
-                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EATING.get());
+                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EAT.get());
                 }
             }
             if (this.eatcount > 25) {
@@ -576,7 +576,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
             if (!player.getAbilities().instabuild) stack.shrink(1);
             this.setHealth(getMaxHealth());
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EAT.get());
-            return true;
+            return InteractionResult.SUCCESS;
         }
 
         if (!getIsTamed() && !stack.isEmpty() && MoCTools.isItemEdible(stack.getItem())) {
