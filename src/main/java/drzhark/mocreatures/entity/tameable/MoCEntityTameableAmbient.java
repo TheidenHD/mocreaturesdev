@@ -182,7 +182,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
         }
 
         //sets it free, untamed
-        if (getIsTamed() && stack.getItem() == MoCItems.scrollOfFreedom) {
+        if (getIsTamed() && stack.getItem() == MoCItems.SCROLLFREEDOM.get()) {
             if (!player.isCreative()) stack.shrink(1);
             if (!this.level().isClientSide()) {
                 if (this.getOwnerPetId() != -1) // required since getInt will always return 0 if no key is found

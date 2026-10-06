@@ -3,8 +3,8 @@
  */
 package drzhark.mocreatures.dimension.biome;
 
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeProvider;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.biome.Biome;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;

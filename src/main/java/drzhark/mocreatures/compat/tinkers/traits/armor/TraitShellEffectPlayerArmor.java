@@ -37,17 +37,17 @@
 //            // Inflict negative effect on the target (15 seconds) and inflict positive effect on the wielder (30 seconds)
 //            if (!player.world.isClientSide()) {
 //                // Don't set the normal effect on player targets
-//                if (!(source.getTrueSource() instanceof Player)) {
-//                    ((EntityLivingBase) source.getTrueSource()).addPotionEffect(new MobEffectInstance(targetEffect, 15 * 20, 0));
+//                if (!(source.getEntity() instanceof Player)) {
+//                    ((EntityLivingBase) source.getEntity()).addEffect(new MobEffectInstance(targetEffect, 15 * 20, 0));
 //                }
 //
 //                // Set our alternative effect on player targets
-//                if (source.getTrueSource() instanceof Player) {
-//                    ((EntityLivingBase) source.getTrueSource()).addPotionEffect(new MobEffectInstance(playerTargetEffect, 15 * 20, 0));
+//                if (source.getEntity() instanceof Player) {
+//                    ((EntityLivingBase) source.getEntity()).addEffect(new MobEffectInstance(playerTargetEffect, 15 * 20, 0));
 //                }
 //
 //                if (player instanceof Player) {
-//                    player.addPotionEffect(new MobEffectInstance(playerEffect, 30 * 20, 0));
+//                    player.addEffect(new MobEffectInstance(playerEffect, 30 * 20, 0));
 //                    TinkerTools.proxy.spawnEffectParticle(ParticleEffect.Type.HEART_ARMOR, player, (int) damage);
 //                }
 //            }

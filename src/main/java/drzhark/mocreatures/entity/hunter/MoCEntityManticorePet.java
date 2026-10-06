@@ -76,7 +76,7 @@ public class MoCEntityManticorePet extends MoCEntityBigCat {
         }
 
         final ItemStack stack = player.getItemInHand(hand);
-        if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.whip)) {
+        if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.WHIP.get())) {
             setSitting(!getIsSitting());
             setIsJumping(false);
             getNavigation().stop();
@@ -84,7 +84,7 @@ public class MoCEntityManticorePet extends MoCEntityBigCat {
             return true;
         }
 
-        if (this.getIsRideable() && this.getIsAdult() && (!this.getIsChested() || !player.isCrouching()) && !this.isBeingRidden()) {
+        if (this.getIsRideable() && this.getIsAdult() && (!this.getIsChested() || !player.isCrouching()) && !this.isVehicle()) {
             if (!this.level().isClientSide() && player.startRiding(this)) {
                 player.rotationYaw = this.rotationYaw;
                 player.rotationPitch = this.rotationPitch;
@@ -117,7 +117,7 @@ public class MoCEntityManticorePet extends MoCEntityBigCat {
     }
 
     @Override
-    public int getMoCMaxAge() {
+    public int getMaxAge() {
         return 130;
     }
 

@@ -41,9 +41,9 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(2, new MoCEntitySilverSkeleton.AISkeletonAttack(this, 1.0D, true));
-        this.goalSelector.addGoal(8, new LookAtGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new MoCEntitySilverSkeleton.AISkeletonTarget<>(this, Player.class, false));
         this.targetSelector.addGoal(3, new MoCEntitySilverSkeleton.AISkeletonTarget<>(this, IronGolemEntity.class, false));
@@ -97,10 +97,10 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
 
             if (leftArmW) {
                 this.attackCounterLeft = 1;
-                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getX(), this.getY(), this.getZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getId(), 1));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getX(), this.getY(), this.getZ(), 64, this.level().dimension())), new MoCMessageAnimation(this.getId(), 1));
             } else {
                 this.attackCounterRight = 1;
-                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getX(), this.getY(), this.getZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getId(), 2));
+                MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getX(), this.getY(), this.getZ(), 64, this.level().dimension())), new MoCMessageAnimation(this.getId(), 2));
             }
         }
     }
@@ -113,7 +113,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
     }
 
     @Override
-    public float getAIMoveSpeed() {
+    public float getSpeed() {
         if (isSprinting()) {
             return 0.425F;
         }
@@ -137,8 +137,8 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
     }
 
     @Override
-    public CreatureAttribute getCreatureAttribute() {
-        return CreatureAttribute.UNDEAD;
+    public MobType getMobType() {
+        return MobType.UNDEAD;
     }
 
     @Override

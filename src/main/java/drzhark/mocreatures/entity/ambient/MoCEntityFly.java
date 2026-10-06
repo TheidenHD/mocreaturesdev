@@ -72,7 +72,7 @@ public class MoCEntityFly extends MoCEntityInsect {
     }
 
     @Override
-    public float getAIMoveSpeed() {
+    public float getSpeed() {
         if (getIsFlying()) {
             return 0.2F;
         }
@@ -80,7 +80,7 @@ public class MoCEntityFly extends MoCEntityInsect {
     }
     
     @Override
-    public int getMaxSpawnedInChunk() {
+    public int getMaxSpawnClusterSize() {
         return 4;
     }
 }

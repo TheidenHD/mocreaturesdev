@@ -38,8 +38,8 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
 
     @Override
     protected void initEntityAI() {
-        this.tasks.addTask(2, new EntityAIAttackMelee(this, 1.0D, false));
-        this.tasks.addTask(5, new EntityAIWanderMoC2(this, 1.0D, 30));
+        this.goalSelector.addGoal(2, new EntityAIAttackMelee(this, 1.0D, false));
+        this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 1.0D, 30));
         this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
         this.targetTasks.addTask(2, new EntityAITargetNonTamedMoC<>(this, Player.class, false));
         // Currently doesn't function
@@ -70,12 +70,12 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     @Override
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
         if (super.attackEntityFrom(damagesource, i) && (this.level().getDifficulty().getId() > 0)) {
-            Entity entity = damagesource.getTrueSource();
+            Entity entity = damagesource.getEntity();
             if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
                 return true;
             }
             if (entity != this && entity instanceof LivingEntity) {
-                setAttackTarget((LivingEntity) entity);
+                setTarget((LivingEntity) entity);
                 return true;
             } else {
                 return false;
@@ -113,7 +113,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
                 }
             }
             double d2 = o.distanceToSqr(entity.getX(), entity.getY(), entity.getZ());
-            if (((d < 0.0D) || (d2 < (d * d))) && ((d1 == -1D) || (d2 < d1)) && ((LivingEntity) o).canEntityBeSeen(entity)) {
+            if (((d < 0.0D) || (d2 < (d * d))) && ((d1 == -1D) || (d2 < d1)) && ((LivingEntity) o).hasLineOfSight(entity)) {
                 d1 = d2;
                 entityliving = (LivingEntity) o;
             }
@@ -149,7 +149,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public float getAIMoveSpeed() {
+    public float getSpeed() {
         return 0.12F;
     }
 

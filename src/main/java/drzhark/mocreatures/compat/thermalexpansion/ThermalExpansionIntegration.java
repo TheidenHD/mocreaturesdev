@@ -102,7 +102,7 @@ public class ThermalExpansionIntegration {
 //        energy = 1500;
 //        SawmillManager.addRecipe(1000, new ItemStack(MoCBlocks.wyvwoodLog), new ItemStack(MoCBlocks.wyvwoodPlanks, 6, 0), ItemMaterial.dustWood, 100);
 //        TapperManager.addStandardMapping(new ItemStack(MoCBlocks.wyvwoodLog), new FluidStack(TFFluids.fluidResin, 100));
-//        SawmillManager.addRecipe(energy, new ItemStack(MoCItems.whip), new ItemStack(Items.LEATHER, 2), new ItemStack(MoCItems.bigcatclaw), 50);
+//        SawmillManager.addRecipe(energy, new ItemStack(MoCItems.WHIP.get()), new ItemStack(Items.LEATHER, 2), new ItemStack(MoCItems.bigcatclaw), 50);
 //        SawmillManager.addRecipe(energy, new ItemStack(MoCItems.reptileWhip), new ItemStack(MoCItems.hideCroc, 2), new ItemStack(MoCItems.bigcatclaw), 50);
 //        SawmillManager.addRecipe(energy, new ItemStack(MoCItems.elephantChest), new ItemStack(Blocks.CHEST), new ItemStack(MoCItems.animalHide), 50);
 //        SawmillManager.addRecipe(energy, new ItemStack(MoCItems.elephantGarment), new ItemStack(MoCItems.medallion), new ItemStack(Items.STRING, 12), 100);

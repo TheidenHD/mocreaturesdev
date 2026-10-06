@@ -248,7 +248,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
                     babyScorpion.setAdult(false);
                     babyScorpion.setAge(20);
                     babyScorpion.setType(this.getType);
-                    this.level().spawnEntity(babyScorpion);
+                    this.level().addFreshEntity(babyScorpion);
                     MoCTools.playCustomSound(babyScorpion, SoundEvents.ENTITY_SLIME_SQUISH);
                 }
             }

@@ -68,7 +68,7 @@ public class MoCEntityEgg extends LivingEntity {
                 Player.onItemPickup(this, 1);
 
             }
-            remove();
+            remove(RemovalReason.DISCARDED);
         }
     }
 
@@ -90,14 +90,14 @@ public class MoCEntityEgg extends LivingEntity {
             if (this.lCounter > 500) {
                 Player Player1 = this.level().getNearestPlayer(this, 24D);
                 if (Player1 == null) {
-                    this.remove();
+                    this.remove(RemovalReason.DISCARDED);
                 }
             }
 
             if (isInWater() && (getEggType() < 12 || getEggType() > 69) && (this.random.nextInt(20) == 0)) {
                 this.tCounter++;
                 if (this.tCounter % 5 == 0) {
-                    this.setMotion(this.getMotion().add(0.0D, 0.2D, 0.0D));
+                    this.setDeltaMovement(this.getDeltaMovement().add(0.0D, 0.2D, 0.0D));
                 }
 
                 if (this.tCounter == 5 && MoCreatures.proxy.eggWarningMessages) {
@@ -160,7 +160,7 @@ public class MoCEntityEgg extends LivingEntity {
                         }
                     }
                     MoCTools.playCustomSound(this, SoundEvents.CHICKEN_EGG);
-                    remove();
+                    remove(RemovalReason.DISCARDED);
                 }
             } else if (!isInWater() && getEggType() > 20 && (this.random.nextInt(20) == 0)) // non aquatic creatures
             {
@@ -168,7 +168,7 @@ public class MoCEntityEgg extends LivingEntity {
                 //if (getEggType() == 30) tCounter = 0; //with this, wild ostriches won't spawn eggs.
 
                 if (this.tCounter % 5 == 0) {
-                    this.setMotion(this.getMotion().add(0.0D, 0.2D, 0.0D));
+                    this.setDeltaMovement(this.getDeltaMovement().add(0.0D, 0.2D, 0.0D));
                 }
 
                 if (this.tCounter == 5 && MoCreatures.proxy.eggWarningMessages) {
@@ -271,7 +271,7 @@ public class MoCEntityEgg extends LivingEntity {
                         }
                     }
                     MoCTools.playCustomSound(this, SoundEvents.CHICKEN_EGG);
-                    remove();
+                    remove(RemovalReason.DISCARDED);
                 }
             }
         }

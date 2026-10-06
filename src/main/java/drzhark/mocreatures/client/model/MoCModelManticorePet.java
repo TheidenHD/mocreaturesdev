@@ -25,7 +25,7 @@ public class MoCModelManticorePet<T extends MoCEntityManticorePet> extends MoCMo
         this.isSaddled = entityIn.getIsRideable();
         this.flapwings = true;
         this.floating = this.isFlyer && entityIn.isOnAir() && !entityIn.isOnGround();
-        this.isRidden = entityIn.isBeingRidden();
+        this.isRidden = entityIn.isVehicle();
         this.hasMane = true;
         this.hasSaberTeeth = true;
         this.onAir = entityIn.isOnAir();

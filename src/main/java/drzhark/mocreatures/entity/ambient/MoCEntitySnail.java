@@ -149,7 +149,7 @@ public class MoCEntitySnail extends MoCEntityAmbient {
     }
     
     @Override
-    public int getMaxSpawnedInChunk() {
+    public int getMaxSpawnClusterSize() {
         return 4;
     }
 }

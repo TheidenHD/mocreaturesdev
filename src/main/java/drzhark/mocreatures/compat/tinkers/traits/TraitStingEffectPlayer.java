@@ -41,12 +41,12 @@
 //        if (wasHit && target.isEntityAlive()) {
 //            // Don't set the normal effect on players
 //            if (!(target instanceof Player)) {
-//                target.addPotionEffect(new MobEffectInstance(effect, 20 * 5));
+//                target.addEffect(new MobEffectInstance(effect, 20 * 5));
 //            }
 //
 //            // Set our alternative effect for players
 //            if (target instanceof Player) {
-//                target.addPotionEffect(new MobEffectInstance(playerEffect, 20 * 5));
+//                target.addEffect(new MobEffectInstance(playerEffect, 20 * 5));
 //            }
 //        }
 //    }

@@ -27,7 +27,7 @@ public class MoCEntityCricket extends MoCEntityAmbient {
 
     @Override
     protected void initEntityAI() {
-        this.tasks.addTask(1, new EntityAIWanderMoC2(this, 1.2D));
+        this.goalSelector.addGoal(1, new EntityAIWanderMoC2(this, 1.2D));
     }
 
     @Override
@@ -101,16 +101,16 @@ public class MoCEntityCricket extends MoCEntityAmbient {
     public void tick() {
         super.tick();
         if (!this.level().isClientSide()) {
-            if (onGround() && ((getMotion().getX() > 0.05D) || (getMotion().getZ() > 0.05D) || (getMotion().getX() < -0.05D) || (getMotion().getZ() < -0.05D)))
+            if (onGround() && ((getDeltaMovement().getX() > 0.05D) || (getDeltaMovement().getZ() > 0.05D) || (getDeltaMovement().getX() < -0.05D) || (getDeltaMovement().getZ() < -0.05D)))
                 if (this.jumpCounter == 0) {
-                    this.setMotion(this.getMotion().getX() * 5D, 0.45D, this.getMotion().getZ() * 5D);
+                    this.setDeltaMovement(this.getDeltaMovement().getX() * 5D, 0.45D, this.getDeltaMovement().getZ() * 5D);
                     this.jumpCounter = 1;
                 }
         }
     }
 
     @Override
-    public float getAIMoveSpeed() {
+    public float getSpeed() {
         if (getIsFlying()) {
             return 0.12F;
         }

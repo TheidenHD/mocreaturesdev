@@ -9,6 +9,11 @@ import drzhark.mocreatures.entity.ai.*;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -17,15 +22,16 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 
 import javax.annotation.Nullable;
 
@@ -50,14 +56,14 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
 
     @Override
     protected void initEntityAI() {
-        this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAIFollowOwnerPlayer(this, 0.8D, 6F, 5F));
-        this.tasks.addTask(2, new EntityAIPanicMoC(this, 1.0D));
-        this.tasks.addTask(3, new EntityAIFleeFromPlayer(this, 1.0D, 4D));
-        this.tasks.addTask(4, new EntityAIFollowAdult(this, 1.0D));
-        this.tasks.addTask(5, new EntityAIBunnyReproduce(this));
-        this.tasks.addTask(6, new EntityAIWanderMoC2(this, 0.8D));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, Player.class, 6.0F));
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(1, new EntityAIFollowOwnerPlayer(this, 0.8D, 6F, 5F));
+        this.goalSelector.addGoal(2, new EntityAIPanicMoC(this, 1.0D));
+        this.goalSelector.addGoal(3, new EntityAIFleeFromPlayer(this, 1.0D, 4D));
+        this.goalSelector.addGoal(4, new EntityAIFollowAdult(this, 1.0D));
+        this.goalSelector.addGoal(5, new EntityAIBunnyReproduce(this));
+        this.goalSelector.addGoal(6, new EntityAIWanderMoC2(this, 0.8D));
+        this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 6.0F));
     }
 
     public static AttributeSupplier.Builder registerAttributes() {
@@ -70,11 +76,12 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
         this.entityData.define(HAS_EATEN, false);
     }
 
-    @Nullable
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData entityLivingData) {
-        if (this.level().provider.getDimension() == MoCreatures.proxy.wyvernDimension) this.enablePersistence();
-        return super.onInitialSpawn(difficulty, entityLivingData);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag) {
+        if (level.getLevel().dimension() == MoCreatures.proxy.wyvernDimension) {
+            this.setPersistenceRequired();
+        }
+        return super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
     }
 
     public boolean getHasEaten() {
@@ -170,13 +177,13 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
                 if (!getIsTamed() && !this.level().isClientSide()) {
                     MoCTools.tameWithName(player, this);
                 }
-                return true;
+                return InteractionResult.SUCCESS;
             }
         } else if (getVehicle() == null) {
             if (startRidingPlayer(player)) {
                 this.rotationYaw = player.rotationYaw;
             }
-            return true;
+            return InteractionResult.SUCCESS;
         }
 
         return super.mobInteract(player, hand);
@@ -202,9 +209,6 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     public int nameYOffset() {
         return -40;
     }
-    
-    @Override
-    public boolean isReadyToFollowOwnerPlayer() { return !this.isMovementCeased(); }
 
     @Override
     public boolean isMyHealFood(ItemStack stack) {

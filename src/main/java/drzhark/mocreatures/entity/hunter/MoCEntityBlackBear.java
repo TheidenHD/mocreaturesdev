@@ -55,7 +55,7 @@ public class MoCEntityBlackBear extends MoCEntityBear {
     }
 
     @Override
-    public int getMoCMaxAge() {
+    public int getMaxAge() {
         return 90;
     }
 
@@ -100,9 +100,9 @@ public class MoCEntityBlackBear extends MoCEntityBear {
 
             return InteractionResult.SUCCESS;
         }
-        if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.whip)) {
+        if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.WHIP.get())) {
             this.processBearWhipped();
-            return true;
+            return InteractionResult.SUCCESS;
         }
         if (this.getIsRideable() && this.getIsAdult() && (!this.getIsChested() || !player.isShiftKeyDown()) && !this.isVehicle()) {
             if (!this.level().isClientSide() && player.startRiding(this)) {

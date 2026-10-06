@@ -138,7 +138,7 @@ public abstract class MoCEntityAmbient extends PathfinderMob implements IMoCEnti
 
     @Override
     public boolean shouldRenderNameAndHealth() {
-        return getIsTamed() && (!this.isBeingRidden()) && (this.getVehicle() == null);
+        return getIsTamed() && (!this.isVehicle()) && (this.getVehicle() == null);
     }
 
     @Override

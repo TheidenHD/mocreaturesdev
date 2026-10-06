@@ -89,7 +89,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
         }
 
         if (getHasFood()) {
-            if (!this.isBeingRidden()) {
+            if (!this.isVehicle()) {
                 ItemEntity entityitem = MoCTools.getClosestFood(this, 2D);
                 if (entityitem != null && entityitem.getVehicle() == null) {
                     entityitem.startRiding(this);
@@ -97,7 +97,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
 
                 }
 
-                if (!this.isBeingRidden()) {
+                if (!this.isVehicle()) {
                     setHasFood(false);
                 }
             }
@@ -106,7 +106,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
 
     private void exchangeItem(ItemEntity entityitem) {
         ItemEntity cargo = new ItemEntity(this.level(), this.getX(), this.getY() + 0.2D, this.getZ(), entityitem.getItem());
-        entityitem.remove();
+        entityitem.remove(RemovalReason.DISCARDED);
         if (!this.level().isClientSide()) {
             this.level().addFreshEntity(cargo);
         }
@@ -118,7 +118,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
     }
 
     @Override
-    public float getAIMoveSpeed() {
+    public float getSpeed() {
         if (getHasFood()) {
             return 0.1F;
         }
@@ -145,7 +145,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
     }
     
     @Override
-    public int getMaxSpawnedInChunk() {
+    public int getMaxSpawnClusterSize() {
         return 4;
     }
 }

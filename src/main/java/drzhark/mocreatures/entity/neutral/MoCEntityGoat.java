@@ -641,7 +641,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         return MoCLootTables.GOAT;
     }
 
-    public int getMoCMaxAge() {
+    public int getMaxAge() {
         return 50; //so the update is not handled on MoCEntityAnimal
     }
 

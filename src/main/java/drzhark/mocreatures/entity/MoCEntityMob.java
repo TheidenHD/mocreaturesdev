@@ -297,8 +297,8 @@ public abstract class MoCEntityMob extends Monster implements IMoCEntity {
                     )
             ), new MoCMessageHealth(this.getId(), this.getHealth()));
         }
-        Entity entity = damagesource.getTrueSource();
-        return (this.isBeingRidden() && entity != null && this.isRidingOrBeingRiddenBy(entity)) ? false : super.attackEntityFrom(damagesource, i);
+        Entity entity = damagesource.getEntity();
+        return (this.isVehicle() && entity != null && this.isRidingOrBeingRiddenBy(entity)) ? false : super.attackEntityFrom(damagesource, i);
     }
 
     /** Boolean used to select pathfinding behavior */
@@ -378,7 +378,7 @@ public abstract class MoCEntityMob extends Monster implements IMoCEntity {
 
     @Override
     public boolean shouldRenderNameAndHealth() {
-        return getIsTamed() && (!this.isBeingRidden()) && (this.getVehicle() == null);
+        return getIsTamed() && (!this.isVehicle()) && (this.getVehicle() == null);
     }
 
     @Override

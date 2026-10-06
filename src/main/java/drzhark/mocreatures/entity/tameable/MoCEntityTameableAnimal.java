@@ -115,7 +115,7 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
             return false;
         }
 
-        return (this.isBeingRidden() && entity != null && this.isRidingOrBeingRiddenBy(entity)) ? false : super.attackEntityFrom(damagesource, i);
+        return (this.isVehicle() && entity != null && this.isRidingOrBeingRiddenBy(entity)) ? false : super.attackEntityFrom(damagesource, i);
     }
 
     private boolean checkOwnership(Player player, InteractionHand hand) {

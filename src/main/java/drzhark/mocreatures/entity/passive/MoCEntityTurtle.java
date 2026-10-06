@@ -5,6 +5,7 @@ package drzhark.mocreatures.entity.passive;
 
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
+import drzhark.mocreatures.entity.MoCEntityAnimal;
 import drzhark.mocreatures.entity.ai.EntityAIFollowOwnerPlayer;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
@@ -21,9 +22,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -58,12 +59,11 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(10.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.15D);
+    public static AttributeSupplier.Builder createAttributes() {
+        return MoCEntityTameableAnimal.createAttributes()
+                .add(Attributes.MAX_HEALTH, 10.0D)
+                .add(Attributes.ARMOR, 10.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.15D);
     }
 
     @Override
@@ -131,12 +131,12 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean processInteract(Player player, InteractionHand hand) {
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
         // Only process one hand to prevent double interactions
         if (hand != InteractionHand.MAIN_HAND) {
-            return false;
+            return InteractionResult.PASS;
         }
-        final Boolean tameResult = this.processTameInteract(player, hand);
+        final InteractionResult tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
@@ -203,7 +203,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
                             	// TODO: Add a turtle eating sound event
                                 entityitem.setDead();
                                 //MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_TURTLE_EATING.get());
-                                Player Player = this.level().getNearestPlayerToEntity(this, 24D);
+                                Player Player = this.level().getNearestPlayer(this, 24D);
                                 if (Player != null) {
                                     MoCTools.tameWithName(Player, this);
                                 }
@@ -388,7 +388,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public int getMoCMaxAge() {
+    public int getMaxAge() {
         return 120;
     }
 

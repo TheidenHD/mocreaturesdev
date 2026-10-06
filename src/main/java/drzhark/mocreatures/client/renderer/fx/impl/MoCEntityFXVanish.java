@@ -56,7 +56,7 @@ public class MoCEntityFXVanish extends TextureSheetParticle {
         this.z = this.portalPosZ + this.zd * var1;
 
         if (this.age++ >= this.lifetime) {
-            this.remove();
+            this.remove(RemovalReason.DISCARDED);
         }
     }
 

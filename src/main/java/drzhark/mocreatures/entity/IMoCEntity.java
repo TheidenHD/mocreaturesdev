@@ -63,8 +63,6 @@ public interface IMoCEntity {
 
     void setMoCAge(int i);
 
-    int getMoCMaxAge();
-
     float yawRotationOffset();
 
     float getAdjustedZOffset();

@@ -17,8 +17,6 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import drzhark.mocreatures.util.MoCTags;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -26,6 +24,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -33,8 +32,10 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -44,10 +45,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
 
 public class MoCEntityBigCat extends MoCEntityTameableAnimal {
@@ -71,13 +69,13 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
         setAge(45);
         //setSize(1.4F, 1.3F);
         setAdult(this.random.nextInt(4) != 0);
-        stepHeight = 1.0F;
-        experienceValue = 5;
+        this.setMaxUpStep(1.0F);
+        xpReward = 5;
     }
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, false));
         this.goalSelector.addGoal(4, new EntityAIFollowAdult(this, 1.0D));
         this.goalSelector.addGoal(5, new EntityAIFollowOwnerPlayer(this, 1D, 2F, 10F));
@@ -167,18 +165,18 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
 
     // Method used for receiving damage from another source
     @Override
-    public boolean attackEntityFrom(DamageSource damagesource, float i) {
-        Entity entity = damagesource.getTrueSource();
-        if ((this.isBeingRidden()) && (entity == this.getRidingEntity())) {
+    public boolean hurt(DamageSource damagesource, float i) {
+        Entity entity = damagesource.getEntity();
+        if ((this.isVehicle()) && (entity == this.getVehicle())) {
             return false;
         }
 
-        if (super.attackEntityFrom(damagesource, i)) {
+        if (super.hurt(damagesource, i)) {
             if (entity != null && getIsTamed() && entity instanceof Player) {
                 return false;
             }
             if (entity != this && entity instanceof LivingEntity && (this.level().getDifficulty() != Difficulty.PEACEFUL)) {
-                setAttackTarget((LivingEntity) entity);
+                setTarget((LivingEntity) entity);
             }
             return true;
         } else {
@@ -220,7 +218,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     public void onDeath(DamageSource damagesource) {
         if (!this.level().isClientSide()) {
             if (getHasAmulet()) {
-                MoCTools.dropCustomItem(this, this.level(), new ItemStack(MoCItems.medallion, 1));
+                MoCTools.dropCustomItem(this, this.level(), new ItemStack(MoCItems.MEDALLION.get(), 1));
                 setHasAmulet(false);
             }
 
@@ -233,11 +231,11 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
 
     public void spawnGhost() {
         try {
-            MobEntity templiving = (MobEntity) this.getType().create(this.level());
+            Mob templiving = (Mob) this.getType().create(this.level());
             if (templiving instanceof MoCEntityBigCat) {
                 MoCEntityBigCat ghost = (MoCEntityBigCat) templiving;
                 ghost.setPos(this.getX(), this.getY(), this.getZ());
-                this.level().spawnEntity(ghost);
+                this.level().addFreshEntity(ghost);
                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_MAGIC_ENCHANTED.get());
                 ghost.setOwnerId(this.getOwnerId());
                 ghost.setTamed(true);
@@ -291,7 +289,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
             }
 
             if (!getIsGhost() && getAge() < 10) {
-                this.remove();
+                this.remove(RemovalReason.DISCARDED);
             }
             /*if (getHasEaten() && random.nextInt(300) == 0)
             {
@@ -302,7 +300,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
         if (!this.level().isClientSide() && isFlyer() && isOnAir()) {
             float myFlyingSpeed = MoCTools.getMyMovementSpeed(this);
             int wingFlapFreq = (int) (25 - (myFlyingSpeed * 10));
-            if (!this.isBeingRidden() || wingFlapFreq < 5) {
+            if (!this.isVehicle() || wingFlapFreq < 5) {
                 wingFlapFreq = 5;
             }
             if (this.random.nextInt(wingFlapFreq) == 0) {
@@ -324,14 +322,14 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
         }
 
         if ((this.deathTime == 0) && !isMovementCeased()) {
-            ItemEntity entityitem = getClosestItem(this, 12D, Ingredient.fromItems(Items.PORKCHOP), Ingredient.fromTag(MoCTags.Items.RAW_FISHES));
+            ItemEntity entityitem = getClosestItem(this, 12D, Ingredient.of(Items.PORKCHOP), Ingredient.of(MoCTags.Items.RAW_FISHES));
             if (entityitem != null) {
-                float f = entityitem.getDistance(this);
+                float f = entityitem.distanceTo(this);
                 if (f > 2.0F) {
                     setPathToEntity(entityitem, f);
                 }
                 if (f < 2.0F && this.deathTime == 0) {
-                    entityitem.remove();
+                    entityitem.remove(RemovalReason.DISCARDED);
                     this.setHealth(getMaxHealth());
                     setHasEaten(true);
                     MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT.get());
@@ -352,7 +350,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
 
         if (this.wingFlapCounter == 0) {
             this.wingFlapCounter = 1;
-            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getX(), this.getY(), this.getZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getId(), 3));
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getX(), this.getY(), this.getZ(), 64, this.level().dimension())), new MoCMessageAnimation(this.getId(), 3));
         }
     }
 
@@ -370,11 +368,15 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     public boolean isReadyToFollowOwnerPlayer() { return !this.isMovementCeased(); }
 
     @Override
-    public void updatePassenger(Entity passenger) {
-        double dist = getSizeFactor() * (0.1D);
-        double newPosX = this.getX() + (dist * Math.sin(this.renderYawOffset / 57.29578F));
-        double newPosZ = this.getZ() - (dist * Math.cos(this.renderYawOffset / 57.29578F));
-        passenger.setPos(newPosX, this.getY() + getMountedYOffset() + passenger.getYOffset(), newPosZ);
+    protected void positionRider(Entity passenger, Entity.MoveFunction callback) {
+        if (this.hasPassenger(passenger)) {
+            double dist = getSizeFactor() * 0.1D;
+            float rad = this.yBodyRot * Mth.DEG_TO_RAD;
+            double newPosX = this.getX() + (dist * Mth.sin(rad));
+            double newPosZ = this.getZ() - (dist * Mth.cos(rad));
+            double newPosY = this.getY() + this.getPassengersRidingOffset() + passenger.getMyRidingOffset();
+            callback.accept(passenger, newPosX, newPosY, newPosZ);
+        }
     }
 
     @Override
@@ -388,13 +390,13 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
         if (getIsChested() && this.localchest != null) {
             this.localchest.write(nbttagcompound);
             ListTag nbttaglist = new ListTag();
-            for (int i = 0; i < this.localchest.getSizeInventory(); i++) {
+            for (int i = 0; i < this.localchest.getContainerSize(); i++) {
                 // grab the current item stack
-                this.localstack = this.localchest.getStackInSlot(i);
+                this.localstack = this.localchest.getItem(i);
                 if (!this.localstack.isEmpty()) {
                     CompoundTag nbttagcompound1 = new CompoundTag();
                     nbttagcompound1.putByte("Slot", (byte) i);
-                    this.localstack.write(nbttagcompound1);
+                    this.localstack.save(nbttagcompound1);
                     nbttaglist.add(nbttagcompound1);
                 }
             }
@@ -418,8 +420,8 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
             for (int i = 0; i < nbttaglist.size(); i++) {
                 CompoundTag nbttagcompound1 = nbttaglist.getCompound(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
-                if (j < this.localchest.getSizeInventory()) {
-                    this.localchest.setInventorySlotContents(j, ItemStack.of(nbttagcompound1));
+                if (j < this.localchest.getContainerSize()) {
+                    this.localchest.setItem(j, ItemStack.of(nbttagcompound1));
                 }
             }
         }
@@ -427,14 +429,14 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public InteractionResult getEntityInteractionResult(Player player, InteractionHand hand) {
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
         final InteractionResult tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
 
         final ItemStack stack = player.getItemInHand(hand);
-        if (!stack.isEmpty() && !getIsTamed() && getHasEaten() && !getIsAdult() && (stack.getItem() == MoCItems.medallion)) {
+        if (!stack.isEmpty() && !getIsTamed() && getHasEaten() && !getIsAdult() && (stack.getItem() == MoCItems.MEDALLION.get())) {
             if (!this.level().isClientSide()) {
                 setHasAmulet(true);
                 MoCTools.tameWithName(player, this);
@@ -443,7 +445,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
             return InteractionResult.SUCCESS;
         }
 
-        if (!stack.isEmpty() && getIsTamed() && !getHasAmulet() && (stack.getItem() == MoCItems.medallion)) {
+        if (!stack.isEmpty() && getIsTamed() && !getHasAmulet() && (stack.getItem() == MoCItems.MEDALLION.get())) {
             if (!this.level().isClientSide()) {
                 setHasAmulet(true);
             }
@@ -451,14 +453,14 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
             return InteractionResult.SUCCESS;
         }
 
-        if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.whip)) {
+        if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.WHIP.get())) {
             setSitting(!getIsSitting());
             setIsJumping(false);
             getNavigation().stop();
             setTarget(null);
             return true;
         }
-        if (!stack.isEmpty() && getIsTamed() && (MoCTools.isItemEdibleforCarnivores(stack.getItem()))) {
+        if (!stack.isEmpty() && getIsTamed() && (MoCTools.isItemEdibleForCarnivores(stack.getItem()))) {
             if (!player.isCreative()) stack.shrink(1);
             this.setHealth(getMaxHealth());
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT.get());
@@ -490,7 +492,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
 
         }
 
-        if (!stack.isEmpty() && getIsTamed() && getIsAdult() && !getIsChested() && (stack.getItem() == Item.getItemFromBlock(Blocks.CHEST))) {
+        if (!stack.isEmpty() && getIsTamed() && getIsAdult() && !getIsChested() && (stack.getItem() == Item.BY_BLOCK.get(Blocks.CHEST))) {
             if (!player.isCreative()) stack.shrink(1);
             setIsChested(true);
             MoCTools.playCustomSound(this, SoundEvents.CHICKEN_EGG);
@@ -507,7 +509,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
             return InteractionResult.SUCCESS;
         }
 
-        return super.getEntityInteractionResult(player, hand);
+        return super.mobInteract(player, hand);
     }
 
     @Override
@@ -516,7 +518,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean onLivingFall(float distance, float damageMultiplier) {
+    public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource source) {
         if (isFlyer()) {
             return false;
         }
@@ -524,20 +526,14 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
         if (!this.level().isClientSide() && (i > 0)) {
             i /= 2;
             if (i > 1F) {
-                attackEntityFrom(DamageSource.FALL, i);
+                hurt(source, i);
             }
-            if ((this.isBeingRidden()) && (i > 1F)) {
-                for (Entity entity : this.getRecursivePassengers()) {
-                    entity.attackEntityFrom(DamageSource.FALL, i);
+            if ((this.isVehicle()) && (i > 1F)) {
+                for (Entity entity : this.getIndirectPassengers()) {
+                    entity.hurt(source, i);
                 }
             }
-            BlockState iblockstate = this.level().getBlockState(new BlockPos(this.getX(), this.getY() - 0.2D - (double) this.prevRotationYaw, this.getZ()));
-            Block block = iblockstate.getBlock();
-
-            if (iblockstate.getMaterial() != Material.AIR && !this.isSilent()) {
-                SoundType soundtype = block.getSoundType(iblockstate, world, new BlockPos(this.getX(), this.getY() - 0.2D - (double) this.prevRotationYaw, this.getZ()), this);
-                this.level().playSound(null, this.getX(), this.getY(), this.getZ(), soundtype.getStepSound(), this.getSoundCategory(), soundtype.getVolume() * 0.5F, soundtype.getPitch() * 0.75F);
-            }
+            this.playBlockFallSound();
             return true;
         }
         return false;
@@ -552,7 +548,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public int getTalkInterval() {
+    public int getAmbientSoundInterval() {
         return 400;
     }
 
@@ -602,7 +598,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public double getMountedYOffset() {
+    public double getPassengersRidingOffset() {
         double Yfactor = ((0.0833D * this.getAge()) - 2.5D) / 10D;
         return this.getBbHeight() * Yfactor;
     }
@@ -626,15 +622,12 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean isReadyToFollowOwnerPlayer() { return !this.isMovementCeased(); }
-
-    @Override
     public boolean rideableEntity() {
         return true;
     }
 
     @Override
-    public float getAIMoveSpeed() {
+    public float getSpeed() {
         if (isSprinting()) {
             return 0.37F;
         }

@@ -110,7 +110,7 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
     }
 
     @Override
-    public CreatureAttribute getCreatureAttribute() {
-        return CreatureAttribute.ARTHROPOD;
+    public MobType getMobType() {
+        return MobType.ARTHROPOD;
     }
 }

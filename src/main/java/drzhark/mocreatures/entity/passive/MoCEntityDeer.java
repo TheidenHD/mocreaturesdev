@@ -131,7 +131,7 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public int getMoCMaxAge() {
+    public int getMaxAge() {
         return 130;
     }
 

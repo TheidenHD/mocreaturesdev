@@ -90,8 +90,8 @@ public class MoCEntityEnt extends MoCEntityAnimal {
 
     @Override
     public boolean attackEntityFrom(DamageSource damagesource, float i) {
-        if (damagesource.getTrueSource() instanceof Player) {
-            Player player = (Player) damagesource.getTrueSource();
+        if (damagesource.getEntity() instanceof Player) {
+            Player player = (Player) damagesource.getEntity();
             ItemStack heldStack = player.inventory.getCurrentItem();
             Item heldItem = heldStack.getItem();
             if (heldItem.getHarvestLevel(heldStack, "axe", player, null) >= 0) {

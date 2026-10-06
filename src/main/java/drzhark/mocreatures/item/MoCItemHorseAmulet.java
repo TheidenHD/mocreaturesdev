@@ -109,7 +109,7 @@ public class MoCItemHorseAmulet extends Item {
 //                    MoCTools.transferPetOwnershipIfNeeded(this.ownerUniqueId, player, storedCreature);
 //                }
 
-                if (player.level().spawnEntity(storedCreature)) {
+                if (player.level().addFreshEntity(storedCreature)) {
                     MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAppear(storedCreature.getId()), new TargetPoint(player.level().provider.dimensionType().getId(), player.getX(), player.getY(), player.getZ(), 64));
                     MoCTools.playCustomSound(storedCreature, MoCSoundEvents.ENTITY_GENERIC_MAGIC_ENCHANTED.get());
                     //gives an empty amulet

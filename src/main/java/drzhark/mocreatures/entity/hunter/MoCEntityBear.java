@@ -141,7 +141,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     @Override
     public void selectType() {
         if (getIsAdult()) {
-            setMoCAge(getMoCMaxAge());
+            setMoCAge(getMaxAge());
         }
     }
 
@@ -224,7 +224,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
         if (!this.level().isClientSide() && !getIsTamed() && getIsStanding()
                 && !this.isMovementCeased() && getIsAdult() && (this.random.nextInt(200) == 0) && shouldAttackPlayers()) {
             Player Player1 = this.level().getNearestPlayerToEntity(this, 4D);
-            if ((Player1 != null && this.canEntityBeSeen(Player1) && !Player1.capabilities.disableDamage)) {
+            if ((Player1 != null && this.hasLineOfSight(Player1) && !Player1.capabilities.disableDamage)) {
                 this.setStand();
                 setBearState(1);
             }
@@ -345,7 +345,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     @Override
     public boolean processInteract(Player player, InteractionHand hand) {
         final ItemStack stack = player.getItemInHand(hand);
-        if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.whip)) {
+        if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.WHIP.get())) {
             this.processBearWhipped();
             return true;
         }

@@ -73,15 +73,15 @@ public class CompatHandler {
 
     @SubscribeEvent
     public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
-        if (Loader.isModLoaded("thermalexpansion")) ThermalExpansionIntegration.addRecipes();
+        if (ModList.get().isLoaded("thermalexpansion")) ThermalExpansionIntegration.addRecipes();
     }
 
     public static void preInit() {
-        if (Loader.isModLoaded("tconstruct")) {
+        if (ModList.get().isLoaded("tconstruct")) {
             TinkersConstructIntegration.preInit();
 
             // Only load Construct's Armory if Tinkers' Construct is also loaded
-            if (Loader.isModLoaded("conarm")) {
+            if (ModList.get().isLoaded("conarm")) {
                 ConstructsArmoryIntegration.preInit();
             }
         }
@@ -91,13 +91,13 @@ public class CompatHandler {
         if (ModList.get().isLoaded("industrialforegoing")) {
             IndustrialForegoingIntegration.generateLatexEntries();
         }
-        if (Loader.isModLoaded("thaumcraft")) MinecraftForge.EVENT_BUS.register(ThaumcraftIntegration.class);
-        if (Loader.isModLoaded("tconstruct")) TinkersConstructIntegration.init();
-        if (Loader.isModLoaded("jeresources")) JERIntegration.init();
+        if (ModList.get().isLoaded("thaumcraft")) MinecraftForge.EVENT_BUS.register(ThaumcraftIntegration.class);
+        if (ModList.get().isLoaded("tconstruct")) TinkersConstructIntegration.init();
+        if (ModList.get().isLoaded("jeresources")) JERIntegration.init();
     }
 
     public static void postInit() {
-        if (Loader.isModLoaded("morph")) MorphIntegration.mapAbilities();
-        if (Loader.isModLoaded("tconstruct")) TinkersConstructIntegration.postInit();
+        if (ModList.get().isLoaded("morph")) MorphIntegration.mapAbilities();
+        if (ModList.get().isLoaded("tconstruct")) TinkersConstructIntegration.postInit();
     }
 }

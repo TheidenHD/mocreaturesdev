@@ -37,7 +37,7 @@
 //    @Override
 //    public void afterHit(ItemStack tool, EntityLivingBase player, EntityLivingBase target, float damageDealt, boolean wasCritical, boolean wasHit) {
 //        if (wasHit && target.isEntityAlive()) {
-//            target.addPotionEffect(new MobEffectInstance(effect, 20 * 5, amplifier));
+//            target.addEffect(new MobEffectInstance(effect, 20 * 5, amplifier));
 //        }
 //    }
 //}

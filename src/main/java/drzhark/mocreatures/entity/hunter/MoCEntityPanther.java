@@ -126,14 +126,14 @@ public class MoCEntityPanther extends MoCEntityBigCat {
     }
 
     @Override
-    public int getMoCMaxAge() {
+    public int getMaxAge() {
         if (getTypeMoC() >= 4) return 110;
         return 100;
     }
 
     @Override
     public boolean canAttackTarget(LivingEntity entity) {
-        if (!this.getIsAdult() && (this.getMoCAge() < this.getMoCMaxAge() * 0.8)) {
+        if (!this.getIsAdult() && (this.getMoCAge() < this.getMaxAge() * 0.8)) {
             return false;
         }
         if (entity instanceof MoCEntityPanther) {

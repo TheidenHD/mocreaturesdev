@@ -550,7 +550,7 @@ public class MoCModelBigCat<T extends MoCEntityBigCat> extends MoCModelAbstractB
         this.floating = (this.isFlyer && this.onAir);
         //this.poisoning = bigcat.swingingTail();
         this.openMouthCounter = bigcat.mouthCounter;
-        this.isRidden = (bigcat.isBeingRidden());
+        this.isRidden = (bigcat.isVehicle());
         this.hasMane = bigcat.hasMane();
         this.isTamed = bigcat.getHasAmulet();
         this.isSitting = bigcat.getIsSitting();

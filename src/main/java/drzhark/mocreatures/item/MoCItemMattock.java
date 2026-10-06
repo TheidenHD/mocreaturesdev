@@ -89,19 +89,19 @@ public class MoCItemMattock extends ItemPickaxe {
 
             switch (this.specialWeaponType) {
                 case 1: // Poison 2
-                    target.addPotionEffect(new MobEffectInstance(MobEffects.POISON, (timer * 20) + poisonous, 1));
+                    target.addEffect(new MobEffectInstance(MobEffects.POISON, (timer * 20) + poisonous, 1));
                     break;
                 case 2: // Slowness
-                    target.addPotionEffect(new MobEffectInstance(MobEffects.SLOWNESS, timer * 20, 0));
+                    target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, timer * 20, 0));
                     break;
                 case 3: // Fire
                     target.setFire(timer + fire_aspect);
                     break;
                 case 4: // Weakness (Nausea for players)
-                    target.addPotionEffect(new MobEffectInstance(target instanceof Player ? MobEffects.NAUSEA : MobEffects.WEAKNESS, timer * 20, 0));
+                    target.addEffect(new MobEffectInstance(target instanceof Player ? MobEffects.NAUSEA : MobEffects.WEAKNESS, timer * 20, 0));
                     break;
                 case 5: // Wither (Blindness for players)
-                    target.addPotionEffect(new MobEffectInstance(target instanceof Player ? MobEffects.BLINDNESS : MobEffects.WITHER, timer * 20, 0));
+                    target.addEffect(new MobEffectInstance(target instanceof Player ? MobEffects.BLINDNESS : MobEffects.WITHER, timer * 20, 0));
                     break;
                 default:
                     break;

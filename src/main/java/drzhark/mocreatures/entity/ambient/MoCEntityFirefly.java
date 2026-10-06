@@ -82,7 +82,7 @@ public class MoCEntityFirefly extends MoCEntityInsect {
     }
     
     @Override
-    public int getMaxSpawnedInChunk() {
+    public int getMaxSpawnClusterSize() {
         return 4;
     }
 }

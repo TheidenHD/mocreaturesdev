@@ -15,7 +15,7 @@
 //    @Override
 //    public void onAbilityTick(int level, Level world, Player player) {
 //        if (player.isSprinting()) {
-//            player.addPotionEffect(new MobEffectInstance(MobEffects.SPEED, 2, level - 1, true, false));
+//            player.addEffect(new MobEffectInstance(MobEffects.SPEED, 2, level - 1, true, false));
 //        }
 //    }
 //}

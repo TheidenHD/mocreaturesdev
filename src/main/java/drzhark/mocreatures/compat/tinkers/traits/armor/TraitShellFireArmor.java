@@ -31,10 +31,10 @@
 //
 //            // Inflict fire on the target (15 seconds) and inflict positive effect on the wielder (30 seconds)
 //            if (!player.world.isClientSide()) {
-//                source.getTrueSource().setFire(15);
+//                source.getEntity().setFire(15);
 //
 //                if (player instanceof Player) {
-//                    player.addPotionEffect(new MobEffectInstance(playerEffect, 30 * 20, 0));
+//                    player.addEffect(new MobEffectInstance(playerEffect, 30 * 20, 0));
 //                    TinkerTools.proxy.spawnEffectParticle(ParticleEffect.Type.HEART_ARMOR, player, (int) damage);
 //                }
 //            }

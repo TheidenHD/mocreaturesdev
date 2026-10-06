@@ -75,7 +75,7 @@ public class MoCEntityLion extends MoCEntityBigCat {
         // Types 2, 3, and 7 are male lions (regular and white lions)
         // Add extra validation to prevent synchronization issues
         return this.getIsAdult() 
-            && this.getMoCAge() >= (this.getMoCMaxAge() * 0.8) // At least 80% of max age
+            && this.getMoCAge() >= (this.getMaxAge() * 0.8) // At least 80% of max age
             && (this.getTypeMoC() == 2 || this.getTypeMoC() == 3 || this.getTypeMoC() == 7);
     }
 
@@ -213,7 +213,7 @@ public class MoCEntityLion extends MoCEntityBigCat {
     }
 
     @Override
-    public int getMoCMaxAge() {
+    public int getMaxAge() {
         // ?
         if (getTypeMoC() == 1 || getTypeMoC() == 6) {
             return 110;
@@ -237,7 +237,7 @@ public class MoCEntityLion extends MoCEntityBigCat {
 
     @Override
     public boolean canAttackTarget(LivingEntity entity) {
-        if (!this.getIsAdult() && (this.getMoCAge() < this.getMoCMaxAge() * 0.8)) {
+        if (!this.getIsAdult() && (this.getMoCAge() < this.getMaxAge() * 0.8)) {
             return false;
         }
         if (entity instanceof MoCEntityLion) {

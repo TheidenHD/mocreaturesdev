@@ -30,22 +30,29 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class MoCEntityOstrich extends MoCEntityTameableAnimal {
-    private static final BiMap<DyeColor, IItemProvider> WOOL_BY_COLOR = Util.make(EnumHashBiMap.create(DyeColor.class), (p_203402_0_) -> {
+    private static final BiMap<DyeColor, ItemLike> WOOL_BY_COLOR = Util.make(EnumHashBiMap.create(DyeColor.class), (p_203402_0_) -> {
         p_203402_0_.put(DyeColor.WHITE, Items.WHITE_WOOL);
         p_203402_0_.put(DyeColor.ORANGE, Items.ORANGE_WOOL);
         p_203402_0_.put(DyeColor.MAGENTA, Items.MAGENTA_WOOL);
@@ -90,16 +97,16 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         setAdult(true);
         setAge(35);
         this.eggCounter = this.random.nextInt(1000) + 1000;
-        this.stepHeight = 1.0F;
+        this.setMaxUpStep(1.0F;
     }
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(1, new SwimGoal(this));
+        this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(4, new EntityAIFollowAdult(this, 1.0D));
         this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, false));
         this.goalSelector.addGoal(6, new EntityAIWanderMoC2(this, 1.0D));
-        this.goalSelector.addGoal(7, new LookAtGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8.0F));
     }
 
     public static AttributeSupplier.Builder registerAttributes() {
@@ -187,7 +194,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
 
     @Override
     public boolean isMovementCeased() {
-        return (getHiding() || this.isBeingRidden());
+        return (getHiding() || this.isVehicle());
     }
 
     @Override
@@ -228,14 +235,14 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         }
 
         if (super.attackEntityFrom(damagesource, i)) {
-            Entity entity = damagesource.getTrueSource();
+            Entity entity = damagesource.getEntity();
 
-            if (!(entity instanceof LivingEntity) || ((this.isBeingRidden()) && (entity == this.getRidingEntity())) || (entity instanceof Player && getIsTamed())) {
+            if (!(entity instanceof LivingEntity) || ((this.isVehicle()) && (entity == this.getVehicle())) || (entity instanceof Player && getIsTamed())) {
                 return false;
             }
 
             if ((entity != this) && (super.shouldAttackPlayers()) && getTypeMoC() > 2) {
-                setAttackTarget((LivingEntity) entity);
+                setTarget((LivingEntity) entity);
                 flapWings();
             }
             return true;
@@ -277,7 +284,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
 
     @Override
     public boolean canBeCollidedWith() {
-        return !this.isBeingRidden();
+        return !this.isVehicle();
     }
 
     @Override
@@ -378,7 +385,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         super.tick();
 
         if (getHiding()) {
-            this.prevRenderYawOffset = this.renderYawOffset = this.rotationYaw = this.prevRotationYaw;
+            this.prevRenderYawOffset = this.yBodyRot = this.rotationYaw = this.prevRotationYaw;
         }
 
         if (this.mouthCounter > 0 && ++this.mouthCounter > 20) {
@@ -415,10 +422,10 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
 
     public void transform(int tType) {
         if (!this.level().isClientSide()) {
-            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getX(), this.getY(), this.getZ(), 64, this.level().getDimensionKey())), new MoCMessageAnimation(this.getId(), tType));
+            MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with( () -> new PacketDistributor.TargetPoint(this.getX(), this.getY(), this.getZ(), 64, this.level().dimension())), new MoCMessageAnimation(this.getId(), tType));
         }
         this.transformType = tType;
-        if (!this.isBeingRidden() && this.transformType != 0) {
+        if (!this.isVehicle() && this.transformType != 0) {
             dropArmor();
             this.transformCounter = 1;
         }
@@ -444,7 +451,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
 
         if (!this.level().isClientSide()) {
             //ostrich buckle!
-            if (getTypeMoC() == 8 && (this.sprintCounter > 0 && this.sprintCounter < 150) && (this.isBeingRidden()) && random.nextInt(15) == 0) {
+            if (getTypeMoC() == 8 && (this.sprintCounter > 0 && this.sprintCounter < 150) && (this.isVehicle()) && random.nextInt(15) == 0) {
                 MoCTools.buckleMobs(this, 2D, this.level());
             }
 
@@ -571,7 +578,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         }
 
         //makes the ostrich stay by hiding their heads
-        if (!stack.isEmpty() && (stack.getItem() == MoCItems.whip) && getIsTamed() && (!this.isBeingRidden())) {
+        if (!stack.isEmpty() && (stack.getItem() == MoCItems.WHIP.get()) && getIsTamed() && (!this.isVehicle())) {
             setHiding(!getHiding());
             setIsJumping(false);
             getNavigation().stop();
@@ -710,7 +717,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
                 }
             }
         }
-        if (this.getIsRideable() && this.getIsAdult() && (!this.getIsChested() || !player.isCrouching()) && !this.isBeingRidden()) {
+        if (this.getIsRideable() && this.getIsAdult() && (!this.getIsChested() || !player.isCrouching()) && !this.isVehicle()) {
             if (!this.level().isClientSide() && player.startRiding(this)) {
                 player.rotationYaw = this.rotationYaw;
                 player.rotationPitch = this.rotationPitch;
@@ -902,7 +909,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
 
     @Override
     public boolean isFlyer() {
-        return this.isBeingRidden() && (getTypeMoC() == 5 || getTypeMoC() == 6);
+        return this.isVehicle() && (getTypeMoC() == 5 || getTypeMoC() == 6);
     }
 
     @Override
@@ -946,15 +953,15 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public CreatureAttribute getCreatureAttribute() {
+    public MobType getMobType() {
         if (getTypeMoC() == 7) {
-            return CreatureAttribute.UNDEAD;
+            return MobType.UNDEAD;
         }
-        return super.getCreatureAttribute();
+        return super.getMobType();
     }
 
     @Override
-    public int getMaxSpawnedInChunk() {
+    public int getMaxSpawnClusterSize() {
         return 1;
     }
 

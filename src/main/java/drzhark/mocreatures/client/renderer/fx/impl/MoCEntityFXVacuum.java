@@ -48,7 +48,7 @@ public class MoCEntityFXVacuum extends TextureSheetParticle {
         this.z = this.startZ + this.zd * scaleFactor;
 
         if (this.age++ >= this.lifetime) {
-            this.remove();
+            this.remove(RemovalReason.DISCARDED);
         }
     }
 

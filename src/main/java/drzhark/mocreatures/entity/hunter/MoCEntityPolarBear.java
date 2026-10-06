@@ -54,7 +54,7 @@ public class MoCEntityPolarBear extends MoCEntityBear {
     }
 
     @Override
-    public int getMoCMaxAge() {
+    public int getMaxAge() {
         return 140;
     }
 
@@ -99,7 +99,7 @@ public class MoCEntityPolarBear extends MoCEntityBear {
 
             return InteractionResult.SUCCESS;
         }
-        if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.whip)) {
+        if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.WHIP.get())) {
             this.processBearWhipped();
             return true;
         }

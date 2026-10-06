@@ -161,7 +161,7 @@ public class MoCEntityTurkey extends MoCEntityTameableAnimal {
                 this.usePlayerItem(player, hand, itemstack);
                 // Age up baby turkeys when fed
                 this.setMoCAge(this.getMoCAge() + 10);
-                if (this.getMoCAge() >= this.getMoCMaxAge()) {
+                if (this.getMoCAge() >= this.getMaxAge()) {
                     this.setAdult(true);
                 }
                 return InteractionResult.SUCCESS;
@@ -200,7 +200,7 @@ public class MoCEntityTurkey extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public int getMoCMaxAge() {
+    public int getMaxAge() {
         return 35;
     }
 

@@ -442,7 +442,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     /*@Override
-    public int getMaxSpawnedInChunk() {
+    public int getMaxSpawnClusterSize() {
         return 1;
     }*/
 
@@ -483,11 +483,11 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
             double dist = (0.8D);
             double newPosX = this.getX() + (dist * Math.sin(this.yBodyRot / 57.29578F));
             double newPosZ = this.getZ() - (dist * Math.cos(this.yBodyRot / 57.29578F));
-            moveFunction.accept(passenger, newPosX, this.getY() + getMountedYOffset() + passenger.getMyRidingOffset(), newPosZ);
+            moveFunction.accept(passenger, newPosX, this.getY() + getPassengersRidingOffset() + passenger.getMyRidingOffset(), newPosZ);
         }
     }
 
-    public double getMountedYOffset() {
+    public double getPassengersRidingOffset() {
         return this.getMoCAge() * 0.01F * (this.getBbHeight() * 0.3D);
     }
 

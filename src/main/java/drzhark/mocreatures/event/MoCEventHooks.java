@@ -81,7 +81,7 @@ public class MoCEventHooks {
                 kitty.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(kitty)), null);
                 kitty.setPos(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ());
                 if (!kitty.getCanSpawnHere()) return;
-                world.spawnEntity(kitty);
+                world.addFreshEntity(kitty);
             }
         }
     }

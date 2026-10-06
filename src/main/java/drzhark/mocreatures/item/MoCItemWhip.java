@@ -119,7 +119,7 @@ public class MoCItemWhip extends MoCItemSword {
 
                 if (entity instanceof MoCEntityOstrich) {
                     MoCEntityOstrich ostrich = (MoCEntityOstrich) entity;
-                    if (ostrich.isBeingRidden() && ostrich.sprintCounter == 0) {
+                    if (ostrich.isVehicle() && ostrich.sprintCounter == 0) {
                         ostrich.sprintCounter = 1;
                     }
 
@@ -134,7 +134,7 @@ public class MoCItemWhip extends MoCItemSword {
 
                 if (entity instanceof MoCEntityElephant) {
                     MoCEntityElephant elephant = (MoCEntityElephant) entity;
-                    if (elephant.isBeingRidden() && elephant.sprintCounter == 0) {
+                    if (elephant.isVehicle() && elephant.sprintCounter == 0) {
                         elephant.sprintCounter = 1;
                     }
                 }

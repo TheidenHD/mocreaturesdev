@@ -52,7 +52,7 @@ public class MoCEntityFXStar extends TextureSheetParticle {
         }
 
         if (this.lifetime-- <= 0) {
-            this.remove();
+            this.remove(RemovalReason.DISCARDED);
         }
     }
 

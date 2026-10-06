@@ -41,7 +41,7 @@ public class MoCItemPetAmuletNew extends Item {
                 double newPosY = player.getY();
                 double newPosZ = player.getZ() - (dist * Math.sin((MoCTools.realAngle(player.rotationYaw - 90F)) / 57.29578F));
                 entity.moveTo(newPosX, newPosY, newPosZ, player.rotationYaw, 0.0F);
-                world.spawnEntity(entity);
+                world.addFreshEntity(entity);
                 stack.setTagCompound(null);
                 return new ActionResult<>(InteractionResult.SUCCESS, stack);
             }
