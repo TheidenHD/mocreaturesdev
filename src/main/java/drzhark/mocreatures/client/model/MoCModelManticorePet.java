@@ -4,7 +4,6 @@
 package drzhark.mocreatures.client.model;
 
 import drzhark.mocreatures.entity.hunter.MoCEntityManticorePet;
-
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -20,22 +19,31 @@ public class MoCModelManticorePet<T extends MoCEntityManticorePet> extends MoCMo
      * In 1.20.1, override prepareMobModel(...) instead of setLivingAnimations(...).
      */
     @Override
-    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
-        this.isFlyer = entityIn.isFlyer();
-        this.isSaddled = entityIn.getIsRideable();
-        this.flapwings = true;
-        this.floating = this.isFlyer && entityIn.isOnAir() && !entityIn.isOnGround();
-        this.isRidden = entityIn.isVehicle();
-        this.hasMane = true;
-        this.hasSaberTeeth = true;
-        this.onAir = entityIn.isOnAir();
-        this.hasStinger = true;
-        this.isSitting = manticorePet.getIsSitting();
-        this.isMovingVertically = manticorePet.motionY != 0 && !manticorePet.onGround();
-        this.hasChest = false;
-        this.isTamed = false;
+    public void prepareMobModel(
+            T entityIn,
+            float limbSwing,
+            float limbSwingAmount,
+            float partialTick
+    ) {
+        // First, let MoCModelBigCat do its own preparation (if any).
+        super.prepareMobModel(entityIn, limbSwing, limbSwingAmount, partialTick);
+
+        // Copy over the exact flag‐setting logic from old setLivingAnimations(...):
+        this.isFlyer           = entityIn.isFlyer();
+        this.isSaddled         = entityIn.getIsRideable();
+        this.flapwings         = true;
+        this.floating          = this.isFlyer && entityIn.isOnAir() && !entityIn.onGround();
+        this.isRidden          = entityIn.isPassenger();
+        this.hasMane           = true;
+        this.hasSaberTeeth     = true;
+        this.onAir             = entityIn.isOnAir();
+        this.hasStinger        = true;
+        this.isSitting         = entityIn.getIsSitting();
+        this.isMovingVertically = (entityIn.getDeltaMovement().y != 0) && !entityIn.onGround();
+        this.hasChest          = false;
+        this.isTamed           = false;
     }
-    
+
     @Override
     public void setupAnim(
             T entity,

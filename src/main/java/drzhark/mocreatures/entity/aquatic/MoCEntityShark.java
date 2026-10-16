@@ -37,7 +37,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     }
 
     @Override
-    protected void initEntityAI() {
+    protected void registerGoals() {
         this.goalSelector.addGoal(2, new EntityAIAttackMelee(this, 1.0D, false));
         this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 1.0D, 30));
         this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
@@ -58,8 +58,8 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void defineSynchedData() {
+        super.defineSynchedData();
     }
 
     @Override
@@ -68,10 +68,10 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource damagesource, float i) {
-        if (super.attackEntityFrom(damagesource, i) && (this.level().getDifficulty().getId() > 0)) {
+    public boolean hurt(DamageSource damagesource, float i) {
+        if (super.hurt(damagesource, i) && (this.level().getDifficulty().getId() > 0)) {
             Entity entity = damagesource.getEntity();
-            if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
+            if (entity != null && this.hasIndirectPassenger(entity)) {
                 return true;
             }
             if (entity != this && entity instanceof LivingEntity) {
@@ -135,12 +135,12 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public void setDead() {
+    public void discard() {
         // Server check required to prevent tamed entities from being duplicated on client-side
         if (!this.level().isClientSide() && (getIsTamed()) && (getHealth() > 0)) {
             return;
         }
-        super.setDead();
+        super.discard();
     }
 
     @Override
@@ -178,7 +178,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
         return true;
     }
 
-    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+    protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
         return this.getBbHeight() * 0.61F;
     }
     

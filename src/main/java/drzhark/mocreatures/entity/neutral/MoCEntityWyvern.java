@@ -45,7 +45,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -90,7 +89,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
         }*/
 
         setAge(80);
-        experienceValue = 20;
+        xpReward = 20;
     }
 
     @Override
@@ -393,8 +392,8 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
                 this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.03D, 0.0D));
 
                 // Clamp downward speed
-                if (this.getDeltaMovement().getY() < -0.5D) {
-                    this.setDeltaMovement(this.getDeltaMovement().getX(), -0.5D, this.getDeltaMovement().getZ());
+                if (this.getDeltaMovement().y < -0.5D) {
+                    this.setDeltaMovement(this.getDeltaMovement().x, -0.5D, this.getDeltaMovement().z);
                 }
 
                 // Random wobble if colliding horizontally
@@ -403,18 +402,18 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
                 }
 
                 // Prevent circling while idle by disabling flying controller
-                if (this.getNavigation().noPath() && this.getTarget() == null) {
+                if (this.getNavigation().isDone() && this.getTarget() == null) {
                     this.setDeltaMovement(this.getDeltaMovement().add(0.0D, 0.05D, 0.0D)); // Hover up
                     this.setMoveForward(0);
                     this.setNoGravity(true);
-                    this.moveController = new MovementController(this); // reset controller to basic when idle
+                    this.moveControl = new MovementController(this); // reset controller to basic when idle
                 }
 
                 // Smoothly align rotation with motion
-                if (!this.getDeltaMovement().equals(Vector3d.ZERO)) {
-                    Vector3d motion = this.getDeltaMovement();
+                if (!this.getDeltaMovement().equals(Vec3.ZERO)) {
+                    Vec3 motion = this.getDeltaMovement();
                     float targetYaw = (float)(Mth.atan2(motion.z, motion.x) * (180F / Math.PI)) - 90F;
-                    this.rotationYaw = this.yBodyRot = this.prevRotationYaw = updateRotation(this.rotationYaw, targetYaw, 4.0F);
+                    this.setYRot(this.yBodyRot = this.yRotO = updateRotation(this.getYRot(), targetYaw, 4.0F));
                 }
 
                 // Flap animation
@@ -423,7 +422,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
                 }
 
                 // Idle floating behavior
-                if (this.getNavigation().noPath() && this.getTarget() == null && this.random.nextInt(40) == 0) {
+                if (this.getNavigation().isDone() && this.getTarget() == null && this.random.nextInt(40) == 0) {
                     double liftAmount = 0.3D + (this.random.nextDouble() * 0.3D); // 0.3 to 0.6
                     this.setDeltaMovement(this.getDeltaMovement().add(0.0D, liftAmount, 0.0D));
                 }
@@ -433,7 +432,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
                 this.setNoGravity(false);
             }
 
-            if (getIsFlying() && this.getNavigation().noPath() && !isMovementCeased() && this.getTarget() == null && random.nextInt(30) == 0) {
+            if (getIsFlying() && this.getNavigation().isDone() && !isMovementCeased() && this.getTarget() == null && random.nextInt(30) == 0) {
                 this.wander.makeUpdate();
             }
 
@@ -508,7 +507,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             return true;
         }
 
-        if (!stack.isEmpty() && !getIsRideable() && getAge() > 90 && this.getIsTamed() && (stack.getItem() instanceof ItemSaddle)) {
+        if (!stack.isEmpty() && !getIsRideable() && getAge() > 90 && this.getIsTamed() && (stack.getItem() instanceof SaddleItem)) {
             if (!player.isCreative()) stack.shrink(1);
             setRideable(true);
             return InteractionResult.SUCCESS;
@@ -579,7 +578,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
 
         }
 
-        if (!stack.isEmpty() && !this.getIsGhost() && (stack.getItem() == MoCItems.essencelight) && getIsTamed() && getAge() > 90 && getTypeMoC() < 5) {
+        if (!stack.isEmpty() && !this.getIsGhost() && (stack.getItem() == MoCItems.ESSENCE_LIGHT.get()) && getIsTamed() && getAge() > 90 && getTypeMoC() < 5) {
             if (!player.isCreative()) stack.shrink(1);
             if (stack.isEmpty()) {
                 player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
@@ -589,16 +588,16 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
 
             if (!this.level().isClientSide()) {
                 int i = getTypeMoC() + 49;
-                MoCEntityEgg entityegg = MoCEntities.EGG.create(this.level());
+                MoCEntityEgg entityegg = MoCEntities.EGG.get().create(this.level());
                 entityegg.setEggType(i);
                 entityegg.setPos(player.getX(), player.getY(), player.getZ());
-                player.world.addFreshEntity(entityegg);
+                player.level().addFreshEntity(entityegg);
                 entityegg.setDeltaMovement(entityegg.getDeltaMovement().add((this.level().random.nextFloat() - this.level().random.nextFloat()) * 0.3F, this.level().random.nextFloat() * 0.05F, (this.level().random.nextFloat() - this.level().random.nextFloat()) * 0.3F));
             }
             return InteractionResult.SUCCESS;
         }
 
-        if (!stack.isEmpty() && this.transformCounter == 0 && !this.getIsGhost() && getTypeMoC() == 5 && (stack.getItem() == MoCItems.essenceundead) && getIsTamed()) {
+        if (!stack.isEmpty() && this.transformCounter == 0 && !this.getIsGhost() && getTypeMoC() == 5 && (stack.getItem() == MoCItems.ESSENCE_UNDEAD.get()) && getIsTamed()) {
             if (!player.isCreative()) stack.shrink(1);
             if (stack.isEmpty()) {
                 player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
@@ -612,7 +611,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             return InteractionResult.SUCCESS;
         }
 
-        if (!stack.isEmpty() && this.transformCounter == 0 && !this.getIsGhost() && getTypeMoC() == 5 && (stack.getItem() == MoCItems.essencelight) && getIsTamed()) {
+        if (!stack.isEmpty() && this.transformCounter == 0 && !this.getIsGhost() && getTypeMoC() == 5 && (stack.getItem() == MoCItems.ESSENCE_LIGHT.get()) && getIsTamed()) {
             if (!player.isCreative()) stack.shrink(1);
             if (stack.isEmpty()) {
                 player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
@@ -626,7 +625,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             return InteractionResult.SUCCESS;
         }
 
-        if (!stack.isEmpty() && this.transformCounter == 0 && !this.getIsGhost() && getTypeMoC() == 5 && (stack.getItem() == MoCItems.essencedarkness) && getIsTamed()) {
+        if (!stack.isEmpty() && this.transformCounter == 0 && !this.getIsGhost() && getTypeMoC() == 5 && (stack.getItem() == MoCItems.ESSENCE_DARKNESS.get()) && getIsTamed()) {
             if (!player.isCreative()) stack.shrink(1);
             if (stack.isEmpty()) {
                 player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
@@ -642,8 +641,8 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
 
         if (this.getIsRideable() && getAge() > 90 && (!this.getIsChested() || !player.isCrouching()) && !this.isVehicle()) {
             if (!this.level().isClientSide() && player.startRiding(this)) {
-                player.rotationYaw = this.rotationYaw;
-                player.rotationPitch = this.rotationPitch;
+                player.setYRot(this.getYRot());
+                player.setXRot(this.getXRot());
                 setSitting(false);
             }
 
@@ -666,17 +665,17 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
 
             if (i == 1) {
                 ItemEntity entityitem = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), new ItemStack(Items.IRON_HORSE_ARMOR, 1));
-                entityitem.setDefaultPickupDelay();
+                entityitem.setDefaultPickUpDelay();
                 this.level().addFreshEntity(entityitem);
             }
             if (i == 2) {
                 ItemEntity entityitem = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), new ItemStack(Items.GOLDEN_HORSE_ARMOR, 1));
-                entityitem.setDefaultPickupDelay();
+                entityitem.setDefaultPickUpDelay();
                 this.level().addFreshEntity(entityitem);
             }
             if (i == 3) {
                 ItemEntity entityitem = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), new ItemStack(Items.DIAMOND_HORSE_ARMOR, 1));
-                entityitem.setDefaultPickupDelay();
+                entityitem.setDefaultPickUpDelay();
                 this.level().addFreshEntity(entityitem);
             }
             setArmorType((byte) 0);
@@ -706,7 +705,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
     
     @Override
-    protected void playStepSound(BlockPos pos, Block block) {
+    protected void playStepSound(BlockPos pos, BlockState block) {
         this.playSound(MoCSoundEvents.ENTITY_WYVERN_STEP.get(), 0.4F, (this.random.nextFloat() - this.random.nextFloat()) * 0.4F + 1.0F);
     }
 
@@ -749,30 +748,30 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean attackEntityAsMob(Entity entityIn) {
+    public boolean doHurtTarget(Entity entityIn) {
         if (entityIn instanceof Player && !shouldAttackPlayers()) {
             return false;
         }
         openMouth();
-        return super.attackEntityAsMob(entityIn);
+        return super.doHurtTarget(entityIn);
     }
 
     @Override
-    public void applyEnchantments(LivingEntity entityLivingBaseIn, Entity entityIn) {
+    public void doEnchantDamageEffects(LivingEntity entityLivingBaseIn, Entity entityIn) {
         if (entityIn instanceof Player && this.random.nextInt(3) == 0) {
             ((LivingEntity) entityIn).addEffect(new MobEffectInstance(MobEffects.POISON, 200, 0));
         }
 
-        super.applyEnchantments(entityLivingBaseIn, entityIn);
+        super.doEnchantDamageEffects(entityLivingBaseIn, entityIn);
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource damagesource, float i) {
+    public boolean hurt(DamageSource damagesource, float i) {
         Entity entity = damagesource.getEntity();
-        if (entity != null && this.isRidingOrBeingRiddenBy(entity)) {
+        if (entity != null && this.hasIndirectPassenger(entity)) {
             return false;
         }
-        if (super.attackEntityFrom(damagesource, i)) {
+        if (super.hurt(damagesource, i)) {
             if (entity != null && getIsTamed() && entity instanceof Player) {
                 return false;
             }
@@ -791,8 +790,8 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }*/
 
     @Override
-    public void writeAdditional(CompoundTag nbttagcompound) {
-        super.writeAdditional(nbttagcompound);
+    public void addAdditionalSaveData(CompoundTag nbttagcompound) {
+        super.addAdditionalSaveData(nbttagcompound);
         nbttagcompound.putBoolean("Saddle", getIsRideable());
         nbttagcompound.putBoolean("Chested", getIsChested());
         nbttagcompound.putInt("ArmorType", getArmorType());
@@ -800,12 +799,12 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
         nbttagcompound.putBoolean("isGhost", getIsGhost());
         if (getIsChested() && this.localchest != null) {
             ListTag nbttaglist = new ListTag();
-            for (int i = 0; i < this.localchest.getSizeInventory(); i++) {
-                this.localstack = this.localchest.getStackInSlot(i);
+            for (int i = 0; i < this.localchest.getContainerSize(); i++) {
+                this.localstack = this.localchest.getItem(i);
                 if (!this.localstack.isEmpty()) {
                     CompoundTag nbttagcompound1 = new CompoundTag();
                     nbttagcompound1.putByte("Slot", (byte) i);
-                    this.localstack.write(nbttagcompound1);
+                    this.localstack.save(nbttagcompound1);
                     nbttaglist.add(nbttagcompound1);
                 }
             }
@@ -814,8 +813,8 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void readAdditional(CompoundTag nbttagcompound) {
-        super.readAdditional(nbttagcompound);
+    public void readAdditionalSaveData(CompoundTag nbttagcompound) {
+        super.readAdditionalSaveData(nbttagcompound);
         setRideable(nbttagcompound.getBoolean("Saddle"));
         setIsChested(nbttagcompound.getBoolean("Chested"));
         setArmorType(nbttagcompound.getInt("ArmorType"));
@@ -827,8 +826,8 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             for (int i = 0; i < nbttaglist.size(); i++) {
                 CompoundTag nbttagcompound1 = nbttaglist.getCompound(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
-                if (j < this.localchest.getSizeInventory()) {
-                    this.localchest.setInventorySlotContents(j, ItemStack.of(nbttagcompound1));
+                if (j < this.localchest.getContainerSize()) {
+                    this.localchest.setItem(j, ItemStack.of(nbttagcompound1));
                 }
             }
         }
@@ -846,7 +845,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
 
     @Override
     public boolean isMyHealFood(ItemStack stack) {
-        return !stack.isEmpty() && (stack.getItem() == MoCItems.ratRaw || stack.getItem() == MoCItems.rawTurkey);
+        return !stack.isEmpty() && (stack.getItem() == MoCItems.RAT_RAW.get() || stack.getItem() == MoCItems.RAW_TURKEY.get());
     }
 
     private void openMouth() {
@@ -989,14 +988,14 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void onDeath(DamageSource damagesource) {
+    public void die(DamageSource damagesource) {
         if (!this.level().isClientSide()) {
             if (this.getTypeMoC() == 6) {
                 MoCTools.spawnMaggots(this.level(), this);
             }
 
             if (!getIsGhost() && getIsTamed() && this.random.nextInt(4) == 0) {
-                MoCEntityWyvern entitywyvern = new MoCEntityWyvern(this.level());
+                MoCEntityWyvern entitywyvern = MoCEntities.WYVERN.get().create(this.level());
                 entitywyvern.setPos(this.getX(), this.getY(), this.getZ());
                 this.level().addFreshEntity(entitywyvern);
                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_MAGIC_ENCHANTED.get());
@@ -1016,7 +1015,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             }
 
         }
-        super.onDeath(damagesource);
+        super.die(damagesource);
 
     }
 
@@ -1038,7 +1037,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
         return this.getIsTamed() && !this.getIsGhost();
     }
 
-    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+    protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
         return this.getBbHeight() * 0.925F;
     }
 }

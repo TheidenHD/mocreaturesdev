@@ -13,6 +13,7 @@ import drzhark.mocreatures.entity.item.MoCEntityLitterBox;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageHealth;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -21,19 +22,23 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
+import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
@@ -297,8 +302,8 @@ public abstract class MoCEntityMob extends Monster implements IMoCEntity {
                     )
             ), new MoCMessageHealth(this.getId(), this.getHealth()));
         }
-        Entity entity = damagesource.getEntity();
-        return (this.isVehicle() && entity != null && this.isRidingOrBeingRiddenBy(entity)) ? false : super.attackEntityFrom(damagesource, i);
+        Entity entity = source.getEntity();
+        return (this.isVehicle() && entity != null && this.hasIndirectPassenger(entity)) ? false : super.hurt(source, amount);
     }
 
     /** Boolean used to select pathfinding behavior */
@@ -542,8 +547,8 @@ public abstract class MoCEntityMob extends Monster implements IMoCEntity {
         }
         boolean ret = super.startRiding(player);
         if (ret) {
-            CompoundTag tag = player.getEntityData();
-            tag.setUniqueId("MOCEntity_Riding_Player", this.getUUID());
+            CompoundTag tag = player.getPersistentData();
+            tag.putUUID("MOCEntity_Riding_Player", this.getUUID());
             return true;
         }
         return false;

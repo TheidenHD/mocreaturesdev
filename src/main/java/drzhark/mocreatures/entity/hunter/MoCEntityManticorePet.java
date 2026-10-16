@@ -7,10 +7,11 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.InteractionHand;
-import net.minecraft.util.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -76,30 +77,21 @@ public class MoCEntityManticorePet extends MoCEntityBigCat {
         }
 
         final ItemStack stack = player.getItemInHand(hand);
-        if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.WHIP.get())) {
-            setSitting(!getIsSitting());
-            setIsJumping(false);
-            getNavigation().stop();
-            setTarget(null);
-            return true;
-        }
-
-        if (this.getIsRideable() && this.getIsAdult() && (!this.getIsChested() || !player.isCrouching()) && !this.isVehicle()) {
-            if (!this.level().isClientSide() && player.startRiding(this)) {
-                player.rotationYaw = this.rotationYaw;
-                player.rotationPitch = this.rotationPitch;
-                setSitting(false);
-            }
-
-            return InteractionResult.SUCCESS;
-        }
-
-        final ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty() && getIsTamed() && (stack.is(MoCItems.WHIP.get()))) {
             setSitting(!getIsSitting());
             setIsJumping(false);
             getNavigation().stop();
             setTarget(null);
+            return InteractionResult.SUCCESS;
+        }
+
+        if (this.getIsRideable() && this.getIsAdult() && (!this.getIsChested() || !player.isCrouching()) && !this.isVehicle()) {
+            if (!this.level().isClientSide() && player.startRiding(this)) {
+                player.setYRot(this.getYRot());
+                player.setXRot(this.getXRot());
+                setSitting(false);
+            }
+
             return InteractionResult.SUCCESS;
         }
 

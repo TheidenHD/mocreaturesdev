@@ -146,7 +146,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
     }
 
     public static AttributeSupplier.Builder registerAttributes() {
-        return MoCEntityAnimal.createAttributes()
+        return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 8.0D)
                 .add(Attributes.ARMOR, 2.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.25D);

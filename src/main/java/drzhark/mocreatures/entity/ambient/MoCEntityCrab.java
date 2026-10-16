@@ -11,15 +11,17 @@ import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.MobType;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -92,22 +94,22 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void jump() {
+    public void jumpFromGround() {
     }
 
     @Override
     protected void collideWithEntity(Entity entity) {
         if (entity instanceof Player && this.getTarget() == null && !(entity.world.getDifficulty() == Difficulty.PEACEFUL)) {
-            entity.attackEntityFrom(DamageSource.causeMobDamage(this), 1.5F);
+            entity.hurt(this.damageSources().mobAttack(this), 1.5F);
         }
 
         super.collideWithEntity(entity);
     }
 
     @Override
-    public boolean attackEntityAsMob(Entity entity) {
+    public boolean doHurtTarget(Entity entity) {
         this.playSound(MoCSoundEvents.ENTITY_GENERIC_SMACK.get(), 1.0F, 2.0F);
-        return super.attackEntityAsMob(entity);
+        return super.doHurtTarget(entity);
     }
 
     @OnlyIn(Dist.CLIENT)

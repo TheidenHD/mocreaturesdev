@@ -32,10 +32,12 @@ import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.SaddleItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -211,7 +213,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
         if (!this.level().isClientSide() && getBearState() == 2 && this.random.nextInt(800) == 0) {
             setBearState(0);
         }
-        if (!this.level().isClientSide() && getBearState() == 2 && !this.getNavigation().noPath()) {
+        if (!this.level().isClientSide() && getBearState() == 2 && !this.getNavigation().isDone()) {
             setBearState(0);
         }
         if (!this.level().isClientSide() && this.standingCounter > 0 && ++this.standingCounter > 100 && getBearState() != 3) {
@@ -230,8 +232,8 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
             }
         }
         //TODO move to AI
-        if (!this.level().isClientSide() && getType() == 3 && (this.deathTime == 0) && !this.isMovementCeased()) {
-            EntityItem entityitem = getClosestItem(this, 12D, Items.REEDS, Items.SUGAR);
+        if (!this.level().isClientSide() && getTypeMoC() == 3 && (this.deathTime == 0) && !this.isMovementCeased()) {
+            ItemEntity entityitem = getClosestItem(this, 12D, Items.REEDS, Items.SUGAR);
             if (entityitem != null) {
 
                 float f = entityitem.distanceTo(this);
@@ -239,7 +241,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
                     setPathToEntity(entityitem, f);
                 }
                 if (f < 2.0F && this.deathTime == 0) {
-                    entityitem.setDead();
+                    entityitem.discard();
                     MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT.get());
                     this.setHealth(getMaxHealth());
                 }
@@ -343,19 +345,19 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
         setTarget(null);
     }
     @Override
-    public boolean processInteract(Player player, InteractionHand hand) {
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
         final ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty() && getIsTamed() && (stack.getItem() == MoCItems.WHIP.get())) {
             this.processBearWhipped();
-            return true;
+            return InteractionResult.SUCCESS;
         }
-        final Boolean tameResult = this.processTameInteract(player, hand);
+        final InteractionResult tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
         }
 
         if (!stack.isEmpty() && getIsTamed() && !getIsRideable() && getIsAdult()
-                && (stack.getItem() instanceof ItemSaddle)) {
+                && (stack.getItem() instanceof SaddleItem)) {
             if (!player.isCreative()) stack.shrink(1);
             setRideable(true);
             return InteractionResult.SUCCESS;
@@ -397,9 +399,6 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     public int nameYOffset() {
         return (int) (((0.445D * this.getMoCAge()) + 15D) * -1);
     }
-
-    @Override
-    public boolean isReadyToFollowOwnerPlayer() { return !this.isMovementCeased(); }
 
     @Override
     public boolean rideableEntity() {

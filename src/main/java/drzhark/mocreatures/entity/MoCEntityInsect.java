@@ -5,13 +5,15 @@ package drzhark.mocreatures.entity;
 
 import drzhark.mocreatures.MoCTools;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomFlyingGoal;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class MoCEntityInsect extends MoCEntityAmbient {
@@ -21,19 +23,20 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
     protected MoCEntityInsect(EntityType<? extends MoCEntityInsect> type, Level world) {
         super(type, world);
         //setSize(0.4F, 0.3F);
-        this.moveController = new FlyingMovementController(this, 10, false);
+        this.moveControl = new FlyingMoveControl(this, 10, false);
     }
 
     public static AttributeSupplier.Builder registerAttributes() {
-        return MoCEntityAmbient.registerAttributes().add(Attributes.MAX_HEALTH, 4.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.FLYING_SPEED, 0.6D);
+        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 4.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.FLYING_SPEED, 0.6D);
     }
 
     @Override
-    protected PathNavigation createNavigator(Level worldIn) {
-        FlyingPathNavigator FlyingPathNavigator = new FlyingPathNavigator(this, worldIn);
-        FlyingPathNavigator.setCanEnterDoors(true);
-        FlyingPathNavigator.setCanSwim(true);
-        return FlyingPathNavigator;
+    protected PathNavigation createNavigation(Level worldIn) {
+        FlyingPathNavigation flyingpathnavigation = new FlyingPathNavigation(this, worldIn);
+        flyingpathnavigation.setCanOpenDoors(false);
+        flyingpathnavigation.setCanFloat(true);
+        flyingpathnavigation.setCanPassDoors(true);
+        return flyingpathnavigation;
     }
 
     @Override
@@ -48,13 +51,13 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
     }
 
     @Override
-    public float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+    public float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
         return 0.2F;
     }
 
     @Override
     public boolean getIsFlying() {
-        return this.isOnAir() && !this.isOnLadder();
+        return this.isOnAir() && !this.onClimbable();
     }
 
     @Override
@@ -62,14 +65,15 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
         super.aiStep();
 
         if (this.isInWater()) {
-            this.motionY *= 0.6D;
+            setDeltaMovement(getDeltaMovement().multiply(1.0D, 0.6D, 1.0D));
         }
 
         if (!this.level().isClientSide()) {
             if (this.random.nextInt(50) == 0) {
-                int[] ai = MoCTools.returnNearestBlockCoord(this, this.isAttractedToLight() ? Blocks.TORCH : Blocks.TALLGRASS, 8D);
+                int[] ai = MoCTools.returnNearestBlockCoord(this, this.isAttractedToLight() ? state -> state.is(Blocks.TORCH) || state.is(Blocks.WALL_TORCH)
+                        : state -> state.is(Blocks.GRASS), 8D);
                 if (ai[0] > -1000) {
-                    this.getNavigation().tryMoveToXYZ(ai[0], ai[1], ai[2], 1.0D);
+                    this.getNavigation().moveTo(ai[0], ai[1], ai[2], 1.0D);
                 }
             }
         } else {
@@ -92,8 +96,8 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
     }
 
     @Override
-    public boolean isOnLadder() {
-        return this.collidedHorizontally;
+    public boolean onClimbable() {
+        return this.horizontalCollision;
     }
 
     public boolean climbing() {
@@ -101,11 +105,11 @@ public abstract class MoCEntityInsect extends MoCEntityAmbient {
     }
 
     @Override
-    protected void updateFallState(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
+    protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
     }
 
     @Override
-    public boolean doesEntityNotTriggerPressurePlate() {
+    public boolean isIgnoringBlockTriggers() {
         return true;
     }
 

@@ -115,7 +115,7 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
             return false;
         }
 
-        return (this.isVehicle() && entity != null && this.isRidingOrBeingRiddenBy(entity)) ? false : super.attackEntityFrom(damagesource, i);
+        return (this.isVehicle() && entity != null && this.hasIndirectPassenger(entity)) ? false : super.hurt(damagesource, i);
     }
 
     private boolean checkOwnership(Player player, InteractionHand hand) {
@@ -166,12 +166,12 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
 
         final ItemStack stack = player.getItemInHand(hand);
         //changes name
-        if (!this.level().isClientSide() && !stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.scrollOfRenaming) {
+        if (!this.level().isClientSide() && !stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.SCROLLOFOWNER.get()) {
             if (!player.isCreative()) stack.shrink(1);
             return MoCTools.tameWithName(player, this);
         }
         //sets it free, untamed
-        if (!stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.scrollOfFreedom) {
+        if (!stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.SCROLLFREEDOM.get()) {
             if (!player.isCreative()) stack.shrink(1);
             if (!this.level().isClientSide()) {
                 if (this.getOwnerPetId() != -1) // required since getInt will always return 0 if no key is found
@@ -529,7 +529,7 @@ public class MoCEntityTameableAnimal extends MoCEntityAnimal implements IMoCTame
      * Register default attributes for all tameable MoC entities
      */
     public static AttributeSupplier.Builder createAttributes() {
-        return MoCEntityAnimal.createAttributes()
+        return Mob.createMobAttributes()
                 .add(Attributes.FOLLOW_RANGE, 16.0D)
                 .add(Attributes.ATTACK_DAMAGE, 3.0D);
     }

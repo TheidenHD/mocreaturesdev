@@ -60,7 +60,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return MoCEntityAnimal.createAttributes()
+        return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 60.0D)
                 .add(Attributes.ARMOR, 7.0D)
                 .add(Attributes.ATTACK_DAMAGE, 7.5D)
@@ -89,7 +89,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource damagesource, float i) {
+    public boolean hurt(DamageSource damagesource, float i) {
         if (damagesource.getEntity() instanceof Player) {
             Player player = (Player) damagesource.getEntity();
             ItemStack heldStack = player.inventory.getCurrentItem();
@@ -281,10 +281,10 @@ public class MoCEntityEnt extends MoCEntityAnimal {
     }
 
     @Override
-    protected void applyEnchantments(EntityLivingBase entityLivingBaseIn, Entity entityIn) {
+    protected void doEnchantDamageEffects(LivingEntity entityLivingBaseIn, Entity entityIn) {
         MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_SMACK.get());
         MoCTools.bigSmack(this, entityIn, 1F);
-        super.applyEnchantments(entityLivingBaseIn, entityIn);
+        super.doEnchantDamageEffects(entityLivingBaseIn, entityIn);
     }
 
     @Override

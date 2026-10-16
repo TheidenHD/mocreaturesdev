@@ -46,16 +46,16 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
         super(type, world);
         setAdult(true);
         setTamed(false);
-        setAge(50 + getRNG().nextInt(15));
-        if (getRNG().nextInt(4) == 0) {
+        setAge(50 + getRandom().nextInt(15));
+        if (getRandom().nextInt(4) == 0) {
             setAdult(false);
         }
-        this.bunnyReproduceTickerA = getRNG().nextInt(64);
+        this.bunnyReproduceTickerA = getRandom().nextInt(64);
         this.bunnyReproduceTickerB = 0;
     }
 
     @Override
-    protected void initEntityAI() {
+    protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new EntityAIFollowOwnerPlayer(this, 0.8D, 6F, 5F));
         this.goalSelector.addGoal(2, new EntityAIPanicMoC(this, 1.0D));
@@ -71,8 +71,8 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void defineSynchedData() {
+        super.defineSynchedData();
         this.entityData.define(HAS_EATEN, false);
     }
 
@@ -96,8 +96,8 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     public void selectType() {
         checkSpawningBiome();
 
-        if (getType() == 0) {
-            setType(getRNG().nextInt(5) + 1);
+        if (getTypeMoC() == 0) {
+            setTypeMoC(getRandom().nextInt(5) + 1);
         }
     }
 
@@ -168,7 +168,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
             return tameResult;
         }
 
-        final ItemStack stack = player.getHeldItemMainhand();
+        final ItemStack stack = player.getMainHandItem();
         if (!stack.isEmpty()) {
             if (stack.getItem() == Items.CARROT && !getHasEaten()) {
                 if (!player.isCreative()) stack.shrink(1);
@@ -181,7 +181,7 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
             }
         } else if (getVehicle() == null) {
             if (startRidingPlayer(player)) {
-                this.rotationYaw = player.rotationYaw;
+                this.setYRot(player.getYRot());
             }
             return InteractionResult.SUCCESS;
         }
@@ -198,8 +198,8 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
         }
 
         if (!this.level().isClientSide()) {
-            if (--this.jumpTimer <= 0 && this.onGround() && ((this.motionX > 0.05D) || (this.motionZ > 0.05D) || (this.motionX < -0.05D) || (this.motionZ < -0.05D))) {
-                this.motionY = 0.3D;
+            if (--this.jumpTimer <= 0 && this.onGround() && ((this.getDeltaMovement().x > 0.05D) || (this.getDeltaMovement().z > 0.05D) || (this.getDeltaMovement().x < -0.05D) || (this.getDeltaMovement().z < -0.05D))) {
+                this.setDeltaMovement(this.getDeltaMovement().x, 0.3D, this.getDeltaMovement().z);
                 this.jumpTimer = 15;
             }
         }

@@ -309,7 +309,7 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
             if (player != null) {// Behaviour that happens only close to player :)
 
                 // is there food around? only check with player near
-                ItemEntity entityitem = getClosestEntityItem(this, 10D);
+                ItemEntity entityitem = getClosestItemEntity(this, 10D);
                 if (entityitem != null) {
                     float f = entityitem.distanceTo(this);
                     if (f > 2.0F) {

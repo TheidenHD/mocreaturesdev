@@ -176,7 +176,7 @@ public class MoCEntityTameableAmbient extends MoCEntityAmbient implements IMoCTa
         }
 
         //changes name
-        if (!this.level().isClientSide() && getIsTamed() && stack.getItem() == MoCItems.scrollOfRenaming) {
+        if (!this.level().isClientSide() && getIsTamed() && stack.getItem() == MoCItems.SCROLLOFOWNER.get()) {
             if (!player.isCreative()) stack.shrink(1);
             return MoCTools.tameWithName(player, this);
         }

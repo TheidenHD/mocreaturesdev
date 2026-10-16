@@ -17,7 +17,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Creeper;
@@ -32,7 +35,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 
 // TODO: Fix hitbox
-public class MoCEntityLitterBox extends LivingEntity {
+public class MoCEntityLitterBox extends Mob {
 
     private static final EntityDataAccessor<Boolean> PICKED_UP = SynchedEntityData.defineId(MoCEntityLitterBox.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> USED_LITTER = SynchedEntityData.defineId(MoCEntityLitterBox.class, EntityDataSerializers.BOOLEAN);
@@ -109,7 +112,7 @@ public class MoCEntityLitterBox extends LivingEntity {
     }
 
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
         final ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty() && stack.is(Item.byBlock(Blocks.SAND))) {
             MoCTools.playCustomSound(this, SoundEvents.SAND_PLACE);

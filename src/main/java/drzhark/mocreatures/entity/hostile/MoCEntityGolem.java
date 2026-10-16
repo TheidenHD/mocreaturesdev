@@ -181,7 +181,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
             for (Integer usedBlock : usedBlocks) {
                 Block block = Block.getStateById(generateBlock(this.golemCubes[usedBlock])).getBlock();
                 ItemEntity entityitem = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), new ItemStack(block, 1));
-                entityitem.setDefaultPickupDelay();
+                entityitem.setDefaultPickUpDelay();
                 this.level().addFreshEntity(entityitem);
             }
         }
@@ -251,7 +251,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_BIG_GOLEM_CLANG.get(), 1.0F);
                 if ((MoCTools.mobGriefing(this.level())) && (MoCreatures.proxy.golemDestroyBlocks)) {
                     ItemEntity entityitem = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), new ItemStack(state.getBlock(), 1));
-                    entityitem.setDefaultPickupDelay();
+                    entityitem.setDefaultPickUpDelay();
                     entityitem.lifespan = 1200;
                 }
             }
@@ -305,7 +305,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource damagesource, float i) {
+    public boolean hurt(DamageSource damagesource, float i) {
         if (getGolemState() == 4) return false;
 
         List<Integer> missingChestBlocks = missingChestCubes();
@@ -322,7 +322,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
             } else return false;
         }
         if (i > 5) i = 5; //so you can't hit a Golem too hard
-        if (getGolemState() != 1 && super.attackEntityFrom(damagesource, i)) {
+        if (getGolemState() != 1 && super.hurt(damagesource, i)) {
             Entity entity = damagesource.getEntity();
             if ((entity != this) && (this.level().getDifficulty().getId() > 0) && entity instanceof LivingEntity) {
                 this.setTarget((LivingEntity) entity);
@@ -366,7 +366,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
             }
             if ((MoCTools.mobGriefing(this.level())) && (MoCreatures.proxy.golemDestroyBlocks)) {
                 ItemEntity entityitem = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), new ItemStack(block, 1));
-                entityitem.setDefaultPickupDelay();
+                entityitem.setDefaultPickUpDelay();
                 this.level().addFreshEntity(entityitem);
             }
         }
@@ -746,7 +746,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
     }
 
     @Override
-    protected void playStepSound(BlockPos p_180429_1_, Block p_180429_2_) {
+    protected void playStepSound(BlockPos p_180429_1_, BlockState p_180429_2_) {
         if (MoCreatures.proxy.legacyBigGolemSounds) {
             this.playSound(MoCSoundEvents.ENTITY_GENERIC_STOMP.get(), 1.0F, 1.0F);
         } else {
@@ -768,7 +768,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
         return (MoCEntityMob.getCanSpawnHere(type, world, reason, pos, randomIn) && world.canBlockSeeSky(new BlockPos(Mth.floor(pos.getX()), Mth.floor(pos.getY()), Mth.floor(pos.getZ()))) && (pos.getY() > 50D));
     }
 
-    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+    protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
         return this.getBbHeight() * 0.935F;
     }
 
@@ -781,7 +781,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
         public boolean shouldContinueExecuting() {
             float f = this.attacker.getBrightness();
 
-            if (f >= 0.5F && this.attacker.getRNG().nextInt(100) == 0) {
+            if (f >= 0.5F && this.attacker.getRandom().nextInt(100) == 0) {
                 this.attacker.setTarget(null);
                 return false;
             } else {

@@ -3,13 +3,12 @@
  */
 package drzhark.mocreatures.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import drzhark.mocreatures.entity.hostile.MoCEntityWraith;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -29,21 +28,8 @@ public class MoCModelWraith<T extends MoCEntityWraith> extends HumanoidModel<T> 
     private int attackCounter;
     private boolean isSneaking;
 
-    public MoCModelWraith() {
-        super(0.0F, 0.0F, 64, 40);
-        this.bipedHead = new ModelPart(this, 0, 0);
-        this.bipedHead.addBox(-4.0F, -4.0F, -4.0F, 8, 8, 8, 0.0F);
-        this.bipedHead.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.bipedBody = new ModelPart(this, 16, 16);
-        this.bipedBody.addBox(-4.0F, 4.0F, -2.0F, 8, 20, 4, 0.0F);
-        this.bipedBody.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.bipedRightArm = new ModelPart(this, 40, 16);
-        this.bipedRightArm.addBox(-2.75F, -2.0F, 2.0F, 4, 12, 4, 0.0F);
-        this.bipedRightArm.setRotationPoint(-5.0F, 2.0F, 0.0F);
-        this.bipedLeftArm = new ModelPart(this, 40, 16);
-        this.bipedLeftArm.mirror = true;
-        this.bipedLeftArm.addBox(-1.25F, -2.0F, 2.0F, 4, 12, 4, 0.0F);
-        this.bipedLeftArm.setRotationPoint(5.0F, 2.0F, 0.0F);
+    public MoCModelWraith(ModelPart root) {
+        super(root);
     }
 
     /**
@@ -51,12 +37,30 @@ public class MoCModelWraith<T extends MoCEntityWraith> extends HumanoidModel<T> 
      * We delegate to HumanoidModel.createMesh, then tell LayerDefinition our texture is 64×40.
      */
     public static LayerDefinition createBodyLayer() {
-        // HumanoidModel.createMesh takes (CubeDeformation, float size).
-        // We pass NO deformation and 0.0F “scale,” matching the original BipedModel(0.0F, 0.0F, 64, 40).
-        return LayerDefinition.create(
-                HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F),
-                64, 40
-        );
+        MeshDefinition mesh = HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F);
+        PartDefinition root = mesh.getRoot();
+
+        root.addOrReplaceChild("head",
+                CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -4.0F, -4.0F, 8, 8, 8),
+                PartPose.ZERO);
+
+        // the original never rendered the hat layer, so make it empty
+        root.addOrReplaceChild("hat", CubeListBuilder.create(), PartPose.ZERO);
+
+        root.addOrReplaceChild("body",
+                CubeListBuilder.create().texOffs(16, 16).addBox(-4.0F, 4.0F, -2.0F, 8, 20, 4),
+                PartPose.ZERO);
+
+        root.addOrReplaceChild("right_arm",
+                CubeListBuilder.create().texOffs(40, 16).addBox(-2.75F, -2.0F, 2.0F, 4, 12, 4),
+                PartPose.offset(-5.0F, 2.0F, 0.0F));
+
+        root.addOrReplaceChild("left_arm",
+                CubeListBuilder.create().texOffs(40, 16).mirror().addBox(-1.25F, -2.0F, 2.0F, 4, 12, 4),
+                PartPose.offset(5.0F, 2.0F, 0.0F));
+
+        // legs are left as the vanilla ones from createMesh
+        return LayerDefinition.create(mesh, 64, 40);
     }
 
     /**
@@ -81,9 +85,9 @@ public class MoCModelWraith<T extends MoCEntityWraith> extends HumanoidModel<T> 
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
         // Copy old BipedModel logic for swinging arms on attack vs. idle:
-        float f6 = Mth.sin(this.attackCounter > 0 ? (this.attackCounter * 0.12F) : (this.attackCounter * 0.12F));
-        float f7 = Mth.sin((1.0F - ((1.0F - (this.attackCounter > 0 ? 1.0F : 1.0F))
-                * (1.0F - (this.attackCounter > 0 ? 1.0F : 1.0F)))) * (float) Math.PI);
+        float swing = this.attackTime;
+        float f6 = Mth.sin(swing * (float) Math.PI);
+        float f7 = Mth.sin((1.0F - (1.0F - swing) * (1.0F - swing)) * (float) Math.PI);
         // (Above two lines are vestigial for attackCounter > 0 vs. 0—mirror of original.)
 
         // Reset Z-rotation on both arms to zero:
@@ -119,37 +123,5 @@ public class MoCModelWraith<T extends MoCEntityWraith> extends HumanoidModel<T> 
         // Finally, add a subtle Z-rotation “breathing” motion on arms:
         this.rightArm.zRot += Mth.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
         this.leftArm.zRot  -= Mth.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
-    }
-
-    /**
-     * Override renderToBuffer so that we can replicate the old “child scale” and “sneaking translate” logic
-     * from the original BipedModel-based render(...) method.
-     */
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer,
-                               int packedLight, int packedOverlay,
-                               float red, float green, float blue, float alpha) {
-        poseStack.pushPose();
-
-        // If entity is “child,” scale entire model to ¾ and shift upward:
-        if (this.young) {
-            poseStack.scale(0.75F, 0.75F, 0.75F);
-            poseStack.translate(0.0F, 0.5F, 0.0F);
-        } else {
-            // If sneaking, move model slightly downward (as in old render)
-            if (this.isSneaking) {
-                poseStack.translate(0.0F, 0.2F, 0.0F);
-            }
-        }
-
-        // Now render all humanoid parts in standard order:
-        this.head.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.body.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.rightArm.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.leftArm.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.rightLeg.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.leftLeg.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-
-        poseStack.popPose();
     }
 }

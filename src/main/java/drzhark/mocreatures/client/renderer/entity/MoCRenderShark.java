@@ -22,80 +22,67 @@ import org.joml.Matrix4f;
 @OnlyIn(Dist.CLIENT)
 public class MoCRenderShark extends MobRenderer<MoCEntityShark, MoCModelShark<MoCEntityShark>> {
 
-    public MoCRenderShark(EntityRendererProvider.Context renderManagerIn, MoCModelShark modelbase, float f) {
-        super(renderManagerIn, modelbase, f);
+    public MoCRenderShark(EntityRendererProvider.Context context, MoCModelShark<MoCEntityShark> model, float shadowSize) {
+        super(context, model, shadowSize);
     }
 
-    @SuppressWarnings("removal")
     @Override
-    public void render(MoCEntityShark entityshark, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLightIn) {
-        super.render(entityshark, entityYaw, partialTicks, poseStack, buffer, packedLightIn);
-        boolean flag = MoCreatures.proxy.getDisplayPetName() && !(entityshark.getPetName().isEmpty());
+    public void render(MoCEntityShark entityshark, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+        super.render(entityshark, entityYaw, partialTicks, poseStack, buffer, packedLight);
+
+        boolean flag = MoCreatures.proxy.getDisplayPetName() && !entityshark.getPetName().isEmpty();
         boolean flag1 = MoCreatures.proxy.getDisplayPetHealth();
-        if (entityshark.shouldRenderNameAndHealth()) {
-            float f2 = 1.6F;
-            float f3 = 0.01666667F * f2;
-            float f4 = entityshark.distanceTo(this.entityRenderDispatcher.camera.getEntity());
-            if (f4 < 16F) {
-                String s = entityshark.getPetName();
-                float f5 = 0.1F;
-                Font font = this.getFont();
-                
-                poseStack.pushPose();
-                poseStack.translate(0.0F, f5, 0.0F);
-                poseStack.mulPose(Axis.YP.rotationDegrees(-this.entityRenderDispatcher.camera.getYRot()));
-                poseStack.scale(-f3, -f3, f3);
 
-                byte byte0 = -50;
-                if (flag1) {
-                    if (!flag) {
-                        byte0 += 8;
-                    }
-                    
-                    // Render health bar
-                    Matrix4f matrix4f = poseStack.last().pose();
-                    float f6 = entityshark.getHealth();
-                    float f7 = entityshark.getMaxHealth();
-                    float f8 = f6 / f7;
-                    float f9 = 40F * f8;
-                    
-                    // Red background
-                    VertexConsumer vertexconsumer = buffer.getBuffer(RenderType.text(new ResourceLocation("textures/misc/white.png")));
-                    vertexconsumer.vertex(matrix4f, -20F + f9, -10 + byte0, 0.0F).color(0.7F, 0.0F, 0.0F, 1.0F).uv(0, 0).endVertex();
-                    vertexconsumer.vertex(matrix4f, -20F + f9, -6 + byte0, 0.0F).color(0.7F, 0.0F, 0.0F, 1.0F).uv(0, 1).endVertex();
-                    vertexconsumer.vertex(matrix4f, 20F, -6 + byte0, 0.0F).color(0.7F, 0.0F, 0.0F, 1.0F).uv(1, 1).endVertex();
-                    vertexconsumer.vertex(matrix4f, 20F, -10 + byte0, 0.0F).color(0.7F, 0.0F, 0.0F, 1.0F).uv(1, 0).endVertex();
-                    
-                    // Green health
-                    vertexconsumer = buffer.getBuffer(RenderType.text(new ResourceLocation("textures/misc/white.png")));
-                    vertexconsumer.vertex(matrix4f, -20F, -10 + byte0, 0.01F).color(0.0F, 0.7F, 0.0F, 1.0F).uv(0, 0).endVertex();
-                    vertexconsumer.vertex(matrix4f, -20F, -6 + byte0, 0.01F).color(0.0F, 0.7F, 0.0F, 1.0F).uv(0, 1).endVertex();
-                    vertexconsumer.vertex(matrix4f, f9 - 20F, -6 + byte0, 0.01F).color(0.0F, 0.7F, 0.0F, 1.0F).uv(1, 1).endVertex();
-                    vertexconsumer.vertex(matrix4f, f9 - 20F, -10 + byte0, 0.01F).color(0.0F, 0.7F, 0.0F, 1.0F).uv(1, 0).endVertex();
-                }
-                
-                if (flag) {
-                    // Render pet name
-                    int textWidth = font.width(s);
-                    float textX = -textWidth / 2.0f;
-                    float textY = byte0;
-                    
-                    // Name background
-                    Matrix4f matrix4f = poseStack.last().pose();
-                    VertexConsumer vertexconsumer = buffer.getBuffer(RenderType.textBackground());
-                    vertexconsumer.vertex(matrix4f, textX - 1, textY - 1, 0.0F).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    vertexconsumer.vertex(matrix4f, textX - 1, textY + 8, 0.0F).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    vertexconsumer.vertex(matrix4f, textX + textWidth + 1, textY + 8, 0.0F).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    vertexconsumer.vertex(matrix4f, textX + textWidth + 1, textY - 1, 0.0F).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-                    
-                    // Render text
-                    font.drawInBatch(s, textX, textY, 0x20ffffff, false, matrix4f, buffer, Font.DisplayMode.SEE_THROUGH, 0, packedLightIn);
-                    font.drawInBatch(s, textX, textY, -1, false, matrix4f, buffer, Font.DisplayMode.NORMAL, 0, packedLightIn);
-                }
-
-                poseStack.popPose();
-            }
+        if (!entityshark.shouldRenderNameAndHealth()) {
+            return;
         }
+        // 16 blocks, squared
+        if (this.entityRenderDispatcher.distanceToSqr(entityshark) >= 256.0D) {
+            return;
+        }
+
+        float f3 = 0.01666667F * 1.6F;
+        String s = entityshark.getPetName();
+        Font font = this.getFont();
+
+        poseStack.pushPose();
+        poseStack.translate(0.0F, 0.1F, 0.0F);
+        poseStack.mulPose(Axis.YP.rotationDegrees(-this.entityRenderDispatcher.camera.getYRot()));
+        poseStack.scale(-f3, -f3, f3);
+        Matrix4f matrix4f = poseStack.last().pose();
+
+        int byte0 = -50;
+
+        if (flag1) {
+            if (!flag) {
+                byte0 += 8;
+            }
+            float f9 = 40F * (entityshark.getHealth() / entityshark.getMaxHealth());
+            VertexConsumer vc = buffer.getBuffer(RenderType.textBackground());
+
+            // red: missing health
+            quad(vc, matrix4f, -20F + f9, -10 + byte0, 20F, -6 + byte0, 0.7F, 0.0F, 0.0F, 1.0F, packedLight);
+            // green: current health
+            quad(vc, matrix4f, -20F, -10 + byte0, f9 - 20F, -6 + byte0, 0.0F, 0.7F, 0.0F, 1.0F, packedLight);
+        }
+
+        if (flag) {
+            float textX = -font.width(s) / 2.0F;
+            // see-through pass with the 25% black background
+            font.drawInBatch(s, textX, byte0, 0x20FFFFFF, false, matrix4f, buffer, Font.DisplayMode.SEE_THROUGH, 0x40000000, packedLight);
+            // normal pass on top
+            font.drawInBatch(s, textX, byte0, -1, false, matrix4f, buffer, Font.DisplayMode.NORMAL, 0, packedLight);
+        }
+
+        poseStack.popPose();
+    }
+
+    private static void quad(VertexConsumer vc, Matrix4f m, float x0, float y0, float x1, float y1,
+                             float r, float g, float b, float a, int light) {
+        vc.vertex(m, x0, y0, 0.0F).color(r, g, b, a).uv2(light).endVertex();
+        vc.vertex(m, x0, y1, 0.0F).color(r, g, b, a).uv2(light).endVertex();
+        vc.vertex(m, x1, y1, 0.0F).color(r, g, b, a).uv2(light).endVertex();
+        vc.vertex(m, x1, y0, 0.0F).color(r, g, b, a).uv2(light).endVertex();
     }
 
     @Override
@@ -104,7 +91,8 @@ public class MoCRenderShark extends MobRenderer<MoCEntityShark, MoCModelShark<Mo
     }
 
     protected void stretch(MoCEntityShark entityshark, PoseStack poseStack) {
-        poseStack.scale((entityshark.getMoCAge() * 0.01F) / 2, (entityshark.getMoCAge() * 0.01F) / 2, (entityshark.getMoCAge() * 0.01F) / 2);
+        float f = (entityshark.getMoCAge() * 0.01F) / 2;
+        poseStack.scale(f, f, f);
     }
 
     @Override

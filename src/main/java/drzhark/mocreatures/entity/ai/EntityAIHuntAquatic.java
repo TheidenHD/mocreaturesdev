@@ -6,17 +6,17 @@ package drzhark.mocreatures.entity.ai;
 import com.google.common.base.Predicate;
 import drzhark.mocreatures.entity.MoCEntityAquatic;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
-import net.minecraft.world.entity.EntityLivingBase;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 
-public class EntityAIHuntAquatic<T extends EntityLivingBase> extends EntityAINearestAttackableTarget<T> {
+public class EntityAIHuntAquatic<T extends LivingEntity> extends NearestAttackableTargetGoal<T> {
 
     private final PathfinderMob hunter;
     private final Class<T> targetClass;
 
-    public EntityAIHuntAquatic(PathfinderMob entity, Class<T> classTarget, int chance, boolean checkSight, boolean onlyNearby, Predicate<EntityLivingBase> predicate) {
+    public EntityAIHuntAquatic(PathfinderMob entity, Class<T> classTarget, int chance, boolean checkSight, boolean onlyNearby, Predicate<LivingEntity> predicate) {
         super(entity, classTarget, chance, checkSight, onlyNearby, predicate);
         this.hunter = entity;
         this.targetClass = classTarget;

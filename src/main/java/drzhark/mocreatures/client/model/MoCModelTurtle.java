@@ -242,6 +242,17 @@ public class MoCModelTurtle<T extends MoCEntityTurtle> extends EntityModel<T> {
      */
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        poseStack.pushPose();
+
+        if (this.young) {
+            poseStack.scale(0.5F, 0.5F, 0.5F);
+            if (this.isHiding && !this.isSwimming) {
+                poseStack.translate(0.0F, 1.3125F, 0.0F); // 21 / 16
+            } else {
+                poseStack.translate(0.0F, 1.5F, 0.0F);    // 24 / 16
+            }
+        }
+
         this.Shell.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         this.ShellUp.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         if (!this.TMNT) {
@@ -254,5 +265,7 @@ public class MoCModelTurtle<T extends MoCEntityTurtle> extends EntityModel<T> {
         this.Leg4.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         this.Head.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         this.Tail.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+
+        poseStack.popPose();
     }
 }

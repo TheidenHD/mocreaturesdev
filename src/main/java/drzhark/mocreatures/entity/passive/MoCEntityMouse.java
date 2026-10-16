@@ -51,7 +51,7 @@ public class MoCEntityMouse extends MoCEntityAnimal {
     }
 
     public static AttributeSupplier.Builder registerAttributes() {
-        return MoCEntityAnimal.createAttributes().add(Attributes.MAX_HEALTH, 8.0D).add(Attributes.MOVEMENT_SPEED, 0.35D);
+        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 8.0D).add(Attributes.MOVEMENT_SPEED, 0.35D);
     }
 
     @Override
@@ -152,7 +152,7 @@ public class MoCEntityMouse extends MoCEntityAnimal {
     public InteractionResult getEntityInteractionResult(Player player, InteractionHand hand) {
         if (this.getVehicle() == null) {
             if (this.startRidingPlayer(player)) {
-                this.rotationYaw = player.rotationYaw;
+                this.setYRot(player.getYRot());
             }
 
             return InteractionResult.SUCCESS;

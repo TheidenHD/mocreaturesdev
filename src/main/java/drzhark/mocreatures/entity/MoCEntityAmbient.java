@@ -552,8 +552,8 @@ public abstract class MoCEntityAmbient extends PathfinderMob implements IMoCEnti
         }
         boolean ret = super.startRiding(player);
         if (ret) {
-            CompoundTag tag = player.getEntityData();
-            tag.setUniqueId("MOCEntity_Riding_Player", this.getUUID());
+            CompoundTag tag = player.getPersistentData();
+            tag.putUUID("MOCEntity_Riding_Player", this.getUUID());
             return true;
         }
         return false;

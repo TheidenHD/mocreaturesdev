@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -27,8 +28,8 @@ public class MoCEntityDragonfly extends MoCEntityInsect {
 
     private int soundCount;
 
-    public MoCEntityDragonfly(Level world) {
-        super(world);
+    public MoCEntityDragonfly(EntityType<? extends MoCEntityDragonfly> type, Level world) {
+        super(type, world);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

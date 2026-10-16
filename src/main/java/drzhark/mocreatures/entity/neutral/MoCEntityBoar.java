@@ -47,7 +47,7 @@ public class MoCEntityBoar extends MoCEntityAnimal {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return MoCEntityAnimal.createAttributes()
+        return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 10.0D)
                 .add(Attributes.ATTACK_DAMAGE, 2.5D)
                 .add(Attributes.MOVEMENT_SPEED, 0.3D);

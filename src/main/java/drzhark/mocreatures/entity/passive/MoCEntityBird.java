@@ -253,12 +253,12 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.ENTITY_GENERIC_HURT;
+        return SoundEvents.GENERIC_HURT;
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return SoundEvents.ENTITY_GENERIC_HURT;
+        return SoundEvents.GENERIC_HURT;
     }
 
     @Override
@@ -322,7 +322,7 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
         }
         if (this.getVehicle() == null) {
             if (this.startRidingPlayer(player)) {
-                this.rotationYaw = player.rotationYaw;
+                this.setYRot(player.getYRot());
             }
 
             return InteractionResult.SUCCESS;
@@ -460,12 +460,12 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void setDead() {
+    public void remove(RemovalReason reason) {
         // Server check required to prevent tamed entities from being duplicated on client-side
         if (!this.level().isClientSide() && (getIsTamed()) && (getHealth() > 0)) {
             return;
         }
-        super.setDead();
+        super.remove(reason);
     }
 
     private void WingFlap() {
@@ -488,9 +488,6 @@ public class MoCEntityBird extends MoCEntityTameableAnimal {
     public int nameYOffset() {
         return -40;
     }
-
-    @Override
-    public boolean isReadyToFollowOwnerPlayer() { return !this.isMovementCeased(); }
 
     @Override
     public boolean isMyHealFood(ItemStack stack) {

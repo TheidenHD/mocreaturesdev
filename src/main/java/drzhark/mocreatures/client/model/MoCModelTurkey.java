@@ -278,7 +278,7 @@ public class MoCModelTurkey<T extends MoCEntityTurkey> extends EntityModel<T> {
         this.rWing.yRot = -wingF;
 
         // TAIL & body‐positioning - exact same as 1.16.5
-        if (this.male) {
+        if (this.male && !this.young) {
             this.tail.xRot = -0.2974289F + wingF;
             this.tail.y = 14F;
             this.tail.z = 6F;
@@ -312,13 +312,11 @@ public class MoCModelTurkey<T extends MoCEntityTurkey> extends EntityModel<T> {
             float alpha
     ) {
         if (this.young) {
-            // All children rendered as "female" - exact same as 1.16.5
+            // All children rendered as "female"
             poseStack.pushPose();
-            poseStack.translate(0.0F, 5.0F, 2.0F);
-            poseStack.popPose();
-            poseStack.pushPose();
+            poseStack.translate(0.0F, 1.5F, 0.0F);
             poseStack.scale(0.5F, 0.5F, 0.5F);
-            poseStack.translate(0.0F, 24.0F, 0.0F);
+            poseStack.translate(0.0F, -1.5F, 0.0F);
 
             // render head/neck/wings/tail/legs/feet
             this.beak.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);

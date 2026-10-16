@@ -13,16 +13,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -106,10 +103,10 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
     }
 
     @Override
-    public boolean attackEntityAsMob(Entity entityIn) {
+    public boolean doHurtTarget(Entity entityIn) {
     	MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_SILVER_SKELETON_ATTACK.get());
         startAttackAnimation();
-        return super.attackEntityAsMob(entityIn);
+        return super.doHurtTarget(entityIn);
     }
 
     @Override
@@ -142,7 +139,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
     }
 
     @Override
-    protected void playStepSound(BlockPos pos, Block block) {
+    protected void playStepSound(BlockPos pos, BlockState block) {
         this.playSound(MoCSoundEvents.ENTITY_SILVER_SKELETON_STEP.get(), 0.3F, 1.0F);
     }
 
@@ -150,7 +147,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
     protected ResourceLocation getLootTable() {        return MoCLootTables.SILVER_SKELETON;
     }
 
-    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+    protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
         return this.getBbHeight() * 0.905F;
     }
 
@@ -163,7 +160,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
         public boolean shouldContinueExecuting() {
             float f = this.attacker.getBrightness();
 
-            if (f >= 0.5F && this.attacker.getRNG().nextInt(100) == 0) {
+            if (f >= 0.5F && this.attacker.getRandom().nextInt(100) == 0) {
                 this.attacker.setTarget(null);
                 return false;
             } else {

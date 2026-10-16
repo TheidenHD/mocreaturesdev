@@ -61,6 +61,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
@@ -86,6 +87,7 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class MoCTools {
@@ -358,11 +360,12 @@ public class MoCTools {
         return new int[]{x, y, z};
     }
 
-    public static int[] returnNearestBlockCoord(Entity entity, Block targetBlock, double dist) {
+    public static int[] returnNearestBlockCoord(Entity entity, Predicate<BlockState> matcher, double dist) {
         double shortestDistance = -1D;
         double distance;
         int x = -9999, y = -1, z = -1;
 
+        Level level = entity.level();
         AABB box = entity.getBoundingBox().inflate(dist);
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
@@ -377,8 +380,11 @@ public class MoCTools {
             for (int yi = minY; yi < maxY; yi++) {
                 for (int zi = minZ; zi < maxZ; zi++) {
                     pos.set(xi, yi, zi);
-                    BlockState state = entity.level().getBlockState(pos);
-                    if (!state.isAir() && state.getBlock() == targetBlock) {
+                    if (!level.hasChunkAt(pos)) {
+                        continue;
+                    }
+                    BlockState state = level.getBlockState(pos);
+                    if (!state.isAir() && matcher.test(state)) {
                         distance = getSqDistanceTo(entity, xi, yi, zi);
                         if (shortestDistance == -1D || distance < shortestDistance) {
                             x = xi;
@@ -390,13 +396,6 @@ public class MoCTools {
                 }
             }
         }
-
-        if (entity.getX() > x) x -= 2;
-        else x += 2;
-
-        if (entity.getZ() > z) z -= 2;
-        else z += 2;
-
         return new int[]{x, y, z};
     }
 
@@ -502,14 +501,10 @@ public class MoCTools {
         return 0;
     }
 
-    public static String biomeName(Level level, BlockPos pos) {
+    public static String biomeName(LevelReader level, BlockPos pos) {
         return level.getBiome(pos).unwrapKey()
                 .map(key -> key.location().toString())
                 .orElse("unknown");
-    }
-
-    public static ResourceKey<Biome> biomeKind(Level level, BlockPos pos) {
-        return level.getBiome(pos).unwrapKey().orElse(Biomes.THE_VOID);
     }
 
     public static void destroyDrops(Entity entity, double range) {
@@ -1000,7 +995,7 @@ public class MoCTools {
                 float offsetX = (i % 2 - 0.5F) * 0.25F;
                 float offsetZ = ((float) i / 2 - 0.5F) * 0.25F;
 
-                MoCEntityMaggot maggot = MoCEntities.MAGGOT.create(level);
+                MoCEntityMaggot maggot = MoCEntities.MAGGOT.get().create(level);
                 if (maggot != null) {
                     maggot.moveTo(entity.getX() + offsetX, entity.getY() + 0.5D, entity.getZ() + offsetZ,
                             rand.nextFloat() * 360.0F, 0.0F);

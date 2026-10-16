@@ -1,9 +1,8 @@
 package drzhark.mocreatures.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.google.common.collect.ImmutableList;
 import drzhark.mocreatures.entity.passive.MoCEntityDuck;
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.AgeableListModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -17,7 +16,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MoCModelDuck<T extends MoCEntityDuck> extends EntityModel<T> {
+public class MoCModelDuck<T extends MoCEntityDuck> extends AgeableListModel<T> {
 
     @SuppressWarnings("removal")
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(
@@ -42,6 +41,16 @@ public class MoCModelDuck<T extends MoCEntityDuck> extends EntityModel<T> {
         this.leftLeg   = root.getChild("leftLeg");
         this.rightWing = root.getChild("rightWing");
         this.leftWing  = root.getChild("leftWing");
+    }
+
+    @Override
+    protected Iterable<ModelPart> headParts() {
+        return ImmutableList.of(this.head, this.bill, this.chin);
+    }
+
+    @Override
+    protected Iterable<ModelPart> bodyParts() {
+        return ImmutableList.of(this.body, this.rightLeg, this.leftLeg, this.rightWing, this.leftWing);
     }
     
     public static LayerDefinition createBodyLayer() {
@@ -129,8 +138,8 @@ public class MoCModelDuck<T extends MoCEntityDuck> extends EntityModel<T> {
                           float netHeadYaw, float headPitch) {
 
         // head rotation (in radians)
-        this.head.xRot = -headPitch * ((float)Math.PI / 180F);
-        this.head.yRot =  netHeadYaw   * ((float)Math.PI / 180F);
+        this.head.xRot = headPitch * ((float)Math.PI / 180F);
+        this.head.yRot = netHeadYaw   * ((float)Math.PI / 180F);
 
         // bill & chin follow the head angles
         this.bill.xRot = this.head.xRot;
@@ -155,21 +164,5 @@ public class MoCModelDuck<T extends MoCEntityDuck> extends EntityModel<T> {
             this.rightWing.zRot = 0F;
             this.leftWing.zRot  = 0F;
         }
-    }
-
-    /**
-     * Renders all parts in one call. There is no special transparency here—wings are opaque.
-     */
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight,
-                               int packedOverlay, float red, float green, float blue, float alpha) {
-        this.head.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.bill.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.chin.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.body.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.rightLeg.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.leftLeg.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.rightWing.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.leftWing.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 }

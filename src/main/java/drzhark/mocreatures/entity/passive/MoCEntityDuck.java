@@ -14,6 +14,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -22,7 +23,7 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.PanicGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class MoCEntityDuck extends MoCEntityAnimal {
 
@@ -48,7 +49,7 @@ public class MoCEntityDuck extends MoCEntityAnimal {
     }
 
     public static AttributeSupplier.Builder registerAttributes() {
-        return MoCEntityAnimal.createAttributes().add(Attributes.MAX_HEALTH, 4.0D).add(Attributes.MOVEMENT_SPEED, 0.25D);
+        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 4.0D).add(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     // TODO: Add proper death sound event
@@ -69,7 +70,7 @@ public class MoCEntityDuck extends MoCEntityAnimal {
 
     // TODO: Add unique step sound
     @Override
-    protected void playStepSound(BlockPos pos, Block blockIn) {
+    protected void playStepSound(BlockPos pos, BlockState blockIn) {
         this.playSound(MoCSoundEvents.ENTITY_DUCK_STEP.get(), 0.15F, 1.0F);
     }
 

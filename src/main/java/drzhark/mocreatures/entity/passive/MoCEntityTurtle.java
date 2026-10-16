@@ -5,7 +5,6 @@ package drzhark.mocreatures.entity.passive;
 
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
-import drzhark.mocreatures.entity.MoCEntityAnimal;
 import drzhark.mocreatures.entity.ai.EntityAIFollowOwnerPlayer;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
@@ -148,7 +147,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
             }
             if (this.getVehicle() == null) {
                 if (this.startRidingPlayer(player)) {
-                    this.rotationYaw = player.rotationYaw;
+                    this.setYRot(player.getYRot());
                 }
             }
             return InteractionResult.SUCCESS;
@@ -201,7 +200,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
                             }
                             if (f < 2.0F && this.deathTime == 0) {
                             	// TODO: Add a turtle eating sound event
-                                entityitem.setDead();
+                                entityitem.discard();
                                 //MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_TURTLE_EATING.get());
                                 Player Player = this.level().getNearestPlayer(this, 24D);
                                 if (Player != null) {
@@ -231,7 +230,7 @@ public class MoCEntityTurtle extends MoCEntityTameableAnimal {
         }
         if (getIsHiding()) {
             float dmg = Math.max(i-TURTLE_ARMOR,0.5F);
-            boolean flag = super.attackEntityFrom(damagesource, dmg);
+            boolean flag = super.hurt(damagesource, dmg);
             if (this.random.nextInt(10) == 0) {
                 flipflop(true);
             }

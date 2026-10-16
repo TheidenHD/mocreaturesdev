@@ -188,7 +188,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
         if (attackTime <= 0 && (f < 3.5D) && (entity.getBoundingBox().maxY > getBoundingBox().minY)
                 && (entity.getBoundingBox().minY < getBoundingBox().maxY) && (getAge() >= 100)) {
             attackTime = 20;
-            entity.attackEntityFrom(DamageSource.causeMobDamage(this), 5);
+            entity.hurt(this.damageSources().mobAttack(this), 5);
         }
     }*/
 
@@ -433,12 +433,12 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public void setDead() {
+    public void discard() {
         // Server check required to prevent tamed entities from being duplicated on client-side
         if (!this.level().isClientSide() && (getIsTamed()) && (getHealth() > 0)) {
             return;
         }
-        super.setDead();
+        super.discard();
     }
 
     /*@Override

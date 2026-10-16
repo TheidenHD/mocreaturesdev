@@ -43,6 +43,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.SaddleItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -159,8 +160,8 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected int getExperiencePoints(Player player) {
-        return experienceValue;
+    public int getExperienceReward() {
+        return xpReward;
     }
 
     // Method used for receiving damage from another source
@@ -215,7 +216,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void onDeath(DamageSource damagesource) {
+    public void die(DamageSource damagesource) {
         if (!this.level().isClientSide()) {
             if (getHasAmulet()) {
                 MoCTools.dropCustomItem(this, this.level(), new ItemStack(MoCItems.MEDALLION.get(), 1));
@@ -226,7 +227,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
                 this.spawnGhost();
             }
         }
-        super.onDeath(damagesource);
+        super.die(damagesource);
     }
 
     public void spawnGhost() {
@@ -469,7 +470,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
             return InteractionResult.SUCCESS;
         }
         if (!stack.isEmpty() && getIsTamed() && !getIsRideable() && (getAge() > 80)
-                && (stack.getItem() instanceof ItemSaddle)) {
+                && (stack.getItem() instanceof SaddleItem)) {
             if (!player.isCreative()) stack.shrink(1);
             setRideable(true);
             return InteractionResult.SUCCESS;

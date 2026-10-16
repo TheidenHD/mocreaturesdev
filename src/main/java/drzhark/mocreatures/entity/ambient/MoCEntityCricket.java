@@ -11,7 +11,10 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -20,22 +23,21 @@ public class MoCEntityCricket extends MoCEntityAmbient {
 
     private int jumpCounter;
     
-    public MoCEntityCricket(Level world) {
-        super(world);
-        setSize(0.4F, 0.3F);
+    public MoCEntityCricket(EntityType<? extends MoCEntityCricket> type, Level world) {
+        super(type, world);
+        //setSize(0.4F, 0.3F);
     }
 
     @Override
-    protected void initEntityAI() {
+    protected void registerGoals() {
         this.goalSelector.addGoal(1, new EntityAIWanderMoC2(this, 1.2D));
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(1.0D);
+    public static AttributeSupplier.Builder registerAttributes() {
+        return MoCEntityAmbient.registerAttributes()
+                .add(Attributes.MAX_HEALTH).setBaseValue(4.0D)
+                .add(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D)
+                .add(Attributes.ARMOR).setBaseValue(1.0D);
     }
 
     @Override
@@ -101,9 +103,9 @@ public class MoCEntityCricket extends MoCEntityAmbient {
     public void tick() {
         super.tick();
         if (!this.level().isClientSide()) {
-            if (onGround() && ((getDeltaMovement().getX() > 0.05D) || (getDeltaMovement().getZ() > 0.05D) || (getDeltaMovement().getX() < -0.05D) || (getDeltaMovement().getZ() < -0.05D)))
+            if (onGround() && ((getDeltaMovement().x > 0.05D) || (getDeltaMovement().z > 0.05D) || (getDeltaMovement().x < -0.05D) || (getDeltaMovement().z < -0.05D)))
                 if (this.jumpCounter == 0) {
-                    this.setDeltaMovement(this.getDeltaMovement().getX() * 5D, 0.45D, this.getDeltaMovement().getZ() * 5D);
+                    this.setDeltaMovement(this.getDeltaMovement().x * 5D, 0.45D, this.getDeltaMovement().z * 5D);
                     this.jumpCounter = 1;
                 }
         }
@@ -118,7 +120,7 @@ public class MoCEntityCricket extends MoCEntityAmbient {
     }
 
     @Override
-    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+    protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
         return 0.15F;
     }
 }

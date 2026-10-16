@@ -173,7 +173,7 @@ public class MoCModelRat<T extends MoCEntityRat> extends EntityModel<T> {
     @Override
     public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         // HEAD rotation
-        head.xRot = -headPitch * ((float)Math.PI / 180F);
+        head.xRot = headPitch * ((float)Math.PI / 180F);
         head.yRot = netHeadYaw * ((float)Math.PI / 180F);
 
         // Sync ears & whiskers with head

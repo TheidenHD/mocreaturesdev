@@ -912,7 +912,7 @@ public class MoCModelBear<T extends MoCEntityBear> extends EntityModel<T> {
             this.bLegRR2.visible    = true;
             this.bLegRR3.visible    = true;
 
-        } else if (this.bearState == 2) {
+        } else if (this.bearState == 2 || this.bearState == 3) {
             // ─────────────────────────────────────
             // Sitting
             // ─────────────────────────────────────
@@ -965,87 +965,6 @@ public class MoCModelBear<T extends MoCEntityBear> extends EntityModel<T> {
             if (chested) {
                 this.bagSitted.visible = true;
             }
-            this.LegFR1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.Neck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.LEar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.Snout.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.Head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.REar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.Abdomen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.torso.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.LegRR3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.LegRR1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.LegRR2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.LegFR2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.LegFR3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.LegFL1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.LegFL3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.LegFL2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.LegRL1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.LegRL2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.LegRL3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.Tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        } else if (bearstate == 1) {
-            this.BHead.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.BSnout.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            if (openMouth) {
-                this.BMouthOpen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            } else {
-                this.BMouth.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            }
-
-            this.BNeck.render(f5);
-            this.BLEar.render(f5);
-            this.BREar.render(f5);
-            this.BTorso.render(f5);
-            this.BAbdomen.render(f5);
-            this.BTail.render(f5);
-            this.BLegFL1.render(f5);
-            this.BLegFL2.render(f5);
-            this.BLegFL3.render(f5);
-            this.BLegFR1.render(f5);
-            this.BLegFR2.render(f5);
-            this.BLegFR3.render(f5);
-            this.BLegRL1.render(f5);
-            this.BLegRL2.render(f5);
-            this.BLegRL3.render(f5);
-            this.BLegRR1.render(f5);
-            this.BLegRR2.render(f5);
-            this.BLegRR3.render(f5);
-        } else if (bearstate == 2 || bearstate == 3) { //sited
-            if (openMouth) {
-                this.CMouthOpen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            } else {
-                this.CMouth.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            }
-            if (saddled) {
-                SaddleSitted.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                SaddleBackSitted.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                SaddleFrontSitted.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            }
-            if (chested) {
-                BagSitted.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            }
-            this.CHead.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.CSnout.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.CLEar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.CREar.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.CNeck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.CTorso.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.CAbdomen.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.CTail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.CLegFL1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.CLegFL2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.CLegFL3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.CLegFR1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.CLegFR2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.CLegFR3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.CLegRL1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.CLegRL2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.CLegRL3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.CLegRR1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.CLegRR2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.CLegRR3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
     }
 
@@ -1137,99 +1056,13 @@ public class MoCModelBear<T extends MoCEntityBear> extends EntityModel<T> {
         cLegRR2.visible          = visible;
         cLegRR3.visible          = visible;
 
-            this.Mouth.rotateAngleX = -0.0068161F + XAngle;
-            this.Mouth.rotateAngleY = YAngle;
-
-            this.MouthOpen.rotateAngleX = 0.534236F + XAngle;
-            this.MouthOpen.rotateAngleY = YAngle;
-
-            this.LEar.rotateAngleX = 0.1502636F + XAngle;
-            this.LEar.rotateAngleY = -0.3490659F + YAngle;
-
-            this.REar.rotateAngleX = 0.1502636F + XAngle;
-            this.REar.rotateAngleY = 0.3490659F + YAngle;
-
-            this.LegFL1.rotateAngleX = 0.2617994F + LLegRotX;
-            this.LegFL2.rotateAngleX = LLegRotX;
-            this.LegFL3.rotateAngleX = LLegRotX;
-
-            this.LegRR1.rotateAngleX = -0.1745329F + LLegRotX;
-            this.LegRR2.rotateAngleX = LLegRotX;
-            this.LegRR3.rotateAngleX = LLegRotX;
-
-            this.LegFR1.rotateAngleX = 0.2617994F + RLegRotX;
-            this.LegFR2.rotateAngleX = RLegRotX;
-            this.LegFR3.rotateAngleX = RLegRotX;
-
-            this.LegRL1.rotateAngleX = -0.1745329F + RLegRotX;
-            this.LegRL2.rotateAngleX = RLegRotX;
-            this.LegRL3.rotateAngleX = RLegRotX;
-        } else if (this.bearstate == 1) {
-
-            this.BHead.rotateAngleX = -0.0242694F - XAngle;
-            this.BHead.rotateAngleY = YAngle;
-
-            this.BSnout.rotateAngleX = -0.0242694F - XAngle;
-            this.BSnout.rotateAngleY = YAngle;
-
-            this.BMouth.rotateAngleX = -0.08726F - XAngle;
-            this.BMouth.rotateAngleY = YAngle;
-
-            this.BMouthOpen.rotateAngleX = 0.5235988F - XAngle;
-            this.BMouthOpen.rotateAngleY = YAngle;
-
-            this.BLEar.rotateAngleX = -0.0242694F - XAngle;
-            this.BLEar.rotateAngleY = -0.3490659F + YAngle;
-
-            this.BREar.rotateAngleX = -0.0242694F - XAngle;
-            this.BREar.rotateAngleY = 0.3490659F + YAngle;
-
-            /*
-             * Arm breathing movement
-             */
-            float breathing = Mth.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
-            this.BLegFR1.rotateAngleZ = 0.2617994F + breathing;
-            this.BLegFR2.rotateAngleZ = breathing;
-            this.BLegFR3.rotateAngleZ = breathing;
-            this.BLegFL1.rotateAngleZ = -0.2617994F - breathing;
-            this.BLegFL2.rotateAngleZ = -breathing;
-            this.BLegFL3.rotateAngleZ = -breathing;
-
-            this.BLegFL1.rotateAngleX = 0.2617994F + attackSwing;
-            this.BLegFL2.rotateAngleX = -0.5576792F + attackSwing;
-            this.BLegFL3.rotateAngleX = 2.007645F + attackSwing;
-
-            this.BLegFR1.rotateAngleX = 0.2617994F + attackSwing;
-            this.BLegFR2.rotateAngleX = -0.5576792F + attackSwing;
-            this.BLegFR3.rotateAngleX = 2.007645F + attackSwing;
-
-            this.BLegRR1.rotateAngleX = -0.1745329F + LLegRotX;
-            this.BLegRR2.rotateAngleX = LLegRotX;
-            this.BLegRR3.rotateAngleX = LLegRotX;
-
-            this.BLegRL1.rotateAngleX = -0.5235988F + RLegRotX;
-            this.BLegRL2.rotateAngleX = RLegRotX;
-            this.BLegRL3.rotateAngleX = RLegRotX;
-        } else if (this.bearstate == 2 || this.bearstate == 3) {
-            this.CHead.rotateAngleX = 0.1502636F + XAngle;
-            this.CHead.rotateAngleY = YAngle;
-
-            this.CSnout.rotateAngleX = 0.1502636F + XAngle;
-            this.CSnout.rotateAngleY = YAngle;
-
-            this.CMouth.rotateAngleX = -0.0068161F + XAngle;
-            this.CMouth.rotateAngleY = YAngle;
-
-            this.CMouthOpen.rotateAngleX = 0.3665191F + XAngle;
-            this.CMouthOpen.rotateAngleY = YAngle;
-
-            this.CLEar.rotateAngleX = 0.1502636F + XAngle;
-            this.CLEar.rotateAngleY = -0.3490659F + YAngle;
-
-            this.CREar.rotateAngleX = 0.1502636F + XAngle;
-            this.CREar.rotateAngleY = 0.3490659F + YAngle;
-        }
-
-        this.Tail.rotateAngleZ = LLegRotX * 0.2F;
+        saddle.visible            = visible;
+        saddleBack.visible        = visible;
+        saddleFront.visible       = visible;
+        bag.visible               = visible;
+        saddleSitted.visible      = visible;
+        saddleBackSitted.visible  = visible;
+        saddleFrontSitted.visible = visible;
+        bagSitted.visible         = visible;
     }
 }

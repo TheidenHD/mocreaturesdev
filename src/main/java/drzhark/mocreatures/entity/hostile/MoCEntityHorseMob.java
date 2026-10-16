@@ -177,7 +177,7 @@ public class MoCEntityHorseMob extends MoCEntityMob {
     }
 
     @Override
-    protected void playStepSound(BlockPos pos, Block blockIn) {
+    protected void playStepSound(BlockPos pos, BlockState blockIn) {
         if (!blockIn.defaultBlockState().getMaterial().isLiquid()) {
             SoundType soundtype = blockIn.getSoundType();
 

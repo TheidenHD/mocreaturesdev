@@ -214,7 +214,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
     @Override
     protected SoundEvent getDeathSound() {
         if (getIsHumanForm()) {
-            return MoCreatures.proxy.legacyWerehumanSounds ? MoCSoundEvents.ENTITY_WEREHUMAN_DEATH_LEGACY.get() : SoundEvents.ENTITY_GENERIC_HURT;
+            return MoCreatures.proxy.legacyWerehumanSounds ? MoCSoundEvents.ENTITY_WEREHUMAN_DEATH_LEGACY.get() : SoundEvents.GENERIC_HURT;
         } else {
             return MoCSoundEvents.ENTITY_WEREWOLF_DEATH.get();
         }
@@ -224,7 +224,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
     protected SoundEvent getHurtSound(DamageSource source) {
         if (getIsHumanForm()) {
             if (!this.transforming)
-                return MoCreatures.proxy.legacyWerehumanSounds ? MoCSoundEvents.ENTITY_WEREHUMAN_HURT_LEGACY.get() : SoundEvents.ENTITY_GENERIC_HURT;
+                return MoCreatures.proxy.legacyWerehumanSounds ? MoCSoundEvents.ENTITY_WEREHUMAN_HURT_LEGACY.get() : SoundEvents.GENERIC_HURT;
             return null;
         } else {
             return MoCSoundEvents.ENTITY_WEREWOLF_HURT.get();

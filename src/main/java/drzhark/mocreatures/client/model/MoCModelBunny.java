@@ -165,7 +165,7 @@ public class MoCModelBunny<T extends MoCEntityBunny> extends EntityModel<T> {
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount,
                           float ageInTicks, float netHeadYaw, float headPitch) {
         // Head rotation
-        float headX    = -headPitch * Mth.DEG_TO_RAD;
+        float headX    = headPitch * Mth.DEG_TO_RAD;
         float headY    = netHeadYaw * Mth.DEG_TO_RAD;
 
         part1.xRot   = headX;

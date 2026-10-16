@@ -117,6 +117,14 @@ public class MoCModelBird<T extends MoCEntityBird> extends EntityModel<T> {
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay,
                                float red, float green, float blue, float alpha) {
+
+        poseStack.pushPose();
+
+        if (this.young) {
+            poseStack.scale(0.5F, 0.5F, 0.5F);
+            poseStack.translate(0.0F, 1.5F, 0.0F);
+        }
+
         head.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         beak.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         body.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
@@ -125,13 +133,15 @@ public class MoCModelBird<T extends MoCEntityBird> extends EntityModel<T> {
         rWing.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         lWing.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         tail.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+
+        poseStack.popPose();
     }
 
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount,
                           float ageInTicks, float netHeadYaw, float headPitch) {
-        // Head pitch / yaw. Original did: head.rotateAngleX = -(headPitch/2)/57.29578
-        head.xRot = -(headPitch * 0.5F) * Mth.DEG_TO_RAD;
+        // Head pitch / yaw.
+        head.xRot = headPitch * 0.5F * Mth.DEG_TO_RAD;
         head.yRot = netHeadYaw * Mth.DEG_TO_RAD;
         // beak follows head's Y rotation
         beak.yRot = head.yRot;

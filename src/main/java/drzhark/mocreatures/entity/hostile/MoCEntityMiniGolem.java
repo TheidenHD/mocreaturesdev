@@ -9,9 +9,29 @@ import drzhark.mocreatures.entity.MoCEntityMob;
 import drzhark.mocreatures.entity.item.MoCEntityThrowableRock;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class MoCEntityMiniGolem extends MoCEntityMob {
 
@@ -146,11 +166,11 @@ public class MoCEntityMiniGolem extends MoCEntityMob {
      * Plays step sound at given x, y, z for the entity
      */  
     @Override
-    protected void playStepSound(BlockPos p_180429_1_, Block p_180429_2_) {
+    protected void playStepSound(BlockPos p_180429_1_, BlockState p_180429_2_) {
         if (MoCreatures.proxy.legacyMiniGolemSounds) {
             this.playSound(MoCSoundEvents.ENTITY_GENERIC_STOMP.get(), 1.0F, 1.0F);
         } else {
-            this.playSound(SoundEvents.ENTITY_IRONGOLEM_STEP, 1.0F, 1.0F);
+            this.playSound(SoundEvents.IRON_GOLEM_STEP, 1.0F, 1.0F);
         }
     }
 

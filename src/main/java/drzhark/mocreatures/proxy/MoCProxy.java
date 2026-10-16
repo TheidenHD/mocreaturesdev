@@ -12,10 +12,12 @@ import drzhark.mocreatures.entity.MoCEntityData;
 import drzhark.mocreatures.entity.hostile.MoCEntityGolem;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.fml.loading.FMLPaths;
 
@@ -96,7 +98,7 @@ public class MoCProxy {
     public int particleFX;
     public int rareItemDropChance;
     public int scorpionEggDropChance;
-    public int wyvernDimension;
+    public ResourceKey<Level> wyvernDimension;
     public int wyvernEggDropChance;
     public short ogreAttackRange;
 

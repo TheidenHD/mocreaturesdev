@@ -436,10 +436,10 @@ public abstract class MoCEntityAquatic extends WaterAnimal implements IMoCEntity
                 setIsHunting(false);
             }
 
-            this.getNavigation().onUpdateNavigation();
+            this.getNavigation().tick();
 
             //updates diving depth after finishing movement
-            if (!this.getNavigation().noPath())// && !updateDivingDepth)
+            if (!this.getNavigation().isDone())// && !updateDivingDepth)
             {
                 if (!this.updateDivingDepth) {
                     float targetDepth = MoCTools.distanceToSurface(
@@ -700,13 +700,13 @@ public abstract class MoCEntityAquatic extends WaterAnimal implements IMoCEntity
     }
 
     @Override
-    public void onDeath(DamageSource damagesource) {
+    public void die(DamageSource damagesource) {
         if (!this.level().isClientSide()) {
             dropMyStuff();
             dropLegacyEgg();
         }
 
-        super.onDeath(damagesource);
+        super.die(damagesource);
     }
     @Override
     public boolean isNotScared() {
@@ -1059,8 +1059,8 @@ public abstract class MoCEntityAquatic extends WaterAnimal implements IMoCEntity
         }
         boolean ret = super.startRiding(player);
         if (ret) {
-            CompoundTag tag = player.getEntityData();
-            tag.setUniqueId("MOCEntity_Riding_Player", this.getUUID());
+            CompoundTag tag = player.getPersistentData();
+            tag.putUUID("MOCEntity_Riding_Player", this.getUUID());
             return true;
         }
         return false;

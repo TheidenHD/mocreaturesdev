@@ -15,6 +15,7 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -24,6 +25,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -51,6 +53,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.List;
@@ -341,7 +344,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
         
         if (!stack.isEmpty() && !getIsTamed() && !getIsAdult() && stack.getItem() == Items.CAKE) {
             if (!player.getAbilities().instabuild) stack.shrink(1);
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING.get());
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT.get());
             this.temper += 2;
             this.setHealth(getMaxHealth());
             if (!this.level().isClientSide() && !getIsAdult() && !getIsTamed() && this.temper >= 10) {
@@ -352,7 +355,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
 
         if (!stack.isEmpty() && !getIsTamed() && !getIsAdult() && stack.getItem() == MoCItems.SUGAR_LUMP.get()) {
             if (!player.getAbilities().instabuild) stack.shrink(1);
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EATING.get());
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT.get());
             this.temper += 1;
             this.setHealth(getMaxHealth());
             if (!this.level().isClientSide() && !getIsAdult() && !getIsTamed() && this.temper >= 10) {
@@ -427,7 +430,7 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
             return InteractionResult.sidedSuccess(this.level().isClientSide());
         }
 
-        if (!stack.isEmpty() && !getIsTamed() && !getIsAdult() && stack.getItem() == MoCItems.sugarlump) {
+        if (!stack.isEmpty() && !getIsTamed() && !getIsAdult() && stack.getItem() == MoCItems.SUGAR_LUMP.get()) {
             if (!player.isCreative()) stack.shrink(1);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT.get());
             this.temper += 1;
@@ -596,22 +599,21 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
 
     @Override
     public boolean checkSpawningBiome() {
-        BlockPos pos = new BlockPos(Mth.floor(this.getX()), Mth.floor(this.getBoundingBox().minY), Mth.floor(this.getZ()));
-        ResourceKey<Biome> currentbiome = MoCTools.biomeKind(this.level(), pos);
-        String biomeName = currentbiome.location().toString().toLowerCase();
+        BlockPos pos = BlockPos.containing(this.getX(), this.getBoundingBox().minY, this.getZ());
+        Holder<Biome> biome = this.level().getBiome(pos);
 
         // African - savanna or desert biomes
-        if (biomeName.contains("savanna") || biomeName.contains("desert")) {
+        if (biome.is(BiomeTags.IS_SAVANNA) || biome.is(Tags.Biomes.IS_DESERT)) {
             setTypeMoC(1);
             return true;
         }
         // Indian - jungle biomes
-        if (biomeName.contains("jungle")) {
+        if (biome.is(BiomeTags.IS_JUNGLE)) {
             setTypeMoC(2);
             return true;
         }
         // Mammoth - snowy biomes
-        if (biomeName.contains("snowy") || biomeName.contains("frozen") || biomeName.contains("cold")) {
+        if (biome.is(Tags.Biomes.IS_SNOWY)) {
             setTypeMoC(3 + this.random.nextInt(2));
             return true;
         }

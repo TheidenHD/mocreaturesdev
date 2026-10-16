@@ -33,6 +33,7 @@ import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SaddleItem;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PacketDistributor;
 
@@ -206,7 +207,7 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
 
         final ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty() && getIsTamed() && (getAge() > 90 || getIsAdult()) && !getIsRideable()
-                && (stack.getItem() instanceof ItemSaddle)) {
+                && (stack.getItem() instanceof SaddleItem)) {
             if (!player.isCreative()) stack.shrink(1);
             setRideable(true);
             return InteractionResult.SUCCESS;

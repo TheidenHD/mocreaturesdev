@@ -206,7 +206,7 @@ public class MoCModelMouse<T extends MoCEntityMouse> extends EntityModel<T> {
             float headPitch
     ) {
         // Head pitch & yaw
-        this.Head.xRot = - (headPitch / RADIAN_CONV);
+        this.Head.xRot = headPitch / RADIAN_CONV;
         this.Head.yRot = netHeadYaw / RADIAN_CONV;
         this.EarR.xRot = this.Head.xRot;
         this.EarR.yRot = this.Head.yRot;
