@@ -31,6 +31,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
 
 @SuppressWarnings("deprecation")
 public class MoCEntityHorseMob extends MoCEntityMob {
@@ -181,8 +182,8 @@ public class MoCEntityHorseMob extends MoCEntityMob {
         if (!blockIn.defaultBlockState().getMaterial().isLiquid()) {
             SoundType soundtype = blockIn.getSoundType();
 
-            if (this.level().getBlockState(pos.up()).getBlock() == Blocks.SNOW_LAYER) {
-                soundtype = Blocks.SNOW_LAYER.getSoundType();
+            if (this.level().getBlockState(pos.above()).getBlock() == Blocks.SNOW) {
+                soundtype = Blocks.SNOW.getSoundType();
             } else if (soundtype == SoundType.WOOD) {
                 this.playSound(SoundEvents.HORSE_STEP_WOOD, soundtype.getVolume() * 0.15F, soundtype.getPitch());
             } else {

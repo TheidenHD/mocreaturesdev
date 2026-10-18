@@ -33,8 +33,8 @@ public class MoCEntityFly extends MoCEntityInsect {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void aiStep() {
+        super.aiStep();
 
         if (!this.level().isClientSide()) {
             if (getIsFlying() && --this.soundCount == -1) {

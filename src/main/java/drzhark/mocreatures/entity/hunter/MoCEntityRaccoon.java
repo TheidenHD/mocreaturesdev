@@ -126,9 +126,6 @@ public class MoCEntityRaccoon extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean isReadyToFollowOwnerPlayer() { return !this.isMovementCeased(); }
-
-    @Override
     public float getSizeFactor() {
         if (getIsAdult()) {
             return 0.85F;

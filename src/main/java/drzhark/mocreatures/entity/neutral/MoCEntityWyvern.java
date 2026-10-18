@@ -44,6 +44,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.SaddleItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -118,8 +119,8 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected int getExperiencePoints(Player player) {
-        return experienceValue;
+    public int getExperienceReward() {
+        return xpReward;
     }
 
     @Override
@@ -397,7 +398,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
                 }
 
                 // Random wobble if colliding horizontally
-                if (this.collidedHorizontally) {
+                if (this.horizontalCollision) {
                     this.setDeltaMovement(this.getDeltaMovement().add(this.random.nextGaussian() * 0.05D, 0.0D, this.random.nextGaussian() * 0.05D));
                 }
 

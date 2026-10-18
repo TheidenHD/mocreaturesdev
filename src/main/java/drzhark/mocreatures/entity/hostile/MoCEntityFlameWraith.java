@@ -40,7 +40,7 @@ public class MoCEntityFlameWraith extends MoCEntityWraith implements Enemy {
     
     @Override
     public void selectType() {
-    	setType(1);
+    	setTypeMoC(1);
     }
 
     @Override

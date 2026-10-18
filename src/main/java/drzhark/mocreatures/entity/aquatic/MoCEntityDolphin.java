@@ -7,6 +7,7 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.ai.EntityAIPanicMoC;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
+import drzhark.mocreatures.entity.ambient.MoCEntityCricket;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAquatic;
 import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCLootTables;
@@ -45,9 +46,9 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     private static final EntityDataAccessor<Boolean> HAS_EATEN = SynchedEntityData.defineId(MoCEntityDolphin.class, EntityDataSerializers.BOOLEAN);
     public int gestationtime;
 
-    public MoCEntityDolphin(Level world) {
-        super(world);
-        setSize(1.3F, 0.605F);
+    public MoCEntityDolphin(EntityType<? extends MoCEntityDolphin> type, Level world) {
+        super(type, world);
+        //setSize(1.3F, 0.605F);
         // TODO: Make hitboxes adjust depending on size
         //setAge(60 + this.random.nextInt(100));
         setMoCAge(120);
@@ -305,7 +306,7 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
             }
             setHasEaten(true);
             MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EAT.get());
-            return true;
+            return InteractionResult.SUCCESS;
         }
         if (!this.isVehicle()) {
             if (!this.level().isClientSide() && player.startRiding(this)) {
@@ -335,11 +336,11 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
                 setIsHungry(true);
             }*/
             // fixes growth
-            if (getAge() >= 120) {
+            if (getMoCAge() >= 120) {
                 setAdult(true);
             }
             if (!getIsAdult() && (random.nextInt(50) == 0)) {
-                setAge(getAge() + 1);
+                setMoCAge(getMoCAge() + 1);
             }
             //TODO
             if ((!this.isVehicle()) && (this.deathTime == 0) && (!getIsTamed() || getIsHungry())) {
@@ -433,12 +434,12 @@ public class MoCEntityDolphin extends MoCEntityTameableAquatic {
     }
 
     @Override
-    public void discard() {
+    public void remove(Entity.RemovalReason reason) {
         // Server check required to prevent tamed entities from being duplicated on client-side
         if (!this.level().isClientSide() && (getIsTamed()) && (getHealth() > 0)) {
             return;
         }
-        super.discard();
+        super.remove(reason);
     }
 
     /*@Override

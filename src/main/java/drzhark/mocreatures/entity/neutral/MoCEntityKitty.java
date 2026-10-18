@@ -360,10 +360,10 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                 if (this.getVehicle() != null) {
                     MoCEntityKittyBed kittyBed = (MoCEntityKittyBed) this.getVehicle();
                     if (kittyBed != null && !kittyBed.getHasMilk()) {
-                        return MoCSoundEvents.ENTITY_KITTY_DRINKING.get();
+                        return MoCSoundEvents.ENTITY_KITTY_DRINK.get();
                     }
                     if (kittyBed != null && !kittyBed.getHasFood()) {
-                        return MoCSoundEvents.ENTITY_KITTY_EATING.get();
+                        return MoCSoundEvents.ENTITY_KITTY_EAT.get();
                     }
                 }
                 return null;
@@ -462,7 +462,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
         }
         if (getKittyState() == 7 && !stack.isEmpty() && (stack.getItem() == Items.CAKE || stack.is(ItemTags.FISHES))) {
             if (!player.isCreative()) stack.shrink(1);
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EATING.get());
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EAT.get());
             this.setHealth(getMaxHealth());
             changeKittyState(9);
             return InteractionResult.SUCCESS;
@@ -482,7 +482,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
         }
         if (getKittyState() == 13 && !stack.isEmpty() && stack.is(ItemTags.FISHES)) {
             if (!player.isCreative()) stack.shrink(1);
-            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EATING.get());
+            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EAT.get());
             this.setHealth(getMaxHealth());
             changeKittyState(7);
             return InteractionResult.SUCCESS;
@@ -585,7 +585,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
                         }
                         if (f < 2.0F && this.deathTime < 1) {
                             entityItem.discard();
-                            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EATING.get());
+                            MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_EAT.get());
                             setHungry(false);
                         }
                     }
@@ -1136,7 +1136,7 @@ public class MoCEntityKitty extends MoCEntityTameableAnimal {
         return getKittyState() != 13;
     }
 
-    public static boolean getCanSpawnHere(EntityType<MoCEntityAnimal> type, ServerLevel world, MobSpawnType reason, BlockPos pos, Random randomIn) {
+    public static boolean getCanSpawnHere(EntityType<MoCEntityAnimal> type, ServerLevel world, MobSpawnType reason, BlockPos pos, RandomSource randomIn) {
         if (MoCreatures.proxy.kittyVillageChance <= 0)
             return MoCEntityAnimal.getCanSpawnHere(type, world, reason, pos, randomIn);
         BlockPos villagePos = world.findNearestMapStructure(net.minecraft.tags.StructureTags.VILLAGE, pos, 100, true);

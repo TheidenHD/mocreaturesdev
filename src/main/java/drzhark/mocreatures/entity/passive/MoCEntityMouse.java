@@ -22,6 +22,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -149,7 +150,7 @@ public class MoCEntityMouse extends MoCEntityAnimal {
     }
 
     @Override
-    public InteractionResult getEntityInteractionResult(Player player, InteractionHand hand) {
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
         if (this.getVehicle() == null) {
             if (this.startRidingPlayer(player)) {
                 this.setYRot(player.getYRot());

@@ -5,12 +5,14 @@ package drzhark.mocreatures.entity.ambient;
 
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityAmbient;
+import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -34,10 +36,10 @@ public class MoCEntityCricket extends MoCEntityAmbient {
     }
 
     public static AttributeSupplier.Builder registerAttributes() {
-        return MoCEntityAmbient.registerAttributes()
-                .add(Attributes.MAX_HEALTH).setBaseValue(4.0D)
-                .add(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D)
-                .add(Attributes.ARMOR).setBaseValue(1.0D);
+        return MoCEntityInsect.registerAttributes()
+                .add(Attributes.MAX_HEALTH, 4.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.25D)
+                .add(Attributes.ARMOR, 1.0D);
     }
 
     @Override
@@ -62,8 +64,8 @@ public class MoCEntityCricket extends MoCEntityAmbient {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
+    public void aiStep() {
+        super.aiStep();
 
         if (this.isInWater()) {
             this.motionY *= 0.6D;

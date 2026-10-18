@@ -5,13 +5,17 @@ package drzhark.mocreatures.entity.ambient;
 
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.entity.MoCEntityAmbient;
+import drzhark.mocreatures.entity.MoCEntityInsect;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.init.MoCLootTables;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -44,7 +48,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
     }
 
     public static AttributeSupplier.Builder registerAttributes() {
-        return MoCEntityAmbient.registerAttributes().add(Attributes.MAX_HEALTH, 3.0D).add(Attributes.ARMOR, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.28D);
+        return MoCEntityInsect.registerAttributes().add(Attributes.MAX_HEALTH, 3.0D).add(Attributes.ARMOR, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.28D);
     }
 
     public boolean getHasFood() {
@@ -66,11 +70,11 @@ public class MoCEntityAnt extends MoCEntityAmbient {
         if (!this.level().isClientSide()) {
             if (!getHasFood()) {
                 ItemEntity entityitem = MoCTools.getClosestFood(this, 8D);
-                if (entityitem == null || entityitem.removed) {
+                if (entityitem == null || entityitem.isRemoved()) {
                     return;
                 }
                 if (entityitem.getVehicle() == null) {
-                    float f = entityitem.getDistance(this);
+                    float f = entityitem.distanceTo(this);
                     if (f > 1.0F) {
                         int i = Mth.floor(entityitem.getX());
                         int j = Mth.floor(entityitem.getY());

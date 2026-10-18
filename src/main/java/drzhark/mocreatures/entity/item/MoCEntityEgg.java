@@ -24,6 +24,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.joml.Vector3d;
 
 // TODO: Fix hitbox
 public class MoCEntityEgg extends LivingEntity {
@@ -300,15 +301,15 @@ public class MoCEntityEgg extends LivingEntity {
     }
 
     @Override
-    public void readAdditional(CompoundTag nbttagcompound) {
-        super.readAdditional(nbttagcompound);
+    public void readAdditionalSaveData(CompoundTag nbttagcompound) {
+        super.readAdditionalSaveData(nbttagcompound);
         nbttagcompound = MoCTools.getEntityData(this);
         setEggType(nbttagcompound.getInt("EggType"));
     }
 
     @Override
-    public void writeAdditional(CompoundTag nbttagcompound) {
-        super.writeAdditional(nbttagcompound);
+    public void addAdditionalSaveData(CompoundTag nbttagcompound) {
+        super.addAdditionalSaveData(nbttagcompound);
         nbttagcompound = MoCTools.getEntityData(this);
         nbttagcompound.putInt("EggType", getEggType());
     }

@@ -38,6 +38,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SaddleItem;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -225,15 +226,15 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
          */
         if (!this.level().isClientSide() && !getIsTamed() && getIsStanding()
                 && !this.isMovementCeased() && getIsAdult() && (this.random.nextInt(200) == 0) && shouldAttackPlayers()) {
-            Player Player1 = this.level().getNearestPlayerToEntity(this, 4D);
-            if ((Player1 != null && this.hasLineOfSight(Player1) && !Player1.capabilities.disableDamage)) {
+            Player Player1 = this.level().getNearestPlayer(this, 4D);
+            if ((Player1 != null && this.hasLineOfSight(Player1) && !Player1.getAbilities().invulnerable)) {
                 this.setStand();
                 setBearState(1);
             }
         }
         //TODO move to AI
         if (!this.level().isClientSide() && getTypeMoC() == 3 && (this.deathTime == 0) && !this.isMovementCeased()) {
-            ItemEntity entityitem = getClosestItem(this, 12D, Items.REEDS, Items.SUGAR);
+            ItemEntity entityitem = getClosestItem(this, 12D, Ingredient.of(Items.SUGAR_CANE), Ingredient.of(Items.SUGAR));
             if (entityitem != null) {
 
                 float f = entityitem.distanceTo(this);

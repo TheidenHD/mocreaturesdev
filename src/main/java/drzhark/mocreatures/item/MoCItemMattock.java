@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
@@ -27,7 +28,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 
-public class MoCItemMattock extends ItemPickaxe {
+public class MoCItemMattock extends PickaxeItem {
     private int specialWeaponType = 0;
 
     public MoCItemMattock(String name, Item.ToolMaterial material, float damage, float speed) {

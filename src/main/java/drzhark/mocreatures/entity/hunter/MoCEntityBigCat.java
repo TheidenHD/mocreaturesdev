@@ -28,6 +28,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -381,8 +382,8 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void writeAdditional(CompoundTag nbttagcompound) {
-        super.writeAdditional(nbttagcompound);
+    public void addAdditionalSaveData(CompoundTag nbttagcompound) {
+        super.addAdditionalSaveData(nbttagcompound);
         nbttagcompound.putBoolean("Saddle", getIsRideable());
         nbttagcompound.putBoolean("Sitting", getIsSitting());
         nbttagcompound.putBoolean("Chested", getIsChested());
@@ -407,8 +408,8 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void readAdditional(CompoundTag nbttagcompound) {
-        super.readAdditional(nbttagcompound);
+    public void readAdditionalSaveData(CompoundTag nbttagcompound) {
+        super.readAdditionalSaveData(nbttagcompound);
         setRideable(nbttagcompound.getBoolean("Saddle"));
         setSitting(nbttagcompound.getBoolean("Sitting"));
         setIsChested(nbttagcompound.getBoolean("Chested"));
@@ -459,7 +460,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
             setIsJumping(false);
             getNavigation().stop();
             setTarget(null);
-            return true;
+            return InteractionResult.SUCCESS;
         }
         if (!stack.isEmpty() && getIsTamed() && (MoCTools.isItemEdibleForCarnivores(stack.getItem()))) {
             if (!player.isCreative()) stack.shrink(1);
@@ -486,7 +487,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
                 }
                 this.dropMyStuff();
                 MoCTools.dropAmulet(this, 3, player);
-                this.removed = true;
+                this.discard();
             }
 
             return InteractionResult.SUCCESS;
@@ -505,7 +506,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
                 this.localchest = new MoCAnimalChest(this.chestName, MoCAnimalChest.Size.small);
             }
             if (!this.level().isClientSide()) {
-                player.openContainer(this.localchest);
+                player.openMenu((MenuProvider)this.localchest);
             }
             return InteractionResult.SUCCESS;
         }

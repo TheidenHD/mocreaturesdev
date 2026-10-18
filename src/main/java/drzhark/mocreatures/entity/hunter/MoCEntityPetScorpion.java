@@ -30,13 +30,14 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.SaddleItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
@@ -62,7 +63,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
         setAdult(false);
         setAge(20);
         setHasBabies(false);
-        this.setMaxUpStep(1.0F;
+        this.setMaxUpStep(1.0F);
     }
 
     @Override
@@ -75,7 +76,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
         this.goalSelector.addGoal(5, new EntityAIFleeFromPlayer(this, 1.2D, 4D));
         this.goalSelector.addGoal(6, new EntityAIFollowOwnerPlayer(this, 1.0D, 2F, 10F));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(7, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
         //this.targetSelector.addGoal(1, new EntityAIHunt<>(this, Animal.class, true));
     }
 
@@ -224,7 +225,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean isOnLadder() {
+    public boolean onClimbable() {
         return this.isBesideClimbableBlock();
     }
 
@@ -346,7 +347,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
         super.tick();
 
         if (!this.level().isClientSide()) {
-            this.setBesideClimbableBlock(this.collidedHorizontally);
+            this.setBesideClimbableBlock(this.horizontalCollision);
         }
     }
 
@@ -417,13 +418,13 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
             setIsJumping(false);
             getNavigation().stop();
             setTarget(null);
-            return true;
+            return InteractionResult.SUCCESS;
         }
 
         // Transformations
         if (!stack.isEmpty() && this.getIsTamed() && !this.isVehicle() && !this.isPassenger() && this.transformCounter < 1) {
             // Cave Scorpion (Essence of Darkness)
-            if (stack.getItem() == MoCItems.ESSENCE_DARKNESS.get() && this.getType() != 2) {
+            if (stack.getItem() == MoCItems.ESSENCE_DARKNESS.get() && this.getTypeMoC() != 2) {
                 if (!player.isCreative()) stack.shrink(1);
                 if (stack.isEmpty()) {
                     player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
@@ -432,7 +433,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
                 }
 
                 transform(2);
-                return true;
+                return InteractionResult.SUCCESS;
             }
 
             // Fire Scorpion (Essence of Fire)
@@ -458,7 +459,7 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
                 }
 
                 transform(4);
-                return true;
+                return InteractionResult.SUCCESS;
             }
 
             // Undead Scorpion (Essence of Undead)
@@ -505,15 +506,15 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void readAdditional(CompoundTag nbttagcompound) {
-        super.readAdditional(nbttagcompound);
+    public void readAdditionalSaveData(CompoundTag nbttagcompound) {
+        super.readAdditionalSaveData(nbttagcompound);
         setHasBabies(nbttagcompound.getBoolean("Babies"));
         setRideable(nbttagcompound.getBoolean("Saddled"));
     }
 
     @Override
-    public void writeAdditional(CompoundTag nbttagcompound) {
-        super.writeAdditional(nbttagcompound);
+    public void addAdditionalSaveData(CompoundTag nbttagcompound) {
+        super.addAdditionalSaveData(nbttagcompound);
         nbttagcompound.putBoolean("Babies", getHasBabies());
         nbttagcompound.putBoolean("Saddled", getIsRideable());
     }
@@ -643,14 +644,14 @@ public class MoCEntityPetScorpion extends MoCEntityTameableAnimal {
         }
 
         @Override
-        public boolean shouldContinueExecuting() {
-            float f = this.attacker.getBrightness();
+        public boolean canContinueToUse() {
+            float f = this.mob.getLightLevelDependentMagicValue();
 
-            if (f >= 0.5F && this.attacker.getRandom().nextInt(100) == 0) {
-                this.attacker.setTarget(null);
+            if (f >= 0.5F && this.mob.getRandom().nextInt(100) == 0) {
+                this.mob.setTarget(null);
                 return false;
             } else {
-                return super.shouldContinueExecuting();
+                return super.canContinueToUse();
             }
         }
 

@@ -14,10 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -33,6 +30,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.level.BlockEvent;
 
@@ -92,9 +90,8 @@ public class MoCEntityEnt extends MoCEntityAnimal {
     public boolean hurt(DamageSource damagesource, float i) {
         if (damagesource.getEntity() instanceof Player) {
             Player player = (Player) damagesource.getEntity();
-            ItemStack heldStack = player.inventory.getCurrentItem();
-            Item heldItem = heldStack.getItem();
-            if (heldItem.getHarvestLevel(heldStack, "axe", player, null) >= 0) {
+            ItemStack heldStack = player.getInventory().getSelected();
+            if (heldStack.canPerformAction(ToolActions.AXE_DIG)) {
                 this.level().getDifficulty();
                 if (super.shouldAttackPlayers()) {
                     setTarget(player);
@@ -281,7 +278,7 @@ public class MoCEntityEnt extends MoCEntityAnimal {
     }
 
     @Override
-    protected void doEnchantDamageEffects(LivingEntity entityLivingBaseIn, Entity entityIn) {
+    public void doEnchantDamageEffects(LivingEntity entityLivingBaseIn, Entity entityIn) {
         MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_SMACK.get());
         MoCTools.bigSmack(this, entityIn, 1F);
         super.doEnchantDamageEffects(entityLivingBaseIn, entityIn);

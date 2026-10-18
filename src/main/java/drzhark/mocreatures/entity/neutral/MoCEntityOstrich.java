@@ -43,6 +43,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraftforge.network.PacketDistributor;
 
@@ -95,7 +96,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
         setAdult(true);
         setAge(35);
         this.eggCounter = this.random.nextInt(1000) + 1000;
-        this.setMaxUpStep(1.0F;
+        this.setMaxUpStep(1.0F);
     }
 
     @Override
@@ -802,8 +803,8 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void readAdditional(CompoundTag nbttagcompound) {
-        super.readAdditional(nbttagcompound);
+    public void readAdditionalSaveData(CompoundTag nbttagcompound) {
+        super.readAdditionalSaveData(nbttagcompound);
         setRideable(nbttagcompound.getBoolean("Saddle"));
         setEggWatching(nbttagcompound.getBoolean("EggWatch"));
         setHiding(nbttagcompound.getBoolean("Hiding"));
@@ -818,16 +819,16 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
             for (int i = 0; i < nbttaglist.size(); i++) {
                 CompoundTag nbttagcompound1 = nbttaglist.getCompound(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
-                if (j < this.localchest.getSizeInventory()) {
-                    this.localchest.setInventorySlotContents(j, ItemStack.of(nbttagcompound1));
+                if (j < this.localchest.getContainerSize()) {
+                    this.localchest.setItem(j, ItemStack.of(nbttagcompound1));
                 }
             }
         }
     }
 
     @Override
-    public void writeAdditional(CompoundTag nbttagcompound) {
-        super.writeAdditional(nbttagcompound);
+    public void addAdditionalSaveData(CompoundTag nbttagcompound) {
+        super.addAdditionalSaveData(nbttagcompound);
         nbttagcompound.putBoolean("Saddle", getIsRideable());
         nbttagcompound.putBoolean("EggWatch", getEggWatching());
         nbttagcompound.putBoolean("Hiding", getHiding());
@@ -838,12 +839,12 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
 
         if (getIsChested() && this.localchest != null) {
             ListTag nbttaglist = new ListTag();
-            for (int i = 0; i < this.localchest.getSizeInventory(); i++) {
-                this.localstack = this.localchest.getStackInSlot(i);
+            for (int i = 0; i < this.localchest.getContainerSize(); i++) {
+                this.localstack = this.localchest.getItem(i);
                 if (!this.localstack.isEmpty()) {
                     CompoundTag nbttagcompound1 = new CompoundTag();
                     nbttagcompound1.putByte("Slot", (byte) i);
-                    this.localstack.write(nbttagcompound1);
+                    this.localstack.save(nbttagcompound1);
                     nbttaglist.add(nbttagcompound1);
                 }
             }
@@ -985,7 +986,7 @@ public class MoCEntityOstrich extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean isImmuneToFire() {
-        return this.isImmuneToFire ? true : super.isImmuneToFire();
+    public boolean fireImmune() {
+        return this.isImmuneToFire ? true : super.fireImmune();
     }
 }

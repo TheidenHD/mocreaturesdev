@@ -16,8 +16,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
@@ -32,8 +34,8 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
         setSize(1.65F, 0.9F);
         // TODO: Make hitboxes adjust depending on size
         //setAge(60 + this.random.nextInt(100));
-        setAge(160);
-        experienceValue = 5;
+        setMoCAge(160);
+        xpReward = 5;
     }
 
     @Override
@@ -63,8 +65,8 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     }
 
     @Override
-    protected int getExperiencePoints(Player player) {
-        return experienceValue;
+    public int getExperienceReward() {
+        return xpReward;
     }
 
     @Override
@@ -91,7 +93,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     }
 
     protected Entity findPlayerToAttack() {
-        if ((this.level().getDifficulty().getId() > 0) && (getAge() >= 100)) {
+        if ((this.level().getDifficulty().getId() > 0) && (getMoCAge() >= 100)) {
             Player Player = this.level().getNearestPlayer(this, 16D);
             if ((Player != null) && Player.isInWater() && !getIsTamed()) {
                 return Player;
@@ -105,7 +107,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
         LivingEntity entityliving = null;
         List<Entity> list = this.level().getEntities(this, getBoundingBox().inflate(d));
         for (Entity o : list) {
-            if (!(o instanceof LivingEntity) || (o instanceof MoCEntityAquatic) || (o instanceof MoCEntityEgg) || (o instanceof Player) || ((o instanceof WolfEntity) && !(MoCreatures.proxy.attackWolves)) || ((o instanceof MoCEntityHorse) && !(MoCreatures.proxy.attackHorses))) {
+            if (!(o instanceof LivingEntity) || (o instanceof MoCEntityAquatic) || (o instanceof MoCEntityEgg) || (o instanceof Player) || ((o instanceof Wolf) && !(MoCreatures.proxy.attackWolves)) || ((o instanceof MoCEntityHorse) && !(MoCreatures.proxy.attackHorses))) {
                 continue;
             } else {
                 if ((o instanceof MoCEntityDolphin)) {
@@ -125,22 +127,22 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     public void aiStep() {
         super.aiStep();
         if (!this.level().isClientSide()) {
-            if (getAge() >= 160) {
+            if (getMoCAge() >= 160) {
                 setAdult(true);
             }
             if (!getIsAdult() && (this.random.nextInt(50) == 0)) {
-                setAge(getAge() + 1);
+                setMoCAge(getMoCAge() + 1);
             }
         }
     }
 
     @Override
-    public void discard() {
+    public void remove(Entity.RemovalReason reason) {
         // Server check required to prevent tamed entities from being duplicated on client-side
         if (!this.level().isClientSide() && (getIsTamed()) && (getHealth() > 0)) {
             return;
         }
-        super.discard();
+        super.remove(reason);
     }
 
     @Override
@@ -189,7 +191,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return SoundEvents.ENTITY_GUARDIAN_HURT_LAND;
+        return SoundEvents.GUARDIAN_HURT_LAND;
     }
 
     @Override

@@ -207,7 +207,7 @@ public class MoCEntityFilchLizard extends MoCEntityAnimal {
         return MoCLootTables.FILCH_LIZARD_STEAL;
     }
 
-    static class AIAvoidWhenNasty extends EntityAIAvoidEntity<MoCEntityFilchLizard> {
+    static class AIAvoidWhenNasty extends AvoidEntityGoal<MoCEntityFilchLizard> {
         public AIAvoidWhenNasty(PathfinderMob theEntityIn, Class classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn) {
             super(theEntityIn, classToAvoidIn, avoidDistanceIn, farSpeedIn, nearSpeedIn);
         }

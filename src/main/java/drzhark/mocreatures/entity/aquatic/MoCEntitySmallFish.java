@@ -36,13 +36,13 @@ public class MoCEntitySmallFish extends MoCEntityTameableAquatic {
 
     public static MoCEntitySmallFish createEntity(Level world, int type) {
         if (type == 1) {
-            return (MoCEntitySmallFish) MoCEntities.ANCHOVY.create(world);
+            return (MoCEntitySmallFish) MoCEntities.ANCHOVY.get().create(world);
         }
         if (type == 2) {
-            return (MoCEntitySmallFish) MoCEntities.ANGELFISH.create(world);
+            return (MoCEntitySmallFish) MoCEntities.ANGELFISH.get().create(world);
         }
         if (type == 3) {
-            return (MoCEntitySmallFish) MoCEntities.ANGLER.create(world);
+            return (MoCEntitySmallFish) MoCEntities.ANGLER.get().create(world);
         }
         if (type == 4) {
             return (MoCEntitySmallFish) MoCEntities.CLOWNFISH.get().create(world);

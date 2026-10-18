@@ -16,6 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -27,9 +28,12 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -44,6 +48,7 @@ import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -60,7 +65,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
         super(type, world);
         this.texture = "golem.png";
         //this.setSize(1.8F, 4.3F);
-        experienceValue = 20;
+        xpReward = 20;
     }
 
     @Override
@@ -70,20 +75,20 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new MoCEntityGolem.AIGolemTarget<>(this, Player.class, true));
-        this.targetSelector.addGoal(3, new MoCEntityGolem.AIGolemTarget<>(this, IronGolemEntity.class, true));
+        this.targetSelector.addGoal(3, new MoCEntityGolem.AIGolemTarget<>(this, IronGolem.class, true));
     }
 
     public static AttributeSupplier.Builder registerAttributes() {
-        return MoCEntityMob.registerAttributes().add(Attributes.MAX_HEALTH, 50.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_DAMAGE, 7.0D);
+        return MoCEntityMob.createAttributes().add(Attributes.MAX_HEALTH, 50.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_DAMAGE, 7.0D);
     }
 
     @Override
-    public void writeSpawnData(PacketBuffer data) {
+    public void writeSpawnData(FriendlyByteBuf data) {
         for (int i = 0; i < 23; i++) data.writeByte(this.golemCubes[i]);
     }
 
     @Override
-    public void readSpawnData(PacketBuffer data) {
+    public void readSpawnData(FriendlyByteBuf data) {
         for (int i = 0; i < 23; i++) this.golemCubes[i] = data.readByte();
     }
 
@@ -141,8 +146,10 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
                     } else {
                         MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_BIG_GOLEM_DEATH.get(), 1.0F);
                     }
-                    MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAnimation(this.getId(), 1), new TargetPoint(this.level().provider.dimensionType().getId(), this.getX(), this.getY(), this.getZ(), 64));
-                }
+                    MoCMessageHandler.INSTANCE.send(
+                            PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(
+                                    this.getX(), this.getY(), this.getZ(), 64, this.level().dimension())),
+                            new MoCMessageAnimation(this.getId(), 1));                }
 
                 if (this.dCounter > 140) {
                     MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_EXPLODE.get(), 3.0F);
@@ -152,7 +159,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
         }
 
         if (this.tCounter == 0 && this.getTarget() != null && this.canShoot()) {
-            float distanceToTarget = this.getDistance(this.getTarget());
+            float distanceToTarget = this.distanceTo(this.getTarget());
             if (distanceToTarget > 6F) {
                 this.tCounter = 1;
                 if (!this.level().isClientSide()) {
@@ -163,7 +170,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
 
         }
         if (this.tCounter != 0) {
-            if (this.tCounter++ == 70 && this.getTarget() != null && this.canShoot() && !this.getTarget().removed && this.hasLineOfSight(this.getTarget())) {
+            if (this.tCounter++ == 70 && this.getTarget() != null && this.canShoot() && !this.getTarget().isRemoved() && this.hasLineOfSight(this.getTarget())) {
                 shootBlock(this.getTarget());
             } else if (this.tCounter > 90) this.tCounter = 0;
         }
@@ -179,7 +186,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
         List<Integer> usedBlocks = usedCubes();
         if (!usedBlocks.isEmpty() && MoCTools.mobGriefing(this.level()) && MoCreatures.proxy.golemDestroyBlocks) {
             for (Integer usedBlock : usedBlocks) {
-                Block block = Block.getStateById(generateBlock(this.golemCubes[usedBlock])).getBlock();
+                Block block = generateBlock(this.golemCubes[usedBlock]).getBlock();
                 ItemEntity entityitem = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), new ItemStack(block, 1));
                 entityitem.setDefaultPickUpDelay();
                 this.level().addFreshEntity(entityitem);
@@ -204,7 +211,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
         Block block = blockState.getBlock();
 
         boolean canDestroyBlock = MoCTools.mobGriefing(this.level()) && MoCreatures.proxy.golemDestroyBlocks;
-        if (block instanceof AirBlock || blockState.getBlockHardness(this.level(), blockPos) < 0 || blockState.getBlockHardness(this.level(), blockPos) > 50)
+        if (block instanceof AirBlock || blockState.getDestroySpeed(this.level(), blockPos) < 0 || blockState.getDestroySpeed(this.level(), blockPos) > 50)
             canDestroyBlock = false; // skip air and unbreakable rocks
         if (canDestroyBlock) {
             BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(this.level(), blockPos, blockState, FakePlayerFactory.get((ServerLevel) this.level(), MoCreatures.MOCFAKEPLAYER));
@@ -288,7 +295,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
 
         if (this.golemCubes[i + 1] != 30 && (i == 10 || i == 13)) x = i + 1;
         MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GENERIC_LAUNCH.get(), 3F);
-        MoCTools.throwStone(this, entity, Block.getStateById(generateBlock(this.golemCubes[x])), 10D, 0.4D);
+        MoCTools.throwStone(this, entity, generateBlock(this.golemCubes[x]), 10D, 0.4D);
         saveGolemCube((byte) x, (byte) 30);
     
         // Reset throw timer
@@ -357,7 +364,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
         }
 
         if (x != -1 && this.golemCubes[x] != 30) {
-            Block block = Block.getStateById(generateBlock(this.golemCubes[x])).getBlock();
+            Block block = generateBlock(this.golemCubes[x]).getBlock();
             saveGolemCube((byte) x, (byte) 30);
             if (MoCreatures.proxy.legacyBigGolemSounds) {
                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_BIG_GOLEM_HURT_LEGACY.get(), 1.0F);
@@ -398,8 +405,8 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
     }
 
     @Override
-    public void writeAdditional(CompoundTag nbttagcompound) {
-        super.writeAdditional(nbttagcompound);
+    public void addAdditionalSaveData(CompoundTag nbttagcompound) {
+        super.addAdditionalSaveData(nbttagcompound);
         nbttagcompound.putInt("golemState", getGolemState());
         ListTag cubeLists = new ListTag();
 
@@ -412,8 +419,8 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
     }
 
     @Override
-    public void readAdditional(CompoundTag nbttagcompound) {
-        super.readAdditional(nbttagcompound);
+    public void readAdditionalSaveData(CompoundTag nbttagcompound) {
+        super.readAdditionalSaveData(nbttagcompound);
         setGolemState(nbttagcompound.getInt("golemState"));
         ListTag nbttaglist = nbttagcompound.getList("GolemBlocks", 10);
         for (int i = 0; i < 23; i++) {
@@ -625,66 +632,66 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
     /**
      * Provides the blockID originated from the golem's block
      */
-    private int generateBlock(int golemBlock) {
+    private BlockState generateBlock(int golemBlock) {
         switch (golemBlock) {
             case 0:
-                return 1;
+                return Blocks.STONE.defaultBlockState();
             case 1:
-                return 3;
+                return Blocks.DIRT.defaultBlockState();
             case 2:
-                return 4;
+                return Blocks.COBBLESTONE.defaultBlockState();
             case 3:
-                return 5;
+                return Blocks.OAK_PLANKS.defaultBlockState();
             case 4:
-                return 12;
+                return Blocks.SAND.defaultBlockState();
             case 5:
-                return 13;
+                return Blocks.GRAVEL.defaultBlockState();
             case 6:
-                return 17;
+                return Blocks.OAK_LOG.defaultBlockState();
             case 7:
-                return 41;
+                return Blocks.GOLD_BLOCK.defaultBlockState();
             case 8:
-                return 20;
+                return Blocks.GLASS.defaultBlockState();
             case 9:
-                return 35;
+                return Blocks.BLUE_WOOL.defaultBlockState();
             case 10:
-                return 18;
+                return Blocks.OAK_LEAVES.defaultBlockState();
             case 11:
-                return 42;
+                return Blocks.IRON_BLOCK.defaultBlockState();
             case 12:
-                return 45;
-            case 13: //unused
-                return 2;
+                return Blocks.BRICKS.defaultBlockState();
+            case 13: // unused
+                return Blocks.GRASS_BLOCK.defaultBlockState();
             case 14:
-                return 49;
+                return Blocks.OBSIDIAN.defaultBlockState();
             case 15:
-                return 57;
+                return Blocks.DIAMOND_BLOCK.defaultBlockState();
             case 16:
-                return 58;
+                return Blocks.CRAFTING_TABLE.defaultBlockState();
             case 17:
-                return 51;
+                return Blocks.FIRE.defaultBlockState();
             case 18:
-                return 79;
+                return Blocks.ICE.defaultBlockState();
             case 19:
-                return 81;
+                return Blocks.CACTUS.defaultBlockState();
             case 20:
-                return 82;
+                return Blocks.CLAY.defaultBlockState();
             case 21:
-                return 133;
+                return Blocks.EMERALD_BLOCK.defaultBlockState();
             case 22:
-                return 86;
+                return Blocks.PUMPKIN.defaultBlockState();
             case 23:
-                return 87;
+                return Blocks.NETHERRACK.defaultBlockState();
             case 24:
-                return 56;
+                return Blocks.DIAMOND_ORE.defaultBlockState();
             case 25:
-                return 89;
+                return Blocks.GLOWSTONE.defaultBlockState();
             case 26:
-                return 98;
+                return Blocks.STONE_BRICKS.defaultBlockState();
             case 27:
-                return 112;
+                return Blocks.NETHER_BRICKS.defaultBlockState();
             default:
-                return 2;
+                return Blocks.GRASS_BLOCK.defaultBlockState();
         }
     }
 
@@ -765,7 +772,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
     }
 
     public static boolean getCanSpawnHere(EntityType<? extends MoCEntityMob> type, ServerLevel world, MobSpawnType reason, BlockPos pos, Random randomIn) {
-        return (MoCEntityMob.getCanSpawnHere(type, world, reason, pos, randomIn) && world.canBlockSeeSky(new BlockPos(Mth.floor(pos.getX()), Mth.floor(pos.getY()), Mth.floor(pos.getZ()))) && (pos.getY() > 50D));
+        return (MoCEntityMob.getCanSpawnHere(type, world, reason, pos, randomIn) && world.canSeeSkyFromBelowWater(new BlockPos(Mth.floor(pos.getX()), Mth.floor(pos.getY()), Mth.floor(pos.getZ()))) && (pos.getY() > 50D));
     }
 
     protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
@@ -778,14 +785,14 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
         }
 
         @Override
-        public boolean shouldContinueExecuting() {
-            float f = this.attacker.getBrightness();
+        public boolean canContinueToUse() {
+            float f = this.mob.getLightLevelDependentMagicValue();
 
-            if (f >= 0.5F && this.attacker.getRandom().nextInt(100) == 0) {
-                this.attacker.setTarget(null);
+            if (f >= 0.5F && this.mob.getRandom().nextInt(100) == 0) {
+                this.mob.setTarget(null);
                 return false;
             } else {
-                return super.shouldContinueExecuting();
+                return super.canContinueToUse();
             }
         }
     }
@@ -797,7 +804,7 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
 
         @Override
         public boolean canUse() {
-            float f = this.goalOwner.getBrightness();
+            float f = this.mob.getLightLevelDependentMagicValue();
             return f < 0.5F && super.canUse();
         }
     }

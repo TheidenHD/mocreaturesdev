@@ -227,7 +227,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
                 int k = this.random.nextInt(5);
                 for (int i = 0; i < k; i++) {
                     MoCEntityScorpion babyScorpion;
-                    switch (this.getType) {
+                    switch (this.getTypeMoC) {
                         case 2:
                             babyScorpion = new MoCEntityCaveScorpion(this.level());
                             break;
@@ -246,8 +246,8 @@ public class MoCEntityScorpion extends MoCEntityMob {
                     }
                     babyScorpion.setPos(this.getX(), this.getY(), this.getZ());
                     babyScorpion.setAdult(false);
-                    babyScorpion.setAge(20);
-                    babyScorpion.setType(this.getType);
+                    babyScorpion.setMoCAge(20);
+                    babyScorpion.setTypeMoC(this.getTypeMoC);
                     this.level().addFreshEntity(babyScorpion);
                     MoCTools.playCustomSound(babyScorpion, SoundEvents.ENTITY_SLIME_SQUISH);
                 }
@@ -262,7 +262,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
             chance = MoCreatures.proxy.motherScorpionEggDropChance;
         }
         if (this.random.nextInt(100) < chance) {
-            entityDropItem(new ItemStack(MoCItems.mocegg, 1, this.getType + 40), 0.0F);
+            entityDropItem(new ItemStack(MoCItems.mocegg, 1, this.getTypeMoC + 40), 0.0F);
         }
     }
 

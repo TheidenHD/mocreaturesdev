@@ -10,6 +10,7 @@ import drzhark.mocreatures.client.renderer.fx.impl.MoCEntityFXVanish;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -19,6 +20,7 @@ public class MoCClientEvents {
 
     public static SpriteSet UNDEAD_SPRITE_SET, VANISH_SPRITE_SET, STAR_SPRITE_SET, VACUUM_SPRITE_SET;
 
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void onRegisterParticleProviders(RegisterParticleProvidersEvent event) {
         // Register particle providers using the new 1.20.1 API

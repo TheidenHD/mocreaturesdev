@@ -21,7 +21,7 @@ public class MoCPetData {
     private final BitSet idMap = new BitSet(Long.SIZE << 4);
     private final Set<Integer> usedPetIds = new HashSet<>();
     private CompoundTag ownerData = new CompoundTag();
-    private NBTTagList tamedList = new NBTTagList();
+    private ListTag tamedList = new ListTag();
 
     public MoCPetData(IMoCTameable pet) {
         this.ownerData.put("TamedList", this.tamedList);

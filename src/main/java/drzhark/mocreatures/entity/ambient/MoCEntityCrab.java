@@ -21,6 +21,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -43,7 +44,7 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
         this.goalSelector.addGoal(4, new EntityAIWanderMoC2(this, 1.0D));
         this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
     }
 
@@ -76,7 +77,7 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected int getExperiencePoints(Player player) {
+    public int getExperienceReward() {
         return 1 + this.level().random.nextInt(3);
     }
 
@@ -85,12 +86,12 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean isOnLadder() {
-        return this.collidedHorizontally;
+    public boolean onClimbable() {
+        return this.horizontalCollision;
     }
 
     public boolean climbing() {
-        return !this.onGround() && isOnLadder();
+        return !this.onGround() && onClimbable();
     }
 
     @Override
@@ -98,12 +99,12 @@ public class MoCEntityCrab extends MoCEntityTameableAnimal {
     }
 
     @Override
-    protected void collideWithEntity(Entity entity) {
-        if (entity instanceof Player && this.getTarget() == null && !(entity.world.getDifficulty() == Difficulty.PEACEFUL)) {
+    protected void doPush(Entity entity) {
+        if (entity instanceof Player && this.getTarget() == null && !(entity.level().getDifficulty() == Difficulty.PEACEFUL)) {
             entity.hurt(this.damageSources().mobAttack(this), 1.5F);
         }
 
-        super.collideWithEntity(entity);
+        super.doPush(entity);
     }
 
     @Override

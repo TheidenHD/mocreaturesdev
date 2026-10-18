@@ -15,6 +15,7 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import drzhark.mocreatures.network.message.MoCMessageHeart;
+import drzhark.mocreatures.network.message.MoCMessageVanish;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -31,14 +32,12 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.animal.horse.Donkey;
 import net.minecraft.world.entity.animal.horse.Horse;
@@ -176,7 +175,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     public boolean hurt(DamageSource damagesource, float i) {
         Entity entity = damagesource.getEntity();
         if ((this.isVehicle()) && (entity == this.getVehicle())) return false;
-        if (entity instanceof WolfEntity) {
+        if (entity instanceof Wolf) {
             PathfinderMob entitycreature = (PathfinderMob) entity;
             entitycreature.setTarget(null);
             return false;
@@ -329,7 +328,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
      * Called to vanish a Horse without FX
      */
     public void dissapearHorse() {
-        this.removed = true;
+        this.discard();
     }
 
     private void drinkingHorse() {
@@ -507,10 +506,10 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
     @Override
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
-        if (!blockIn.defaultBlockState().getMaterial().isLiquid()) {
+        if (!blockIn.getMaterial().isLiquid()) {
             SoundType soundtype = blockIn.getSoundType();
 
-            if (this.level().getBlockState(pos.up()).getBlock() == Blocks.SNOW) {
+            if (this.level().getBlockState(pos.above()).getBlock() == Blocks.SNOW) {
                 soundtype = Blocks.SNOW.getSoundType(blockIn);
             }
 
@@ -1585,7 +1584,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             setIsJumping(false);
             getNavigation().stop();
             setTarget(null);
-            return true;
+            return InteractionResult.SUCCESS;
         }
 
         if (getIsRideable() && getIsAdult() && (!this.isVehicle())) {
@@ -1785,7 +1784,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         BlockEvent.BreakEvent event = null;
         if (!this.level().isClientSide()) {
             try {
-                event = new BlockEvent.BreakEvent(this.level(), pos, blockstate, FakePlayerFactory.get( this.getServer().getWorld(this.level().dimension()), MoCreatures.MOCFAKEPLAYER));
+                event = new BlockEvent.BreakEvent(this.level(), pos, blockstate, FakePlayerFactory.get( this.getServer().getLevel(this.level().dimension()), MoCreatures.MOCFAKEPLAYER));
             } catch (Throwable ignored) {
             }
         }
@@ -2147,10 +2146,10 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
         if (getTypeMoC() == 0) {
             if (this.random.nextInt(5) == 0) setAdult(false);
             int j = this.random.nextInt(100);
-            if (j <= (32)) setType(6);
-            else if (j <= (65)) setType(7);
-            else if (j <= (98)) setType(8);
-            else setType(60);// zebra
+            if (j <= (32)) setTypeMoC(6);
+            else if (j <= (65)) setTypeMoC(7);
+            else if (j <= (98)) setTypeMoC(8);
+            else setTypeMoC(60);// zebra
         }
     }
 
@@ -2239,8 +2238,8 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void writeAdditional(CompoundTag nbttagcompound) {
-        super.writeAdditional(nbttagcompound);
+    public void addAdditionalSaveData(CompoundTag nbttagcompound) {
+        super.addAdditionalSaveData(nbttagcompound);
         nbttagcompound.putBoolean("Saddle", getIsRideable());
         nbttagcompound.putBoolean("EatingHaystack", getIsSitting());
         nbttagcompound.putBoolean("ChestedHorse", getIsChested());
@@ -2250,13 +2249,13 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
 
         if (getIsChested() && this.localChest != null) {
             ListTag nbttaglist = new ListTag();
-            for (int i = 0; i < this.localChest.getSizeInventory(); i++) {
+            for (int i = 0; i < this.localChest.getContainerSize(); i++) {
                 // grab the current item stack
-                this.localStack = this.localChest.getStackInSlot(i);
+                this.localStack = this.localChest.getItem(i);
                 if (!this.localStack.isEmpty()) {
                     CompoundTag nbttagcompound1 = new CompoundTag();
                     nbttagcompound1.putByte("Slot", (byte) i);
-                    this.localStack.write(nbttagcompound1);
+                    this.localStack.save(nbttagcompound1);
                     nbttaglist.add(nbttagcompound1);
                 }
             }
@@ -2265,8 +2264,8 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void readAdditional(CompoundTag nbttagcompound) {
-        super.readAdditional(nbttagcompound);
+    public void readAdditionalSaveData(CompoundTag nbttagcompound) {
+        super.readAdditionalSaveData(nbttagcompound);
         setRideable(nbttagcompound.getBoolean("Saddle"));
         setSitting(nbttagcompound.getBoolean("EatingHaystack"));
         setBred(nbttagcompound.getBoolean("Bred"));
@@ -2279,8 +2278,8 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
             for (int i = 0; i < nbttaglist.size(); i++) {
                 CompoundTag nbttagcompound1 = nbttaglist.getCompound(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
-                if (j < this.localChest.getSizeInventory()) {
-                    this.localChest.setInventorySlotContents(j, ItemStack.of(nbttagcompound1));
+                if (j < this.localChest.getContainerSize()) {
+                    this.localChest.setItem(j, ItemStack.of(nbttagcompound1));
                 }
             }
         }
@@ -2347,7 +2346,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean isImmuneToFire() {
-        return this.isImmuneToFire ? true : super.isImmuneToFire();
+    public boolean fireImmune() {
+        return this.isImmuneToFire ? true : super.fireImmune();
     }
 }

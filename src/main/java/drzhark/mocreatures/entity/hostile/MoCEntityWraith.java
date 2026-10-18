@@ -35,7 +35,7 @@ public class MoCEntityWraith extends MoCEntityMob//MoCEntityFlyerMob
         super(type, world);
         this.collidedVertically = false;
         setSize(0.6F, 1.75F);
-        experienceValue = 5;
+        xpReward = 5;
     }
 
     @Override

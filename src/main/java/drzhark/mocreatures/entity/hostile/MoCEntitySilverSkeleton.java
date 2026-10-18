@@ -14,9 +14,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,7 +37,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
         super(type, world);
         this.texture = "silver_skeleton.png";
         //setSize(0.6F, 2.125F);
-        experienceValue = 5 + this.level().random.nextInt(4);
+        xpReward = 5 + this.level().random.nextInt(4);
     }
 
     @Override
@@ -43,16 +47,16 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new MoCEntitySilverSkeleton.AISkeletonTarget<>(this, Player.class, false));
-        this.targetSelector.addGoal(3, new MoCEntitySilverSkeleton.AISkeletonTarget<>(this, IronGolemEntity.class, false));
+        this.targetSelector.addGoal(3, new MoCEntitySilverSkeleton.AISkeletonTarget<>(this, IronGolem.class, false));
     }
 
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(35.0D);
-        getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(14.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(7.0D);
+        getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(35.0D);
+        getEntityAttribute(Attributes.ARMOR).setBaseValue(14.0D);
+        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(7.0D);
     }
 
     @Override
@@ -157,14 +161,14 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
         }
 
         @Override
-        public boolean shouldContinueExecuting() {
-            float f = this.attacker.getBrightness();
+        public boolean canContinueToUse() {
+            float f = this.mob.getLightLevelDependentMagicValue();
 
-            if (f >= 0.5F && this.attacker.getRandom().nextInt(100) == 0) {
-                this.attacker.setTarget(null);
+            if (f >= 0.5F && this.mob.getRandom().nextInt(100) == 0) {
+                this.mob.setTarget(null);
                 return false;
             } else {
-                return super.shouldContinueExecuting();
+                return super.canContinueToUse();
             }
         }
     }
@@ -176,7 +180,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
 
         @Override
         public boolean canUse() {
-            float f = this.goalOwner.getBrightness();
+            float f = this.mob.getLightLevelDependentMagicValue();
             return f < 0.5F && super.canUse();
         }
     }
