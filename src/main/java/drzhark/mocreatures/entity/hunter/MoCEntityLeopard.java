@@ -19,6 +19,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraftforge.common.Tags;
 
 public class MoCEntityLeopard extends MoCEntityBigCat {
 
@@ -44,22 +45,12 @@ public class MoCEntityLeopard extends MoCEntityBigCat {
 
     @Override
     public boolean checkSpawningBiome() {
-        int i = Mth.floor(this.getX());
-        int j = Mth.floor(getBoundingBox().minY);
-        int k = Mth.floor(this.getZ());
-        BlockPos pos = new BlockPos(i, j, k);
-
-        ResourceKey<Biome> currentbiome = MoCTools.biomeKind(this.level(), pos);
-        try {
-            // In 1.20.1, BiomeDictionary is deprecated, use biome path instead
-            String biomePath = currentbiome.location().getPath();
-            if (biomePath.contains("snow") || biomePath.contains("frozen")) {
-                setTypeMoC(2); //snow leopard
-                return true;
-            }
-        } catch (Exception ignored) {
+        BlockPos pos = BlockPos.containing(this.getX(), this.getBoundingBox().minY, this.getZ());
+        if (this.level().getBiome(pos).is(Tags.Biomes.IS_SNOWY)) {
+            setTypeMoC(2); // snow leopard
+        } else {
+            setTypeMoC(1);
         }
-        setTypeMoC(1);
         return true;
     }
 

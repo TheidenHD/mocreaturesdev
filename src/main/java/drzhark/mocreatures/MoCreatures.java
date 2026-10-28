@@ -131,7 +131,7 @@ public class MoCreatures {
     }
 
     public static void registerDeferredRegistries(IEventBus modBus) {
-        MoCSoundEvents.SOUND_DEFERRED.get().register(modBus);
+        MoCSoundEvents.SOUND_DEFERRED.register(modBus);
         MoCParticles.PARTICLES.register(modBus);
         MoCBlocks.BLOCKS.register(modBus);
         MoCBlocks.ITEMS.register(modBus);

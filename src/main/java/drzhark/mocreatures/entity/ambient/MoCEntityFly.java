@@ -58,7 +58,7 @@ public class MoCEntityFly extends MoCEntityInsect {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {        return MoCLootTables.FLY;
+    protected ResourceLocation getDefaultLootTable() {        return MoCLootTables.FLY;
     }
 
     @Override

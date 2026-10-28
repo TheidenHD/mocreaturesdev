@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -50,13 +51,12 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
         this.targetSelector.addGoal(3, new MoCEntitySilverSkeleton.AISkeletonTarget<>(this, IronGolem.class, false));
     }
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        getEntityAttribute(Attributes.MAX_HEALTH).setBaseValue(35.0D);
-        getEntityAttribute(Attributes.ARMOR).setBaseValue(14.0D);
-        this.getEntityAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
-        this.getEntityAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(7.0D);
+    public static AttributeSupplier.Builder registerAttributes() {
+        return MoCEntityMob.createAttributes()
+                .add(Attributes.MAX_HEALTH, 35.0D)
+                .add(Attributes.ARMOR, 14.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.25D)
+                .add(Attributes.ATTACK_DAMAGE, 7.0D);
     }
 
     @Override
@@ -148,7 +148,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {        return MoCLootTables.SILVER_SKELETON;
+    protected ResourceLocation getDefaultLootTable() {        return MoCLootTables.SILVER_SKELETON;
     }
 
     protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {

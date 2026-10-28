@@ -766,8 +766,8 @@ public class MoCEntityGolem extends MoCEntityMob implements IEntityAdditionalSpa
         return MoCreatures.proxy.legacyBigGolemSounds ? MoCSoundEvents.ENTITY_BIG_GOLEM_HURT_LEGACY.get() : MoCSoundEvents.ENTITY_BIG_GOLEM_HURT.get();
     }
 
-    @Nullable
-    public ResourceLocation getLootTable() {
+    @Override
+    protected ResourceLocation getDefaultLootTable() {
         return MoCLootTables.BIG_GOLEM;
     }
 

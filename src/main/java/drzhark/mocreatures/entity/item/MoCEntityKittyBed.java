@@ -29,7 +29,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 // TODO: Fix hitbox
-public class MoCEntityKittyBed extends LivingEntity {
+public class MoCEntityKittyBed extends Mob  {
 
     private static final EntityDataAccessor<Boolean> HAS_MILK = SynchedEntityData.defineId(MoCEntityKittyBed.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> HAS_FOOD = SynchedEntityData.defineId(MoCEntityKittyBed.class, EntityDataSerializers.BOOLEAN);
@@ -141,7 +141,7 @@ public class MoCEntityKittyBed extends LivingEntity {
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         final ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty() && !getHasFood() && !getHasMilk()) {
-            if (stack.getItem() == MoCItems.petfood) {
+            if (stack.getItem() == MoCItems.PET_FOOD.get()) {
                 if (!player.isCreative()) stack.shrink(1);
                 MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_KITTY_BED_POUR_FOOD.get());
                 setHasMilk(false);

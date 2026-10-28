@@ -35,6 +35,7 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraftforge.common.Tags;
 
 import java.util.List;
 import java.util.Random;
@@ -118,18 +119,11 @@ public class MoCEntityWWolf extends MoCEntityMob {
 
     @Override
     public boolean checkSpawningBiome() {
-        int i = Mth.floor(this.getX());
-        int j = Mth.floor(getBoundingBox().minY);
-        int k = Mth.floor(this.getZ());
-
-        ResourceKey<Biome> biome = MoCTools.biomeKind(this.level(), new BlockPos(i, j, k));
-        
-        // Simple check based on biome path instead of BiomeDictionary
-        String biomePath = biome.location().getPath();
-        if (biomePath.contains("snow") || biomePath.contains("frozen") || biomePath.contains("ice") || biomePath.contains("cold")) {
+        BlockPos pos = BlockPos.containing(this.getX(), this.getBoundingBox().minY, this.getZ());
+        if (this.level().getBiome(pos).is(Tags.Biomes.IS_SNOWY)) {
             setTypeMoC(3);
         }
-        
+
         selectType();
         return true;
     }

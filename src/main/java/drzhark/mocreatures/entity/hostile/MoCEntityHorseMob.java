@@ -179,12 +179,15 @@ public class MoCEntityHorseMob extends MoCEntityMob {
 
     @Override
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
-        if (!blockIn.defaultBlockState().getMaterial().isLiquid()) {
+        if (!blockIn.liquid()) {
             SoundType soundtype = blockIn.getSoundType();
 
-            if (this.level().getBlockState(pos.above()).getBlock() == Blocks.SNOW) {
-                soundtype = Blocks.SNOW.getSoundType();
-            } else if (soundtype == SoundType.WOOD) {
+            BlockState above = this.level().getBlockState(pos.above());
+            if (above.is(Blocks.SNOW)) {
+                soundtype = above.getSoundType();
+            }
+
+            if (soundtype == SoundType.WOOD) {
                 this.playSound(SoundEvents.HORSE_STEP_WOOD, soundtype.getVolume() * 0.15F, soundtype.getPitch());
             } else {
                 this.playSound(SoundEvents.HORSE_STEP, soundtype.getVolume() * 0.15F, soundtype.getPitch());

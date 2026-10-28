@@ -52,7 +52,7 @@ public class MoCRenderGoat extends MobRenderer<MoCEntityGoat, MoCModelGoat<MoCEn
         this.tempGoat.earMov = entitygoat.earMovement();
         this.tempGoat.tailMov = entitygoat.tailMovement();
         this.tempGoat.eatMov = entitygoat.mouthMovement();
-        super.render(entitygoat, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+        super.render(entitygoat, entityYaw, partialTicks, poseStack, buffer, packedLightIn);
         boolean flag = MoCreatures.proxy.getDisplayPetName() && !(entitygoat.getPetName()).isEmpty();
         boolean flag1 = MoCreatures.proxy.getDisplayPetHealth();
         if (entitygoat.shouldRenderNameAndHealth()) {

@@ -13,9 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -33,8 +31,8 @@ public class MoCEntityWraith extends MoCEntityMob//MoCEntityFlyerMob
 
     public MoCEntityWraith(EntityType<? extends MoCEntityWraith> type, Level world) {
         super(type, world);
-        this.collidedVertically = false;
-        setSize(0.6F, 1.75F);
+        this.verticalCollision = false;
+        //setSize(0.6F, 1.75F);
         xpReward = 5;
     }
 
@@ -165,7 +163,7 @@ public class MoCEntityWraith extends MoCEntityMob//MoCEntityFlyerMob
         return true;
     }
 
-    public float getEyeHeight() {
-        return this.height * 0.84F;
+    public float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
+        return sizeIn.height * 0.84F;
     }
 }

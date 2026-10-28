@@ -477,7 +477,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
             return InteractionResult.SUCCESS;
         }
 
-        if (!stack.isEmpty() && this.getIsGhost() && this.getIsTamed() && stack.getItem() == MoCItems.amuletghost) {
+        if (!stack.isEmpty() && this.getIsGhost() && this.getIsTamed() && stack.getItem() == MoCItems.AMULET_GHOST.get()) {
 
             player.setItemInHand(hand, ItemStack.EMPTY);
             if (!this.level().isClientSide()) {

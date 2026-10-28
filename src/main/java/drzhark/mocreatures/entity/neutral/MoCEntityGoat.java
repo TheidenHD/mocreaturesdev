@@ -446,54 +446,6 @@ public class MoCEntityGoat extends MoCEntityTameableAnimal {
         }
     }
 
-    @Override
-    public void tick() {
-
-        if (getSwingLeg()) {
-            this.movecount += 5;
-            if (this.movecount == 30) {
-                MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_DIG.get());
-            }
-
-            if (this.movecount > 100) {
-                setSwingLeg(false);
-                this.movecount = 0;
-            }
-        }
-
-        if (getSwingEar()) {
-            this.earcount += 5;
-            if (this.earcount > 40) {
-                setSwingEar(false);
-                this.earcount = 0;
-            }
-        }
-
-        if (getSwingTail()) {
-            this.tailcount += 15;
-            if (this.tailcount > 135) {
-                setSwingTail(false);
-                this.tailcount = 0;
-            }
-        }
-
-        if (getEating()) {
-            this.eatcount += 1;
-            if (this.eatcount == 2) {
-                Player Player1 = this.level().getNearestPlayer(this, 3D);
-                if (Player1 != null) {
-                    MoCTools.playCustomSound(this, MoCSoundEvents.ENTITY_GOAT_EAT.get());
-                }
-            }
-            if (this.eatcount > 25) {
-                setEating(false);
-                this.eatcount = 0;
-            }
-        }
-
-        super.tick();
-    }
-
     public int legMovement() {
         if (!getSwingLeg()) {
             return 0;

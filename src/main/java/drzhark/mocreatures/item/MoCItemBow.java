@@ -12,41 +12,31 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.item.ArrowItem;
-import net.minecraft.world.item.BowItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+
+import java.util.function.Supplier;
 
 public class MoCItemBow extends BowItem {
     public float damageMult;
     public float velocityMult;
     public float inaccuracy;
     public float drawTimeMult;
-    public Ingredient repairMaterial;
+    public Supplier<Ingredient> repairMaterial;
 
-    public MoCItemBow(String name, int durability, float damageMult, float velocityMult, float drawTimeMult, float inaccuracy, Ingredient repairMaterial) {
-        this.setCreativeTab(MoCreatures.tabMoC);
-        this.setRegistryName(MoCConstants.MOD_ID, name);
-        this.setTranslationKey(name);
-        this.maxStackSize = 1;
-        this.setMaxDamage(durability);
+    public MoCItemBow(Item.Properties properties, float damageMult, float velocityMult, float drawTimeMult, float inaccuracy, Supplier<Ingredient> repairMaterial) {
+        super(properties);
         this.damageMult = damageMult;
         this.velocityMult = velocityMult;
         this.drawTimeMult = drawTimeMult;
         this.inaccuracy = inaccuracy;
         this.repairMaterial = repairMaterial;
-        this.addPropertyOverride(new ResourceLocation("pull"), (ItemStack bow, Level world, EntityLivingBase entity) -> {
-            if (entity == null) {
-            	return 0.0F;
-            }
+    }
 
-            float drawTime = 20.0F * drawTimeMult;
-
-            return (this.getMaxItemUseDuration(bow) - entity.getItemInUseCount()) / drawTime;
-        });
+    public float getDrawTimeMult() {
+        return this.drawTimeMult;
     }
 
     @Override
@@ -115,7 +105,7 @@ public class MoCItemBow extends BowItem {
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-        return repairMaterial.test(repair) || super.getIsRepairable(toRepair, repair);
+    public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
+        return repairMaterial.get().test(repair) || super.isValidRepairItem(toRepair, repair);
     }
 }

@@ -13,9 +13,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -161,7 +159,7 @@ public class MoCEntityRaccoon extends MoCEntityTameableAnimal {
     @Override
     public boolean isReadyToFollowOwnerPlayer() { return !this.isMovementCeased(); }
 
-    public float getEyeHeight() {
-        return this.height * 0.86F;
+    public float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
+        return sizeIn.height * 0.86F;
     }
 }

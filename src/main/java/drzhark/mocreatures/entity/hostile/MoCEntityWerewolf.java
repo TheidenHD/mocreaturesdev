@@ -176,11 +176,11 @@ public class MoCEntityWerewolf extends MoCEntityMob {
             Player Player = (Player) entity;
             ItemStack stack = Player.getMainHandItem();
             if (!stack.isEmpty()) {
-                if (stack.getItem() == MoCItems.silversword || stack.getItem() == MoCItems.silveraxe || stack.getItem() == MoCItems.silverMattock) {
+                if (stack.getItem() == MoCItems.SILVERSWORD.get() || stack.getItem() == MoCItems.SILVERAXE.get() || stack.getItem() == MoCItems.SILVERMATTOCK.get()) {
                     i = 10.0F;
-                } else if (stack.getItem() instanceof ItemSword) {
-                    String swordMaterial = ((ItemSword) stack.getItem()).getToolMaterialName();
-                    String swordName = stack.getItem().getTranslationKey();
+                } else if (stack.getItem() instanceof SwordItem) {
+                    String swordMaterial = ((SwordItem) stack.getItem()).getTier().toString();
+                    String swordName = stack.getItem().getDescriptionId();
                     if (swordMaterial.toLowerCase().contains("silver") || swordName.toLowerCase().contains("silver")) {
                         i = ((SwordItem) stack.getItem()).getDamage() + 6F;
                     } else {
@@ -194,9 +194,9 @@ public class MoCEntityWerewolf extends MoCEntityMob {
                     } else {
                         i = ((TieredItem) stack.getItem()).getTier().getAttackDamageBonus() * 0.5F;
                     }
-                } else if (stack.getItem().getTranslationKey().toLowerCase().contains("silver")) {
+                } else if (stack.getItem().getDescriptionId().toLowerCase().contains("silver")) {
                     i = 6.0F;
-                } else if (stack.getItem() == MoCItems.bo || stack.getItem() == MoCItems.katana || stack.getItem() == MoCItems.nunchaku || stack.getItem() == MoCItems.sai){
+                } else if (stack.getItem() == MoCItems.BO.get() || stack.getItem() == MoCItems.KATANA.get() || stack.getItem() == MoCItems.NUNCHAKU.get() || stack.getItem() == MoCItems.SAI.get()){
                 	i = 7.0F;
                 } else {
                     i = Math.min(i * 0.5F, 4F);

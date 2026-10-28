@@ -50,7 +50,7 @@ public class MoCItemSword extends SwordItem {
                     target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, timer, 0));
                     break;
                 case 3: // Fire
-                    target.setFire(timer + fire_aspect);
+                    target.setSecondsOnFire(timer + fire_aspect);
                     break;
                 case 4: // Weakness (Nausea for players)
                     target.addEffect(new MobEffectInstance(
@@ -70,28 +70,24 @@ public class MoCItemSword extends SwordItem {
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (MoCreatures.proxy.weaponEffects) {
-            String translationKey = null;
             switch (this.specialWeaponType) {
                 case 1: // Poison 2
-                    tooltip.add(TextFormatting.BLUE + I18n.format("info." + MoCConstants.MOD_ID + ".sting_weapon_dirt", 8));
+                    tooltip.add(Component.translatable("info." + MoCConstants.MOD_ID + ".sting_weapon_dirt", 8).withStyle(ChatFormatting.BLUE));
                     break;
                 case 2: // Slowness
-                    tooltip.add(TextFormatting.BLUE + I18n.format("info." + MoCConstants.MOD_ID + ".sting_weapon_frost", 8));
+                    tooltip.add(Component.translatable("info." + MoCConstants.MOD_ID + ".sting_weapon_frost", 8).withStyle(ChatFormatting.BLUE));
                     break;
                 case 3: // Fire
-                    tooltip.add(TextFormatting.BLUE + I18n.format("info." + MoCConstants.MOD_ID + ".sting_weapon_fire", 8));
+                    tooltip.add(Component.translatable("info." + MoCConstants.MOD_ID + ".sting_weapon_fire", 8).withStyle(ChatFormatting.BLUE));
                     break;
                 case 4: // Weakness (Nausea for players)
-                    tooltip.add(TextFormatting.BLUE + I18n.format("info." + MoCConstants.MOD_ID + ".sting_weapon_cave", 8));
+                    tooltip.add(Component.translatable("info." + MoCConstants.MOD_ID + ".sting_weapon_cave", 8).withStyle(ChatFormatting.BLUE));
                     break;
                 case 5: // Wither (Blindness for players)
-                    tooltip.add(TextFormatting.BLUE + I18n.format("info." + MoCConstants.MOD_ID + ".sting_weapon_undead", 8));
+                    tooltip.add(Component.translatable("info." + MoCConstants.MOD_ID + ".sting_weapon_undead", 8).withStyle(ChatFormatting.BLUE));
                     break;
                 default:
                     break;
-            }
-            if (translationKey != null) {
-                tooltip.add(Component.translatable(translationKey).withStyle(ChatFormatting.BLUE));
             }
         }
     }

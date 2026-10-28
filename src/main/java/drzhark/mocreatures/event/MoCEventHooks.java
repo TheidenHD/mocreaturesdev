@@ -136,7 +136,7 @@ public class MoCEventHooks {
 
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
-        Player player = event.player;
+        Player player = event.getEntity();
 
         // Handles the ENTITY that the PLAYER is riding
         if (player.getVehicle() instanceof IMoCTameable) {

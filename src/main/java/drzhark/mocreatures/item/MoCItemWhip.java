@@ -14,6 +14,7 @@ import drzhark.mocreatures.entity.neutral.MoCEntityOstrich;
 import drzhark.mocreatures.entity.neutral.MoCEntityWyvern;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import drzhark.mocreatures.init.MoCSoundEvents;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundSource;
@@ -28,6 +29,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -124,11 +126,11 @@ public class MoCItemWhip extends MoCItemSword {
                     }
 
                     //toggles hiding of tamed ostriches
-                    if (entityostrich.getIsTamed() && entityostrich.getVehicle() == null) {
-                        entityostrich.setHiding(!entityostrich.getHiding());
-                        entityostrich.setIsJumping(false);
-                        entityostrich.getNavigation().stop();
-                        entityostrich.setTarget(null);
+                    if (ostrich.getIsTamed() && ostrich.getVehicle() == null) {
+                        ostrich.setHiding(!ostrich.getHiding());
+                        ostrich.setIsJumping(false);
+                        ostrich.getNavigation().stop();
+                        ostrich.setTarget(null);
                     }
                 }
 
@@ -186,7 +188,7 @@ public class MoCItemWhip extends MoCItemSword {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @SideOnly(MixinEnvironment.Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable Level worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         tooltip.add(TextFormatting.BLUE + I18n.format("info." + MoCConstants.MOD_ID + ".whip"));
     }

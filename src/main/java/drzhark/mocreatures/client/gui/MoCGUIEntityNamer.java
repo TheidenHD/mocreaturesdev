@@ -12,14 +12,18 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Mob;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.glfw.GLFW;
 
-@net.minecraftforge.api.distmarker.OnlyIn(net.minecraftforge.api.distmarker.Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MoCGUIEntityNamer extends Screen {
 
     @SuppressWarnings("removal")
     private static final ResourceLocation TEXTURE = new ResourceLocation(MoCConstants.MOD_ID, "textures/gui/pet_naming.png");
 
     private final IMoCEntity namedEntity;
+    private final String defaultName;
     private EditBox nameInput;
     private final int imageWidth = 256;
     private final int imageHeight = 181;
@@ -27,68 +31,65 @@ public class MoCGUIEntityNamer extends Screen {
     public MoCGUIEntityNamer(IMoCEntity entity, String defaultName) {
         super(Component.literal("Choose your Pet's name:"));
         this.namedEntity = entity;
-        this.nameInput = new EditBox(this.font, 0, 0, 200, 20, Component.literal("Pet Name"));
-        this.nameInput.setValue(defaultName);
+        this.defaultName = defaultName;
     }
 
     @Override
     protected void init() {
         super.init();
-        int centerX = (this.width - imageWidth) / 2;
-        int centerY = (this.height - imageHeight) / 2;
+        int top = (this.height - (imageHeight + 16)) / 2;
 
-        this.nameInput = new EditBox(this.font, this.width / 2 - 75, centerY + 70, 150, 20, Component.literal("Pet Name"));
+        String value = this.nameInput != null ? this.nameInput.getValue() : this.defaultName;
+
+        this.nameInput = new EditBox(this.font, this.width / 2 - 75, top + 68, 150, 20, Component.literal("Pet Name"));
         this.nameInput.setMaxLength(30);
-        this.nameInput.setFocused(true);
-        this.addRenderableWidget(nameInput);
+        this.nameInput.setValue(value);
+        this.nameInput.setBordered(false);
+        this.addRenderableWidget(this.nameInput);
+        this.setInitialFocus(this.nameInput);
 
-        //this.addRenderableWidget(new Button(this.width / 2 - 75, centerY + 100, 150, 20, Component.literal("Done"), btn -> updateName(), DEFAULT_NARRATION));
         this.addRenderableWidget(
                 Button.builder(Component.literal("Done"), btn -> updateName())
-                        .bounds(this.width / 2 - 75, centerY + 100, 150, 20)
+                        .bounds(this.width / 2 - 100, top + 150, 200, 20)
                         .build()
         );
-
     }
 
     private void updateName() {
         String petName = this.nameInput.getValue().trim();
         if (!petName.isEmpty()) {
             this.namedEntity.setPetName(petName);
-            if (this.namedEntity instanceof Mob) {
-                MoCMessageHandler.INSTANCE.sendToServer(new MoCMessageUpdatePetName(((Mob) this.namedEntity).getId(), petName));
+            if (this.namedEntity instanceof Mob mob) {
+                MoCMessageHandler.INSTANCE.sendToServer(new MoCMessageUpdatePetName(mob.getId(), petName));
             }
         }
         this.onClose();
     }
 
     @Override
-    public void render(GuiGraphics poseStack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(poseStack);
-        int centerX = (this.width - imageWidth) / 2;
-        int centerY = (this.height - imageHeight) / 2;
-
-        poseStack.blit(TEXTURE, centerX, centerY, 0, 0, imageWidth, imageHeight);
-
-        poseStack.drawCenteredString(this.font, this.title, this.width / 2, centerY + 30, 0xFFFFFF);
-        nameInput.render(poseStack, mouseX, mouseY, partialTicks);
-
-        super.render(poseStack, mouseX, mouseY, partialTicks);
-    }
-
-    @Override
-    protected void keyTyped(char c, int i) {
-        if (i == 14) { // Handle Backspace Key
-            this.nameToSet = this.nameToSet.substring(0, Math.max(this.nameToSet.length() - 1, 0));
-        } else if (ChatAllowedCharacters.isAllowedCharacter(c)) {
-            this.nameToSet = this.nameToSet + c;
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        // Enter confirms, like clicking Done
+        if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
+            updateName();
+            return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
-    public void onClose() {
-        super.onClose();
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(guiGraphics);
+        int left = (this.width - imageWidth) / 2;
+        int top = (this.height - (imageHeight + 16)) / 2;
+        guiGraphics.blit(TEXTURE, left, top, 0, 0, imageWidth, imageHeight);
+        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, top + 29, 0xFFFFFF);
+
+        super.render(guiGraphics, mouseX, mouseY, partialTicks); // draws the field and button
+    }
+
+    @Override
+    public void removed() {
+        super.removed();
         if (this.namedEntity instanceof IMoCTameable tamed) {
             tamed.playTameEffect(true);
         }

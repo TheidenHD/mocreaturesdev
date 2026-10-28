@@ -3,7 +3,9 @@ package drzhark.mocreatures.item;
 import com.google.common.collect.Multimap;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.MoCreatures;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -16,11 +18,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import javax.annotation.Nullable;
@@ -140,24 +145,24 @@ public class MoCItemWeapon extends Item {
     }
 
     @Override
-    @SideOnly(MixinEnvironment.Side.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable Level world, List<String> tooltip, ITooltipFlag flagIn) {
+    @OnlyIn(Dist.CLIENT)
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (MoCreatures.proxy.weaponEffects) {
             switch (this.specialWeaponType) {
                 case 1: // Poison 2
-                    tooltip.add(TextFormatting.BLUE + I18n.format("info." + MoCConstants.MOD_ID + ".sting_weapon_dirt", 15));
+                    tooltip.add(Component.translatable("info." + MoCConstants.MOD_ID + ".sting_weapon_dirt", 15).withStyle(ChatFormatting.BLUE));
                     break;
                 case 2: // Slowness
-                    tooltip.add(TextFormatting.BLUE + I18n.format("info." + MoCConstants.MOD_ID + ".sting_weapon_frost", 15));
+                    tooltip.add(Component.translatable("info." + MoCConstants.MOD_ID + ".sting_weapon_frost", 15).withStyle(ChatFormatting.BLUE));
                     break;
                 case 3: // Fire
-                    tooltip.add(TextFormatting.BLUE + I18n.format("info." + MoCConstants.MOD_ID + ".sting_weapon_fire", 15));
+                    tooltip.add(Component.translatable("info." + MoCConstants.MOD_ID + ".sting_weapon_fire", 15).withStyle(ChatFormatting.BLUE));
                     break;
                 case 4: // Weakness (Nausea for players)
-                    tooltip.add(TextFormatting.BLUE + I18n.format("info." + MoCConstants.MOD_ID + ".sting_weapon_cave", 15));
+                    tooltip.add(Component.translatable("info." + MoCConstants.MOD_ID + ".sting_weapon_cave", 15).withStyle(ChatFormatting.BLUE));
                     break;
                 case 5: // Wither (Blindness for players)
-                    tooltip.add(TextFormatting.BLUE + I18n.format("info." + MoCConstants.MOD_ID + ".sting_weapon_undead", 15));
+                    tooltip.add(Component.translatable("info." + MoCConstants.MOD_ID + ".sting_weapon_undead", 15).withStyle(ChatFormatting.BLUE));
                     break;
                 default:
                     break;

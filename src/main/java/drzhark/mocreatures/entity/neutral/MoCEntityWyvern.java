@@ -27,17 +27,21 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -46,6 +50,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SaddleItem;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -96,7 +101,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(5, new EntityAIAttackMelee(this, 1.0D, false));
+        this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, false));
         this.goalSelector.addGoal(4, this.wander = new EntityAIWanderMoC2(this, 1.0D, 80));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8.0F));
         //this.targetSelector.addGoal(1, new EntityAIHunt<>(this, Animal.class, true));
@@ -124,18 +129,20 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundTag dataTag) {
-        if (this.level().dimension() == MoCreatures.proxy.wyvernDimension) this.enablePersistence();
-        return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag) {
+        if (level.getLevel().dimension() == MoCreatures.proxy.wyvernDimension) {
+            this.setPersistenceRequired();
+        }
+        return super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
     }
 
-    public static boolean getCanSpawnHere(EntityType<MoCEntityAnimal> type, IWorld world, SpawnReason reason, BlockPos pos, Random randomIn) {
-        BlockState iblockstate = world.getBlockState(pos.down());
-        return iblockstate.canEntitySpawn(world, pos, type);
+    public static <T extends Mob> boolean getCanSpawnHere(EntityType<T> type, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, RandomSource randomIn) {
+        BlockState iblockstate = world.getBlockState(pos.below());
+        return iblockstate.isValidSpawn(world, pos.below(), type);
     }
 
     @Override
-    public boolean canDespawn(double distanceToClosestPlayer) {
+    public boolean removeWhenFarAway(double distanceToClosestPlayer) {
         return this.level().dimension() != MoCreatures.proxy.wyvernDimension;
     }
 
@@ -405,9 +412,9 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
                 // Prevent circling while idle by disabling flying controller
                 if (this.getNavigation().isDone() && this.getTarget() == null) {
                     this.setDeltaMovement(this.getDeltaMovement().add(0.0D, 0.05D, 0.0D)); // Hover up
-                    this.setMoveForward(0);
+                    this.setZza(0);
                     this.setNoGravity(true);
-                    this.moveControl = new MovementController(this); // reset controller to basic when idle
+                    this.moveControl = new MoveControl(this); // reset controller to basic when idle
                 }
 
                 // Smoothly align rotation with motion
@@ -493,7 +500,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public InteractionResult getEntityInteractionResult(Player player, InteractionHand hand) {
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
         final InteractionResult tameResult = this.processTameInteract(player, hand);
         if (tameResult != null) {
             return tameResult;
@@ -505,7 +512,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             setIsJumping(false);
             getNavigation().stop();
             setTarget(null);
-            return true;
+            return InteractionResult.SUCCESS;
         }
 
         if (!stack.isEmpty() && !getIsRideable() && getAge() > 90 && this.getIsTamed() && (stack.getItem() instanceof SaddleItem)) {
@@ -557,12 +564,12 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
                 this.localchest = new MoCAnimalChest("WyvernChest", MoCAnimalChest.Size.tiny);
             }
             if (!this.level().isClientSide()) {
-                player.openContainer(this.localchest);
+                player.openMenu((MenuProvider)this.localchest);
             }
             return InteractionResult.SUCCESS;
         }
 
-        if (!stack.isEmpty() && this.getIsGhost() && this.getIsTamed() && stack.getItem() == MoCItems.amuletghost) {
+        if (!stack.isEmpty() && this.getIsGhost() && this.getIsTamed() && stack.getItem() == MoCItems.AMULET_GHOST.get()) {
 
             player.setItemInHand(hand, ItemStack.EMPTY);
             if (!this.level().isClientSide()) {
@@ -572,7 +579,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
                 }
                 this.dropMyStuff();
                 MoCTools.dropAmulet(this, 3, player);
-                this.removed = true;
+                this.discard();
             }
 
             return InteractionResult.SUCCESS;
@@ -650,7 +657,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             return InteractionResult.SUCCESS;
         }
 
-        return super.getEntityInteractionResult(player, hand);
+        return super.mobInteract(player, hand);
     }
 
     /**
@@ -711,7 +718,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
+    protected ResourceLocation getDefaultLootTable() {
         return MoCLootTables.WYVERN;
     }
 
@@ -731,7 +738,7 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public boolean onLivingFall(float distance, float damageMultiplier) {
+    public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource source) {
         return false;
     }
 
@@ -741,11 +748,11 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
     }
 
     @Override
-    public void updatePassenger(Entity passenger) {
+    public void positionRider(Entity passenger, Entity.MoveFunction moveFunction) {
         double dist = getSizeFactor() * (0.3D);
         double newPosX = this.getX() - (dist * Math.cos((MoCTools.realAngle(this.yBodyRot - 90F)) / 57.29578F));
         double newPosZ = this.getZ() - (dist * Math.sin((MoCTools.realAngle(this.yBodyRot - 90F)) / 57.29578F));
-        passenger.setPos(newPosX, this.getY() + getPassengersRidingOffset() + passenger.getMyRidingOffset(), newPosZ);
+        moveFunction.accept(passenger, newPosX, this.getY() + getPassengersRidingOffset() + passenger.getMyRidingOffset(), newPosZ);
     }
 
     @Override
@@ -893,7 +900,9 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
             chance = MoCreatures.proxy.motherWyvernEggDropChance;
         }
         if (this.random.nextInt(100) < chance) {
-            entityDropItem(new ItemStack(MoCItems.mocegg, 1), 0.0F);
+            CompoundTag tag = new CompoundTag();
+            tag.putInt("EggType", this.getTypeMoC() + 40);
+            spawnAtLocation(new ItemStack(MoCItems.MOC_EGG.get(), 1, tag), 0.0F);
         }
     }
 

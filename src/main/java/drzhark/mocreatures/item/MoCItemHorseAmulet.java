@@ -111,17 +111,17 @@ public class MoCItemHorseAmulet extends Item {
 //                }
 
                 if (player.level().addFreshEntity(storedCreature)) {
-                    MoCMessageHandler.INSTANCE.sendToAllAround(new MoCMessageAppear(storedCreature.getId()), new PacketDistributor.TargetPoint(player.level().provider.dimensionType().getId(), player.getX(), player.getY(), player.getZ(), 64));
+                    MoCMessageHandler.INSTANCE.send(PacketDistributor.NEAR.with(PacketDistributor.TargetPoint.p(player.getX(), player.getY(), player.getZ(), 64, player.level().dimension())), new MoCMessageAppear(storedCreature.getId()));
                     MoCTools.playCustomSound(storedCreature, MoCSoundEvents.ENTITY_GENERIC_MAGIC_ENCHANTED.get());
                     //gives an empty amulet
                     if (storedCreature instanceof MoCEntityBigCat || storedCreature instanceof MoCEntityWyvern || this.creatureType == 21 || this.creatureType == 22) {
-                        player.setItemInHand(hand, new ItemStack(MoCItems.amuletghost, 1));
+                        player.setItemInHand(hand, new ItemStack(MoCItems.AMULET_GHOST.get(), 1));
                     } else if (this.creatureType == 26 || this.creatureType == 27 || this.creatureType == 28) {
-                        player.setItemInHand(hand, new ItemStack(MoCItems.amuletbone, 1));
+                        player.setItemInHand(hand, new ItemStack(MoCItems.AMULET_BONE.get(), 1));
                     } else if ((this.creatureType > 47 && this.creatureType < 60)) {
-                        player.setItemInHand(hand, new ItemStack(MoCItems.amuletfairy, 1));
+                        player.setItemInHand(hand, new ItemStack(MoCItems.AMULET_FAIRY.get(), 1));
                     } else if (this.creatureType == 39 || this.creatureType == 40) {
-                        player.setItemInHand(hand, new ItemStack(MoCItems.amuletpegasus, 1));
+                        player.setItemInHand(hand, new ItemStack(MoCItems.AMULET_PEGASUS.get(), 1));
                     }
 
                     MoCPetData petData = MoCreatures.instance.mapData.getPetData(storedCreature.getOwnerId());

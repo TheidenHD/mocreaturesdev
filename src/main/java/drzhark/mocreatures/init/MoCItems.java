@@ -46,6 +46,7 @@ public class MoCItems {
     public static final RegistryObject<Item> FUR = ITEMS.register("fur", () -> new Item(new Properties()));
     public static final RegistryObject<Item> ESSENCE_DARKNESS = ITEMS.register("essencedarkness", () -> new Item(new Properties()));
     public static final RegistryObject<Item> ESSENCE_FIRE = ITEMS.register("essencefire", () -> new Item(new Properties()));
+    public static final RegistryObject<Item> ESSENCE_ICE = ITEMS.register("essence_ice", () -> new Item(new Properties()));
     public static final RegistryObject<Item> ESSENCE_UNDEAD = ITEMS.register("essenceundead", () -> new Item(new Properties()));
     public static final RegistryObject<Item> ESSENCE_LIGHT = ITEMS.register("essencelight", () -> new Item(new Properties()));
 
@@ -120,6 +121,7 @@ public class MoCItems {
     public static final RegistryObject<Item> SHARKAXE = ITEMS.register("sharkaxe", () -> new MoCItemAxe(new Item.Properties(), MoCItemTier.SHARK, 9.5F, 1.0F));
     public static final RegistryObject<Item> SILVERSWORD = ITEMS.register("silversword", () -> new MoCItemSword(new Item.Properties(), MoCItemTier.SILVER));
     public static final RegistryObject<Item> SILVERAXE = ITEMS.register("silveraxe", () -> new MoCItemAxe(new Item.Properties(), MoCItemTier.SILVER, 10.0F, 1.1F));
+    public static final RegistryObject<Item> SILVERMATTOCK = ITEMS.register("ancient_silver_mattock", () -> new MoCItemMattock());
     public static final RegistryObject<Item> SCORPSWORDCAVE = ITEMS.register("scorpswordcave", () -> new MoCItemSword(new Item.Properties(), MoCItemTier.SCORPC, 4));
     public static final RegistryObject<Item> SCORPAXECAVE = ITEMS.register("scorpaxecave", () -> new MoCItemAxe(new Item.Properties(), MoCItemTier.SCORPC, 9.5F, 1.0F, 4));
     public static final RegistryObject<Item> SCORPSWORDFROST = ITEMS.register("scorpswordfrost", () -> new MoCItemSword(new Item.Properties(), MoCItemTier.SCORPF, 2));

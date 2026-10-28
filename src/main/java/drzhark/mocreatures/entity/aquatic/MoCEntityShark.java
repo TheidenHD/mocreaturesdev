@@ -19,6 +19,8 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -31,7 +33,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     public MoCEntityShark(EntityType<? extends MoCEntityShark> type, Level world) {
         super(type, world);
         this.texture = "shark.png";
-        setSize(1.65F, 0.9F);
+        //setSize(1.65F, 0.9F);
         // TODO: Make hitboxes adjust depending on size
         //setAge(60 + this.random.nextInt(100));
         setMoCAge(160);
@@ -40,16 +42,16 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(2, new EntityAIAttackMelee(this, 1.0D, false));
+        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0D, false));
         this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 1.0D, 30));
-        this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
-        this.targetTasks.addTask(2, new EntityAITargetNonTamedMoC<>(this, Player.class, false));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new EntityAITargetNonTamedMoC<>(this, Player.class, false));
         // Currently doesn't function
         //this.targetTasks.addTask(3, new EntityAIHuntAquatic<>(this, Player.class, false));
     }
 
     public static AttributeSupplier.Builder registerAttributes() {
-        return MoCEntityTameableAquatic.registerAttributes().add(Attributes.MAX_HEALTH, 30.0D).add(Attributes.MOVEMENT_SPEED, 0.55D).add(Attributes.ATTACK_DAMAGE, 5.0D).add(Attributes.FOLLOW_RANGE, 32.0D);
+        return MoCEntityTameableAquatic.createMobAttributes().add(Attributes.MAX_HEALTH, 30.0D).add(Attributes.MOVEMENT_SPEED, 0.55D).add(Attributes.ATTACK_DAMAGE, 5.0D).add(Attributes.FOLLOW_RANGE, 32.0D);
     }
 
     @Override
@@ -88,7 +90,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {
+    protected ResourceLocation getDefaultLootTable() {
         return MoCLootTables.SHARK;
     }
 

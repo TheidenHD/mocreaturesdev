@@ -13,315 +13,24 @@ import drzhark.mocreatures.entity.tameable.IMoCTameable;
 import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCItems;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.joml.Vector3d;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.NetworkHooks;
+import net.minecraft.world.item.ItemStack;
 
-// TODO: Fix hitbox
-public class MoCEntityEgg extends LivingEntity {
-
-    public int eggType;
-    private int tCounter;
-    private int lCounter;
-
-    public MoCEntityEgg(EntityType<? extends MoCEntityEgg> type, Level world) {
-        super(type, world);
-        this.tCounter = 0;
-        this.lCounter = 0;
-    }
-
-    public ResourceLocation getTexture() {
-        return MoCreatures.proxy.getModelTexture("egg.png");
-    }
-
-    public static AttributeSupplier.Builder registerAttributes() {
-        return MobEntity.func_233666_p_().add(Attributes.MAX_HEALTH, 10.0D); // setMaxHealth
-    }
-
-    @Override
-    public boolean canBreatheUnderwater() {
-        return true;
-    }
-
-    @Override
-    protected float getSoundVolume() {
-        return 0.4F;
-    }
-
-    @Override
-    public void onCollideWithPlayer(Player Player) {
-        int i = this.eggType;
-        if (i == 30) {
-            i = 31;
-        }
-        if ((this.lCounter > 10) && Player.getInventory().add(new ItemStack(MoCItems.mocegg, 1))) {
-            this.playSound(SoundEvents.ITEM_PICKUP, 0.2F, (((this.random.nextFloat() - this.random.nextFloat()) * 0.7F) + 1.0F) * 2.0F);
-            if (!this.level().isClientSide()) {
-                Player.onItemPickup(this, 1);
-
-            }
-            remove(RemovalReason.DISCARDED);
-        }
-    }
-
-    @Override
-    public void aiStep() {
-        this.moveStrafing = 0.0F;
-        this.moveForward = 0.0F;
-        travel(new Vector3d(this.moveStrafing, this.moveVertical, this.moveForward));
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (!this.level().isClientSide()) {
-            if (this.random.nextInt(20) == 0) {
-                this.lCounter++;
-            }
-
-            if (this.lCounter > 500) {
-                Player Player1 = this.level().getNearestPlayer(this, 24D);
-                if (Player1 == null) {
-                    this.remove(RemovalReason.DISCARDED);
-                }
-            }
-
-            if (isInWater() && (getEggType() < 12 || getEggType() > 69) && (this.random.nextInt(20) == 0)) {
-                this.tCounter++;
-                if (this.tCounter % 5 == 0) {
-                    this.setDeltaMovement(this.getDeltaMovement().add(0.0D, 0.2D, 0.0D));
-                }
-
-                if (this.tCounter == 5 && MoCreatures.proxy.eggWarningMessages) {
-                    notifyEggHatching();
-                }
-
-                if (this.tCounter >= 30) {
-                    if (getEggType() <= 10) // fishy
-                    {
-                        MoCEntityFishy entityspawn = MoCEntities.FISHY.create(this.level());
-                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
-                        entityspawn.setTypeMoC(getEggType());
-                        entityspawn.setAge(30);
-                        this.level().addFreshEntity(entityspawn);
-                        Player Player = this.level().getNearestPlayer(this, 24D);
-                        if (Player != null) {
-                            MoCTools.tameWithName(Player, entityspawn);
-                        }
-                    } else if (getEggType() == 11) // shark
-                    {
-                        MoCEntityShark entityspawn = MoCEntities.SHARK.create(this.level());
-                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
-                        entityspawn.setAge(30);
-                        this.level().addFreshEntity(entityspawn);
-                        Player Player = this.level().getNearestPlayer(this, 24D);
-                        if (Player != null) {
-                            MoCTools.tameWithName(Player, entityspawn);
-                        }
-                    } else if (getEggType() == 90) // piranha
-                    {
-                        MoCEntityPiranha entityspawn = MoCEntities.PIRANHA.create(this.level());
-                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
-                        this.level().addFreshEntity(entityspawn);
-                        entityspawn.setAge(30);
-                        Player Player = this.level().getNearestPlayer(this, 24D);
-                        if (Player != null) {
-                            MoCTools.tameWithName(Player, entityspawn);
-                        }
-                    } else if (getEggType() >= 80 && getEggType() < (80 + MoCEntitySmallFish.fishNames.length)) // smallfish
-                    {
-                        final int type = getEggType() - 79;
-                        MoCEntitySmallFish entityspawn = MoCEntitySmallFish.createEntity(this.level(), type);
-                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
-                        this.level().addFreshEntity(entityspawn);
-                        entityspawn.setAge(30);
-                        Player Player = this.level().getNearestPlayer(this, 24D);
-                        if (Player != null) {
-                            MoCTools.tameWithName(Player, entityspawn);
-                        }
-                    } else if (getEggType() >= 70 && getEggType() < (70 + MoCEntityMediumFish.fishNames.length)) // mediumfish
-                    {
-                        final int type = getEggType() - 69;
-                        MoCEntityMediumFish entityspawn = MoCEntityMediumFish.createEntity(this.level(), type);
-                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
-                        this.level().addFreshEntity(entityspawn);
-                        entityspawn.setAge(30);
-                        Player Player = this.level().getNearestPlayer(this, 24D);
-                        if (Player != null) {
-                            MoCTools.tameWithName(Player, entityspawn);
-                        }
-                    }
-                    MoCTools.playCustomSound(this, SoundEvents.CHICKEN_EGG);
-                    remove(RemovalReason.DISCARDED);
-                }
-            } else if (!isInWater() && getEggType() > 20 && (this.random.nextInt(20) == 0)) // non aquatic creatures
-            {
-                this.tCounter++;
-                //if (getEggType() == 30) tCounter = 0; //with this, wild ostriches won't spawn eggs.
-
-                if (this.tCounter % 5 == 0) {
-                    this.setDeltaMovement(this.getDeltaMovement().add(0.0D, 0.2D, 0.0D));
-                }
-
-                if (this.tCounter == 5 && MoCreatures.proxy.eggWarningMessages) {
-                    notifyEggHatching();
-                }
-
-                if (this.tCounter >= 30) {
-                    if (getEggType() > 20 && getEggType() < 29) // snakes
-                    {
-                        MoCEntitySnake entityspawn = MoCEntities.SNAKE.create(this.level());
-
-                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
-                        entityspawn.setTypeMoC(getEggType() - 20);
-                        entityspawn.setAge(50);
-                        this.level().addFreshEntity(entityspawn);
-                        Player Player = this.level().getNearestPlayer(this, 24D);
-                        if (Player != null) {
-                            MoCTools.tameWithName(Player, entityspawn);
-                        }
-                    }
-
-                    if (getEggType() == 30 || getEggType() == 31 || getEggType() == 32) // Ostriches. 30 = wild egg, 31 = stolen egg
-                    {
-                        MoCEntityOstrich entityspawn = MoCEntities.OSTRICH.create(this.level());
-                        int typeInt = 1;
-                        if (this.level().dimensionType().ultraWarm() || getEggType() == 32) {
-                            typeInt = 5;
-                        }
-                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
-                        entityspawn.setTypeMoC(typeInt);
-                        entityspawn.setAge(35);
-                        this.level().addFreshEntity(entityspawn);
-                        entityspawn.setHealth(entityspawn.getMaxHealth());
-
-                        if (getEggType() == 31)//stolen egg that hatches a tamed ostrich
-                        {
-                            Player Player = this.level().getNearestPlayer(this, 24D);
-                            if (Player != null) {
-                                MoCTools.tameWithName(Player, entityspawn);
-                            }
-                        }
-                    }
-
-                    if (getEggType() == 33) // Komodo
-                    {
-                        MoCEntityKomodo entityspawn = MoCEntities.KOMODO_DRAGON.get().create(this.level());
-
-                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
-                        entityspawn.setAge(30);
-                        this.level().addFreshEntity(entityspawn);
-                        Player Player = this.level().getNearestPlayer(this, 24D);
-                        if (Player != null) {
-                            MoCTools.tameWithName(Player, entityspawn);
-                        }
-                    }
-
-                    if (getEggType() > 40 && getEggType() < 46) //scorpions for now it uses 41 - 45
-                    {
-                        MoCEntityPetScorpion entityspawn = MoCEntities.PET_SCORPION.get().create(this.level());
-                        int typeInt = getEggType() - 40;
-                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
-                        entityspawn.setTypeMoC(typeInt);
-                        entityspawn.setAdult(false);
-                        this.level().addFreshEntity(entityspawn);
-                        entityspawn.setHealth(entityspawn.getMaxHealth());
-                        Player Player = this.level().getNearestPlayer(this, 24D);
-                        if (Player != null) {
-                            MoCTools.tameWithName(Player, entityspawn);
-                        }
-                    }
-
-                    if (getEggType() > 49 && getEggType() < 62) //wyverns for now it uses 50 - 61
-                    {
-                        MoCEntityWyvern entityspawn = MoCEntities.WYVERN.get().create(this.level());
-                        int typeInt = getEggType() - 49;
-                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
-                        entityspawn.setTypeMoC(typeInt);
-                        entityspawn.setAdult(false);
-                        entityspawn.setAge(30);
-                        this.level().addFreshEntity(entityspawn);
-                        entityspawn.setHealth(entityspawn.getMaxHealth());
-                        Player Player = this.level().getNearestPlayer(this, 24D);
-                        if (Player != null) {
-                            MoCTools.tameWithName(Player, entityspawn);
-                        }
-                    }
-                    if (getEggType() > 61 && getEggType() < 67) //manticorePets for now it uses 62 - 66
-                    {
-                        MoCEntityManticorePet entityspawn = MoCEntities.MANTICORE_PET.get().create(this.level());
-                        int typeInt = getEggType() - 61;
-                        entityspawn.setPos(this.getX(), this.getY(), this.getZ());
-                        entityspawn.setTypeMoC(typeInt);
-                        entityspawn.setAdult(false);
-                        entityspawn.setAge(30);
-                        this.level().addFreshEntity(entityspawn);
-                        entityspawn.setHealth(entityspawn.getMaxHealth());
-                        Player Player = this.level().getNearestPlayer(this, 24D);
-                        if (Player != null) {
-                            MoCTools.tameWithName(Player, entityspawn);
-                        }
-                    }
-                    MoCTools.playCustomSound(this, SoundEvents.CHICKEN_EGG);
-                    remove(RemovalReason.DISCARDED);
-                }
-            }
-        }
-    }
-
-    private void notifyEggHatching() {
-        Player Player = this.level().getNearestPlayer(this, 24D);
-        if (Player != null) {
-            Player.sendMessage(new TranslationTextComponent("msg.mocreatures.egg", (int) this.getX(), (int) this.getY(), (int) this.getZ()), Player.getUUID());
-        }
-    }
-
-    public int getSize() {
-        if (getEggType() == 30 || getEggType() == 31) {
-            return 170;
-        }
-        return 100;
-    }
-
-    public int getEggType() {
-        return this.eggType;
-    }
-
-    public void setEggType(int eggType) {
-        this.eggType = eggType;
-    }
-
-    @Override
-    public void readAdditionalSaveData(CompoundTag nbttagcompound) {
-        super.readAdditionalSaveData(nbttagcompound);
-        nbttagcompound = MoCTools.getEntityData(this);
-        setEggType(nbttagcompound.getInt("EggType"));
-    }
-
-    @Override
-    public void addAdditionalSaveData(CompoundTag nbttagcompound) {
-        super.addAdditionalSaveData(nbttagcompound);
-        nbttagcompound = MoCTools.getEntityData(this);
-        nbttagcompound.putInt("EggType", getEggType());
-    }
-
-    @Override
-    public boolean isEntityInsideOpaqueBlock() {
-        return false;
-    }
-}
-*/
-
-public class MoCEntityEgg extends MobEntity {
+public class MoCEntityEgg extends Mob {
 
     public int eggType;
     private int tCounter;
@@ -352,8 +61,27 @@ public class MoCEntityEgg extends MobEntity {
         return 0.4F;
     }
 
-    public ResourceLocation getTexture() {
-        return MoCreatures.proxy.getModelTexture("egg.png");
+    // Egg stealing logic
+    @Override
+    public void playerTouch(Player player) {
+        int type = this.eggType;
+        if (type == 30) {
+            type = 31;
+        }
+
+        ItemStack eggStack = new ItemStack(MoCItems.MOC_EGG.get(), 1);
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("EggType", type);
+        eggStack.setTag(tag);
+
+        if (this.lCounter > 10 && player.getInventory().add(eggStack)) {
+
+            this.playSound(SoundEvents.ITEM_PICKUP, 0.2F, (this.random.nextFloat() - this.random.nextFloat()) * 0.7F + 1.0F);
+            if (!this.level().isClientSide) {
+                player.awardStat(Stats.ITEM_PICKED_UP.get(MoCItems.MOC_EGG.get()));
+                this.discard();
+            }
+        }
     }
 
     @Override
@@ -375,7 +103,7 @@ public class MoCEntityEgg extends MobEntity {
     private void handleAquaticHatching() {
         this.tCounter++;
         if (this.tCounter % 5 == 0) this.setDeltaMovement(this.getDeltaMovement().add(0.0D, 0.2D, 0.0D));
-        if (this.tCounter == 5) notifyEggHatching();
+        if (this.tCounter == 5 && MoCreatures.proxy.eggWarningMessages) notifyEggHatching();
 
         if (this.tCounter >= 30) {
             Player player = this.level().getNearestPlayer(this, 24D);
@@ -410,7 +138,7 @@ public class MoCEntityEgg extends MobEntity {
     private void handleLandHatching() {
         this.tCounter++;
         if (this.tCounter % 5 == 0) this.setDeltaMovement(this.getDeltaMovement().add(0.0D, 0.2D, 0.0D));
-        if (this.tCounter == 5) notifyEggHatching();
+        if (this.tCounter == 5 && MoCreatures.proxy.eggWarningMessages) notifyEggHatching();
 
         if (this.tCounter >= 30) {
             Player player = this.level().getNearestPlayer(this, 24D);
@@ -418,6 +146,7 @@ public class MoCEntityEgg extends MobEntity {
             if (getEggType() > 20 && getEggType() < 29) {
                 MoCEntitySnake snakey = new MoCEntitySnake(MoCEntities.SNAKE.get(), this.level());
                 snakey.setTypeMoC(getEggType() - 20);
+                snakey.setAge(50);
                 spawnEggEntity(snakey, player);
             }
 
@@ -430,8 +159,13 @@ public class MoCEntityEgg extends MobEntity {
                 if (getEggType() == 31 && player != null) MoCTools.tameWithName(player, ostrich);
             }
 
-            if (getEggType() == 33)
-                spawnEggEntity(new MoCEntityKomodo(MoCEntities.KOMODO_DRAGON.get(), this.level()), player);
+            if (getEggType() == 33) {
+                MoCEntityKomodo komodo = new MoCEntityKomodo(MoCEntities.KOMODO_DRAGON.get(), this.level());
+                komodo.setPos(this.getX(), this.getY(), this.getZ());
+                komodo.setAge(35);
+                this.level().addFreshEntity(komodo);
+                if (player != null) MoCTools.tameWithName(player, komodo);
+            }
 
             if (getEggType() > 40 && getEggType() < 46) {
                 MoCEntityPetScorpion scorp = new MoCEntityPetScorpion(MoCEntities.PET_SCORPION.get(), this.level());

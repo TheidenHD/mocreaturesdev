@@ -68,7 +68,7 @@ public class MoCEntityCricket extends MoCEntityAmbient {
         super.aiStep();
 
         if (this.isInWater()) {
-            this.motionY *= 0.6D;
+            this.setDeltaMovement(this.getDeltaMovement().multiply(1.0D, 0.6D, 1.0D));
         }
 
         if (!this.level().isClientSide()) {
@@ -80,7 +80,7 @@ public class MoCEntityCricket extends MoCEntityAmbient {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        if (!level().isDaytime()) {
+        if (!level().isDay()) {
             return level().random.nextDouble() <= 0.1D ? MoCSoundEvents.ENTITY_CRICKET_AMBIENT.get() : null;
         } else {
             return level().random.nextDouble() <= 0.1D ? MoCSoundEvents.ENTITY_CRICKET_CHIRP.get() : null;
@@ -98,7 +98,7 @@ public class MoCEntityCricket extends MoCEntityAmbient {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {        return MoCLootTables.CRICKET;
+    protected ResourceLocation getDefaultLootTable() {        return MoCLootTables.CRICKET;
     }
 
     @Override

@@ -3,6 +3,7 @@
  */
 package drzhark.mocreatures.client;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import drzhark.mocreatures.MoCConstants;
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.network.MoCMessageHandler;
@@ -21,7 +22,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = MoCConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class MoCKeyHandler {
 
-    static KeyMapping diveBinding = new KeyMapping("Flying Mount Descent (Mo' Creatures)", Keyboard.KEY_Z, "key.categories.movement");
+    static KeyMapping diveBinding = new KeyMapping("Flying Mount Descent (Mo' Creatures)", InputConstants.KEY_Z, "key.categories.movement");
 
     @SubscribeEvent
     public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
@@ -35,13 +36,10 @@ public class MoCKeyHandler {
         boolean kbJump = MoCProxyClient.mc.options.keyJump.isDown();
         boolean kbDive = diveBinding.isDown();
 
-        boolean kbJump = MoCProxyClient.mc.gameSettings.keyBindJump.getKeyCode() >= 0 ? GameSettings.isKeyDown(MoCProxyClient.mc.gameSettings.keyBindJump) : keyPressed == MoCProxyClient.mc.gameSettings.keyBindJump.getKeyCode();
-        boolean kbDive = diveBinding.getKeyCode() >= 0 ? GameSettings.isKeyDown(diveBinding) : keyPressed == diveBinding.getKeyCode();
-
         /*
          * this avoids double jumping
          */
-        if (kbJump && ep.isPassenger() && ep.getVehicle() instanceof IMoCEntity) {
+        if (kbJump && e.player.isPassenger() && e.player.getVehicle() instanceof IMoCEntity) {
             // jump code needs to be executed client/server simultaneously to take
             ((IMoCEntity) e.player.getVehicle()).makeEntityJump();
             MoCMessageHandler.INSTANCE.sendToServer(new MoCMessageEntityJump());

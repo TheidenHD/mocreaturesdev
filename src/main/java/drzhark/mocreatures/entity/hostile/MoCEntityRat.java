@@ -9,6 +9,7 @@ import drzhark.mocreatures.entity.MoCEntityMob;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -16,6 +17,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -33,6 +35,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.common.Tags;
 
 import java.util.List;
 
@@ -103,22 +106,14 @@ public class MoCEntityRat extends MoCEntityMob {
 
     @Override
     public boolean checkSpawningBiome() {
-        BlockPos pos = new BlockPos(Mth.floor(this.getX()), Mth.floor(getBoundingBox().minY), Mth.floor(this.getZ()));
-        ResourceKey<Biome> currentbiome = MoCTools.biomeKind(this.level(), pos);
+        BlockPos pos = BlockPos.containing(this.getX(), this.getBoundingBox().minY, this.getZ());
+        Holder<Biome> biome = this.level().getBiome(pos);
 
-        try {
-            // Simple check based on biome ID - to be updated when BiomeDictionary is
-            // resolved
-            if (currentbiome.location().getPath().contains("desert")
-                    || currentbiome.location().getPath().contains("mesa")) {
-                setTypeMoC(1); // only brown rats
-            }
-
-            if (currentbiome.location().getPath().contains("snow")
-                    || currentbiome.location().getPath().contains("frozen")) {
-                setTypeMoC(3); // only white rats
-            }
-        } catch (Exception ignored) {
+        if (biome.is(Tags.Biomes.IS_DESERT) || biome.is(BiomeTags.IS_BADLANDS)) {
+            setTypeMoC(1); // only brown rats
+        }
+        if (biome.is(Tags.Biomes.IS_SNOWY)) {
+            setTypeMoC(3); // only white rats
         }
         return true;
     }

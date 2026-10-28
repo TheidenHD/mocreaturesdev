@@ -7,6 +7,7 @@ import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.MoCEntityMob;
 import drzhark.mocreatures.entity.hunter.MoCEntityPetScorpion;
+import drzhark.mocreatures.init.MoCEntities;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
@@ -229,19 +230,19 @@ public class MoCEntityScorpion extends MoCEntityMob {
                     MoCEntityScorpion babyScorpion;
                     switch (this.getTypeMoC) {
                         case 2:
-                            babyScorpion = new MoCEntityCaveScorpion(this.level());
+                            babyScorpion = MoCEntities.CAVE_SCORPION.get().create(this.level());
                             break;
                         case 3:
-                            babyScorpion = new MoCEntityFireScorpion(this.level());
+                            babyScorpion = MoCEntities.FIRE_SCORPION.get().create(this.level());
                             break;
                         case 4:
-                            babyScorpion = new MoCEntityFrostScorpion(this.level());
+                            babyScorpion = MoCEntities.FROST_SCORPION.get().create(this.level());
                             break;
                         case 5:
-                            babyScorpion = new MoCEntityUndeadScorpion(this.level());
+                            babyScorpion = MoCEntities.UNDEAD_SCORPION.get().create(this.level());
                             break;
                         default:
-                            babyScorpion = new MoCEntityDirtScorpion(this.level());
+                            babyScorpion = MoCEntities.DIRT_SCORPION.get().create(this.level());
                             break;
                     }
                     babyScorpion.setPos(this.getX(), this.getY(), this.getZ());
@@ -249,7 +250,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
                     babyScorpion.setMoCAge(20);
                     babyScorpion.setTypeMoC(this.getTypeMoC);
                     this.level().addFreshEntity(babyScorpion);
-                    MoCTools.playCustomSound(babyScorpion, SoundEvents.ENTITY_SLIME_SQUISH);
+                    MoCTools.playCustomSound(babyScorpion, SoundEvents.SLIME_SQUISH);
                 }
             }
             dropLegacyEgg();
@@ -262,7 +263,9 @@ public class MoCEntityScorpion extends MoCEntityMob {
             chance = MoCreatures.proxy.motherScorpionEggDropChance;
         }
         if (this.random.nextInt(100) < chance) {
-            entityDropItem(new ItemStack(MoCItems.mocegg, 1, this.getTypeMoC + 40), 0.0F);
+            CompoundTag tag = new CompoundTag();
+            tag.putInt("EggType", this.getTypeMoC + 40);
+            spawnAtLocation(new ItemStack(MoCItems.MOC_EGG.get(), 1, tag), 0.0F);
         }
     }
 

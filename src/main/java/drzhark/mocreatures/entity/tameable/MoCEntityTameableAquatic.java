@@ -179,7 +179,7 @@ public class MoCEntityTameableAquatic extends MoCEntityAquatic implements IMoCTa
         }
 
         //sets it free, untamed
-        if (!stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.scrollOfFreedom) {
+        if (!stack.isEmpty() && getIsTamed() && stack.getItem() == MoCItems.SCROLLFREEDOM.get()) {
             if (!player.isCreative()) stack.shrink(1);
             if (!this.level().isClientSide()) {
                 if (this.getOwnerPetId() != -1) // required since getInt will always return 0 if no key is found

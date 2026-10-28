@@ -64,7 +64,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
         super.aiStep();
 
         if (this.isInWater()) {
-            this.motionY *= 0.6D;
+            this.setDeltaMovement(this.getDeltaMovement().multiply(1.0D, 0.6D, 1.0D));
         }
 
         if (!this.level().isClientSide()) {
@@ -142,7 +142,7 @@ public class MoCEntityAnt extends MoCEntityAmbient {
     }
 
     @Nullable
-    protected ResourceLocation getLootTable() {        return MoCLootTables.ANT;
+    protected ResourceLocation getDefaultLootTable() {        return MoCLootTables.ANT;
     }
 
     @Override
